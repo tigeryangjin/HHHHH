@@ -1,0 +1,187 @@
+# 2013-04-11
+
+HHS =
+  (DESCRIPTION =
+    (LOAD_BALANCE=ON)
+    (FAILOVER=ON)
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.200.12)(PORT = 1521))
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.200.14)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = HUTV)
+    )
+    (FAILOVER_MODE =
+      (TYPE = select)
+      (METHOD = basic)
+    )
+  )
+
+HHS1 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.200.12)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SID = HUTV1)
+    )
+  )
+
+HHS2 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.200.14)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SID = HUTV2)
+    )
+  )
+
+HUTV_15 =
+(DESCRIPTION =
+  (ADDRESS_LIST =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.1.15)(PORT = 1521))
+  )
+  (CONNECT_DATA =
+    (SERVICE_NAME = HUTV)
+  )
+)
+
+
+BIHAPPIGO2 =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.204.27)(PORT = 1521)) (CONNECT_DATA = (SERVER = DEDICATED)
+      (SERVICE_NAME = BIHAPPIGO2)
+    )
+  )
+
+
+XE =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.11.35.244)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = XE)
+    )
+  )
+
+
+
+BI =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.204.22)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = bihappigo)
+    )
+  )
+
+
+BINEW =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.204.18)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = bihappigo)
+    )
+  )
+
+
+dw =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.204.27)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = bihappigo)
+    )
+  )
+
+
+
+HRP_115 =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.35.115)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = orcl2)
+    )
+  )
+
+
+HRP_19 =
+(DESCRIPTION =
+  (ADDRESS_LIST =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.211.19)(PORT = 1521))
+  )
+  (CONNECT_DATA =
+    (SERVICE_NAME = HUTVLDG)
+  )
+)
+
+
+HRPTRAIN =
+(DESCRIPTION =
+  (ADDRESS_LIST =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.1.200)(PORT = 1521))
+  )
+  (CONNECT_DATA =
+    (SERVICE_NAME = HRPPX)
+  )
+)
+
+HUTVLDG =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.211.20)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = HUTVLDG)
+    )
+  )
+  
+HUTVPDG =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.211.21)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = HUTVPDG)
+    )
+  )
+
+  
+HRPBI205 =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.200.205)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = hrpbi)
+    )
+  )
+
+wmsprod =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.200.52)(PORT = 1521))
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.200.53)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = wmsprod)
+    )
+    (FAILOVER_MODE=
+      (TYPE = select )
+      (METHOD = basic)
+    )
+  )
+
+WMS_TST =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.10.205.52)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = wmtst)
+    )
+  )
