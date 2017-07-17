@@ -1,0 +1,466 @@
+/*
+根据FACT_HMSC_MARKET表，新建一张表，细化到商品和地区。
+PROCESSMAKETHMSC
+PROCESSMAKETHMSC2
+*/
+
+--history data fix
+CALL YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170516);
+
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170430);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170429);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170428);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170427);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170426);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170425);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170424);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170423);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170422);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170421);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170420);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170419);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170418);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170417);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170416);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170415);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170414);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170413);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170412);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170411);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170410);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170409);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170408);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170407);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170406);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170405);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170404);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170403);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170402);
+YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170401);
+
+
+--job
+declare
+  job number;
+begin
+  sys.dbms_job.submit(job       => job,
+                      what      => 'YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170331);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170330);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170329);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170328);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170327);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170326);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170325);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170324);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170323);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170322);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170321);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170320);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170319);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170318);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170317);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170316);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170315);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170314);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170313);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170312);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170311);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170310);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170309);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170308);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170307);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170306);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170305);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170304);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170303);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170302);
+                                    YANGJIN_PKG.PROCESSMAKETHMSC_IA(20170301);',
+                      next_date => to_date('04-06-2017 03:00:00',
+                                           'dd-mm-yyyy hh24:mi:ss'),
+                      interval  => 'null');
+  commit;
+end;
+/
+
+
+
+--CREATE INDEX 
+--FACT_PAGE_VIEW
+drop index FACT_PAGE_VIEW_IP_INT;
+CREATE INDEX FACT_PAGE_VIEW_IP_INT
+   ON FACT_PAGE_VIEW (IP_INT) NOLOGGING LOCAL PARALLEL 32;
+--FACT_VISITOR_REGISTER_DONE
+CREATE INDEX FACT_VISITOR_REGISTER_IP_INT
+   ON FACT_VISITOR_REGISTER (ip_int) NOLOGGING PARALLEL 16;
+--FACT_SESSION_DONE
+CREATE INDEX FACT_SESSION_FIST_IP
+   ON FACT_SESSION (FIST_IP) NOLOGGING PARALLEL 16;
+
+SELECT COUNT(1) FROM FACT_SESSION;
+
+
+--FACT_PV_IA_HMSC
+      SELECT E.VISIT_DATE_KEY,
+             E.APPLICATION_KEY,
+             E.HMMD,
+             E.HMPL,
+             E.XLFLAG,
+             E.PV_IP_CITY,
+             COUNT(DISTINCT E.MEMBER_KEY) MCNT,
+             COUNT(DISTINCT E.DEVICE_KEY) VCNT,
+             COUNT(DISTINCT E.SESSION_KEY) SCNT
+        FROM (SELECT A.VISIT_DATE_KEY,
+                     DECODE(A.APPLICATION_KEY, 10, 'IOS', 20, 'ANDROID') AS APPLICATION_KEY,
+                     (SELECT B.HMMD FROM DIM_HMSC B WHERE B.HMSC = A.HMSC) AS HMMD,
+                     (SELECT C.HMPL FROM DIM_HMSC C WHERE C.HMSC = A.HMSC) AS HMPL,
+                     CASE
+                       WHEN EXISTS (SELECT *
+                               FROM FACT_VISITOR_REGISTER D
+                              WHERE D.CREATE_DATE_KEY BETWEEN
+                                    TO_NUMBER(TO_CHAR(ADD_MONTHS(TO_DATE(TO_CHAR(&STARTPOINT),
+                                                                         'yyyymmdd'),
+                                                                 -1),
+                                                      'yyyymmdd')) AND
+                                    &STARTPOINT
+                                AND D.VISTOR_KEY = A.DEVICE_KEY) THEN
+                        '新用户'
+                       ELSE
+                        '老用户'
+                     END AS XLFLAG,
+                     GET_IP_CITY(GET_IP_NUMBER(A.IP)) PV_IP_CITY,
+                     A.MEMBER_KEY,
+                     A.DEVICE_KEY,
+                     A.SESSION_KEY
+                FROM FACT_PAGE_VIEW A
+               WHERE A.VISIT_DATE_KEY = &STARTPOINT) E
+       GROUP BY E.VISIT_DATE_KEY,
+                E.APPLICATION_KEY,
+                E.HMMD,
+                E.HMPL,
+                E.XLFLAG,
+                E.PV_IP_CITY;
+
+--FACT_UV_IA_HMSC
+SELECT C2.CREATE_DATE_KEY,
+       DECODE(C2.APPLICATION_KEY, 10, 'IOS', 20, 'ANDROID') AS APPLICATION_KEY,
+       (SELECT Z1.HMMD FROM DIM_HMSC Z1 WHERE Z1.HMSC = C2.HMSC) AS HMMD,
+       (SELECT Z1.HMPL FROM DIM_HMSC Z1 WHERE Z1.HMSC = C2.HMSC) AS HMPL,
+       '新用户' AS XLFLAG,
+       GET_IP_CITY(GET_IP_NUMBER(C2.FIRST_IP)),
+       COUNT(C2.VISTOR_KEY) AS NVCNT
+  FROM FACT_VISITOR_REGISTER C2
+ WHERE C2.CREATE_DATE_KEY = &STARTPOINT
+   AND C2.APPLICATION_KEY IN (10, 20)
+ GROUP BY C2.CREATE_DATE_KEY,
+          DECODE(C2.APPLICATION_KEY, 10, 'IOS', 20, 'ANDROID'),
+          C2.HMSC,
+          '新用户',
+          GET_IP_CITY(GET_IP_NUMBER(C2.FIRST_IP));
+
+--FACT_ORDER_IA_HMSC
+SELECT F.ORDER_CREATE_KEY,
+       F.APPLICATION_KEY,
+       F.HMMD,
+       F.HMPL,
+       F.XLFLAG,
+       F.ORDER_IP_CITY,
+       COUNT(DISTINCT F.CUST_NO) ORDERRS,
+       COUNT(DISTINCT F.ORDER_SN) ORDERCS,
+       SUM(F.ORDER_AMOUNT) AS ORDERAMOUNT,
+       COUNT(DISTINCT F.CUST_CG_NO) ORDERCGRS,
+       COUNT(DISTINCT F.ORDER_CG_SN) ORDERCGCS,
+       SUM(F.ORDER_CG_AMOUNT) AS ORDERCGAMOUNT,
+       COUNT(DISTINCT F.GOODS_COMMONID) ITEM_SKU
+  FROM (SELECT A.ADD_TIME ORDER_CREATE_KEY,
+               DECODE(C.APPLICATION_KEY, 10, 'IOS', 20, 'ANDROID') AS APPLICATION_KEY,
+               (SELECT D.HMMD FROM DIM_HMSC D WHERE D.HMSC = C.HMSC) AS HMMD,
+               (SELECT D.HMPL FROM DIM_HMSC D WHERE D.HMSC = C.HMSC) AS HMPL,
+               CASE
+                 WHEN EXISTS
+                  (SELECT *
+                         FROM FACT_VISITOR_REGISTER E
+                        WHERE E.CREATE_DATE_KEY BETWEEN
+                              TO_NUMBER(TO_CHAR(ADD_MONTHS(TO_DATE(TO_CHAR(&STARTPOINT),
+                                                                   'yyyymmdd'),
+                                                           -1),
+                                                'yyyymmdd')) AND &STARTPOINT
+                          AND E.VID = C.VID) THEN
+                  '新用户'
+                 ELSE
+                  '老用户'
+               END AS XLFLAG,
+               A.CUST_NO,
+               A.ORDER_SN,
+               A.ORDER_AMOUNT,
+               CASE
+                 WHEN (A.PAYMENT_CODE = 'offline' OR
+                      A.ORDER_STATE IN (20, 30, 40, 50)) THEN
+                  A.CUST_NO
+               END CUST_CG_NO,
+               CASE
+                 WHEN (A.PAYMENT_CODE = 'offline' OR
+                      A.ORDER_STATE IN (20, 30, 40, 50)) THEN
+                  A.ORDER_SN
+               END ORDER_CG_SN,
+               CASE
+                 WHEN (A.PAYMENT_CODE = 'offline' OR
+                      A.ORDER_STATE IN (20, 30, 40, 50)) THEN
+                  A.ORDER_AMOUNT
+                 ELSE
+                  0
+               END ORDER_CG_AMOUNT,
+               B.GOODS_COMMONID,
+               GET_IP_CITY(GET_IP_NUMBER(A.ORDER_IP)) ORDER_IP_CITY
+          FROM FACT_EC_ORDER         A,
+               FACT_EC_ORDERGOODS    B,
+               FACT_VISITOR_REGISTER C
+         WHERE A.ORDER_ID = B.ORDER_ID
+           AND A.VID = C.VID
+           AND A.ADD_TIME = &STARTPOINT
+           AND A.APP_NAME IN ('KLGAndroid', 'KLGiPhone')) F
+ GROUP BY F.ORDER_CREATE_KEY,
+          F.APPLICATION_KEY,
+          F.HMMD,
+          F.HMPL,
+          F.XLFLAG,
+          F.ORDER_IP_CITY;
+					
+--FACT_SESSION_IA_HMSC
+SELECT C5.START_DATE_KEY,
+       DECODE(C5.APPLICATION_KEY, 10, 'IOS', 20, 'ANDROID') AS APPLICATION_KEY,
+       (SELECT Z1.HMMD FROM DIM_HMSC Z1 WHERE Z1.HMSC = C5.HMSC) AS HMMD,
+       (SELECT Z1.HMPL FROM DIM_HMSC Z1 WHERE Z1.HMSC = C5.HMSC) AS HMPL,
+       CASE
+         WHEN EXISTS (SELECT *
+                 FROM FACT_VISITOR_REGISTER T1
+                WHERE T1.CREATE_DATE_KEY BETWEEN
+                      TO_NUMBER(TO_CHAR(ADD_MONTHS(TO_DATE(TO_CHAR(&STARTPOINT),
+                                                           'yyyymmdd'),
+                                                   -1),
+                                        'yyyymmdd')) AND &STARTPOINT
+                  AND T1.VID = C5.VID) THEN
+          '新用户'
+         ELSE
+          '老用户'
+       END AS XLFLAG,
+       GET_IP_CITY(GET_IP_NUMBER(C5.FIST_IP)) SESSION_IP_CITY,
+       TRUNC((SUM(C5.LIFE_TIME) / COUNT(C5.ID)), 2) AS AVGLIFE_TIME
+  FROM FACT_SESSION C5
+ WHERE C5.START_DATE_KEY = &STARTPOINT
+   AND C5.APPLICATION_KEY IN (10, 20)
+ GROUP BY C5.START_DATE_KEY,
+          DECODE(C5.APPLICATION_KEY, 10, 'IOS', 20, 'ANDROID'),
+          C5.HMSC,
+          C5.HMSC,
+          CASE
+            WHEN EXISTS
+             (SELECT *
+                    FROM FACT_VISITOR_REGISTER T1
+                   WHERE T1.CREATE_DATE_KEY BETWEEN
+                         TO_NUMBER(TO_CHAR(ADD_MONTHS(TO_DATE(TO_CHAR(&STARTPOINT),
+                                                              'yyyymmdd'),
+                                                      -1),
+                                           'yyyymmdd')) AND &STARTPOINT
+                     AND T1.VID = C5.VID) THEN
+             '新用户'
+            ELSE
+             '老用户'
+          END,
+          GET_IP_CITY(GET_IP_NUMBER(C5.FIST_IP));
+
+
+--
+SELECT D.VISIT_DATE_KEY,
+       D.APPLICATION_KEY,
+       D.HMMD,
+       D.HMPL,
+       D.XLFLAG,
+       D.PV_IP_CITY,
+       D.MCNT,
+       D.VCNT,
+       D.SCNT,
+       D.ORDERRS,
+       D.ORDERCS,
+       D.ORDERAMOUNT,
+       D.ORDERCGRS,
+       D.ORDERCGCS,
+       D.ORDERCGAMOUNT,
+       SYSDATE,
+       SYSDATE
+  FROM (SELECT A.VISIT_DATE_KEY,
+               A.APPLICATION_KEY,
+               A.HMMD,
+               A.HMPL,
+               A.XLFLAG,
+               A.PV_IP_CITY,
+               A.GOODS_COMMONID,
+               NVL(A.MCNT, 0) AS MCNT,
+               NVL(A.VCNT, 0) AS VCNT,
+               NVL(A.SCNT, 0) AS SCNT,
+               NVL(C.ORDERRS, 0) AS ORDERRS,
+               NVL(C.ORDERCS, 0) AS ORDERCS,
+               NVL(C.ORDERAMOUNT, 0) AS ORDERAMOUNT,
+               NVL(C.ORDERCGRS, 0) AS ORDERCGRS,
+               NVL(C.ORDERCGCS, 0) AS ORDERCGCS,
+               NVL(C.ORDERCGAMOUNT, 0) AS ORDERCGAMOUNT
+          FROM (SELECT * FROM FACT_PV_IA_HMSC WHERE HMMD IS NOT NULL) A,
+               (SELECT * FROM FACT_ORDER_IA_HMSC WHERE HMMD IS NOT NULL) C
+         WHERE A.VISIT_DATE_KEY = C.ORDER_CREATE_KEY(+)
+           AND A.APPLICATION_KEY = C.APPLICATION_KEY(+)
+           AND A.HMMD = C.HMMD(+)
+           AND A.HMPL = C.HMPL(+)
+           AND A.XLFLAG = C.XLFLAG(+)
+           AND A.PV_IP_CITY = C.ORDER_IP_CITY(+)
+           AND A.GOODS_COMMONID = C.GOODS_COMMONID(+)
+        UNION
+        SELECT C.ORDER_CREATE_KEY,
+               C.APPLICATION_KEY,
+               C.HMMD,
+               C.HMPL,
+               C.XLFLAG,
+               C.ORDER_IP_CITY,
+               C.GOODS_COMMONID,
+               NVL(A.MCNT, 0) AS MCNT,
+               NVL(A.VCNT, 0) AS VCNT,
+               NVL(A.SCNT, 0) AS SCNT,
+               NVL(C.ORDERRS, 0) AS ORDERRS,
+               NVL(C.ORDERCS, 0) AS ORDERCS,
+               NVL(C.ORDERAMOUNT, 0) AS ORDERAMOUNT,
+               NVL(C.ORDERCGRS, 0) AS ORDERCGRS,
+               NVL(C.ORDERCGCS, 0) AS ORDERCGCS,
+               NVL(C.ORDERCGAMOUNT, 0) AS ORDERCGAMOUNT
+          FROM (SELECT * FROM FACT_PV_IA_HMSC WHERE HMMD IS NOT NULL) A,
+               (SELECT * FROM FACT_ORDER_IA_HMSC WHERE HMMD IS NOT NULL) C
+         WHERE A.VISIT_DATE_KEY(+) = C.ORDER_CREATE_KEY
+           AND A.APPLICATION_KEY(+) = C.APPLICATION_KEY
+           AND A.HMMD(+) = C.HMMD
+           AND A.HMPL(+) = C.HMPL
+           AND A.XLFLAG(+) = C.XLFLAG
+           AND A.PV_IP_CITY(+) = C.ORDER_IP_CITY
+           AND A.GOODS_COMMONID(+) = C.GOODS_COMMONID) D,
+       DIM_EC_GOOD E
+ WHERE D.GOODS_COMMONID = E.GOODS_COMMONID;
+
+
+--TMP
+SELECT DISTINCT VISIT_DATE_KEY
+  FROM FACT_HMSC_ITEM_AREA_MARKET
+ ORDER BY VISIT_DATE_KEY;
+
+SELECT * FROM W_ETL_LOG T WHERE T.PROC_NAME='PROCESSMAKETHMSC_IA' ORDER BY T.START_TIME DESC;
+
+SELECT *
+  FROM V$SQL T
+ WHERE UPPER(T."SQL_FULLTEXT") LIKE '%FACT_HMSC_ITEM_AREA_MARKET%';
+
+select * from FACT_PV_IA_HMSC;
+select * from FACT_ORDER_IA_HMSC;
+SELECT * FROM FACT_HMSC_ITEM_AREA_MARKET;
+
+SELECT * FROM S_PARAMETERS;
+SELECT * FROM S_PARAMETERS1;
+SELECT * FROM S_PARAMETERS2;
+
+SELECT * FROM DIM_EC_GOOD;
+SELECT * FROM FACT_PAGE_VIEW;
+SELECT * FROM ALL_COL_COMMENTS T WHERE T.COLUMN_NAME='GOOD_COMMEN_KEY';
+
+SELECT * FROM ALL_ALL_TABLES T WHERE T.table_name LIKE '%PAGE%';
+SELECT * FROM ALL_SOURCE T WHERE UPPER(T.TEXT) LIKE '%INSERT INTO FACT_PAGE_VIEW%';
+
+SELECT * FROM FACT_HMSC_ITEM_AREA_MARKET T WHERE T.VISIT_DATE_KEY=20170530 AND UPPER(T.HMMD)='OPPO' AND T.XLFLAG='新用户' AND T.ORDERAMOUNT<>0;
+SELECT * FROM FACT_ORDER_IA_HMSC T WHERE T.ORDER_CREATE_KEY=20170530 AND UPPER(T.HMMD)='OPPO' AND T.XLFLAG='新用户' AND T.ORDER_IP_CITY='东莞';
+SELECT * FROM FACT_PV_IA_HMSC T WHERE T.VISIT_DATE_KEY=20170530 AND UPPER(T.HMMD)='OPPO' AND T.XLFLAG='新用户' AND T.PV_IP_CITY='东莞';
+SELECT * FROM DIM_EC_GOOD T WHERE T.GOODS_COMMONID=154278;
+
+SELECT DISTINCT T.VISIT_DATE_KEY,T.INSERT_DT,T.UPDATE_DT FROM FACT_HMSC_ITEM_AREA_MARKET T ;
+
+
+
+SELECT C.ORDER_CREATE_KEY,
+       C.APPLICATION_KEY,
+       C.HMMD,
+       C.HMPL,
+       C.XLFLAG,
+       E.ITEM_CODE,
+       E.GOODS_NAME,
+       C.ORDER_IP_CITY,
+       NVL(A.MCNT, 0) AS MCNT,
+       NVL(A.VCNT, 0) AS VCNT,
+       NVL(A.SCNT, 0) AS SCNT,
+       NVL(C.ORDERRS, 0) AS ORDERRS,
+       NVL(C.ORDERCS, 0) AS ORDERCS,
+       NVL(C.ORDERAMOUNT, 0) AS ORDERAMOUNT,
+       NVL(C.ORDERCGRS, 0) AS ORDERCGRS,
+       NVL(C.ORDERCGCS, 0) AS ORDERCGCS,
+       NVL(C.ORDERCGAMOUNT, 0) AS ORDERCGAMOUNT,
+       SYSDATE,
+       SYSDATE
+  FROM (SELECT *
+          FROM FACT_PV_IA_HMSC
+         WHERE HMMD IS NOT NULL
+           AND VISIT_DATE_KEY = 20170530
+           AND UPPER(HMMD) = 'OPPO'
+           AND XLFLAG = '新用户'
+					 AND PV_IP_CITY='东莞'
+					 AND GOODS_COMMONID=154278) A,
+       (SELECT *
+          FROM FACT_ORDER_IA_HMSC
+         WHERE HMMD IS NOT NULL
+           AND ORDER_CREATE_KEY = 20170530
+           AND UPPER(HMMD) = 'OPPO'
+           AND XLFLAG = '新用户'
+					 AND ORDER_IP_CITY='东莞'
+					 AND GOODS_COMMONID=154278) C,
+       DIM_EC_GOOD E
+ WHERE A.VISIT_DATE_KEY(+) = C.ORDER_CREATE_KEY
+   AND A.APPLICATION_KEY(+) = C.APPLICATION_KEY
+   AND A.HMMD(+) = C.HMMD
+   AND A.HMPL(+) = C.HMPL
+   AND A.XLFLAG(+) = C.XLFLAG
+   AND A.PV_IP_CITY(+) = C.ORDER_IP_CITY
+   AND A.GOODS_COMMONID(+) = C.GOODS_COMMONID
+   AND C.GOODS_COMMONID = E.GOODS_COMMONID;
+
+SELECT *
+  FROM FACT_PV_IA_HMSC
+ WHERE HMMD IS NOT NULL
+   AND VISIT_DATE_KEY = 20170530
+   AND UPPER(HMMD) = 'OPPO'
+   AND XLFLAG = '新用户'
+   AND PV_IP_CITY = '东莞'
+   AND GOODS_COMMONID = 154278;
+SELECT *
+  FROM FACT_ORDER_IA_HMSC
+ WHERE HMMD IS NOT NULL
+   AND ORDER_CREATE_KEY = 20170530
+   AND UPPER(HMMD) = 'OPPO'
+   AND XLFLAG = '新用户'
+   AND ORDER_IP_CITY = '东莞'
+   AND GOODS_COMMONID = 154278;
+
+SELECT DISTINCT T.VISIT_DATE_KEY FROM FACT_HMSC_ITEM_AREA_MARKET T;
+DELETE FACT_HMSC_ITEM_AREA_MARKET T WHERE T.VISIT_DATE_KEY=20170524;
+COMMIT;
+
+SELECT * FROM FACT_EC_ORDER t where t.add_time=20170531;
+SELECT * FROM FACTEC_ORDER t where t.add_time=20170531;
+
+SELECT * FROM W_ETL_LOG T WHERE T.PROC_NAME='processmakethmsc' ORDER BY T.START_TIME DESC;
+
+
+SELECT COUNT(1) FROM DIM_IP_GEO;
+SELECT * FROM FACT_HMSC_MARKET ORDER BY 1, 2, 3, 4, 5;
+select T.ORDER_IP, get_ipgeo(get_ip_number(T.ORDER_IP))
+  from FACT_EC_ORDER t;
+SELECT * FROM DIM_IP_GEO ORDER BY IP_START;
+select * from fact_pv_hmsc where hmmd is not null;
+select * from fact_session_hmsc where hmmd is not null;
+select * from fact_order_hmsc where hmmd is not null;
+select * from fact_uv_hmsc where hmmd is not null;
+SELECT * FROM ALL_SOURCE T WHERE UPPER(T.TEXT) LIKE '%FACT_HMSC_MARKET%';
+SELECT * FROM FACT_HMSC_MARKET;
+SELECT *
+  FROM W_ETL_LOG T
+ WHERE T.PROC_NAME IN ('processmakethmsc', 'processmakethmsc2')
+ ORDER BY T.START_TIME DESC;

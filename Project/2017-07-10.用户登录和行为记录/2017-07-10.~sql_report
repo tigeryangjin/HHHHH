@@ -1,0 +1,22 @@
+--行为记录
+drop table member_key_tmp;
+create table member_key_tmp (member_key number(10));
+
+select * from member_key_tmp for update;
+
+select *
+  from fact_page_view a
+ where a.visit_date_key between 20170704 and 20170710
+   and exists
+ (select 1 from member_key_tmp b where a.member_key = b.member_key);
+ 
+--member_key不为空
+create table vid_tmp(vid varchar2(1000));
+
+select * from vid_tmp for update;
+
+select distinct a.vid,a.member_key
+  from fact_page_view a
+ where a.visit_date_key between 20170704 and 20170710
+   and a.member_key <> 0
+   and exists (select 1 from vid_tmp b where a.vid = b.vid);

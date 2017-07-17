@@ -1,0 +1,10 @@
+--
+create table m_users (member_key number(20));
+
+select * from m_users for update;
+
+select *
+  from fact_page_view a
+ where a.visit_date_key >= to_number(to_char(trunc(sysdate - 3),'yyyymmdd'))
+   and exists(select 1 from m_users b where a.member_key=b.member_key)
+	 order by a.visit_date_key,a.member_key;
