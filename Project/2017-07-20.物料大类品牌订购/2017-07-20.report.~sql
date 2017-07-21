@@ -1,0 +1,46 @@
+--2016年到2017 年  物料大类  品牌   订购件数   订购金额的表
+SELECT D.MATDL,
+       D.MATDLT,
+       D.BRAND_NAME,
+       SUM(C.NUMS) ORDER_QTY,
+       SUM(C.ORDER_AMOUNT) ORDER_AMOUNT,
+       DECODE(SUM(C.NUMS), 0, 0, SUM(C.ORDER_AMOUNT) / SUM(C.NUMS)) UNIT_PRICE
+  FROM (SELECT A.GOODS_COMMON_KEY, A.UNIT_PRICE, A.ORDER_AMOUNT, A.NUMS
+          FROM FACT_GOODS_SALES A
+         WHERE A.POSTING_DATE_KEY BETWEEN 20160101 AND 20170719
+           AND A.ORDER_STATE = 1) C,
+       (SELECT DISTINCT B.GOODS_COMMONID,
+                        B.ITEM_CODE,
+                        B.MATDL,
+                        B.MATDLT,
+                        NVL(B.BRAND_NAME, '无品牌') BRAND_NAME
+          FROM DIM_GOOD B) D
+ WHERE C.GOODS_COMMON_KEY = D.ITEM_CODE
+ GROUP BY D.MATDL, D.MATDLT, D.BRAND_NAME
+ ORDER BY D.MATDL,D.BRAND_NAME;
+
+--TMP
+SELECT distinct B.GOODS_COMMONID,
+                B.MATDL,
+                B.MATDLT,
+                nvl(B.Brand_Name, '无品牌') Brand_Name
+  FROM DIM_GOOD B;
+
+SELECT *
+  FROM ALL_COL_COMMENTS T
+ WHERE T.COLUMN_NAME LIKE '%BRAND%'
+ ORDER BY 1, 2;
+
+SELECT C.GOODS_COMMONID, COUNT(1)
+  FROM (SELECT distinct B.GOODS_COMMONID,
+                        B.MATDL,
+                        B.MATDLT,
+                        nvl(B.Brand_Name, '无品牌') Brand_Name
+          FROM DIM_GOOD B) C
+ GROUP BY C.GOODS_COMMONID
+HAVING COUNT(1) > 1;
+
+Select *
+  from (SELECT B.GOODS_COMMONID, B.MATDL, B.MATDLT, B.Brand_Name
+          FROM DIM_GOOD B) c
+ where c.goods_commonid = 148733;
