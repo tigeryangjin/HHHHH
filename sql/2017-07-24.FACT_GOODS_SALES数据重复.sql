@@ -1,9 +1,8 @@
---fact_goods_sales表2017-06-06，2017-06-07二天的数据重复了。
+--fact_goods_sales表2017-07-21，2017-07-22二天的数据重复了。
 SELECT t.order_key, t.goods_common_key, t.posting_date_key, count(1)
   FROM FACT_GOODS_SALES T
- WHERE T.POSTING_DATE_KEY = 20170606
- group by t.order_key, t.goods_common_key, t.posting_date_key
-having count(1) > 1;
+ WHERE T.POSTING_DATE_KEY = 20170721
+ group by t.order_key, t.goods_common_key, t.posting_date_key;
 
 SELECT t.rowid, t.*
   FROM FACT_GOODS_SALES T
@@ -23,15 +22,15 @@ select /*+parallel(16)*/
 
 --删除fact_goods_sales重复记录
 --备份
-drop table fact_goods_sales_bak_20170621;
-create table fact_goods_sales_bak_20170621 as
+drop table fact_goods_sales_bak_20170724;
+create table fact_goods_sales_bak_20170724 as
   select *
     from fact_goods_sales t
-   where t.posting_date_key in (20170606, 20170607);
+   where t.posting_date_key in (20170721, 20170722);
 
-drop table fact_goods_sales_bak_20170621b;
-create table fact_goods_sales_bak_20170621b as
-  select distinct * from fact_goods_sales_bak_20170621 t;
+drop table fact_goods_sales_bak_20170724b;
+create table fact_goods_sales_bak_20170724b as
+  select distinct * from fact_goods_sales_bak_20170724 t;
 
 --删除
 /*delete from fact_goods_sales_bak_20170621 a
@@ -48,24 +47,35 @@ create table fact_goods_sales_bak_20170621b as
                       group by posting_date_key, order_key, goods_common_key
                      having count(*) > 1);*/
 delete fact_goods_sales a
- where a.posting_date_key between 20170606 and 20170607;
-commit;
+ where a.posting_date_key between 20170721 and 20170722;
+
 insert into fact_goods_sales
-  select * from fact_goods_sales_bak_20170621b;
-commit;
+  select * from fact_goods_sales_bak_20170724b;
 
 select a.posting_date_key, count(1)
-  from fact_goods_sales_bak_20170621 a
+  from fact_goods_sales_bak_20170724 a
  group by a.posting_date_key;
 
 select a.posting_date_key, count(1)
-  from fact_goods_sales_bak_20170621b a
+  from fact_goods_sales_bak_20170724b a
  group by a.posting_date_key;
 
 
 --oper
+begin
+  -- Call the procedure
+  yangjin_pkg.oper_product_daily_rpt(20170721);
+end;
+/
+begin
+  -- Call the procedure
+  yangjin_pkg.oper_product_daily_rpt(20170722);
+end;
+
 SELECT T.OWNER, T.name, T.TYPE, T.line, TRIM(T.TEXT) TEXT
   FROM ALL_SOURCE T
  WHERE UPPER(T.TEXT) LIKE '%FROM FACT_GOODS_SALES%'
  ORDER BY TRIM(T.TEXT);
+ 
+select * from oper_product_daily_report a where a.posting_date_key=20170721;
  

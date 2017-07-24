@@ -1,0 +1,27 @@
+--无品牌商品的订购人数排名
+SELECT D.MATDL,
+       D.MATDLT,
+       D.BRAND_NAME,
+       D.ITEM_CODE,
+       D.GOODS_NAME,
+       C.NUM_OF_MEMBER,
+       C.ORDER_QTY,
+       C.ORDER_AMOUNT,
+       DECODE(C.ORDER_QTY, 0, 0, C.ORDER_AMOUNT / C.ORDER_QTY) UNIT_PRICE
+  FROM (SELECT A.GOODS_COMMON_KEY,
+               SUM(A.ORDER_AMOUNT) ORDER_AMOUNT,
+               SUM(A.NUMS) ORDER_QTY,
+               COUNT(DISTINCT A.MEMBER_KEY) NUM_OF_MEMBER
+          FROM FACT_GOODS_SALES A
+         WHERE A.POSTING_DATE_KEY BETWEEN 20160101 AND 20170719
+         GROUP BY A.GOODS_COMMON_KEY) C,
+       (SELECT DISTINCT B.GOODS_COMMONID,
+                        B.ITEM_CODE,
+                        B.GOODS_NAME,
+                        B.MATDL,
+                        B.MATDLT,
+                        NVL(B.BRAND_NAME, '无品牌') BRAND_NAME
+          FROM DIM_GOOD B) D
+ WHERE C.GOODS_COMMON_KEY = D.ITEM_CODE
+   AND D.BRAND_NAME = '无品牌'
+ ORDER BY C.NUM_OF_MEMBER DESC;
