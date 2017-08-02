@@ -1,0 +1,13 @@
+/*
+统一设计一个会员短信池，不同发送短信的项目都统一往短信池插入需要发送的记录。需要注明每条记录是由哪个项目写入的。
+*/
+--OPER_MEMBER_SMS_POOL
+/*
+row_wid
+project_no
+project_desc
+member_key
+w_insert_dt
+w_update_dt
+is_send
+*/

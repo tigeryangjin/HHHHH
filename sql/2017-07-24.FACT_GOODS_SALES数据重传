@@ -1,0 +1,48 @@
+--1.
+begin
+  -- Call the procedure
+  createordergoods(20170721);
+end;
+/
+begin
+  -- Call the procedure
+  createordergoods(20170722);
+end;
+/
+begin
+  -- Call the procedure
+  createordergoods(20170723);
+end;
+/
+--2.
+begin
+  -- Call the procedure
+  yangjin_pkg.oper_product_daily_rpt(20170721);
+end;
+/
+begin
+  -- Call the procedure
+  yangjin_pkg.oper_product_daily_rpt(20170722);
+end;
+/
+begin
+  -- Call the procedure
+  yangjin_pkg.oper_product_daily_rpt(20170723);
+end;
+/
+--3.
+--24/10436
+select SUM(A.TOTAL_ORDER_QTY) TOTAL_ORDER_QTY,
+       SUM(A.TOTAL_ORDER_AMOUNT) TOTAL_ORDER_AMOUNT
+  from oper_product_daily_report a
+ where a.posting_date_key = 20170721
+   and a.item_code = 217469
+   AND A.SALES_SOURCE_SECOND_NAME = 'ÐÂÃ½ÌåÎ¢ÐÅ£¨2.0£©';
+--4.
+select a.sales_source_second_name,
+       SUM(A.TOTAL_ORDER_QTY) TOTAL_ORDER_QTY,
+       SUM(A.TOTAL_ORDER_AMOUNT) TOTAL_ORDER_AMOUNT
+  from oper_product_daily_report a
+ where a.posting_date_key = 20170721
+ group by a.sales_source_second_name
+ order by a.sales_source_second_name;

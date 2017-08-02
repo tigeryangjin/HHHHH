@@ -1,67 +1,37 @@
---fact_goods_sales表2017-07-21，2017-07-22二天的数据重复了。
-SELECT t.order_key, t.goods_common_key, t.posting_date_key, count(1)
-  FROM FACT_GOODS_SALES T
- WHERE T.POSTING_DATE_KEY = 20170721
- group by t.order_key, t.goods_common_key, t.posting_date_key;
+--20170721,20170722,20170723 FACT_GOODS_SALES,FACT_GOODS_SALES_REVERSE都翻倍了
+--1.
+begin
+  -- Call the procedure
+  createordergoods(20170721);
+end;
+/
+begin
+  -- Call the procedure
+  createordergoods(20170722);
+end;
+/
+begin
+  -- Call the procedure
+  createordergoods(20170723);
+end;
+/
 
-SELECT t.rowid, t.*
-  FROM FACT_GOODS_SALES T
- WHERE T.POSTING_DATE_KEY = 20170606
-   AND T.ORDER_KEY = 5202310872
-   AND T.GOODS_COMMON_KEY = 211353;
-
-select * from fact_order t where t.order_obj_id = 5202305277;
-
---检查odshappigo.ods_order是否重复了。
-select /*+parallel(16)*/
- *
-  from odshappigo.ods_order t
- where t.crmpostdat = 20170606
-   and t.ZTCRMC04 = 5202305277
-   and t.zmater2 = 212258;
-
---删除fact_goods_sales重复记录
---备份
-drop table fact_goods_sales_bak_20170724;
-create table fact_goods_sales_bak_20170724 as
-  select *
-    from fact_goods_sales t
-   where t.posting_date_key in (20170721, 20170722);
-
-drop table fact_goods_sales_bak_20170724b;
-create table fact_goods_sales_bak_20170724b as
-  select distinct * from fact_goods_sales_bak_20170724 t;
-
---删除
-/*delete from fact_goods_sales_bak_20170621 a
- where a.POSTING_DATE_KEY between 20170606 and 20170607
-   and (a.posting_date_key, a.order_key, a.goods_common_key) in
-       (select posting_date_key, order_key, goods_common_key
-          from fact_goods_sales_bak_20170621
-         where POSTING_DATE_KEY between 20170606 and 20170607
-         group by posting_date_key, order_key, goods_common_key
-        having count(*) > 1)
-   and rowid not in (select min(rowid)
-                       from fact_goods_sales_bak_20170621
-                      where POSTING_DATE_KEY between 20170606 and 20170607
-                      group by posting_date_key, order_key, goods_common_key
-                     having count(*) > 1);*/
-delete fact_goods_sales a
- where a.posting_date_key between 20170721 and 20170722;
-
-insert into fact_goods_sales
-  select * from fact_goods_sales_bak_20170724b;
-
-select a.posting_date_key, count(1)
-  from fact_goods_sales_bak_20170724 a
- group by a.posting_date_key;
-
-select a.posting_date_key, count(1)
-  from fact_goods_sales_bak_20170724b a
- group by a.posting_date_key;
-
-
---oper
+begin
+  -- Call the procedure
+  PROCESSUPDATEORDER(20170721);
+end;
+/
+begin
+  -- Call the procedure
+  PROCESSUPDATEORDER(20170722);
+end;
+/
+begin
+  -- Call the procedure
+  PROCESSUPDATEORDER(20170723);
+end;
+/
+--2.
 begin
   -- Call the procedure
   yangjin_pkg.oper_product_daily_rpt(20170721);
@@ -71,11 +41,83 @@ begin
   -- Call the procedure
   yangjin_pkg.oper_product_daily_rpt(20170722);
 end;
+/
+begin
+  -- Call the procedure
+  yangjin_pkg.oper_product_daily_rpt(20170723);
+end;
+/
+--3.
+begin
+  -- Call the procedure
+  createfactordergoodsreverse(20170721);
+end;
+/
+begin
+  -- Call the procedure
+  createfactordergoodsreverse(20170722);
+end;
+/
+begin
+  -- Call the procedure
+  createfactordergoodsreverse(20170723);
+end;
+/
 
-SELECT T.OWNER, T.name, T.TYPE, T.line, TRIM(T.TEXT) TEXT
-  FROM ALL_SOURCE T
- WHERE UPPER(T.TEXT) LIKE '%FROM FACT_GOODS_SALES%'
- ORDER BY TRIM(T.TEXT);
+--4.
+--24/10436
+select SUM(A.TOTAL_ORDER_QTY) TOTAL_ORDER_QTY,
+       SUM(A.TOTAL_ORDER_AMOUNT) TOTAL_ORDER_AMOUNT
+  from oper_product_daily_report a
+ where a.posting_date_key = 20170721
+   and a.item_code = 217469
+   AND A.SALES_SOURCE_SECOND_NAME = '新媒体微信（2.0）';
+--5.
+select a.sales_source_second_name,
+       SUM(A.TOTAL_ORDER_QTY) TOTAL_ORDER_QTY,
+       SUM(A.TOTAL_ORDER_AMOUNT) TOTAL_ORDER_AMOUNT,
+			 SUM(A.NET_ORDER_AMOUNT) NET_ORDER_AMOUNT,
+			 sum(a.effective_order_amount) effective_order_amount
+  from oper_product_daily_report a
+ where a.posting_date_key = 20170726
+ group by a.sales_source_second_name
+ order by a.sales_source_second_name;
  
-select * from oper_product_daily_report a where a.posting_date_key=20170721;
+--TMP
+--20170726,A20021,217428,excel有取消的记录，但是数据库没有记录。
+SELECT *
+  FROM oper_product_daily_report a
+ where a.posting_date_key = 20170726
+   AND A.SALES_SOURCE_SECOND_NAME = '新媒体微信（2.0）'
+   AND A.ITEM_CODE = 217428;
+	 
+SELECT *
+  FROM FACT_GOODS_SALES_REVERSE A
+ WHERE A.POSTING_DATE_KEY = 20170726
+   AND A.SALES_SOURCE_SECOND_KEY = 20021
+   AND A.GOODS_COMMON_KEY = 217428;
+	 
+SELECT *
+  FROM FACT_GOODS_SALES A
+ WHERE A.POSTING_DATE_KEY = 20170726
+   AND A.SALES_SOURCE_SECOND_KEY = 20021
+   AND A.GOODS_COMMON_KEY = 217428;
+	 
+SELECT /*+PARALLEL(16)*/
+ *
+  FROM ODSHAPPIGO.ODS_ORDER A
+ WHERE A.crmpostdat = 20170726
+   AND A.zkunnr_l2 = 'A20021'
+   AND A.zmater2 = 217428;
+
+SELECT t.order_key, t.goods_common_key, t.posting_date_key, count(1)
+  FROM FACT_GOODS_SALES_REVERSE T
+ WHERE T.POSTING_DATE_KEY = 20170721
+ group by t.order_key, t.goods_common_key, t.posting_date_key;
  
+SELECT * FROM ALL_SOURCE A WHERE UPPER(A.TEXT) LIKE '%INSERT INTO%FACT_GOODS_SALES%';
+
+SELECT * FROM W_ETL_LOG A WHERE A.PROC_NAME='processupdateorder' ORDER BY A.START_TIME DESC;
+SELECT * FROM W_ETL_LOG A WHERE A.PROC_NAME='createfactordergoodsreverse' ORDER BY A.START_TIME DESC;
+
+SELECT 115542.7-130698.7 FROM DUAL;

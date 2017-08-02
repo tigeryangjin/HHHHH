@@ -1,0 +1,41 @@
+/*
+1、针对每日新增绑定的会员等级折扣商品，自动匹配出近1月内加车和浏览的纪录，针对此部分会员发送短信；
+2、7日内进行用户剔重，不做重复发送。
+3、短信于隔日9点发送。    DIM_MBLEVEL_DCGOOD
+*/
+--会员折扣商品
+SELECT C.GOODS_COMMONID
+  FROM DIM_MBLEVEL_DCGOOD C
+ WHERE TRUNC(C.START_TIME) = TRUNC(SYSDATE - 1);
+
+--近1个月浏览加车member_key
+--OPER_MEMBER_MBLEVEL_DCGOOD_RPT
+
+INSERT INTO OPER_MEMBER_MBLEVEL_DCGOOD_RPT E
+  SELECT DISTINCT TRUNC(SYSDATE - 1) POST_DATE_KEY, D.MEMBER_KEY
+    FROM ( /*浏览*/
+          SELECT DISTINCT A.MEMBER_KEY
+            FROM FACT_PAGE_VIEW A
+           WHERE A.VISIT_DATE_KEY BETWEEN
+                 TO_CHAR(TRUNC(SYSDATE - 31), 'YYYYMMDD') AND
+                 TO_CHAR(TRUNC(SYSDATE - 1), 'YYYYMMDD')
+             AND A.PAGE_NAME IN ('good', 'Good')
+             AND A.PAGE_VALUE IN
+                 (SELECT TO_CHAR(C.GOODS_COMMONID)
+                    FROM DIM_MBLEVEL_DCGOOD C
+                   WHERE TRUNC(C.START_TIME) = TRUNC(SYSDATE - 1))
+          UNION ALL
+          /*加车*/
+          SELECT DISTINCT B.MEMBER_KEY
+            FROM FACT_SHOPPINGCAR B
+           WHERE B.CREATE_DATE BETWEEN TRUNC(SYSDATE - 31) AND
+                 TRUNC(SYSDATE - 1)
+             AND B.SCGID IN
+                 (SELECT C.GOODS_COMMONID
+                    FROM DIM_MBLEVEL_DCGOOD C
+                   WHERE TRUNC(C.START_TIME) = TRUNC(SYSDATE - 1))) D
+   WHERE NOT EXISTS (SELECT 1
+            FROM (SELECT *
+                    FROM OPER_MEMBER_MBLEVEL_DCGOOD_RPT F
+                   WHERE F.POST_DATE_KEY >= TRUNC(SYSDATE - 8)) G
+           WHERE D.MEMBER_KEY = G.MEMBER_KEY);
