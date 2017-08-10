@@ -1,0 +1,450 @@
+/*
+会员猜你喜欢分二种方式：
+1.喜欢的商品，2.喜欢的品类（小类）
+共用底层事实表（浏览、收藏、加车、订购）
+权重比率：浏览-1、收藏-3、加车-5、订购-15
+喜欢的商品：浏览+收藏+加车-订购
+喜欢的小类：浏览+收藏+加车+订购
+OPER_MEMBER_LIKE_BASE
+OPER_MEMBER_LIKE_GOOD
+OPER_MEMBER_LIKE_MATXL
+*/
+
+--1.
+--1.1.浏览数据 
+SELECT P.VISIT_DATE_KEY POSTING_DATE_KEY,
+       P.MEMBER_KEY,
+       G.ITEM_CODE,
+       P.PV_FREQ
+  FROM (SELECT VISIT_DATE_KEY, MEMBER_KEY, PAGE_VALUE, COUNT(1) AS PV_FREQ
+          FROM FACT_PAGE_VIEW@DW_DATALINK
+         WHERE VISIT_DATE_KEY = &IN_POSTING_DATE_KEY
+           AND MEMBER_KEY != 0
+           AND PAGE_NAME IN ('Good', 'good')
+           AND PAGE_VALUE =
+               TRANSLATE(PAGE_VALUE,
+                         '0' || TRANSLATE(PAGE_VALUE, '#0123456789', '#'),
+                         '0')
+         GROUP BY VISIT_DATE_KEY, MEMBER_KEY, PAGE_VALUE) P,
+       DIM_GOOD@DW_DATALINK G
+ WHERE P.PAGE_VALUE = G.GOODS_COMMONID(+)
+   AND G.CURRENT_FLG = 'Y';
+
+--1.2.订购数据
+SELECT B.POSTING_DATE_KEY,
+       B.MEMBER_KEY,
+       B.ITEM_CODE,
+       SUM(B.QTY) ORDER_NET_QTY
+  FROM (SELECT A.POSTING_DATE_KEY,
+               A.MEMBER_KEY,
+               A.ORDER_STATE,
+               A.GOODS_COMMON_KEY ITEM_CODE,
+               CASE
+                 WHEN A.ORDER_STATE = 1 THEN
+                  A.NUMS
+                 WHEN A.ORDER_STATE = 0 THEN
+                  -A.NUMS
+               END QTY
+          FROM FACT_GOODS_SALES@DW_DATALINK A
+         WHERE A.POSTING_DATE_KEY = &IN_POSTING_DATE_KEY) B
+ GROUP BY B.POSTING_DATE_KEY, B.MEMBER_KEY, B.ITEM_CODE;
+
+--1.3.加购物车
+SELECT A.CREATE_DATE_KEY POSTING_DATE_KEY,
+       B.ITEM_CODE,
+       A.MEMBER_KEY,
+       A.CAR_FREQ
+  FROM (SELECT CREATE_DATE_KEY,
+               SCGID GOODS_COMMON_KEY,
+               MEMBER_KEY,
+               SUM(SCGQ) CAR_FREQ
+          FROM FACT_SHOPPINGCAR@DW_DATALINK
+         WHERE CREATE_DATE_KEY = &IN_POSTING_DATE_KEY
+           AND MEMBER_KEY != 0
+           AND SCGQ > 0
+         GROUP BY CREATE_DATE_KEY, SCGID, MEMBER_KEY) A,
+       DIM_GOOD@DW_DATALINK B
+ WHERE A.GOODS_COMMON_KEY = B.GOODS_COMMONID
+   AND B.CURRENT_FLG = 'Y';
+
+--1.4.收藏
+SELECT F.FAV_TIME POSTING_DATE_KEY,
+       G.ITEM_CODE,
+       M.MEMBER_CRMBP AS MEMBER_KEY,
+       COUNT(1) AS FAV_FREQ
+  FROM FACT_FAVORITES@DW_DATALINK F,
+       DIM_EC_GOOD@DW_DATALINK    G,
+       FACT_ECMEMBER@DW_DATALINK  M
+ WHERE F.FAV_ID = G.GOODS_COMMONID
+   AND F.MEMBER_ID = M.MEMBER_ID
+   AND F.FAV_TIME = &IN_POSTING_DATE_KEY
+   AND F.FAV_TYPE = 'goods'
+   AND M.MEMBER_CRMBP > 0
+ GROUP BY F.FAV_TIME, G.ITEM_CODE, M.MEMBER_CRMBP;
+
+--1.5.合并
+SELECT F.POSTING_DATE_KEY,
+       F.MEMBER_KEY,
+       F.ITEM_CODE,
+       G.MATXL,
+       F.PV_FREQ,
+       F.FAV_FREQ,
+       F.CAR_FREQ,
+       F.ORDER_NET_QTY
+  FROM (WITH PV AS
+       /*浏览*/ (SELECT P.VISIT_DATE_KEY POSTING_DATE_KEY,
+                      P.MEMBER_KEY,
+                      G.ITEM_CODE,
+                      P.PV_FREQ
+                 FROM (SELECT VISIT_DATE_KEY,
+                              MEMBER_KEY,
+                              PAGE_VALUE,
+                              COUNT(1) AS PV_FREQ
+                         FROM FACT_PAGE_VIEW@DW_DATALINK
+                        WHERE VISIT_DATE_KEY = &IN_POSTING_DATE_KEY
+                          AND MEMBER_KEY != 0
+                          AND PAGE_NAME IN ('Good', 'good')
+                          AND PAGE_VALUE =
+                              TRANSLATE(PAGE_VALUE,
+                                        '0' || TRANSLATE(PAGE_VALUE,
+                                                         '#0123456789',
+                                                         '#'),
+                                        '0')
+                        GROUP BY VISIT_DATE_KEY, MEMBER_KEY, PAGE_VALUE) P,
+                      DIM_GOOD@DW_DATALINK G
+                WHERE P.PAGE_VALUE = G.GOODS_COMMONID(+)
+                  AND G.CURRENT_FLG = 'Y'), FAV AS
+       /*收藏*/ (SELECT F.FAV_TIME POSTING_DATE_KEY,
+                      G.ITEM_CODE,
+                      M.MEMBER_CRMBP AS MEMBER_KEY,
+                      COUNT(1) AS FAV_FREQ
+                 FROM FACT_FAVORITES@DW_DATALINK F,
+                      DIM_EC_GOOD@DW_DATALINK    G,
+                      FACT_ECMEMBER@DW_DATALINK  M
+                WHERE F.FAV_ID = G.GOODS_COMMONID
+                  AND F.MEMBER_ID = M.MEMBER_ID
+                  AND F.FAV_TIME = &IN_POSTING_DATE_KEY
+                  AND F.FAV_TYPE = 'goods'
+                  AND M.MEMBER_CRMBP > 0
+                GROUP BY F.FAV_TIME, G.ITEM_CODE, M.MEMBER_CRMBP), CAR AS
+       /*加购物车*/ (SELECT A.CREATE_DATE_KEY POSTING_DATE_KEY,
+                        B.ITEM_CODE,
+                        A.MEMBER_KEY,
+                        A.CAR_FREQ
+                   FROM (SELECT CREATE_DATE_KEY,
+                                SCGID GOODS_COMMON_KEY,
+                                MEMBER_KEY,
+                                SUM(SCGQ) CAR_FREQ
+                           FROM FACT_SHOPPINGCAR@DW_DATALINK
+                          WHERE CREATE_DATE_KEY = &IN_POSTING_DATE_KEY
+                            AND MEMBER_KEY != 0
+                            AND SCGQ > 0
+                          GROUP BY CREATE_DATE_KEY, SCGID, MEMBER_KEY) A,
+                        DIM_GOOD@DW_DATALINK B
+                  WHERE A.GOODS_COMMON_KEY = B.GOODS_COMMONID
+                    AND B.CURRENT_FLG = 'Y'), ORD AS
+       /*订购*/ (SELECT B.POSTING_DATE_KEY,
+                      B.MEMBER_KEY,
+                      B.ITEM_CODE,
+                      SUM(B.QTY) ORDER_NET_QTY
+                 FROM (SELECT A.POSTING_DATE_KEY,
+                              A.MEMBER_KEY,
+                              A.ORDER_STATE,
+                              A.GOODS_COMMON_KEY ITEM_CODE,
+                              CASE
+                                WHEN A.ORDER_STATE = 1 THEN
+                                 A.NUMS
+                                WHEN A.ORDER_STATE = 0 THEN
+                                 -A.NUMS
+                              END QTY
+                         FROM FACT_GOODS_SALES@DW_DATALINK A
+                        WHERE A.POSTING_DATE_KEY = &IN_POSTING_DATE_KEY) B
+                GROUP BY B.POSTING_DATE_KEY, B.MEMBER_KEY, B.ITEM_CODE)
+         SELECT NVL(NVL(NVL(PV.POSTING_DATE_KEY, FAV.POSTING_DATE_KEY),
+                        CAR.POSTING_DATE_KEY),
+                    ORD.POSTING_DATE_KEY) POSTING_DATE_KEY,
+                NVL(NVL(NVL(PV.MEMBER_KEY, FAV.MEMBER_KEY), CAR.MEMBER_KEY),
+                    ORD.MEMBER_KEY) MEMBER_KEY,
+                NVL(NVL(NVL(PV.ITEM_CODE, FAV.ITEM_CODE), CAR.ITEM_CODE),
+                    ORD.ITEM_CODE) ITEM_CODE,
+                NVL(PV.PV_FREQ, 0) PV_FREQ,
+                NVL(FAV.FAV_FREQ, 0) FAV_FREQ,
+                NVL(CAR.CAR_FREQ, 0) CAR_FREQ,
+                NVL(ORD.ORDER_NET_QTY, 0) ORDER_NET_QTY
+           FROM PV
+           FULL OUTER JOIN FAV
+             ON PV.POSTING_DATE_KEY = FAV.POSTING_DATE_KEY
+            AND PV.MEMBER_KEY = FAV.MEMBER_KEY
+            AND PV.ITEM_CODE = FAV.ITEM_CODE
+           FULL OUTER JOIN CAR
+             ON PV.POSTING_DATE_KEY = CAR.POSTING_DATE_KEY
+            AND PV.MEMBER_KEY = CAR.MEMBER_KEY
+            AND PV.ITEM_CODE = CAR.ITEM_CODE
+           FULL OUTER JOIN ORD
+             ON PV.POSTING_DATE_KEY = ORD.POSTING_DATE_KEY
+            AND PV.MEMBER_KEY = ORD.MEMBER_KEY
+            AND PV.ITEM_CODE = ORD.ITEM_CODE) F, DIM_GOOD@DW_DATALINK G
+          WHERE F.ITEM_CODE = G.ITEM_CODE(+)
+            AND G.CURRENT_FLG = 'Y';
+
+
+--2.
+drop sequence OPER_MEMBER_LIKE_BASE_SEQ;
+create sequence OPER_MEMBER_LIKE_BASE_SEQ minvalue 1 maxvalue 9999999999999999999999999999 start
+  with 1 increment by 1 cache 20;
+
+-- Create sequence 
+drop sequence OPER_MEMBER_LIKE_ITEM_SEQ;
+create sequence OPER_MEMBER_LIKE_ITEM_SEQ minvalue 1 maxvalue 9999999999999999999999999999 start
+  with 1 increment by 1 cache 20;
+
+drop sequence OPER_MEMBER_LIKE_MATXL_SEQ;
+create sequence OPER_MEMBER_LIKE_MATXL_SEQ minvalue 1 maxvalue 9999999999999999999999999999 start
+  with 1 increment by 1 cache 20;
+
+--3.
+TRUNCATE TABLE OPER_MEMBER_LIKE_BASE;
+--重新刷新历史数据
+/*DECLARE
+  IN_DATE_INT NUMBER(8);
+  IN_DATE     DATE;
+  BEGIN_DATE  DATE := DATE '2017-07-30';
+  END_DATE    DATE := DATE '2017-08-07';
+BEGIN
+  IN_DATE := BEGIN_DATE;
+  WHILE IN_DATE <= END_DATE LOOP
+    IN_DATE_INT := TO_CHAR(IN_DATE, 'YYYYMMDD');
+    OPER_MEMBER_LIKE_PKG.OPER_MEMBER_LIKE_BASE_PROC(IN_DATE_INT);
+    IN_DATE := IN_DATE + 1;
+  END LOOP;
+END;
+/*/
+
+--4.
+--4.1最近30天商品
+SELECT * FROM OPER_MEMBER_LIKE_ITEM A ORDER BY TOTAL_WEIGHT DESC;
+
+INSERT INTO OPER_MEMBER_LIKE_ITEM
+  (ROW_WID,
+   POSTING_DATE_KEY,
+   MEMBER_KEY,
+   ITEM_CODE,
+   MATXL,
+   PV_FREQ,
+   FAV_FREQ,
+   CAR_FREQ,
+   ORDER_NET_QTY,
+   PV_WEIGHT,
+   FAV_WEIGHT,
+   CAR_WEIGHT,
+   ORDER_WEIGHT,
+   TOTAL_WEIGHT,
+   W_INSERT_DT,
+   W_UPDATE_DT)
+  SELECT OPER_MEMBER_LIKE_ITEM_SEQ.NEXTVAL,
+         B.POSTING_DATE_KEY,
+         B.MEMBER_KEY,
+         B.ITEM_CODE,
+         B.MATXL,
+         B.PV_FREQ,
+         B.FAV_FREQ,
+         B.CAR_FREQ,
+         B.ORDER_NET_QTY,
+         B.PV_WEIGHT,
+         B.FAV_WEIGHT,
+         B.CAR_WEIGHT,
+         B.ORDER_WEIGHT,
+         B.TOTAL_WEIGHT,
+         SYSDATE,
+         SYSDATE
+    FROM (SELECT IN_POSTING_DATE_KEY POSTING_DATE_KEY,
+                 A.MEMBER_KEY,
+                 A.ITEM_CODE,
+                 A.MATXL,
+                 SUM(A.PV_FREQ) PV_FREQ,
+                 SUM(A.FAV_FREQ) FAV_FREQ,
+                 SUM(A.CAR_FREQ) CAR_FREQ,
+                 SUM(A.ORDER_NET_QTY) ORDER_NET_QTY,
+                 SUM(A.PV_WEIGHT) PV_WEIGHT,
+                 SUM(A.FAV_WEIGHT) FAV_WEIGHT,
+                 SUM(A.CAR_WEIGHT) CAR_WEIGHT,
+                 SUM(A.ORDER_WEIGHT) ORDER_WEIGHT,
+                 SUM(A.PV_WEIGHT + A.FAV_WEIGHT + A.CAR_WEIGHT -
+                     A.ORDER_WEIGHT) TOTAL_WEIGHT
+            FROM OPER_MEMBER_LIKE_BASE A
+           WHERE A.MEMBER_KEY = VAR_ARRAY(I).MEMBER_KEY
+             AND A.POSTING_DATE_KEY BETWEEN MIN_DAY AND MAX_DAY
+           GROUP BY A.MEMBER_KEY, A.ITEM_CODE, A.MATXL) B;
+
+SELECT B.MEMBER_KEY, B.ITEM_CODE, B.ITEM_WEIGHT, B.RANKING
+  FROM (SELECT A.MEMBER_KEY,
+               A.ITEM_CODE,
+               SUM(A.PV_WEIGHT + A.FAV_WEIGHT + A.CAR_WEIGHT -
+                   A.ORDER_WEIGHT) ITEM_WEIGHT,
+               RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY SUM(A.PV_WEIGHT + A.FAV_WEIGHT + A.CAR_WEIGHT - A.ORDER_WEIGHT) DESC) RANKING,
+               COUNT(A.ROW_WID) ROW_COUNT
+          FROM OPER_MEMBER_LIKE_BASE A
+         WHERE A.POSTING_DATE_KEY = TO_CHAR(TRUNC(SYSDATE - 1), 'YYYYMMDD')
+         GROUP BY A.MEMBER_KEY, A.ITEM_CODE) B
+ WHERE B.RANKING <= 5
+ ORDER BY B.ITEM_WEIGHT DESC;
+
+--4.2最近30天品类
+SELECT * FROM OPER_MEMBER_LIKE_MATXL A ORDER BY TOTAL_MATXL_WEIGHT DESC;
+
+SELECT * FROM OPER_MEMBER_LIKE_ITEM_TMP_A;
+SELECT * FROM OPER_MEMBER_LIKE_ITEM;
+SELECT * FROM OPER_MEMBER_LIKE_MATXL_TMP_A;
+SELECT * FROM OPER_MEMBER_LIKE_MATXL ORDER BY ROW_WID;
+
+
+
+INSERT INTO OPER_MEMBER_LIKE_ITEM
+  (ROW_WID,
+   POSTING_DATE_KEY,
+   MEMBER_KEY,
+   ITEM_CODE,
+   MATXL,
+   PV_FREQ,
+   FAV_FREQ,
+   CAR_FREQ,
+   ORDER_NET_QTY,
+   PV_WEIGHT,
+   FAV_WEIGHT,
+   CAR_WEIGHT,
+   ORDER_WEIGHT,
+   TOTAL_ITEM_WEIGHT,
+   ITEM_RANKING,
+   W_INSERT_DT,
+   W_UPDATE_DT)
+  SELECT OPER_MEMBER_LIKE_ITEM_SEQ.NEXTVAL,
+         C.POSTING_DATE_KEY,
+         C.MEMBER_KEY,
+         C.ITEM_CODE,
+         C.MATXL,
+         C.PV_FREQ,
+         C.FAV_FREQ,
+         C.CAR_FREQ,
+         C.ORDER_NET_QTY,
+         C.PV_WEIGHT,
+         C.FAV_WEIGHT,
+         C.CAR_WEIGHT,
+         C.ORDER_WEIGHT,
+         C.TOTAL_ITEM_WEIGHT,
+         C.ITEM_RANKING,
+         C.W_INSERT_DT,
+         C.W_UPDATE_DT
+    FROM (SELECT B.POSTING_DATE_KEY,
+                 B.MEMBER_KEY,
+                 B.ITEM_CODE,
+                 B.MATXL,
+                 B.PV_FREQ,
+                 B.FAV_FREQ,
+                 B.CAR_FREQ,
+                 B.ORDER_NET_QTY,
+                 B.PV_WEIGHT,
+                 B.FAV_WEIGHT,
+                 B.CAR_WEIGHT,
+                 B.ORDER_WEIGHT,
+                 B.TOTAL_ITEM_WEIGHT,
+                 B.ITEM_RANKING,
+                 SYSDATE             W_INSERT_DT,
+                 SYSDATE             W_UPDATE_DT
+            FROM (SELECT A.POSTING_DATE_KEY,
+                         A.MEMBER_KEY,
+                         A.ITEM_CODE,
+                         A.MATXL,
+                         A.PV_FREQ,
+                         A.FAV_FREQ,
+                         A.CAR_FREQ,
+                         A.ORDER_NET_QTY,
+                         A.PV_WEIGHT,
+                         A.FAV_WEIGHT,
+                         A.CAR_WEIGHT,
+                         A.ORDER_WEIGHT,
+                         A.TOTAL_ITEM_WEIGHT,
+                         RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.TOTAL_ITEM_WEIGHT DESC) ITEM_RANKING
+                    FROM OPER_MEMBER_LIKE_ITEM_TMP_A A
+                   WHERE A.POSTING_DATE_KEY = 20170808) B
+           WHERE B.ITEM_RANKING <= 10
+           ORDER BY B.MEMBER_KEY, B.ITEM_RANKING) C;
+
+SELECT A.POSTING_DATE_KEY,
+       A.MEMBER_KEY,
+       A.ITEM_CODE,
+       A.MATXL,
+       A.TOTAL_ITEM_WEIGHT,
+       RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.TOTAL_ITEM_WEIGHT DESC) ITEM_RANKING
+  FROM OPER_MEMBER_LIKE_ITEM_TMP_A A
+ WHERE A.MEMBER_KEY = 603000682;
+
+--TMP
+SELECT * FROM OPER_MEMBER_LIKE_BASE A WHERE A.POSTING_DATE_KEY=20170809;
+SELECT * FROM OPER_MEMBER_LIKE_ITEM A WHERE A.POSTING_DATE_KEY=20170809;
+SELECT * FROM OPER_MEMBER_LIKE_MATXL A WHERE A.POSTING_DATE_KEY=20170809;
+
+TRUNCATE TABLE OPER_MEMBER_LIKE_ITEM_TMP_A;
+TRUNCATE TABLE OPER_MEMBER_LIKE_ITEM;
+TRUNCATE TABLE OPER_MEMBER_LIKE_MATXL_TMP_A;
+TRUNCATE TABLE OPER_MEMBER_LIKE_MATXL;
+SELECT A.MEMBER_KEY,
+       A.POSTING_DATE_KEY,
+       RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.POSTING_DATE_KEY DESC) R
+  FROM OPER_MEMBER_LIKE_BASE A
+ WHERE EXISTS (SELECT 1
+          FROM OPER_MEMBER_LIKE_BASE B
+         WHERE A.MEMBER_KEY = B.MEMBER_KEY
+           AND B.POSTING_DATE_KEY = 20170808);
+
+SELECT *
+  FROM (SELECT A.MEMBER_KEY,
+               A.POSTING_DATE_KEY,
+               RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.POSTING_DATE_KEY DESC) R
+          FROM OPER_MEMBER_LIKE_BASE A
+         WHERE EXISTS (SELECT 1
+                  FROM OPER_MEMBER_LIKE_BASE B
+                 WHERE A.ROW_WID = B.ROW_WID
+                   AND B.POSTING_DATE_KEY = 20170808)) C
+ WHERE C.MEMBER_KEY = 603000524;
+
+select *
+  from w_etl_log a
+ where a.proc_name = 'dmopergoodrecommendmember'
+ order by a.start_time desc;
+SELECT A.MEMBER_KEY, A.ITEM_CODE, COUNT(1)
+  FROM OPER_MEMBER_LIKE_BASE A
+ GROUP BY A.MEMBER_KEY, A.ITEM_CODE
+ ORDER BY COUNT(1) DESC;
+SELECT *
+  FROM OPER_MEMBER_LIKE_BASE A
+ WHERE A.MEMBER_KEY = 1501964839
+   AND A.ITEM_CODE = 207951
+ ORDER BY A.POSTING_DATE_KEY;
+SELECT *
+  FROM OPER_MEMBER_LIKE_BASE A
+ WHERE A.MEMBER_KEY = 1501964839
+ ORDER BY A.POSTING_DATE_KEY;
+SELECT COUNT(DISTINCT A.MEMBER_KEY)
+  FROM OPER_MEMBER_LIKE_BASE A
+ WHERE A.POSTING_DATE_KEY >= TO_CHAR(TRUNC(SYSDATE - 31), 'YYYYMMDD');
+SELECT * FROM OPER_MEMBER_LIKE_BASE A WHERE A.MEMBER_KEY = 603000018;
+SELECT A.MEMBER_KEY,
+       A.ITEM_CODE,
+       SUM(A.PV_WEIGHT + A.FAV_WEIGHT + A.CAR_WEIGHT - A.ORDER_WEIGHT) ITEM_WEIGHT,
+       RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY SUM(A.PV_WEIGHT + A.FAV_WEIGHT + A.CAR_WEIGHT - A.ORDER_WEIGHT) DESC) RANKING
+  FROM OPER_MEMBER_LIKE_BASE A
+ WHERE A.POSTING_DATE_KEY >= TO_CHAR(TRUNC(SYSDATE - 31), 'YYYYMMDD')
+   AND A.MEMBER_KEY = 603002097
+ GROUP BY A.MEMBER_KEY, A.ITEM_CODE;
+--61386
+--61386
+SELECT COUNT(1) FROM OPER_MEMBER_LIKE_BASE;
+SELECT * FROM OPER_MEMBER_LIKE_BASE;
+TRUNCATE TABLE OPER_MEMBER_LIKE_BASE;
+SELECT * FROM DIM_EC_GOOD@DW_DATALINK A WHERE A.ITEM_CODE = 224159;
+SELECT A.FAV_TIME, COUNT(1)
+  FROM FACT_FAVORITES@DW_DATALINK A
+ GROUP BY A.FAV_TIME
+ ORDER BY A.FAV_TIME DESC;
+SELECT DISTINCT LENGTH(FAV_ID) FROM FACT_FAVORITES@DW_DATALINK;
+SELECT * FROM FACT_ECMEMBER@DW_DATALINK;

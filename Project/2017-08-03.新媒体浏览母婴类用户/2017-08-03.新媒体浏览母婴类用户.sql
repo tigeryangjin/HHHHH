@@ -1,0 +1,26 @@
+--新媒体渠道浏览过母婴类商品(MATDL=54)的用户（会员BP号）1到7月份 ；
+--tmp table 
+DROP TABLE JIN_TMP;
+CREATE TABLE JIN_TMP AS
+SELECT /*+PARALLEL(16)*/ A.MEMBER_KEY, A.PAGE_VALUE
+  FROM FACT_PAGE_VIEW A
+ WHERE A.VISIT_DATE_KEY BETWEEN 20170101 AND 20170731 /*1到7月份*/
+   AND A.PAGE_NAME IN ('good', 'Good')
+   AND A.MEMBER_KEY <> 0;
+	 
+--	 
+SELECT DISTINCT A.MEMBER_KEY
+  FROM JIN_TMP A
+ WHERE EXISTS (SELECT 1
+          FROM (SELECT C.ITEM_CODE
+                  FROM DIM_GOOD C
+                 WHERE C.MATDL = 54
+                   AND C.CURRENT_FLG = 'Y') B
+         WHERE A.PAGE_VALUE = B.ITEM_CODE)
+   AND A.PAGE_VALUE =
+       TRANSLATE(A.PAGE_VALUE,
+                 '0' || TRANSLATE(A.PAGE_VALUE, '#0123456789', '#'),
+                 '0')
+ ORDER BY 1;
+
+
