@@ -7,7 +7,7 @@ select * from member_tmp for update;
 select count(1) from member_tmp;
 SELECT COUNT(DISTINCT T.MEMBER_KEY)
   FROM FACT_PAGE_VIEW T
- WHERE T.VISIT_DATE_KEY BETWEEN 20170817 AND 20170818
+ WHERE T.VISIT_DATE_KEY BETWEEN 20170818 AND 20170824
    AND EXISTS
  (SELECT 1 FROM member_tmp S WHERE T.MEMBER_KEY = S.MEMBER_KEY);
 
@@ -22,7 +22,7 @@ SELECT COUNT(B.MEMBER_KEY) MEMBER_COUNT, SUM(B.ORDER_AMOUNT) ORDER_AMOUNT
                        T.MEMBER_KEY,
                        T.ORDER_AMOUNT
                   FROM FACT_ORDER T
-                 WHERE T.POSTING_DATE_KEY BETWEEN 20170817 AND 20170818 /*过账日期*/
+                 WHERE T.POSTING_DATE_KEY BETWEEN 20170818 AND 20170824 /*过账日期*/
                    AND T.SALES_SOURCE_KEY = 20 /*新媒体通路*/
                    AND T.ORDER_STATE = 1
                    AND EXISTS

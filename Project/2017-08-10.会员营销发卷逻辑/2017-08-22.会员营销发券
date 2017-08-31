@@ -1,0 +1,36 @@
+select * from oper_mbr_reg_without_order;
+select * from oper_mbr_fitst_order_15days;
+select * from oper_mbr_second_order_20days;
+select * from oper_mbr_third_order_30days;
+select * from oper_mbr_third_order_cal_month;
+select * from oper_mbr_twelve_order_year;
+
+select count(1)
+  from oper_mbr_reg_without_order a
+ where a.record_date_key = 20170821;
+select count(1)
+  from oper_mbr_fitst_order_15days a
+ where a.record_date_key = 20170821;
+select count(1)
+  from oper_mbr_second_order_20days a
+ where a.record_date_key = 20170821;
+select count(1)
+  from oper_mbr_third_order_30days a
+ where a.record_date_key = 20170821;
+select count(1)
+  from oper_mbr_third_order_cal_month a
+ where a.month_key = 201707;
+select count(1)
+  from oper_mbr_twelve_order_year a
+ where a.year_key = 2017
+   and a.month_key = 201708;
+
+-----------------------
+OPER_MBR_REG_WITHOUT_ORDER
+
+SELECT *
+  FROM W_ETL_LOG A
+ WHERE A.PROC_NAME LIKE 'MEMBER_LABEL_PKG.FIRST_ORDER%'
+ ORDER BY A.START_TIME DESC;
+ 
+SELECT * FROM MEMBER_LABEL_LINK_V A WHERE A.m_label_id BETWEEN 42 AND 47 AND A.last_update_date<>A.create_date;

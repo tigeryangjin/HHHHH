@@ -1,0 +1,22 @@
+---
+select (case when  高消费线>PRICE43*1.2 then PRICE43*1.2  else  高消费线  end
+
+)  最高消费,(case when  低消费线<PRICE41*0.8 then PRICE41*0.8  else  低消费线  end
+
+)  低消费线,MATKL,MATKLT from (
+select d.MATKL,d.MATKLT,PRICE43,PRICE41,最贵,商品数,最便宜,中位数,平均值,方差,高消费线,低消费线  from 
+
+(select median(GOODS_PRICE) price41,MATKL   from (
+select GOODS_PRICE,aa.MATKL,aa.MATKLT,medprice from dim_ec_good aa left join (
+select median(GOODS_PRICE) medprice,MATKL,MATKLT from dim_ec_good where STORE_ID=1 and GOODS_PRICE>0
+group by MATKL,MATKLT) bb on   aa.MATKL=bb.MATKL) where GOODS_PRICE<medprice  group by MATKL) a left join 
+
+(select median(GOODS_PRICE) price43,MATKL   from (
+select GOODS_PRICE,aa.MATKL,aa.MATKLT,medprice from dim_ec_good aa left join (
+select median(GOODS_PRICE) medprice,MATKL,MATKLT from dim_ec_good where STORE_ID=1 and GOODS_PRICE>0
+group by MATKL,MATKLT) bb on   aa.MATKL=bb.MATKL) where GOODS_PRICE>medprice  group by MATKL) b on a.MATKL=b.MATKL
+left join 
+((
+select max(GOODS_PRICE) 最贵,count(1) 商品数,min(GOODS_PRICE)  最便宜,median(GOODS_PRICE) 中位数,avg(GOODS_PRICE) 平均值
+,MATKL,MATKLT,stddev(GOODS_PRICE) 方差,avg(GOODS_PRICE)+stddev(GOODS_PRICE) 高消费线,avg(GOODS_PRICE)-stddev(GOODS_PRICE) 低消费线   from dim_ec_good where STORE_ID=1 and GOODS_PRICE>0
+group by MATKL,MATKLT)) d on a.MATKL=d.MATKL)

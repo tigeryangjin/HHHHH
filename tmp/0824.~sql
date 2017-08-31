@@ -1,0 +1,29 @@
+declare
+  TYPE TYPE_ARRAYS IS RECORD(
+    MEMBER_KEY NUMBER(20));
+  TYPE TYPE_ARRAY IS TABLE OF TYPE_ARRAYS INDEX BY BINARY_INTEGER; --类似二维数组 
+  VAR_ARRAY TYPE_ARRAY;
+BEGIN
+  select distinct member_key BULK COLLECT INTO VAR_ARRAY from yj_tmp;
+  FOR I IN 1 .. VAR_ARRAY.COUNT LOOP
+    delete oper_mbr_reg_without_order a
+     where exists (select 1
+              from (select max(a.rowid) row_id
+                      from oper_mbr_reg_without_order a
+                     where a.member_key = VAR_ARRAY(i).member_key
+                     group by a.member_key,
+                              a.register_date_key,
+                              a.thirty_without_order_flag,
+                              a.record_date_key,
+                              a.register_device_key,
+                              a.insert_dt,
+                              a.update_dt,
+                              a.processed
+                    having count(1) > 1) b
+             where a.rowid = b.row_id);
+    commit;
+  END LOOP;
+end;
+/
+
+

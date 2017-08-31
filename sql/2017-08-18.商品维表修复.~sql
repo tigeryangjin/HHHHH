@@ -24,9 +24,11 @@ update dim_good a
 --3.dim_tv_good.goods_common_id is null and dim_good.goods_commonid<> fix
 update dim_tv_good a
    set a.goods_common_id =
-       ()
+       (select from dim_good b
+         where b.goods_commonid <> 0
+           and a.item_code = b.item_code)
  where a.goods_common_id is null;
 
 --4.
-
+SELECT * FROM 
 --5.
