@@ -1,25 +1,49 @@
-DECLARE
-  --按rowid排序的cursor
-  --删除条件是oo=xx，这个需根据实际情况来定
-  CURSOR mycursor IS
-    SELECT /*+ parallel(sls_ld_tmp_tmp 4)*/
-     rowid
-      FROM sls_ld_tmp_tmp
-     WHERE sale_date < date '2017-03-01'
-     ORDER BY rowid;
-  TYPE rowid_table_type IS TABLE OF rowid index by pls_integer;
-  v_rowid rowid_table_type;
-BEGIN
-  OPEN mycursor;
-  LOOP
-    FETCH mycursor BULK COLLECT
-      INTO v_rowid LIMIT 5000; --5000行提交一次
-    EXIT WHEN v_rowid.count = 0;
-    FORALL i IN v_rowid.FIRST .. v_rowid.LAST
-      DELETE /*+ parallel(sls_ld_tmp_tmp 4)*/
-      sls_ld_tmp_tmp
-       WHERE rowid = v_rowid(i);
-    COMMIT;
-  END LOOP;
-  CLOSE mycursor;
-END;
+SELECT *
+  FROM DIM_GOOD A
+ WHERE A.ITEM_CODE IN (223910,
+                       224087,
+                       224226,
+                       224253,
+                       224403,
+                       224441,
+                       224522,
+                       224523,
+                       224559,
+                       224600,
+                       224689,
+                       224794,
+                       225009,
+                       225027,
+                       225029,
+                       225126,
+                       225127,
+                       225133,
+                       225136,
+                       225330,
+                       225513,
+                       226026);
+
+SELECT *
+  from ods_zmaterial a
+ where a.zmater2 in ('000000000000223910',
+                     '000000000000224087',
+                     '000000000000224226',
+                     '000000000000224253',
+                     '000000000000224403',
+                     '000000000000224441',
+                     '000000000000224522',
+                     '000000000000224523',
+                     '000000000000224559',
+                     '000000000000224600',
+                     '000000000000224689',
+                     '000000000000224794',
+                     '000000000000225009',
+                     '000000000000225027',
+                     '000000000000225029',
+                     '000000000000225126',
+                     '000000000000225127',
+                     '000000000000225133',
+                     '000000000000225136',
+                     '000000000000225330',
+                     '000000000000225513',
+                     '000000000000226026');

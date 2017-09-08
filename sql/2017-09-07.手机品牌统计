@@ -1,0 +1,175 @@
+SELECT A.AGENT,
+       CASE
+         WHEN REGEXP_SUBSTR(UPPER(A.AGENT),
+                            'HUAWEI|CHE2-TL00|CHE2-TL00M|CHE2-TL00H|CHE2-UL00|BLN-AL10|VKY-AL00') IN
+              ('HUAWEI',
+               'CHE2-TL00',
+               'CHE2-TL00M',
+               'CHE2-TL00H',
+               'CHE2-UL00',
+               'BLN-AL10',
+               'VKY-AL00') THEN
+          'HUAWEI'
+         WHEN REGEXP_SUBSTR(UPPER(A.AGENT), 'VIVO') = 'VIVO' THEN
+          'VIVO'
+         WHEN REGEXP_SUBSTR(UPPER(A.AGENT), 'IPHONE|IPAD') IN
+              ('IPHONE', 'IPAD') THEN
+          'APPLE'
+         WHEN REGEXP_SUBSTR(UPPER(A.AGENT), 'OPPO|R7PLUSM') IN
+              ('OPPO', 'R7PLUSM') THEN
+          'OPPO'
+         WHEN REGEXP_SUBSTR(UPPER(A.AGENT), 'SM-[A-Z](\d)*(A-Z)*') IN
+              ('SM-A3000',
+               'SM-A3009',
+               'SM-A310',
+               'SM-A5000',
+               'SM-A5009',
+               'SM-A5100',
+               'SM-A5108',
+               'SM-A700',
+               'SM-A7000',
+               'SM-A7009',
+               'SM-A7100',
+               'SM-A7108',
+               'SM-A8000',
+               'SM-A9000',
+               'SM-A9100',
+               'SM-C101',
+               'SM-C1158',
+               'SM-C5000',
+               'SM-C5010',
+               'SM-C7000',
+               'SM-C7010',
+               'SM-C7018',
+               'SM-C9000',
+               'SM-E7000',
+               'SM-E7009',
+               'SM-G1600',
+               'SM-G3502',
+               'SM-G3508',
+               'SM-G3509',
+               'SM-G3559',
+               'SM-G3568',
+               'SM-G3588',
+               'SM-G3589',
+               'SM-G3606',
+               'SM-G3608',
+               'SM-G3609',
+               'SM-G3812',
+               'SM-G3818',
+               'SM-G3819',
+               'SM-G386',
+               'SM-G5108',
+               'SM-G5109',
+               'SM-G530',
+               'SM-G5306',
+               'SM-G5308',
+               'SM-G5309',
+               'SM-G5500',
+               'SM-G5510',
+               'SM-G5520',
+               'SM-G5528',
+               'SM-G570',
+               'SM-G5700',
+               'SM-G6000',
+               'SM-G6100',
+               'SM-G7106',
+               'SM-G7108',
+               'SM-G7109',
+               'SM-G7200',
+               'SM-G7508',
+               'SM-G7509',
+               'SM-G8508',
+               'SM-G900',
+               'SM-G9006',
+               'SM-G9008',
+               'SM-G9009',
+               'SM-G920',
+               'SM-G9200',
+               'SM-G9208',
+               'SM-G9209',
+               'SM-G9250',
+               'SM-G9280',
+               'SM-G9287',
+               'SM-G930',
+               'SM-G9300',
+               'SM-G9308',
+               'SM-G935',
+               'SM-G9350',
+               'SM-G9500',
+               'SM-G9508',
+               'SM-G9550',
+               'SM-J200',
+               'SM-J3109',
+               'SM-J3110',
+               'SM-J3119',
+               'SM-J5008',
+               'SM-J5108',
+               'SM-J7008',
+               'SM-J710',
+               'SM-J7108',
+               'SM-J7109',
+               'SM-N7506',
+               'SM-N7508',
+               'SM-N7509',
+               'SM-N900',
+               'SM-N9002',
+               'SM-N9005',
+               'SM-N9006',
+               'SM-N9007',
+               'SM-N9008',
+               'SM-N9009',
+               'SM-N910',
+               'SM-N9100',
+               'SM-N9106',
+               'SM-N9108',
+               'SM-N9109',
+               'SM-N9150',
+               'SM-N920',
+               'SM-N9200',
+               'SM-N9208',
+               'SM-P600',
+               'SM-T110',
+               'SM-T111',
+               'SM-T2519',
+               'SM-T2556',
+               'SM-T2558',
+               'SM-T310',
+               'SM-T311',
+               'SM-T321',
+               'SM-T331',
+               'SM-T530',
+               'SM-T550',
+               'SM-T700',
+               'SM-T705',
+               'SM-T715',
+               'SM-T800',
+               'SM-W2014',
+               'SM-W2015',
+               'SM-W2016',
+               'SM-W2017') THEN
+          'SAMSUNG'
+         WHEN REGEXP_SUBSTR(UPPER(A.AGENT), 'HTC') = 'HTC' THEN
+          'HTC'
+         WHEN REGEXP_SUBSTR(UPPER(A.AGENT), 'GIONEE') = 'GIONEE' THEN
+          'GIONEE'
+         WHEN REGEXP_SUBSTR(UPPER(A.AGENT), 'ZTE') = 'ZTE' THEN
+          'ZTE'
+         WHEN REGEXP_SUBSTR(UPPER(A.AGENT), 'MI\W') IN ('MI ', 'MI-') THEN
+          'XIAOMI'
+       END BRAND
+  FROM FACT_PAGE_VIEW A
+ WHERE A.VISIT_DATE_KEY = 20170906;
+
+select DISTINCT A.AGENT, REGEXP_SUBSTR(UPPER(A.AGENT), ' LE')
+  FROM FACT_PAGE_VIEW A
+ WHERE A.VISIT_DATE_KEY = 20170906
+   AND REGEXP_SUBSTR(UPPER(A.AGENT), ' LE') IN (' LE')
+ ORDER BY 2;
+
+SELECT B.AGENT, COUNT(B.MEMBER_KEY)
+  FROM (SELECT A.MEMBER_KEY, A.AGENT
+          FROM FACT_PAGE_VIEW A
+         WHERE A.VISIT_DATE_KEY = 20170906) B
+ GROUP BY B.AGENT
+ ORDER BY 2 DESC;

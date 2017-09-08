@@ -1,5 +1,5 @@
 alter table odshappigo.ods_zmaterial enable row movement;
-alter table odshappigo.ods_zmaterial shrink space;
+alter table odshappigo.ods_zmaterial shrink space compact;
 alter table odshappigo.ods_zmaterial disable row movement;
 
 begin

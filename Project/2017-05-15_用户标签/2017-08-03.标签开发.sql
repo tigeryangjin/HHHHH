@@ -317,7 +317,6 @@ when not matched then
      sysdate,
      'yangjin');
 
-
 --重新刷新历史数据
 --jobid:1543
 DECLARE
@@ -335,69 +334,160 @@ BEGIN
 END;
 /
 
-SELECT COUNT(1)
-  FROM MEMBER_LABEL_LINK_V A
- WHERE A.m_label_id BETWEEN 62 AND 68;
+  SELECT COUNT(1)
+    FROM MEMBER_LABEL_LINK_V A
+   WHERE A.m_label_id BETWEEN 62 AND 68;
 
-SELECT * FROM DIM_MEMBER A WHERE A.CH_DATE_KEY=20170829;
-SELECT A.CH_DATE_KEY,COUNT(A.MEMBER_BP) FROM DIM_MEMBER A  WHERE A.MEMBER_LEVEL IS NOT NULL GROUP BY A.CH_DATE_KEY ORDER BY 1;
-SELECT * FROM W_ETL_LOG A WHERE A.PROC_NAME='MEMBER_LABEL_PKG.MEMBER_LEVEL' ORDER BY A.START_TIME DESC;
+SELECT * FROM DIM_MEMBER A WHERE A.CH_DATE_KEY = 20170829;
+SELECT A.CH_DATE_KEY, COUNT(A.MEMBER_BP)
+  FROM DIM_MEMBER A
+ WHERE A.MEMBER_LEVEL IS NOT NULL
+ GROUP BY A.CH_DATE_KEY
+ ORDER BY 1;
+SELECT *
+  FROM W_ETL_LOG A
+ WHERE A.PROC_NAME = 'MEMBER_LABEL_PKG.MEMBER_LEVEL'
+ ORDER BY A.START_TIME DESC;
 SELECT 'CALL MEMBER_LABEL_PKG.MEMBER_LEVEL(' || B.CH_DATE_KEY || ');'
   FROM (SELECT DISTINCT A.CH_DATE_KEY
           FROM DIM_MEMBER A
          WHERE A.MEMBER_LEVEL IS NOT NULL
          ORDER BY 1) B;
 
+--************************************************************************
+--复购周期（REPURCHASE_CYCLE）
+--REPURCHASE_CYCLE_LEVEL_1:-1
+--REPURCHASE_CYCLE_LEVEL_2:0~30
+--REPURCHASE_CYCLE_LEVEL_3:30~60
+--REPURCHASE_CYCLE_LEVEL_4:60~90
+--REPURCHASE_CYCLE_LEVEL_5:>90
+--************************************************************************
+MERGE /*+APPEND*/
+INTO (SELECT MEMBER_KEY,
+             M_LABEL_ID,
+             M_LABEL_TYPE_ID,
+             CREATE_DATE,
+             CREATE_USER_ID,
+             LAST_UPDATE_DATE,
+             LAST_UPDATE_USER_ID
+        FROM MEMBER_LABEL_LINK
+       WHERE M_LABEL_ID IN (102, 103, 104, 105, 106)) T
+USING (SELECT A.MEMBER_BP,
+              MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP),
+              CASE
+                WHEN MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) = -1 THEN
+                 102
+                WHEN MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) >= 0 AND
+                     MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) < 30 THEN
+                 103
+                WHEN MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) >= 30 AND
+                     MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) < 60 THEN
+                 104
+                WHEN MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) >= 60 AND
+                     MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) < 90 THEN
+                 105
+                WHEN MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) >= 90 THEN
+                 106
+              END REPURCHASE_CYCLE_LEVEL
+         FROM DIM_MEMBER A
+        WHERE EXISTS (SELECT 1
+                 FROM FACT_GOODS_SALES B
+                WHERE B.POSTING_DATE_KEY = 20170831
+                  AND A.MEMBER_BP = B.MEMBER_KEY)) S
+ON (T.MEMBER_KEY = S.MEMBER_BP)
+WHEN MATCHED THEN
+  UPDATE
+     SET T.M_LABEL_ID       = S.REPURCHASE_CYCLE_LEVEL,
+         T.LAST_UPDATE_DATE = SYSDATE
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.MEMBER_KEY,
+     T.M_LABEL_ID,
+     T.M_LABEL_TYPE_ID,
+     T.CREATE_DATE,
+     T.CREATE_USER_ID,
+     T.LAST_UPDATE_DATE,
+     T.LAST_UPDATE_USER_ID)
+  VALUES
+    (S.MEMBER_BP,
+     S.REPURCHASE_CYCLE_LEVEL,
+     1,
+     SYSDATE,
+     'yangjin',
+     SYSDATE,
+     'yangjin');
 
---************************************************************************
---复购周期（repurchase_cycle）
---************************************************************************
+--重新刷新历史数据
+--job:1763
 DECLARE
-  IN_INT NUMBER(8) := 1;
+  IN_DATE_INT NUMBER(8);
+  IN_DATE     DATE;
+  BEGIN_DATE  DATE := DATE '2017-09-01';
+  END_DATE    DATE := DATE '2017-09-05';
 BEGIN
-  WHILE IN_INT <= 1000 LOOP
-    INSERT INTO YJ_TMP1
-      SELECT A.MEMBER_BP,
-             MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) REPURCHASE_CYCLE_DAYS
-        FROM DIM_MEMBER A
-       WHERE TO_NUMBER(SUBSTR(A.MEMBER_BP, -3, 3)) = IN_INT;
-    COMMIT;
-    IN_INT := IN_INT + 1;
+  IN_DATE := BEGIN_DATE;
+  WHILE IN_DATE <= END_DATE LOOP
+    IN_DATE_INT := TO_CHAR(IN_DATE, 'YYYYMMDD');
+    MEMBER_LABEL_PKG.MEMBER_REPURCHASE(IN_DATE_INT);
+    IN_DATE := IN_DATE + 1;
   END LOOP;
 END;
 /
 
-INSERT
-  INTO YJ_TMP1
-  SELECT A.MEMBER_BP,
-         MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) REPURCHASE_CYCLE_DAYS
-    FROM DIM_MEMBER A
-   WHERE TO_NUMBER(SUBSTR(A.MEMBER_BP, -3, 3)) = 0;
-COMMIT;
+  SELECT A.CREATE_DATE, COUNT(1)
+    FROM MEMBER_LABEL_LINK A
+   WHERE A.M_LABEL_ID IN (102, 103, 104, 105, 106)
+   GROUP BY A.CREATE_DATE
+   ORDER BY 1;
 
-SELECT DISTINCT TO_NUMBER(SUBSTR(A.MEMBER_BP, -3, 3))
-  FROM YJ_TMP1 A
- ORDER BY TO_NUMBER(SUBSTR(A.MEMBER_BP, -3, 3)) DESC;
+SELECT M_LABEL_ID, COUNT(1)
+  FROM MEMBER_LABEL_LINK
+ WHERE M_LABEL_ID IN (102, 103, 104, 105, 106)
+ GROUP BY M_LABEL_ID;
 
-SELECT A.REPURCHASE_CYCLE_DAYS, COUNT(A.MEMBER_BP)
-  FROM YJ_TMP1 A
- --where a.repurchase_cycle_days <> -1
- GROUP BY A.REPURCHASE_CYCLE_DAYS
- ORDER BY 1;
+SELECT COUNT(DISTINCT B.MEMBER_KEY)
+  FROM FACT_GOODS_SALES B
+ WHERE B.POSTING_DATE_KEY = 20170831;
 
-SELECT * FROM YJ_TMP1 A WHERE A.REPURCHASE_CYCLE_DAYS = 0;
 SELECT A.MEMBER_BP,
        MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) REPURCHASE_CYCLE_DAYS
   FROM DIM_MEMBER A
- WHERE A.MEMBER_BP = 605032002;
+ WHERE MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) < -1;
+
+SELECT A.MEMBER_BP,
+       MEMBER_LABEL_PKG.MEMBER_REPURCHASE_CYCLE_DAYS(A.MEMBER_BP) REPURCHASE_CYCLE_DAYS
+  FROM DIM_MEMBER A
+ WHERE A.MEMBER_BP = 1206699065;
 
 SELECT A.MEMBER_KEY,
        TO_DATE(A.POSTING_DATE_KEY, 'yyyymmdd') POSTING_DATE,
        A.ORDER_KEY
   FROM FACT_ORDER A
  WHERE A.ORDER_STATE = 1
-   AND A.MEMBER_KEY = 604020149
+   AND A.MEMBER_KEY = 1206699065
+   AND A.POSTING_DATE_KEY >= 20160101
  ORDER BY A.ORDER_KEY;
+
+SELECT A.MEMBER_KEY, COUNT(1)
+  FROM FACT_ORDER A
+ WHERE A.ORDER_STATE = 1
+   AND A.POSTING_DATE_KEY >= 20160101
+ GROUP BY A.MEMBER_KEY
+ ORDER BY COUNT(1) DESC;
+
+--************************************************************************
+--支付方式（PAYMENT_METHOD）
+--常用COD(PAYMENT_COD)
+--常用支付宝(PAYMENT_ALIPAY)
+--常用微信支付(PAYMENT_WX)
+--常用银行卡支付(PAYMENT_BANKCARD)
+--在线支付(PAYMENT_ONLINE)
+--无规律(PAYMENT_)
+--大金额COD小金额在线支付()
+--************************************************************************
+SELECT A.CUST_NO MEMBER_KEY, A.PAYMENTCHANNEL
+  FROM FACT_EC_ORDER A
+ WHERE A.ORDER_STATE >= 20;
 
 --tmp
 SELECT * FROM MEMBER_LABEL_HEAD ORDER BY M_LABEL_ID;
@@ -406,100 +496,7 @@ SELECT * FROM MEMBER_LABEL_LINK;
 SELECT * FROM MEMBER_LABEL_LINK_V;
 SELECT * FROM MEMBER_LABEL_LOG;
 
---TV
---4027
-SELECT count(distinct a.item_code) from dim_tv_good a;
-select count(distinct a.item_code)
-  from dim_good a
- where a.group_id = 1000
-   and not exists
- (select 1 from dim_tv_good b where a.item_code = b.item_code);
-
---电商
-select count(distinct a.item_code) from dim_ec_good a;
-select count(distinct a.item_code)
-  from dim_ec_good a
- where a.store_id <> 1;
-select count(distinct a.item_code)
-  from dim_good a
- where a.group_id = 2000
-   and not exists
- (select 1 from dim_ec_good b where a.item_code = b.item_code);
-
-SELECT distinct a.group_id, a.group_name FROM Dim_Good a;
-SELECT COUNT(DISTINCT A.ITEM_CODE)
-  FROM DIM_GOOD A
- WHERE A.GROUP_ID NOT IN (1000, 2000);
-SELECT DISTINCT A.POSTING_DATE_KEY
-  FROM FACT_GOODS_SALES A
- WHERE NOT EXISTS (SELECT 1
-          FROM (select distinct a.item_code
-                  from dim_good a
-                 where a.group_id = 2000
-                   and not exists
-                 (select 1
-                          from dim_ec_good b
-                         where a.item_code = b.item_code)) B
-         WHERE A.GOODS_COMMON_KEY = B.ITEM_CODE);
---5118556662
-SELECT A.MEMBER_KEY,
-       A.ORDER_KEY,
-       A.ORDER_DATE_KEY,
-       A.POSTING_DATE_KEY,
-       A.ORDER_STATE,
-       A.GOODS_COMMON_KEY,
-       A.ORDER_AMOUNT
-  FROM FACT_GOODS_SALES A
- WHERE A.MEMBER_KEY = 1105532572
- ORDER BY 2;
-
-SELECT DISTINCT a.m_label_id, A.m_label_name, A.m_label_desc
-  FROM MEMBER_LABEL_LINK_V A;
-
-SELECT * FROM MEMBER_LABEL_HEAD FOR UPDATE;
-
---1168
-SELECT * FROM MEMBER_LABEL_HEAD ORDER BY M_LABEL_ID FOR UPDATE;
-SELECT A.m_label_id, A.m_label_name, A.m_label_desc, COUNT(1)
-  FROM MEMBER_LABEL_LINK_V A
- WHERE A.m_label_name LIKE 'FIRST_ORDER%'
- GROUP BY A.m_label_id, A.m_label_name, A.m_label_desc
- ORDER BY A.m_label_id;
-SELECT *
-  FROM W_ETL_LOG A
- WHERE A.PROC_NAME LIKE 'MEMBER_LABEL_PKG.FIRST_ORDER%'
- ORDER BY A.START_TIME DESC;
-
-SELECT A.MEMBER_KEY, COUNT(1)
-  FROM MEMBER_LABEL_LINK A
- WHERE A.M_LABEL_ID BETWEEN 42 AND 47
- GROUP BY A.MEMBER_KEY
-HAVING COUNT(1) > 1;
-SELECT *
-  FROM MEMBER_LABEL_LINK_V A
- WHERE A.M_LABEL_ID BETWEEN 42 AND 47
-   AND A.member_key IN (1101196655);
-SELECT * FROM MEMBER_LABEL_LINK_BAK;
-
-DELETE MEMBER_LABEL_LINK A WHERE A.M_LABEL_ID BETWEEN 42 AND 47;
-COMMIT;
-
-SELECT *
-  from member_label_link_v a
- where a.m_label_id between 42 and 47
- order by a.last_update_date desc;
-
-SELECT count(1)
-  from member_label_link_v a
- where a.m_label_id between 42 and 47;
-
-SELECT a.member_key, count(1)
-  from member_label_link_v a
- where a.m_label_id between 42 and 47
- group by a.member_key
-having count(1) > 1;
-
-SELECT *
-  FROM MEMBER_LABEL_LINK_V A
- WHERE A.member_key = 1610734215
-   AND A.m_label_id BETWEEN 42 AND 47;
+SELECT DISTINCT A.PAYMENTCHANNEL
+  FROM FACT_EC_ORDER A
+ WHERE A.ORDER_STATE >= 20
+ ORDER BY 1;

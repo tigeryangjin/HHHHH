@@ -23,7 +23,7 @@ SELECT A.TABLE_NAME,
 
 --
 BEGIN
-  dbms_stats.gather_table_stats('ODSHAPPIGO', 'ODS_ZMATERIAL');
+  dbms_stats.gather_table_stats('ODSHAPPIGO', 'ODS_ORDER');
 END;
 /
 
