@@ -1,0 +1,16 @@
+CREATE TABLE fact_ec_voucher_price (
+   voucher_price_id int(11) NOT NULL AUTO_INCREMENT COMMENT '',
+   voucher_price_describe varchar(255) NOT NULL COMMENT '',
+   voucher_price int(11) NOT NULL COMMENT '',
+   voucher_defaultpoints int(11) NOT NULL DEFAULT '0' COMMENT '',
+   PRIMARY KEY (voucher_price_id)
+ ) ;
+-- Add comments to the columns 
+comment on column fact_ec_voucher_price.voucher_price_id
+  is '代金券面值编号';
+comment on column fact_ec_voucher_price.voucher_price_describe
+  is '代金券描述';
+comment on column fact_ec_voucher_price.voucher_price
+  is '代金券面值';
+comment on column fact_ec_voucher_price.voucher_defaultpoints
+  is '代金劵默认的兑换所需积分可以为0';

@@ -1,0 +1,36 @@
+CREATE TABLE ec_p_mansong_goods (
+   id int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID号',
+   mansong_id int(11) NOT NULL COMMENT '满送ID',
+   goods_id int(11) NOT NULL,
+   item_code int(11) NOT NULL COMMENT '商品ID sku',
+   goods_commonid int(10) DEFAULT NULL COMMENT '商品公共表id',
+   erp_code int(11) NOT NULL COMMENT '商品公共表id',
+   goods_name varchar(200) DEFAULT NULL COMMENT '商品名称',
+   state int(2) DEFAULT '1' COMMENT '是否有效，1:有效0:无效',
+   create_user varchar(200) DEFAULT NULL COMMENT '添加用户',
+   create_time int(11) DEFAULT NULL COMMENT '添加时间',
+   lastupdate_time int(11) DEFAULT NULL COMMENT '修改时间'
+ ) ;
+-- Add comments to the columns 
+comment on column fact_ec_p_mansong_goods.id
+  is 'ID号';
+comment on column fact_ec_p_mansong_goods.mansong_id
+  is '满送ID';
+comment on column fact_ec_p_mansong_goods.goods_id
+  is '';
+comment on column fact_ec_p_mansong_goods.item_code
+  is '商品ID sku';
+comment on column fact_ec_p_mansong_goods.goods_commonid
+  is '商品公共表id';
+comment on column fact_ec_p_mansong_goods.erp_code
+  is '商品公共表id';
+comment on column fact_ec_p_mansong_goods.goods_name
+  is '商品名称';
+comment on column fact_ec_p_mansong_goods.state
+  is '是否有效，1:有效0:无效';
+comment on column fact_ec_p_mansong_goods.create_user
+  is '添加用户';
+comment on column fact_ec_p_mansong_goods.create_time
+  is '添加时间';
+comment on column fact_ec_p_mansong_goods.lastupdate_time
+  is '修改时间';
