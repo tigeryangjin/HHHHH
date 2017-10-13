@@ -1,0 +1,21 @@
+
+
+create temporary tablespace  TEMP2 TEMPFILE 'D:\Oracle\database_files\bihappigo\temp02.dbf' SIZE 512M REUSE AUTOEXTEND ON NEXT  640K MAXSIZE UNLIMITED;   --创建中转临时表空间
+
+alter database default  temporary tablespace  temp2; --改变缺省临时表空间 为刚刚创建的新临时表空间temp2
+
+drop tablespace temp including contents and datafiles;--删除原来临时表空间
+
+create temporary tablespace  TEMP TEMPFILE 'D:\Oracle\database_files\bihappigo\temp01.dbf' SIZE 512M REUSE AUTOEXTEND ON NEXT  640K MAXSIZE UNLIMITED;   --重新创建临时表空间
+
+alter database default  temporary tablespace  temp; --重置缺省临时表空间为新建的temp表空间
+
+drop tablespace temp2 including contents and datafiles;--删除中转用临时表空间
+
+alter user ml temporary tablespace  temp;   --重新指定用户表空间为重建的临时表空间
+
+alter database tempfile 'D:\Oracle\database_files\bihappigo\temp01.dbf' resize 20G;
+
+select * from  dba_extents;
+
+select * from dba_tablespaces;

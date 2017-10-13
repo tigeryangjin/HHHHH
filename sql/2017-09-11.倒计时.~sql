@@ -1,5 +1,5 @@
 WITH tmp AS
- (SELECT to_timestamp('2017-09-16 20:00:00', 'yyyy-mm-dd hh24:mi:ss') -
+ (SELECT to_timestamp('2017-09-23 20:00:00', 'yyyy-mm-dd hh24:mi:ss') -
          systimestamp AS t
     FROM dual)
 SELECT '倒计时: '||extract(DAY FROM(t)) || '天' || extract(hour FROM(t)) || '小时' ||

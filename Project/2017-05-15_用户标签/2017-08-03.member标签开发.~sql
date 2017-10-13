@@ -6,8 +6,8 @@
 --************************************************************************
 begin
   -- Call the procedure
-  member_label_pkg.create_member_label(in_m_label_name      => 'PAYMENT_',
-                                       in_m_label_desc      => '首单为BBC商品',
+  member_label_pkg.create_member_label(in_m_label_name      => 'PAYMENT_MOST_COD',
+                                       in_m_label_desc      => '大金额COD小金额在线支付',
                                        in_m_label_type_id   => 1,
                                        in_m_label_father_id => 121);
 end;
@@ -161,6 +161,96 @@ INSERT INTO MEMBER_LABEL_LINK
          MEMBER_LABEL_HEAD G
    WHERE G.M_LABEL_FATHER_ID = 21
      AND F.COMMON_PORT = G.M_LABEL_NAME;
+
+--常用端口重构
+MERGE /*+APPEND*/
+INTO (SELECT MEMBER_KEY,
+             M_LABEL_ID,
+             M_LABEL_TYPE_ID,
+             CREATE_DATE,
+             CREATE_USER_ID,
+             LAST_UPDATE_DATE,
+             LAST_UPDATE_USER_ID
+        FROM MEMBER_LABEL_LINK
+       WHERE M_LABEL_ID BETWEEN 22 AND 26) T
+USING (SELECT F.MEMBER_KEY,
+              G.M_LABEL_ID,
+              G.M_LABEL_TYPE_ID,
+              SYSDATE CREATE_DATE,
+              'yangjin' CREATE_USER_ID,
+              sysdate LAST_UPDATE_DATE,
+              'yangjin' LAST_UPDATE_USER_ID
+         FROM (SELECT E.MEMBER_KEY,
+                      SUBSTR(MAX(E.MAX_PER_PORT), 3) COMMON_PORT
+                 FROM (SELECT D.MEMBER_KEY,
+                              D.COMMON_PORT,
+                              D.FREQ,
+                              D.TOTAL_FREQ,
+                              D.FREQ / D.TOTAL_FREQ PORT_PER,
+                              /*端口占比大于70%为常用端口*/
+                              CASE
+                                WHEN D.FREQ / D.TOTAL_FREQ >= 0.7 THEN
+                                 '2_' || D.COMMON_PORT
+                                ELSE
+                                 '1_COMMON_PORT_VARIETY'
+                              END MAX_PER_PORT
+                         FROM (SELECT C.MEMBER_KEY,
+                                      C.COMMON_PORT,
+                                      C.FREQ,
+                                      SUM(C.FREQ) OVER(PARTITION BY C.MEMBER_KEY) TOTAL_FREQ
+                                 FROM (SELECT B.MEMBER_KEY,
+                                              B.COMMON_PORT,
+                                              COUNT(1) FREQ
+                                         FROM (SELECT A.MEMBER_KEY,
+                                                      DECODE(A.APPLICATION_KEY,
+                                                             10,
+                                                             'COMMON_PORT_APP',
+                                                             20,
+                                                             'COMMON_PORT_APP',
+                                                             30,
+                                                             'COMMON_PORT_WAP',
+                                                             40,
+                                                             'COMMON_PORT_PC',
+                                                             50,
+                                                             'COMMON_PORT_WX') COMMON_PORT
+                                                 FROM FACT_SESSION A
+                                                WHERE A.START_DATE_KEY BETWEEN
+                                                      TO_CHAR(TRUNC(&IN_POSTING_DATE - 179),
+                                                              'YYYYMMDD') AND
+                                                      TO_CHAR(TRUNC(&IN_POSTING_DATE),
+                                                              'YYYYMMDD') /*统计180天数据*/
+                                                  AND A.MEMBER_KEY <> 0
+																									/*只对当天浏览的会员计算常用端口*/
+                                                  AND EXISTS
+                                                (SELECT 1
+                                                         FROM FACT_SESSION H
+                                                        WHERE A.MEMBER_KEY =
+                                                              H.MEMBER_KEY
+                                                          AND H.START_DATE_KEY =
+                                                              &IN_POSTING_DATE_KEY)) B
+                                        WHERE B.COMMON_PORT IS NOT NULL
+                                        GROUP BY B.MEMBER_KEY, B.COMMON_PORT) C) D
+                        WHERE D.TOTAL_FREQ >= 4) E
+                GROUP BY E.MEMBER_KEY) F,
+              MEMBER_LABEL_HEAD G
+        WHERE G.M_LABEL_FATHER_ID = 21
+          AND F.COMMON_PORT = G.M_LABEL_NAME) S
+ON (T.MEMBER_KEY = S.MEMBER_KEY)
+WHEN MATCHED THEN
+  UPDATE SET T.M_LABEL_ID = S.M_LABEL_ID, T.LAST_UPDATE_DATE = SYSDATE
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.MEMBER_KEY,
+     T.M_LABEL_ID,
+     T.M_LABEL_TYPE_ID,
+     T.CREATE_DATE,
+     T.CREATE_USER_ID,
+     T.LAST_UPDATE_DATE,
+     T.LAST_UPDATE_USER_ID)
+  VALUES
+    (S.MEMBER_KEY, S.M_LABEL_ID, 1, SYSDATE, 'yangjin', SYSDATE, 'yangjin');
+
+SELECT * FROM MEMBER_LABEL_HEAD A ORDER BY A.M_LABEL_ID;
 
 --************************************************************************
 --首单状态(first order)
@@ -602,6 +692,400 @@ INSERT INTO MEMBER_LABEL_LINK
                            GROUP BY B.MEMBER_KEY, B.PAYMENT_METHOD) C) D) E
    WHERE E.PAYMENT_LABEL IS NOT NULL;
 
+--支付方式重构
+MERGE /*+APPEND*/
+INTO (SELECT MEMBER_KEY,
+             M_LABEL_ID,
+             M_LABEL_TYPE_ID,
+             CREATE_DATE,
+             CREATE_USER_ID,
+             LAST_UPDATE_DATE,
+             LAST_UPDATE_USER_ID
+        FROM MEMBER_LABEL_LINK
+       WHERE M_LABEL_ID BETWEEN 122 AND 125) T
+USING (SELECT F.MEMBER_KEY,
+              G.M_LABEL_ID,
+              G.M_LABEL_TYPE_ID,
+              SYSDATE CREATE_DATE,
+              'yangjin' CREATE_USER_ID,
+              SYSDATE LAST_UPDATE_DATE,
+              'yangjin' LAST_UPDATE_USER_ID
+         FROM (SELECT DISTINCT E.MEMBER_KEY,
+                               FIRST_VALUE(E.PAYMENT_LABEL) OVER(PARTITION BY E.MEMBER_KEY ORDER BY E.RANK1) FINAL_PAYMENT_LABEL
+                 FROM (SELECT D.MEMBER_KEY,
+                              D.PAYMENT_METHOD,
+                              D.ORDER_AMOUNT,
+                              D.RANK1,
+                              D.TOTAL_ORDER_AMOUNT,
+                              CASE
+                              /*最大金额的支付方式如果超过50%，则此支付方式为常用支付方式*/
+                                WHEN D.RANK1 = 1 AND
+                                     D.TOTAL_ORDER_AMOUNT <= D.ORDER_AMOUNT * 2 THEN
+                                 D.PAYMENT_METHOD
+                              /*银行卡、支付宝、微信合计支付金额超过50%，则常用方式为网络支付*/
+                                WHEN D.PAYMENT_METHOD IN
+                                     ('PAYMENT_BANKCARD',
+                                      'PAYMENT_ALIPAY',
+                                      'PAYMENT_WX') AND
+                                     (SUM(D.ORDER_AMOUNT)
+                                      OVER(PARTITION BY D.MEMBER_KEY)) >
+                                     D.TOTAL_ORDER_AMOUNT * 0.5 THEN
+                                 'PAYMENT_ONLINE'
+                              END PAYMENT_LABEL
+                         FROM (SELECT C.MEMBER_KEY,
+                                      C.PAYMENT_METHOD,
+                                      C.ORDER_AMOUNT,
+                                      RANK() OVER(PARTITION BY C.MEMBER_KEY ORDER BY C.ORDER_AMOUNT DESC) RANK1 /*订单金额倒序排名*/,
+                                      SUM(C.ORDER_AMOUNT) OVER(PARTITION BY C.MEMBER_KEY) TOTAL_ORDER_AMOUNT /*会员合计订单金额*/
+                                 FROM (SELECT B.MEMBER_KEY,
+                                              B.PAYMENT_METHOD,
+                                              SUM(B.ORDER_AMOUNT) ORDER_AMOUNT
+                                         FROM (SELECT A.CUST_NO MEMBER_KEY,
+                                                      A.ADD_TIME,
+                                                      TO_CHAR(A.ORDER_SN) ORDER_NO,
+                                                      CASE
+                                                        WHEN UPPER(A.PAYMENTCHANNEL) =
+                                                             '线下支付' OR
+                                                             A.PAYMENTCHANNEL IS NULL THEN
+                                                         'PAYMENT_COD' /*COD*/
+                                                        WHEN UPPER(A.PAYMENTCHANNEL) IN
+                                                             ('ALIPAY_M',
+                                                              'ALIPAY_W',
+                                                              'ALIPAY_WAP',
+                                                              '支付宝') THEN
+                                                         'PAYMENT_ALIPAY' /*支付宝*/
+                                                        WHEN UPPER(A.PAYMENTCHANNEL) IN
+                                                             ('WX',
+                                                              'WXPAY_M',
+                                                              'WX_I',
+                                                              'WX_W',
+                                                              'WX_WAP',
+                                                              'ZXWX_I',
+                                                              'ZXWX_W',
+                                                              '微信',
+                                                              '微信(APP)',
+                                                              '微信(狗小二)',
+                                                              '财付通') THEN
+                                                         'PAYMENT_WX' /*微信*/
+                                                        WHEN UPPER(A.PAYMENTCHANNEL) IN
+                                                             ('CMB', 'CMBYWT_M') THEN
+                                                         'PAYMENT_BANKCARD' /*银行卡*/
+                                                      END PAYMENT_METHOD,
+                                                      A.ORDER_AMOUNT
+                                                 FROM FACT_EC_ORDER A
+                                                WHERE A.ORDER_STATE >= 20 /*已付款订单*/
+                                                     /*日期条件-180天*/
+                                                  AND A.ADD_TIME BETWEEN
+                                                      TO_CHAR(TRUNC(&IN_POSTING_DATE - 179),
+                                                              'YYYYMMDD') AND
+                                                      TO_CHAR(TRUNC(&IN_POSTING_DATE),
+                                                              'YYYYMMDD')
+                                                     /*只计算当天有效订购的会员的常用支付方式*/
+                                                  AND EXISTS
+                                                (SELECT 1
+                                                         FROM FACT_EC_ORDER H
+                                                        WHERE H.ADD_TIME =
+                                                              &IN_POSTING_DATE_KEY
+                                                          AND H.ORDER_STATE >= 20
+                                                          AND A.CUST_NO =
+                                                              H.CUST_NO)) B
+                                        WHERE B.PAYMENT_METHOD IS NOT NULL
+                                        GROUP BY B.MEMBER_KEY, B.PAYMENT_METHOD) C) D) E
+                WHERE E.PAYMENT_LABEL IS NOT NULL) F,
+              MEMBER_LABEL_HEAD G
+        WHERE G.M_LABEL_ID BETWEEN 122 AND 125
+          AND F.FINAL_PAYMENT_LABEL = G.M_LABEL_NAME) S
+ON (T.MEMBER_KEY = S.MEMBER_KEY)
+WHEN MATCHED THEN
+  UPDATE SET T.M_LABEL_ID = S.M_LABEL_ID, T.LAST_UPDATE_DATE = SYSDATE
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.MEMBER_KEY,
+     T.M_LABEL_ID,
+     T.M_LABEL_TYPE_ID,
+     T.CREATE_DATE,
+     T.CREATE_USER_ID,
+     T.LAST_UPDATE_DATE,
+     T.LAST_UPDATE_USER_ID)
+  VALUES
+    (S.MEMBER_KEY, S.M_LABEL_ID, 1, SYSDATE, 'yangjin', SYSDATE, 'yangjin');
+
+--支付方式重构2
+INSERT INTO MEMBER_LABEL_LINK
+  (MEMBER_KEY,
+   M_LABEL_ID,
+   M_LABEL_TYPE_ID,
+   CREATE_DATE,
+   CREATE_USER_ID,
+   LAST_UPDATE_DATE,
+   LAST_UPDATE_USER_ID)
+  SELECT F.MEMBER_KEY,
+         G.M_LABEL_ID,
+         G.M_LABEL_TYPE_ID,
+         SYSDATE CREATE_DATE,
+         'yangjin' CREATE_USER_ID,
+         SYSDATE LAST_UPDATE_DATE,
+         'yangjin' LAST_UPDATE_USER_ID
+    FROM (SELECT E.MEMBER_KEY, E.PAYMENT_LABEL
+            FROM (SELECT D.MEMBER_KEY,
+                         D.PAYMENT_METHOD,
+                         D.ORDER_AMOUNT,
+                         D.RANK1,
+                         D.TOTAL_ORDER_AMOUNT,
+                         CASE
+                         /*COD支付方式的金额大于合计支付金额的60%*/
+                           WHEN D.RANK1 = 1 AND
+                                D.PAYMENT_METHOD = 'PAYMENT_COD' AND
+                                D.ORDER_AMOUNT >= D.TOTAL_ORDER_AMOUNT * 0.6 THEN
+                            'PAYMENT_MOST_COD'
+                         END PAYMENT_LABEL
+                    FROM (SELECT C.MEMBER_KEY,
+                                 C.PAYMENT_METHOD,
+                                 C.ORDER_AMOUNT,
+                                 RANK() OVER(PARTITION BY C.MEMBER_KEY ORDER BY C.ORDER_AMOUNT DESC) RANK1 /*订单金额倒序排名*/,
+                                 SUM(C.ORDER_AMOUNT) OVER(PARTITION BY C.MEMBER_KEY) TOTAL_ORDER_AMOUNT /*会员合计订单金额*/
+                            FROM (SELECT B.MEMBER_KEY,
+                                         B.PAYMENT_METHOD,
+                                         SUM(B.ORDER_AMOUNT) ORDER_AMOUNT
+                                    FROM (SELECT A.CUST_NO MEMBER_KEY,
+                                                 A.ADD_TIME,
+                                                 TO_CHAR(A.ORDER_SN) ORDER_NO,
+                                                 CASE
+                                                   WHEN UPPER(A.PAYMENTCHANNEL) =
+                                                        '线下支付' OR
+                                                        A.PAYMENTCHANNEL IS NULL THEN
+                                                    'PAYMENT_COD' /*COD*/
+                                                   ELSE
+                                                    'PAYMENT_ONLINE' /*在线支付*/
+                                                 END PAYMENT_METHOD,
+                                                 A.ORDER_AMOUNT
+                                            FROM FACT_EC_ORDER A
+                                           WHERE A.ORDER_STATE >= 20 /*已付款订单*/
+                                                /*日期条件-180天*/
+                                             AND A.ADD_TIME BETWEEN
+                                                 TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
+                                                         'YYYYMMDD') AND
+                                                 TO_CHAR(TRUNC(IN_POSTING_DATE),
+                                                         'YYYYMMDD')) B
+                                   WHERE B.PAYMENT_METHOD IS NOT NULL
+                                   GROUP BY B.MEMBER_KEY, B.PAYMENT_METHOD) C) D) E
+           WHERE E.PAYMENT_LABEL IS NOT NULL
+                /*剔除掉订购金额=0的member*/
+             AND E.TOTAL_ORDER_AMOUNT > 0) F,
+         MEMBER_LABEL_HEAD G
+   WHERE G.M_LABEL_ID = 141
+     AND F.PAYMENT_LABEL = G.M_LABEL_NAME;
+
+SELECT * FROM MEMBER_LABEL_HEAD A ORDER BY A.M_LABEL_ID;
+
+--*************************************************************************************************************
+/*
+MEMBER_LIFE_PERIOD   用户生命周期
+NEW_CUSTOMER_PERIOD  新客（未产生订购（包括总订购））
+TRIAL_PERIOD         尝试期（产生订购但未产生有效订购）
+UNDERSTANDING_PERIOD 了解期（产生1~3比有效订购）
+BELIEVE_PERIOD       相信期（产生4到6比有效订购）
+GOOD_FRIEND_PERIOD   好朋友期（产生7比以上有效订购）
+INJURED_PERIOD       被伤害期（产生非个人原因拒退、客诉后未产生有效订购。）
+*/
+--*************************************************************************************************************
+--用户生命周期
+MERGE /*+APPEND*/
+INTO (SELECT MEMBER_KEY,
+             M_LABEL_ID,
+             M_LABEL_TYPE_ID,
+             CREATE_DATE,
+             CREATE_USER_ID,
+             LAST_UPDATE_DATE,
+             LAST_UPDATE_USER_ID
+        FROM MEMBER_LABEL_LINK
+       WHERE M_LABEL_ID BETWEEN 162 AND 166) T
+USING (SELECT H.MEMBER_KEY, I.M_LABEL_ID
+         FROM (SELECT G.MEMBER_BP MEMBER_KEY,
+                      CASE
+                        WHEN G.ORDER_STATE IS NULL THEN
+                         'NEW_CUSTOMER_PERIOD'
+                        WHEN G.ORDER_STATE = 0 THEN
+                         'TRIAL_PERIOD'
+                        WHEN G.ORDER_STATE = 1 AND G.ORDER_COUNT BETWEEN 1 AND 3 THEN
+                         'UNDERSTANDING_PERIOD'
+                        WHEN G.ORDER_STATE = 1 AND G.ORDER_COUNT BETWEEN 4 AND 6 THEN
+                         'BELIEVE_PERIOD'
+                        WHEN G.ORDER_STATE = 1 AND G.ORDER_COUNT >= 7 THEN
+                         'GOOD_FRIEND_PERIOD'
+                      END MEMBER_LIFE_PERIOD
+                 FROM (SELECT DISTINCT F.MEMBER_BP,
+                                       FIRST_VALUE(F.ORDER_STATE) OVER(PARTITION BY F.MEMBER_BP ORDER BY F.ORDER_STATE DESC) ORDER_STATE,
+                                       FIRST_VALUE(F.ORDER_COUNT) OVER(PARTITION BY F.MEMBER_BP ORDER BY F.ORDER_STATE DESC) ORDER_COUNT
+                         FROM (SELECT E.MEMBER_BP,
+                                      E.ORDER_STATE,
+                                      COUNT(E.ORDER_KEY) ORDER_COUNT
+                                 FROM (SELECT A.MEMBER_BP,
+                                              B.ORDER_KEY,
+                                              B.ORDER_STATE
+                                         FROM (SELECT D.MEMBER_BP
+                                                 FROM DIM_MEMBER D
+                                                WHERE D.MEMBER_INSERT_DATE =
+                                                      20170501) A,
+                                              (SELECT C.MEMBER_KEY,
+                                                      C.ORDER_KEY,
+                                                      C.ORDER_STATE
+                                                 FROM FACT_ORDER C
+                                                WHERE C.POSTING_DATE_KEY >=
+                                                      20160101) B
+                                        WHERE A.MEMBER_BP = B.MEMBER_KEY(+)) E
+                                GROUP BY E.MEMBER_BP, E.ORDER_STATE) F) G) H,
+              MEMBER_LABEL_HEAD I
+        WHERE I.M_LABEL_ID BETWEEN 162 AND 166
+          AND H.MEMBER_LIFE_PERIOD = I.M_LABEL_NAME) S
+ON (T.MEMBER_KEY = S.MEMBER_KEY)
+WHEN MATCHED THEN
+  UPDATE SET T.M_LABEL_ID = S.M_LABEL_ID, T.LAST_UPDATE_DATE = SYSDATE
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.MEMBER_KEY,
+     T.M_LABEL_ID,
+     T.M_LABEL_TYPE_ID,
+     T.CREATE_DATE,
+     T.CREATE_USER_ID,
+     T.LAST_UPDATE_DATE,
+     T.LAST_UPDATE_USER_ID)
+  VALUES
+    (S.MEMBER_KEY, S.M_LABEL_ID, 1, SYSDATE, 'yangjin', SYSDATE, 'yangjin');
+
+--被伤害期(产生非个人原因拒退、客诉后未产生有效订购)
+/*
+非个人原因拒退之后打上被伤害期标签，如果会员随后产生了有效订购，那么去掉被伤害期标签
+*/
+--打伤害期标签
+INSERT INTO MEMBER_LABEL_LINK
+  (MEMBER_KEY,
+   M_LABEL_ID,
+   M_LABEL_TYPE_ID,
+   CREATE_DATE,
+   CREATE_USER_ID,
+   LAST_UPDATE_DATE,
+   LAST_UPDATE_USER_ID)
+  SELECT E.MEMBER_KEY,
+         F.M_LABEL_ID,
+         F.M_LABEL_TYPE_ID,
+         SYSDATE CREATE_DATE,
+         'yangjin' CREATE_USER_ID,
+         SYSDATE LAST_UPDATE_DATE,
+         'yangjin' LAST_UPDATE_USER_ID
+    FROM (SELECT D.MEMBER_KEY
+            FROM (SELECT C.MEMBER_KEY,
+                         CASE
+                           WHEN C.RANK1 = 1 AND C.O_CANCEL_STATE = 1 THEN
+                            1
+                           ELSE
+                            0
+                         END IS_INJURED_PERIOD
+                    FROM (SELECT RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.ORDER_KEY DESC) RANK1, /*RANK1=1为最新订单，判断此订单是否拒退*/
+                                 A.ORDER_OBJ_ID O_ORDER_OBJ_ID,
+                                 A.ORDER_KEY O_ORDER_KEY,
+                                 B.ORDER_OBJ_ID R_ORDER_OBJ_ID,
+                                 B.ORDER_KEY R_ORDER_KEY,
+                                 A.CANCEL_STATE O_CANCEL_STATE,
+                                 B.CANCEL_STATE R_CANCEL_STATE,
+                                 A.MEMBER_KEY,
+                                 A.POSTING_DATE_KEY O_POSTING_DATE_KEY,
+                                 B.POSTING_DATE_KEY R_POSTING_DATE_KEY
+                            FROM (SELECT *
+                                    FROM FACT_ORDER
+                                   WHERE POSTING_DATE_KEY = 20170926) A,
+                                 (SELECT *
+                                    FROM FACT_ORDER_REVERSE
+                                   WHERE POSTING_DATE_KEY = 20170926) B
+                           WHERE A.ORDER_KEY = B.ORDER_KEY(+)
+                          /*AND A.MEMBER_KEY IN (1614619639, 1616669434)*/
+                          ) C) D
+           WHERE D.IS_INJURED_PERIOD = 1
+             AND /*如果已经打上伤害期标签则不重复打*/
+                 NOT EXISTS (SELECT 1
+                    FROM MEMBER_LABEL_LINK G
+                   WHERE D.MEMBER_KEY = G.MEMBER_KEY
+                     AND G.M_LABEL_ID = 167)) E,
+         (SELECT M_LABEL_ID,
+                 M_LABEL_NAME,
+                 M_LABEL_DESC,
+                 M_LABEL_TYPE_ID,
+                 M_LABEL_FATHER_ID,
+                 CREATE_DATE,
+                 CREATE_USER_ID,
+                 LAST_UPDATE_DATE,
+                 LAST_UPDATE_USER_ID,
+                 CURRENT_FLAG
+            FROM MEMBER_LABEL_HEAD
+           WHERE M_LABEL_NAME = 'INJURED_PERIOD') F;
+
+/*取消伤害期标签*/
+DELETE MEMBER_LABEL_LINK C
+ WHERE EXISTS
+ (SELECT 1
+          FROM (SELECT A.MEMBER_KEY
+                  FROM FACT_ORDER A
+                 WHERE A.POSTING_DATE_KEY = IN_POSTING_DATE_KEY
+                      /*判断会员的最后一笔订购是否是有效订购*/
+                   AND A.ORDER_STATE = 1
+                   AND EXISTS
+                 (SELECT 1
+                          FROM (SELECT F.MEMBER_KEY, MAX(F.ORDER_KEY) ORDER_KEY
+                                  FROM FACT_ORDER F
+                                 WHERE F.POSTING_DATE_KEY = IN_POSTING_DATE_KEY
+                                 GROUP BY F.MEMBER_KEY) E
+                         WHERE A.MEMBER_KEY = E.MEMBER_KEY
+                           AND A.ORDER_KEY = E.ORDER_KEY)
+                      /*判断是否在MEMBER_LABEL_LINK有记录*/
+                   AND EXISTS
+                 (SELECT 1
+                          FROM MEMBER_LABEL_LINK B
+                         WHERE B.M_LABEL_ID = 167
+                           AND A.MEMBER_KEY = B.MEMBER_KEY)) D
+         WHERE C.MEMBER_KEY = D.MEMBER_KEY);
+
+SELECT *
+  FROM FACT_ORDER A
+ WHERE A.MEMBER_KEY = 1616669434
+   AND A.POSTING_DATE_KEY = 20170926;
+SELECT *
+  FROM FACT_ORDER_REVERSE A
+ WHERE A.MEMBER_KEY = 1616669434
+   AND A.POSTING_DATE_KEY = 20170926;
+SELECT *
+  FROM FACT_ORDER A, FACT_ORDER_REVERSE B
+ WHERE A.ORDER_KEY = B.ORDER_KEY
+   AND A.ORDER_KEY = 5204097541;
+SELECT * FROM FACT_ORDER A WHERE A.ORDER_KEY = 5204097541;
+SELECT * FROM dim_re_reseaon_1;
+SELECT * FROM dim_re_reseaon_2;
+SELECT *
+  FROM FACT_ORDER A
+ WHERE A.POSTING_DATE_KEY = 20170926
+   AND A.ORDER_STATE = 1
+   AND EXISTS (SELECT 1
+          FROM FACT_ORDER_REVERSE B
+         WHERE A.MEMBER_KEY = B.MEMBER_KEY
+           AND B.CANCEL_STATE = 0
+           AND B.POSTING_DATE_KEY = 20170926);
+SELECT *
+  FROM FACT_ORDER_REVERSE A
+ WHERE A.CANCEL_STATE = 0
+   AND A.POSTING_DATE_KEY = 20170926
+   AND NOT EXISTS (SELECT 1
+          FROM FACT_ORDER B
+         WHERE B.POSTING_DATE_KEY = 20170926
+           AND B.CANCEL_STATE = 0
+           AND A.MEMBER_KEY = B.MEMBER_KEY);
+--退换货原因
+SELECT B.ONE_REASON, C.REASON_NM, B.TWO_REASON, D.REASON_NM
+  FROM (SELECT DISTINCT A.ONE_REASON, A.TWO_REASON FROM FACT_ORDER_REVERSE A) B,
+       DIM_RE_RESEAON_1 C,
+       DIM_RE_RESEAON_2 D
+ WHERE B.ONE_REASON = C.CODE
+   AND B.TWO_REASON = D.CODE
+ ORDER BY B.ONE_REASON, B.TWO_REASON;
+
 --tmp
 SELECT * FROM MEMBER_LABEL_HEAD ORDER BY M_LABEL_ID;
 SELECT * FROM MEMBER_LABEL_TYPE;
@@ -609,7 +1093,29 @@ SELECT * FROM MEMBER_LABEL_LINK;
 SELECT * FROM MEMBER_LABEL_LINK_V;
 SELECT * FROM MEMBER_LABEL_LOG;
 
-SELECT DISTINCT UPPER(A.PAYMENTCHANNEL)
-  FROM FACT_EC_ORDER A
- WHERE A.ORDER_STATE >= 20
- ORDER BY 1;
+SELECT * FROM S_PARAMETERS2 FOR UPDATE;
+SELECT A.START_TIME,
+       A.END_TIME,
+       A.ETL_DURATION,
+       A.ETL_RECORD_INS,
+       A.ETL_STATUS,
+       A.ERR_MSG,
+       A.PROC_NAME
+  FROM W_ETL_LOG A
+ WHERE A.PROC_NAME = 'MEMBER_LABEL_PKG.MEMBER_LIFE_PERIOD'
+ ORDER BY A.START_TIME DESC;
+
+SELECT COUNT(1) FROM MEMBER_LABEL_LINK A WHERE A.M_LABEL_ID = 167;
+
+SELECT A.MEMBER_KEY, COUNT(1)
+  FROM MEMBER_LABEL_LINK A
+ WHERE A.M_LABEL_ID = 167
+ group by a.member_key
+having count(1) > 1;
+SELECT *
+  FROM MEMBER_LABEL_LINK A
+ WHERE A.M_LABEL_ID = 167
+   AND A.MEMBER_KEY = 1501970962;
+
+DELETE MEMBER_LABEL_LINK A WHERE A.M_LABEL_ID BETWEEN 162 AND 166;
+COMMIT;
