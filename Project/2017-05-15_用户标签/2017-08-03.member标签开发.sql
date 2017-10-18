@@ -1,34 +1,34 @@
 /*Consumption characteristics indicators 
-��������ָ��*/
+消费特征指标*/
 
 --************************************************************************
---�½���ǩ
+--新建标签
 --************************************************************************
 begin
   -- Call the procedure
   member_label_pkg.create_member_label(in_m_label_name      => 'PAYMENT_MOST_COD',
-                                       in_m_label_desc      => '����CODС�������֧��',
+                                       in_m_label_desc      => '大金额COD小金额在线支付',
                                        in_m_label_type_id   => 1,
                                        in_m_label_father_id => 121);
 end;
 /
 
 --************************************************************************
---ֱ����Ʒ�ҳ϶�(PRODUCT_LOYALTY)
+--直播商品忠诚度(PRODUCT_LOYALTY)
 --************************************************************************
 /*
-ֻ�򲥳���Ʒ(ONLY_BROADCAST)
-ֻ��TV��Ʒ(ONLY_TV)
-ֻ������ᱨ��Ʒ(ONLY_ONLINE_RETAIL)
-ֻ����Ӫ��Ʒ(SELF_SALES)
-ֻ�����Ӫ��Ʒ(NON_SELF_SALES)
-�����(MIXED_CUSTOMER)
+只买播出商品(ONLY_BROADCAST)
+只买TV商品(ONLY_TV)
+只买电商提报商品(ONLY_ONLINE_RETAIL)
+只买自营商品(SELF_SALES)
+只买非自营商品(NON_SELF_SALES)
+混合型(MIXED_CUSTOMER)
 */
 INSERT
   INTO MEMBER_LABEL_HEAD(M_LABEL_ID, M_LABEL_NAME, M_LABEL_DESC, M_LABEL_TYPE_ID, M_LABEL_FATHER_ID, CREATE_DATE, CREATE_USER_ID, LAST_UPDATE_DATE, LAST_UPDATE_USER_ID, CURRENT_FLAG)
   SELECT MEMBER_LABEL_HEAD_SEQ.NEXTVAL, /*M_LABEL_ID*/
          'MIXED_CUSTOMER', /*M_LABEL_NAME*/
-         '�����', /*M_LABEL_DESC*/
+         '混合型', /*M_LABEL_DESC*/
          null, /*M_LABEL_TYPE_ID*/
          2, /*M_LABEL_FATHER_ID*/
          sysdate, /*CREATE_DATE*/
@@ -38,7 +38,7 @@ INSERT
          1 /*CURRENT_FLAG*/
     FROM DUAL;
 
---ֻ�򲥳���Ʒ(ONLY_BROADCAST)
+--只买播出商品(ONLY_BROADCAST)
 INSERT INTO MEMBER_LABEL_LINK
   (MEMBER_KEY,
    M_LABEL_ID,
@@ -77,28 +77,28 @@ INSERT INTO MEMBER_LABEL_LINK
                                  TO_CHAR(TRUNC(SYSDATE - 181), 'YYYYMMDD')
                              AND A.ORDER_STATE = 1
                              AND A.TRAN_TYPE = 0) SALES,
-                         (SELECT B.ITEM_CODE, B.TV_STARTDAY_KEY, 1 IS_BCST /*�Ƿ񲥳�*/
+                         (SELECT B.ITEM_CODE, B.TV_STARTDAY_KEY, 1 IS_BCST /*是否播出*/
                             FROM DIM_TV_GOOD B
-                           WHERE B.IS_LIVE = 'ֱ��'
+                           WHERE B.IS_LIVE = '直播'
                              AND B.TV_STARTDAY_KEY >=
                                  TO_CHAR(TRUNC(SYSDATE - 181), 'YYYYMMDD')) TV_GOOD
                    WHERE SALES.POSTING_DATE_KEY = TV_GOOD.TV_STARTDAY_KEY(+)
                      AND SALES.GOODS_COMMON_KEY = TV_GOOD.ITEM_CODE(+)) C
            GROUP BY C.MEMBER_KEY) D
-   WHERE /*�û�������������4��ʱ����*/
+   WHERE /*用户订购单数大于4单时启用*/
    D.ORDER_COUNT >= 4
-  /*������Ʒ�ﵽ70%�����ǲ�����Ʒʱ��Ϊ��ֻ�򲥳���Ʒ�û�*/
+  /*订购商品达到70%以上是播出商品时认为是只买播出商品用户*/
    AND D.BCST_ITEM_COUNT / D.ITEM_COUNT >= 0.7;
 
 --************************************************************************
---���ö˿�(Common port)
+--常用端口(Common port)
 --************************************************************************
 /*
 APP(COMMON_PORT_APP)(10,20,)
-΢��(COMMON_PORT_WX)(50)
+微信(COMMON_PORT_WX)(50)
 WAP(COMMON_PORT_WAP)(30)
 PC(COMMON_PORT_PC)(40)
-�޹���(COMMON_PORT_VARIETY)
+无规律(COMMON_PORT_VARIETY)
 */
 --fact_session.application_key
 INSERT INTO MEMBER_LABEL_LINK
@@ -162,7 +162,7 @@ INSERT INTO MEMBER_LABEL_LINK
    WHERE G.M_LABEL_FATHER_ID = 21
      AND F.COMMON_PORT = G.M_LABEL_NAME;
 
---���ö˿��ع�
+--常用端口重构
 MERGE /*+APPEND*/
 INTO (SELECT MEMBER_KEY,
              M_LABEL_ID,
@@ -187,7 +187,7 @@ USING (SELECT F.MEMBER_KEY,
                               D.FREQ,
                               D.TOTAL_FREQ,
                               D.FREQ / D.TOTAL_FREQ PORT_PER,
-                              /*�˿�ռ�ȴ���70%Ϊ���ö˿�*/
+                              /*端口占比大于70%为常用端口*/
                               CASE
                                 WHEN D.FREQ / D.TOTAL_FREQ >= 0.7 THEN
                                  '2_' || D.COMMON_PORT
@@ -218,9 +218,9 @@ USING (SELECT F.MEMBER_KEY,
                                                       TO_CHAR(TRUNC(&IN_POSTING_DATE - 179),
                                                               'YYYYMMDD') AND
                                                       TO_CHAR(TRUNC(&IN_POSTING_DATE),
-                                                              'YYYYMMDD') /*ͳ��180������*/
+                                                              'YYYYMMDD') /*统计180天数据*/
                                                   AND A.MEMBER_KEY <> 0
-                                                     /*ֻ�Ե�������Ļ�Ա���㳣�ö˿�*/
+                                                     /*只对当天浏览的会员计算常用端口*/
                                                   AND EXISTS
                                                 (SELECT 1
                                                          FROM FACT_SESSION H
@@ -253,21 +253,21 @@ WHEN NOT MATCHED THEN
 SELECT * FROM MEMBER_LABEL_HEAD A ORDER BY A.M_LABEL_ID;
 
 --************************************************************************
---�׵�״̬(first order)
+--首单状态(first order)
 --************************************************************************     
 /*
-δ�����׵�(first_order_not)
-�׵�Ϊ������(first_order_gift)(�����������30Ԫ����������)
-�׵�ΪTV������Ʒ(first_order_broadcast)
-�׵�ΪTV�ǲ�����Ʒ(first_order_not_broadcast)
-�׵�Ϊ��Ӫ��Ʒ(first_order_self)
-�׵�ΪBBC��Ʒ(first_order_BBC)
-�׵���ǩӦ��ÿ��ˢ�£���һ���û�ע��֮�󣬾�Ӧ�ô����׵���ǩ����һ���û���һ�ζ���֮���׵���ǩ�Ͳ����ٱ䶯�ˡ�
-��Ӫ��Ʒֻ�ڵ�������
-������������Ȼ�����������ǩ��
+未产生首单(first_order_not)
+首单为新人礼(first_order_gift)(订单金额少于30元都算新人礼)
+首单为TV播出商品(first_order_broadcast)
+首单为TV非播出商品(first_order_not_broadcast)
+首单为自营商品(first_order_self)
+首单为BBC商品(first_order_BBC)
+首单标签应该每日刷新，当一个用户注册之后，就应该打上首单标签。当一个用户第一次订购之后，首单标签就不会再变动了。
+自营商品只在电商销售
+先满足新人礼，然后才是其他标签。
 */
 
---����ˢ����ʷ����
+--重新刷新历史数据
 DECLARE
   IN_DATE_INT NUMBER(8);
   IN_DATE     DATE;
@@ -304,7 +304,7 @@ INSERT
          MEMBER_LABEL_HEAD E
    WHERE E.M_LABEL_NAME = 'FIRST_ORDER_NOT';
 
---�׵��������������Ʒ
+--首单订购金额最大的商品
 SELECT A.MEMBER_KEY, A.ORDER_KEY, A.GOODS_COMMON_KEY, A.ORDER_AMOUNT
   FROM FACT_GOODS_SALES A
  WHERE A.ORDER_STATE = 1
@@ -330,12 +330,12 @@ SELECT A.MEMBER_KEY, A.ORDER_KEY, A.GOODS_COMMON_KEY, A.ORDER_AMOUNT
            AND A.ORDER_AMOUNT = D.ORDER_AMOUNT)
    AND A.MEMBER_KEY = 1103386002;
 
---DIM_GOOD��Ʒ����(TV������Ʒ,TV�ǲ�����Ʒ,��Ӫ��Ʒ,BBC��Ʒ)
+--DIM_GOOD商品分类(TV播出商品,TV非播出商品,自营商品,BBC商品)
 /*
-�׵�ΪTV������Ʒ(FIRST_ORDER_BROADCAST)
-�׵�ΪTV�ǲ�����Ʒ(FIRST_ORDER_NOT_BROADCAST)
-�׵�Ϊ��Ӫ��Ʒ(FIRST_ORDER_SELF)
-�׵�ΪBBC��Ʒ(FIRST_ORDER_BBC)
+首单为TV播出商品(FIRST_ORDER_BROADCAST)
+首单为TV非播出商品(FIRST_ORDER_NOT_BROADCAST)
+首单为自营商品(FIRST_ORDER_SELF)
+首单为BBC商品(FIRST_ORDER_BBC)
 */
 SELECT A.ITEM_CODE,
        CASE
@@ -361,7 +361,7 @@ SELECT A.ITEM_CODE,
  WHERE A.CURRENT_FLG = 'Y';
 
 --************************************************************************
---��Ա�ȼ���member_level��
+--会员等级（member_level）
 --************************************************************************   
 merge into (select *
               from member_label_link
@@ -407,7 +407,7 @@ when not matched then
      sysdate,
      'yangjin');
 
---����ˢ����ʷ����
+--重新刷新历史数据
 --jobid:1543
 DECLARE
   IN_DATE_INT NUMBER(8);
@@ -445,7 +445,7 @@ SELECT 'CALL MEMBER_LABEL_PKG.MEMBER_LEVEL(' || B.CH_DATE_KEY || ');'
          ORDER BY 1) B;
 
 --************************************************************************
---�������ڣ�REPURCHASE_CYCLE��
+--复购周期（REPURCHASE_CYCLE）
 --REPURCHASE_CYCLE_LEVEL_1:-1
 --REPURCHASE_CYCLE_LEVEL_2:0~30
 --REPURCHASE_CYCLE_LEVEL_3:30~60
@@ -507,7 +507,7 @@ WHEN NOT MATCHED THEN
      SYSDATE,
      'yangjin');
 
---����ˢ����ʷ����
+--重新刷新历史数据
 --job:1763
 DECLARE
   IN_DATE_INT NUMBER(8);
@@ -566,14 +566,14 @@ SELECT A.MEMBER_KEY, COUNT(1)
  ORDER BY COUNT(1) DESC;
 
 --************************************************************************
---֧����ʽ��PAYMENT_METHOD��
---����COD(PAYMENT_COD)
---����֧����(PAYMENT_ALIPAY)
---����΢��֧��(PAYMENT_WX)
---�������п�֧��(PAYMENT_BANKCARD)
---����֧��(PAYMENT_ONLINE)
---�޹���(PAYMENT_)
---����CODС�������֧��()
+--支付方式（PAYMENT_METHOD）
+--常用COD(PAYMENT_COD)
+--常用支付宝(PAYMENT_ALIPAY)
+--常用微信支付(PAYMENT_WX)
+--常用银行卡支付(PAYMENT_BANKCARD)
+--在线支付(PAYMENT_ONLINE)
+--无规律(PAYMENT_)
+--大金额COD小金额在线支付()
 --************************************************************************
 INSERT INTO MEMBER_LABEL_LINK
   (MEMBER_KEY,
@@ -617,14 +617,14 @@ INSERT INTO MEMBER_LABEL_LINK
                                          A.ADD_TIME,
                                          TO_CHAR(A.ORDER_SN) ORDER_NO,
                                          CASE
-                                           WHEN UPPER(A.PAYMENTCHANNEL) = '����֧��' OR
+                                           WHEN UPPER(A.PAYMENTCHANNEL) = '线下支付' OR
                                                 A.PAYMENTCHANNEL IS NULL THEN
                                             'PAYMENT_COD'
                                            WHEN UPPER(A.PAYMENTCHANNEL) IN
                                                 ('ALIPAY_M',
                                                  'ALIPAY_W',
                                                  'ALIPAY_WAP',
-                                                 '֧����') THEN
+                                                 '支付宝') THEN
                                             'PAYMENT_ALIPAY'
                                            WHEN UPPER(A.PAYMENTCHANNEL) IN
                                                 ('WX',
@@ -634,10 +634,10 @@ INSERT INTO MEMBER_LABEL_LINK
                                                  'WX_WAP',
                                                  'ZXWX_I',
                                                  'ZXWX_W',
-                                                 '΢��',
-                                                 '΢��(APP)',
-                                                 '΢��(��С��)',
-                                                 '�Ƹ�ͨ') THEN
+                                                 '微信',
+                                                 '微信(APP)',
+                                                 '微信(狗小二)',
+                                                 '财付通') THEN
                                             'PAYMENT_WX'
                                            WHEN UPPER(A.PAYMENTCHANNEL) IN
                                                 ('CMB', 'CMBYWT_M') THEN
@@ -646,7 +646,7 @@ INSERT INTO MEMBER_LABEL_LINK
                                          A.ORDER_AMOUNT
                                     FROM FACT_EC_ORDER A
                                    WHERE A.ORDER_STATE >= 20
-                                        /*��������-180��*/
+                                        /*日期条件-180天*/
                                      AND A.ADD_TIME BETWEEN
                                          TO_CHAR(TRUNC(&IN_POSTING_DATE - 179),
                                                  'YYYYMMDD') AND
@@ -692,7 +692,7 @@ INSERT INTO MEMBER_LABEL_LINK
                            GROUP BY B.MEMBER_KEY, B.PAYMENT_METHOD) C) D) E
    WHERE E.PAYMENT_LABEL IS NOT NULL;
 
---֧����ʽ�ع�
+--支付方式重构
 MERGE /*+APPEND*/
 INTO (SELECT MEMBER_KEY,
              M_LABEL_ID,
@@ -718,11 +718,11 @@ USING (SELECT F.MEMBER_KEY,
                               D.RANK1,
                               D.TOTAL_ORDER_AMOUNT,
                               CASE
-                              /*������֧����ʽ�������50%�����֧����ʽΪ����֧����ʽ*/
+                              /*最大金额的支付方式如果超过50%，则此支付方式为常用支付方式*/
                                 WHEN D.RANK1 = 1 AND
                                      D.TOTAL_ORDER_AMOUNT <= D.ORDER_AMOUNT * 2 THEN
                                  D.PAYMENT_METHOD
-                              /*���п���֧������΢�źϼ�֧������50%�����÷�ʽΪ����֧��*/
+                              /*银行卡、支付宝、微信合计支付金额超过50%，则常用方式为网络支付*/
                                 WHEN D.PAYMENT_METHOD IN
                                      ('PAYMENT_BANKCARD',
                                       'PAYMENT_ALIPAY',
@@ -735,8 +735,8 @@ USING (SELECT F.MEMBER_KEY,
                          FROM (SELECT C.MEMBER_KEY,
                                       C.PAYMENT_METHOD,
                                       C.ORDER_AMOUNT,
-                                      RANK() OVER(PARTITION BY C.MEMBER_KEY ORDER BY C.ORDER_AMOUNT DESC) RANK1 /*������������*/,
-                                      SUM(C.ORDER_AMOUNT) OVER(PARTITION BY C.MEMBER_KEY) TOTAL_ORDER_AMOUNT /*��Ա�ϼƶ������*/
+                                      RANK() OVER(PARTITION BY C.MEMBER_KEY ORDER BY C.ORDER_AMOUNT DESC) RANK1 /*订单金额倒序排名*/,
+                                      SUM(C.ORDER_AMOUNT) OVER(PARTITION BY C.MEMBER_KEY) TOTAL_ORDER_AMOUNT /*会员合计订单金额*/
                                  FROM (SELECT B.MEMBER_KEY,
                                               B.PAYMENT_METHOD,
                                               SUM(B.ORDER_AMOUNT) ORDER_AMOUNT
@@ -745,15 +745,15 @@ USING (SELECT F.MEMBER_KEY,
                                                       TO_CHAR(A.ORDER_SN) ORDER_NO,
                                                       CASE
                                                         WHEN UPPER(A.PAYMENTCHANNEL) =
-                                                             '����֧��' OR
+                                                             '线下支付' OR
                                                              A.PAYMENTCHANNEL IS NULL THEN
                                                          'PAYMENT_COD' /*COD*/
                                                         WHEN UPPER(A.PAYMENTCHANNEL) IN
                                                              ('ALIPAY_M',
                                                               'ALIPAY_W',
                                                               'ALIPAY_WAP',
-                                                              '֧����') THEN
-                                                         'PAYMENT_ALIPAY' /*֧����*/
+                                                              '支付宝') THEN
+                                                         'PAYMENT_ALIPAY' /*支付宝*/
                                                         WHEN UPPER(A.PAYMENTCHANNEL) IN
                                                              ('WX',
                                                               'WXPAY_M',
@@ -762,25 +762,25 @@ USING (SELECT F.MEMBER_KEY,
                                                               'WX_WAP',
                                                               'ZXWX_I',
                                                               'ZXWX_W',
-                                                              '΢��',
-                                                              '΢��(APP)',
-                                                              '΢��(��С��)',
-                                                              '�Ƹ�ͨ') THEN
-                                                         'PAYMENT_WX' /*΢��*/
+                                                              '微信',
+                                                              '微信(APP)',
+                                                              '微信(狗小二)',
+                                                              '财付通') THEN
+                                                         'PAYMENT_WX' /*微信*/
                                                         WHEN UPPER(A.PAYMENTCHANNEL) IN
                                                              ('CMB', 'CMBYWT_M') THEN
-                                                         'PAYMENT_BANKCARD' /*���п�*/
+                                                         'PAYMENT_BANKCARD' /*银行卡*/
                                                       END PAYMENT_METHOD,
                                                       A.ORDER_AMOUNT
                                                  FROM FACT_EC_ORDER A
-                                                WHERE A.ORDER_STATE >= 20 /*�Ѹ����*/
-                                                     /*��������-180��*/
+                                                WHERE A.ORDER_STATE >= 20 /*已付款订单*/
+                                                     /*日期条件-180天*/
                                                   AND A.ADD_TIME BETWEEN
                                                       TO_CHAR(TRUNC(&IN_POSTING_DATE - 179),
                                                               'YYYYMMDD') AND
                                                       TO_CHAR(TRUNC(&IN_POSTING_DATE),
                                                               'YYYYMMDD')
-                                                     /*ֻ���㵱����Ч�����Ļ�Ա�ĳ���֧����ʽ*/
+                                                     /*只计算当天有效订购的会员的常用支付方式*/
                                                   AND EXISTS
                                                 (SELECT 1
                                                          FROM FACT_EC_ORDER H
@@ -810,7 +810,7 @@ WHEN NOT MATCHED THEN
   VALUES
     (S.MEMBER_KEY, S.M_LABEL_ID, 1, SYSDATE, 'yangjin', SYSDATE, 'yangjin');
 
---֧����ʽ�ع�2
+--支付方式重构2
 INSERT INTO MEMBER_LABEL_LINK
   (MEMBER_KEY,
    M_LABEL_ID,
@@ -833,7 +833,7 @@ INSERT INTO MEMBER_LABEL_LINK
                          D.RANK1,
                          D.TOTAL_ORDER_AMOUNT,
                          CASE
-                         /*COD֧����ʽ�Ľ����ںϼ�֧������60%*/
+                         /*COD支付方式的金额大于合计支付金额的60%*/
                            WHEN D.RANK1 = 1 AND
                                 D.PAYMENT_METHOD = 'PAYMENT_COD' AND
                                 D.ORDER_AMOUNT >= D.TOTAL_ORDER_AMOUNT * 0.6 THEN
@@ -842,8 +842,8 @@ INSERT INTO MEMBER_LABEL_LINK
                     FROM (SELECT C.MEMBER_KEY,
                                  C.PAYMENT_METHOD,
                                  C.ORDER_AMOUNT,
-                                 RANK() OVER(PARTITION BY C.MEMBER_KEY ORDER BY C.ORDER_AMOUNT DESC) RANK1 /*������������*/,
-                                 SUM(C.ORDER_AMOUNT) OVER(PARTITION BY C.MEMBER_KEY) TOTAL_ORDER_AMOUNT /*��Ա�ϼƶ������*/
+                                 RANK() OVER(PARTITION BY C.MEMBER_KEY ORDER BY C.ORDER_AMOUNT DESC) RANK1 /*订单金额倒序排名*/,
+                                 SUM(C.ORDER_AMOUNT) OVER(PARTITION BY C.MEMBER_KEY) TOTAL_ORDER_AMOUNT /*会员合计订单金额*/
                             FROM (SELECT B.MEMBER_KEY,
                                          B.PAYMENT_METHOD,
                                          SUM(B.ORDER_AMOUNT) ORDER_AMOUNT
@@ -852,16 +852,16 @@ INSERT INTO MEMBER_LABEL_LINK
                                                  TO_CHAR(A.ORDER_SN) ORDER_NO,
                                                  CASE
                                                    WHEN UPPER(A.PAYMENTCHANNEL) =
-                                                        '����֧��' OR
+                                                        '线下支付' OR
                                                         A.PAYMENTCHANNEL IS NULL THEN
                                                     'PAYMENT_COD' /*COD*/
                                                    ELSE
-                                                    'PAYMENT_ONLINE' /*����֧��*/
+                                                    'PAYMENT_ONLINE' /*在线支付*/
                                                  END PAYMENT_METHOD,
                                                  A.ORDER_AMOUNT
                                             FROM FACT_EC_ORDER A
-                                           WHERE A.ORDER_STATE >= 20 /*�Ѹ����*/
-                                                /*��������-180��*/
+                                           WHERE A.ORDER_STATE >= 20 /*已付款订单*/
+                                                /*日期条件-180天*/
                                              AND A.ADD_TIME BETWEEN
                                                  TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
                                                          'YYYYMMDD') AND
@@ -870,7 +870,7 @@ INSERT INTO MEMBER_LABEL_LINK
                                    WHERE B.PAYMENT_METHOD IS NOT NULL
                                    GROUP BY B.MEMBER_KEY, B.PAYMENT_METHOD) C) D) E
            WHERE E.PAYMENT_LABEL IS NOT NULL
-                /*�޳����������=0��member*/
+                /*剔除掉订购金额=0的member*/
              AND E.TOTAL_ORDER_AMOUNT > 0) F,
          MEMBER_LABEL_HEAD G
    WHERE G.M_LABEL_ID = 141
@@ -880,16 +880,16 @@ SELECT * FROM MEMBER_LABEL_HEAD A ORDER BY A.M_LABEL_ID;
 
 --*************************************************************************************************************
 /*
-MEMBER_LIFE_PERIOD   �û���������
-NEW_CUSTOMER_PERIOD  �¿ͣ�δ���������������ܶ�������
-TRIAL_PERIOD         �����ڣ�����������δ������Ч������
-UNDERSTANDING_PERIOD �˽��ڣ�����1~3����Ч������
-BELIEVE_PERIOD       �����ڣ�����4��6����Ч������
-GOOD_FRIEND_PERIOD   �������ڣ�����7��������Ч������
-INJURED_PERIOD       ���˺��ڣ������Ǹ���ԭ����ˡ����ߺ�δ������Ч��������
+MEMBER_LIFE_PERIOD   用户生命周期
+NEW_CUSTOMER_PERIOD  新客（未产生订购（包括总订购））
+TRIAL_PERIOD         尝试期（产生订购但未产生有效订购）
+UNDERSTANDING_PERIOD 了解期（产生1~3比有效订购）
+BELIEVE_PERIOD       相信期（产生4到6比有效订购）
+GOOD_FRIEND_PERIOD   好朋友期（产生7比以上有效订购）
+INJURED_PERIOD       被伤害期（产生非个人原因拒退、客诉后未产生有效订购。）
 */
 --*************************************************************************************************************
---�û���������
+--用户生命周期
 MERGE /*+APPEND*/
 INTO (SELECT MEMBER_KEY,
              M_LABEL_ID,
@@ -953,11 +953,11 @@ WHEN NOT MATCHED THEN
   VALUES
     (S.MEMBER_KEY, S.M_LABEL_ID, 1, SYSDATE, 'yangjin', SYSDATE, 'yangjin');
 
---���˺���(�����Ǹ���ԭ����ˡ����ߺ�δ������Ч����)
+--被伤害期(产生非个人原因拒退、客诉后未产生有效订购)
 /*
-�Ǹ���ԭ�����֮����ϱ��˺��ڱ�ǩ�������Ա����������Ч��������ôȥ�����˺��ڱ�ǩ
+非个人原因拒退之后打上被伤害期标签，如果会员随后产生了有效订购，那么去掉被伤害期标签
 */
---���˺��ڱ�ǩ
+--打伤害期标签
 INSERT INTO MEMBER_LABEL_LINK
   (MEMBER_KEY,
    M_LABEL_ID,
@@ -981,7 +981,7 @@ INSERT INTO MEMBER_LABEL_LINK
                            ELSE
                             0
                          END IS_INJURED_PERIOD
-                    FROM (SELECT RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.ORDER_KEY DESC) RANK1, /*RANK1=1Ϊ���¶������жϴ˶����Ƿ����*/
+                    FROM (SELECT RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.ORDER_KEY DESC) RANK1, /*RANK1=1为最新订单，判断此订单是否拒退*/
                                  A.ORDER_OBJ_ID O_ORDER_OBJ_ID,
                                  A.ORDER_KEY O_ORDER_KEY,
                                  B.ORDER_OBJ_ID R_ORDER_OBJ_ID,
@@ -1001,7 +1001,7 @@ INSERT INTO MEMBER_LABEL_LINK
                           /*AND A.MEMBER_KEY IN (1614619639, 1616669434)*/
                           ) C) D
            WHERE D.IS_INJURED_PERIOD = 1
-             AND /*����Ѿ������˺��ڱ�ǩ���ظ���*/
+             AND /*如果已经打上伤害期标签则不重复打*/
                  NOT EXISTS (SELECT 1
                     FROM MEMBER_LABEL_LINK G
                    WHERE D.MEMBER_KEY = G.MEMBER_KEY
@@ -1019,14 +1019,14 @@ INSERT INTO MEMBER_LABEL_LINK
             FROM MEMBER_LABEL_HEAD
            WHERE M_LABEL_NAME = 'INJURED_PERIOD') F;
 
-/*ȡ���˺��ڱ�ǩ*/
+/*取消伤害期标签*/
 DELETE MEMBER_LABEL_LINK C
  WHERE EXISTS
  (SELECT 1
           FROM (SELECT A.MEMBER_KEY
                   FROM FACT_ORDER A
                  WHERE A.POSTING_DATE_KEY = IN_POSTING_DATE_KEY
-                      /*�жϻ�Ա�����һ�ʶ����Ƿ�����Ч����*/
+                      /*判断会员的最后一笔订购是否是有效订购*/
                    AND A.ORDER_STATE = 1
                    AND EXISTS
                  (SELECT 1
@@ -1036,7 +1036,7 @@ DELETE MEMBER_LABEL_LINK C
                                  GROUP BY F.MEMBER_KEY) E
                          WHERE A.MEMBER_KEY = E.MEMBER_KEY
                            AND A.ORDER_KEY = E.ORDER_KEY)
-                      /*�ж��Ƿ���MEMBER_LABEL_LINK�м�¼*/
+                      /*判断是否在MEMBER_LABEL_LINK有记录*/
                    AND EXISTS
                  (SELECT 1
                           FROM MEMBER_LABEL_LINK B
@@ -1077,7 +1077,7 @@ SELECT *
          WHERE B.POSTING_DATE_KEY = 20170926
            AND B.CANCEL_STATE = 0
            AND A.MEMBER_KEY = B.MEMBER_KEY);
---�˻���ԭ��
+--退换货原因
 SELECT B.ONE_REASON, C.REASON_NM, B.TWO_REASON, D.REASON_NM
   FROM (SELECT DISTINCT A.ONE_REASON, A.TWO_REASON FROM FACT_ORDER_REVERSE A) B,
        DIM_RE_RESEAON_1 C,
@@ -1088,13 +1088,13 @@ SELECT B.ONE_REASON, C.REASON_NM, B.TWO_REASON, D.REASON_NM
 
 --*************************************************************************************************************
 /*
-WEBSITE_LOSS_SCORE   ��վ��ʧ����
-EVERYDAY_SEE               ÿ�ձؿ�����30���Ծ��������15�죨ע�����ڴ���30�죩��
-OCCASIONALLY_SEE           żż��������30���ڻ�Ծ��������4�죨ע�����ڴ���30�죩��
-REGISTERED_LESS_ONE_MONTH  ��һ����ע���û���ע������С�ڵ���30�죩
-ACTIVE                     ��Ծ����30���л�Ծ��¼���û���ע�����ڴ���30�죩��
-MAYBE_LOSS                 ǳ��ʧ��30�쵽60������Ϊ��¼�û���ע�����ڴ���30�죩��
-DEEP_LOSS                  �����ʧ��60����������Ϊ��¼�û���ע�����ڴ���30�죩��
+WEBSITE_LOSS_SCORE   整站流失评分
+EVERYDAY_SEE               每日必看（近30天活跃天数大于15天（注册日期大于30天））
+OCCASIONALLY_SEE           偶偶来来（近30天内活跃天数少于4天（注册日期大于30天））
+REGISTERED_LESS_ONE_MONTH  近一个月注册用户（注册日期小于等于30天）
+ACTIVE                     活跃（近30天有活跃记录的用户（注册日期大于30天））
+MAYBE_LOSS                 浅流失（30天到60天有行为记录用户（注册日期大于30天））
+DEEP_LOSS                  深度流失（60天以上有行为记录用户（注册日期大于30天））
 
 */
 --*************************************************************************************************************
