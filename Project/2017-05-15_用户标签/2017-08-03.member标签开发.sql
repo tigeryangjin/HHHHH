@@ -1,34 +1,34 @@
 /*Consumption characteristics indicators 
-Ê∂àË¥πÁâπÂæÅÊåáÊ†á*/
+œ˚∑—Ãÿ’˜÷∏±Í*/
 
 --************************************************************************
---Êñ∞Âª∫Ê†áÁ≠æ
+--–¬Ω®±Í«©
 --************************************************************************
 begin
   -- Call the procedure
   member_label_pkg.create_member_label(in_m_label_name      => 'PAYMENT_MOST_COD',
-                                       in_m_label_desc      => 'Â§ßÈáëÈ¢ùCODÂ∞èÈáëÈ¢ùÂú®Á∫øÊîØ‰ªò',
+                                       in_m_label_desc      => '¥ÛΩ∂ÓCOD–°Ω∂Ó‘⁄œﬂ÷ß∏∂',
                                        in_m_label_type_id   => 1,
                                        in_m_label_father_id => 121);
 end;
 /
 
 --************************************************************************
---Áõ¥Êí≠ÂïÜÂìÅÂø†ËØöÂ∫¶(PRODUCT_LOYALTY)
+--÷±≤•…Ã∆∑÷“≥œ∂»(PRODUCT_LOYALTY)
 --************************************************************************
 /*
-Âè™‰π∞Êí≠Âá∫ÂïÜÂìÅ(ONLY_BROADCAST)
-Âè™‰π∞TVÂïÜÂìÅ(ONLY_TV)
-Âè™‰π∞ÁîµÂïÜÊèêÊä•ÂïÜÂìÅ(ONLY_ONLINE_RETAIL)
-Âè™‰π∞Ëá™Ëê•ÂïÜÂìÅ(SELF_SALES)
-Âè™‰π∞ÈùûËá™Ëê•ÂïÜÂìÅ(NON_SELF_SALES)
-Ê∑∑ÂêàÂûã(MIXED_CUSTOMER)
+÷ª¬Ú≤•≥ˆ…Ã∆∑(ONLY_BROADCAST)
+÷ª¬ÚTV…Ã∆∑(ONLY_TV)
+÷ª¬ÚµÁ…ÃÃ·±®…Ã∆∑(ONLY_ONLINE_RETAIL)
+÷ª¬Ú◊‘”™…Ã∆∑(SELF_SALES)
+÷ª¬Ú∑«◊‘”™…Ã∆∑(NON_SELF_SALES)
+ªÏ∫œ–Õ(MIXED_CUSTOMER)
 */
 INSERT
   INTO MEMBER_LABEL_HEAD(M_LABEL_ID, M_LABEL_NAME, M_LABEL_DESC, M_LABEL_TYPE_ID, M_LABEL_FATHER_ID, CREATE_DATE, CREATE_USER_ID, LAST_UPDATE_DATE, LAST_UPDATE_USER_ID, CURRENT_FLAG)
   SELECT MEMBER_LABEL_HEAD_SEQ.NEXTVAL, /*M_LABEL_ID*/
          'MIXED_CUSTOMER', /*M_LABEL_NAME*/
-         'Ê∑∑ÂêàÂûã', /*M_LABEL_DESC*/
+         'ªÏ∫œ–Õ', /*M_LABEL_DESC*/
          null, /*M_LABEL_TYPE_ID*/
          2, /*M_LABEL_FATHER_ID*/
          sysdate, /*CREATE_DATE*/
@@ -38,7 +38,7 @@ INSERT
          1 /*CURRENT_FLAG*/
     FROM DUAL;
 
---Âè™‰π∞Êí≠Âá∫ÂïÜÂìÅ(ONLY_BROADCAST)
+--÷ª¬Ú≤•≥ˆ…Ã∆∑(ONLY_BROADCAST)
 INSERT INTO MEMBER_LABEL_LINK
   (MEMBER_KEY,
    M_LABEL_ID,
@@ -77,28 +77,28 @@ INSERT INTO MEMBER_LABEL_LINK
                                  TO_CHAR(TRUNC(SYSDATE - 181), 'YYYYMMDD')
                              AND A.ORDER_STATE = 1
                              AND A.TRAN_TYPE = 0) SALES,
-                         (SELECT B.ITEM_CODE, B.TV_STARTDAY_KEY, 1 IS_BCST /*ÊòØÂê¶Êí≠Âá∫*/
+                         (SELECT B.ITEM_CODE, B.TV_STARTDAY_KEY, 1 IS_BCST /* «∑Ò≤•≥ˆ*/
                             FROM DIM_TV_GOOD B
-                           WHERE B.IS_LIVE = 'Áõ¥Êí≠'
+                           WHERE B.IS_LIVE = '÷±≤•'
                              AND B.TV_STARTDAY_KEY >=
                                  TO_CHAR(TRUNC(SYSDATE - 181), 'YYYYMMDD')) TV_GOOD
                    WHERE SALES.POSTING_DATE_KEY = TV_GOOD.TV_STARTDAY_KEY(+)
                      AND SALES.GOODS_COMMON_KEY = TV_GOOD.ITEM_CODE(+)) C
            GROUP BY C.MEMBER_KEY) D
-   WHERE /*Áî®Êà∑ËÆ¢Ë¥≠ÂçïÊï∞Â§ß‰∫é4ÂçïÊó∂ÂêØÁî®*/
+   WHERE /*”√ªß∂©π∫µ• ˝¥Û”⁄4µ• ±∆Ù”√*/
    D.ORDER_COUNT >= 4
-  /*ËÆ¢Ë¥≠ÂïÜÂìÅËææÂà∞70%‰ª•‰∏äÊòØÊí≠Âá∫ÂïÜÂìÅÊó∂ËÆ§‰∏∫ÊòØÂè™‰π∞Êí≠Âá∫ÂïÜÂìÅÁî®Êà∑*/
+  /*∂©π∫…Ã∆∑¥ÔµΩ70%“‘…œ «≤•≥ˆ…Ã∆∑ ±»œŒ™ «÷ª¬Ú≤•≥ˆ…Ã∆∑”√ªß*/
    AND D.BCST_ITEM_COUNT / D.ITEM_COUNT >= 0.7;
 
 --************************************************************************
---Â∏∏Áî®Á´ØÂè£(Common port)
+--≥£”√∂Àø⁄(Common port)
 --************************************************************************
 /*
 APP(COMMON_PORT_APP)(10,20,)
-ÂæÆ‰ø°(COMMON_PORT_WX)(50)
+Œ¢–≈(COMMON_PORT_WX)(50)
 WAP(COMMON_PORT_WAP)(30)
 PC(COMMON_PORT_PC)(40)
-Êó†ËßÑÂæã(COMMON_PORT_VARIETY)
+ŒﬁπÊ¬…(COMMON_PORT_VARIETY)
 */
 --fact_session.application_key
 INSERT INTO MEMBER_LABEL_LINK
@@ -162,7 +162,7 @@ INSERT INTO MEMBER_LABEL_LINK
    WHERE G.M_LABEL_FATHER_ID = 21
      AND F.COMMON_PORT = G.M_LABEL_NAME;
 
---Â∏∏Áî®Á´ØÂè£ÈáçÊûÑ
+--≥£”√∂Àø⁄÷ÿππ
 MERGE /*+APPEND*/
 INTO (SELECT MEMBER_KEY,
              M_LABEL_ID,
@@ -187,7 +187,7 @@ USING (SELECT F.MEMBER_KEY,
                               D.FREQ,
                               D.TOTAL_FREQ,
                               D.FREQ / D.TOTAL_FREQ PORT_PER,
-                              /*Á´ØÂè£Âç†ÊØîÂ§ß‰∫é70%‰∏∫Â∏∏Áî®Á´ØÂè£*/
+                              /*∂Àø⁄’º±»¥Û”⁄70%Œ™≥£”√∂Àø⁄*/
                               CASE
                                 WHEN D.FREQ / D.TOTAL_FREQ >= 0.7 THEN
                                  '2_' || D.COMMON_PORT
@@ -218,9 +218,9 @@ USING (SELECT F.MEMBER_KEY,
                                                       TO_CHAR(TRUNC(&IN_POSTING_DATE - 179),
                                                               'YYYYMMDD') AND
                                                       TO_CHAR(TRUNC(&IN_POSTING_DATE),
-                                                              'YYYYMMDD') /*ÁªüËÆ°180Â§©Êï∞ÊçÆ*/
+                                                              'YYYYMMDD') /*Õ≥º∆180ÃÏ ˝æ›*/
                                                   AND A.MEMBER_KEY <> 0
-                                                     /*Âè™ÂØπÂΩìÂ§©ÊµèËßàÁöÑ‰ºöÂëòËÆ°ÁÆóÂ∏∏Áî®Á´ØÂè£*/
+                                                     /*÷ª∂‘µ±ÃÏ‰Ø¿¿µƒª·‘±º∆À„≥£”√∂Àø⁄*/
                                                   AND EXISTS
                                                 (SELECT 1
                                                          FROM FACT_SESSION H
@@ -253,21 +253,21 @@ WHEN NOT MATCHED THEN
 SELECT * FROM MEMBER_LABEL_HEAD A ORDER BY A.M_LABEL_ID;
 
 --************************************************************************
---È¶ñÂçïÁä∂ÊÄÅ(first order)
+-- ◊µ•◊¥Ã¨(first order)
 --************************************************************************     
 /*
-Êú™‰∫ßÁîüÈ¶ñÂçï(first_order_not)
-È¶ñÂçï‰∏∫Êñ∞‰∫∫Á§º(first_order_gift)(ËÆ¢ÂçïÈáëÈ¢ùÂ∞ë‰∫é30ÂÖÉÈÉΩÁÆóÊñ∞‰∫∫Á§º)
-È¶ñÂçï‰∏∫TVÊí≠Âá∫ÂïÜÂìÅ(first_order_broadcast)
-È¶ñÂçï‰∏∫TVÈùûÊí≠Âá∫ÂïÜÂìÅ(first_order_not_broadcast)
-È¶ñÂçï‰∏∫Ëá™Ëê•ÂïÜÂìÅ(first_order_self)
-È¶ñÂçï‰∏∫BBCÂïÜÂìÅ(first_order_BBC)
-È¶ñÂçïÊ†áÁ≠æÂ∫îËØ•ÊØèÊó•Âà∑Êñ∞ÔºåÂΩì‰∏Ä‰∏™Áî®Êà∑Ê≥®ÂÜå‰πãÂêéÔºåÂ∞±Â∫îËØ•Êâì‰∏äÈ¶ñÂçïÊ†áÁ≠æ„ÄÇÂΩì‰∏Ä‰∏™Áî®Êà∑Á¨¨‰∏ÄÊ¨°ËÆ¢Ë¥≠‰πãÂêéÔºåÈ¶ñÂçïÊ†áÁ≠æÂ∞±‰∏ç‰ºöÂÜçÂèòÂä®‰∫Ü„ÄÇ
-Ëá™Ëê•ÂïÜÂìÅÂè™Âú®ÁîµÂïÜÈîÄÂîÆ
-ÂÖàÊª°Ë∂≥Êñ∞‰∫∫Á§ºÔºåÁÑ∂ÂêéÊâçÊòØÂÖ∂‰ªñÊ†áÁ≠æ„ÄÇ
+Œ¥≤˙…˙ ◊µ•(first_order_not)
+ ◊µ•Œ™–¬»À¿Ò(first_order_gift)(∂©µ•Ω∂Ó…Ÿ”⁄30‘™∂ºÀ„–¬»À¿Ò)
+ ◊µ•Œ™TV≤•≥ˆ…Ã∆∑(first_order_broadcast)
+ ◊µ•Œ™TV∑«≤•≥ˆ…Ã∆∑(first_order_not_broadcast)
+ ◊µ•Œ™◊‘”™…Ã∆∑(first_order_self)
+ ◊µ•Œ™BBC…Ã∆∑(first_order_BBC)
+ ◊µ•±Í«©”¶∏√√ø»’À¢–¬£¨µ±“ª∏ˆ”√ªß◊¢≤·÷Æ∫Û£¨æÕ”¶∏√¥Ú…œ ◊µ•±Í«©°£µ±“ª∏ˆ”√ªßµ⁄“ª¥Œ∂©π∫÷Æ∫Û£¨ ◊µ•±Í«©æÕ≤ªª·‘Ÿ±‰∂Ø¡À°£
+◊‘”™…Ã∆∑÷ª‘⁄µÁ…Ãœ˙ €
+œ»¬˙◊„–¬»À¿Ò£¨»ª∫Û≤≈ «∆‰À˚±Í«©°£
 */
 
---ÈáçÊñ∞Âà∑Êñ∞ÂéÜÂè≤Êï∞ÊçÆ
+--÷ÿ–¬À¢–¬¿˙ ∑ ˝æ›
 DECLARE
   IN_DATE_INT NUMBER(8);
   IN_DATE     DATE;
@@ -304,7 +304,7 @@ INSERT
          MEMBER_LABEL_HEAD E
    WHERE E.M_LABEL_NAME = 'FIRST_ORDER_NOT';
 
---È¶ñÂçïËÆ¢Ë¥≠ÈáëÈ¢ùÊúÄÂ§ßÁöÑÂïÜÂìÅ
+-- ◊µ•∂©π∫Ω∂Ó◊Ó¥Ûµƒ…Ã∆∑
 SELECT A.MEMBER_KEY, A.ORDER_KEY, A.GOODS_COMMON_KEY, A.ORDER_AMOUNT
   FROM FACT_GOODS_SALES A
  WHERE A.ORDER_STATE = 1
@@ -330,12 +330,12 @@ SELECT A.MEMBER_KEY, A.ORDER_KEY, A.GOODS_COMMON_KEY, A.ORDER_AMOUNT
            AND A.ORDER_AMOUNT = D.ORDER_AMOUNT)
    AND A.MEMBER_KEY = 1103386002;
 
---DIM_GOODÂïÜÂìÅÂàÜÁ±ª(TVÊí≠Âá∫ÂïÜÂìÅ,TVÈùûÊí≠Âá∫ÂïÜÂìÅ,Ëá™Ëê•ÂïÜÂìÅ,BBCÂïÜÂìÅ)
+--DIM_GOOD…Ã∆∑∑÷¿‡(TV≤•≥ˆ…Ã∆∑,TV∑«≤•≥ˆ…Ã∆∑,◊‘”™…Ã∆∑,BBC…Ã∆∑)
 /*
-È¶ñÂçï‰∏∫TVÊí≠Âá∫ÂïÜÂìÅ(FIRST_ORDER_BROADCAST)
-È¶ñÂçï‰∏∫TVÈùûÊí≠Âá∫ÂïÜÂìÅ(FIRST_ORDER_NOT_BROADCAST)
-È¶ñÂçï‰∏∫Ëá™Ëê•ÂïÜÂìÅ(FIRST_ORDER_SELF)
-È¶ñÂçï‰∏∫BBCÂïÜÂìÅ(FIRST_ORDER_BBC)
+ ◊µ•Œ™TV≤•≥ˆ…Ã∆∑(FIRST_ORDER_BROADCAST)
+ ◊µ•Œ™TV∑«≤•≥ˆ…Ã∆∑(FIRST_ORDER_NOT_BROADCAST)
+ ◊µ•Œ™◊‘”™…Ã∆∑(FIRST_ORDER_SELF)
+ ◊µ•Œ™BBC…Ã∆∑(FIRST_ORDER_BBC)
 */
 SELECT A.ITEM_CODE,
        CASE
@@ -361,7 +361,7 @@ SELECT A.ITEM_CODE,
  WHERE A.CURRENT_FLG = 'Y';
 
 --************************************************************************
---‰ºöÂëòÁ≠âÁ∫ßÔºàmember_levelÔºâ
+--ª·‘±µ»º∂£®member_level£©
 --************************************************************************   
 merge into (select *
               from member_label_link
@@ -407,7 +407,7 @@ when not matched then
      sysdate,
      'yangjin');
 
---ÈáçÊñ∞Âà∑Êñ∞ÂéÜÂè≤Êï∞ÊçÆ
+--÷ÿ–¬À¢–¬¿˙ ∑ ˝æ›
 --jobid:1543
 DECLARE
   IN_DATE_INT NUMBER(8);
@@ -445,7 +445,7 @@ SELECT 'CALL MEMBER_LABEL_PKG.MEMBER_LEVEL(' || B.CH_DATE_KEY || ');'
          ORDER BY 1) B;
 
 --************************************************************************
---Â§çË¥≠Âë®ÊúüÔºàREPURCHASE_CYCLEÔºâ
+--∏¥π∫÷‹∆⁄£®REPURCHASE_CYCLE£©
 --REPURCHASE_CYCLE_LEVEL_1:-1
 --REPURCHASE_CYCLE_LEVEL_2:0~30
 --REPURCHASE_CYCLE_LEVEL_3:30~60
@@ -507,7 +507,7 @@ WHEN NOT MATCHED THEN
      SYSDATE,
      'yangjin');
 
---ÈáçÊñ∞Âà∑Êñ∞ÂéÜÂè≤Êï∞ÊçÆ
+--÷ÿ–¬À¢–¬¿˙ ∑ ˝æ›
 --job:1763
 DECLARE
   IN_DATE_INT NUMBER(8);
@@ -566,14 +566,14 @@ SELECT A.MEMBER_KEY, COUNT(1)
  ORDER BY COUNT(1) DESC;
 
 --************************************************************************
---ÊîØ‰ªòÊñπÂºèÔºàPAYMENT_METHODÔºâ
---Â∏∏Áî®COD(PAYMENT_COD)
---Â∏∏Áî®ÊîØ‰ªòÂÆù(PAYMENT_ALIPAY)
---Â∏∏Áî®ÂæÆ‰ø°ÊîØ‰ªò(PAYMENT_WX)
---Â∏∏Áî®Èì∂Ë°åÂç°ÊîØ‰ªò(PAYMENT_BANKCARD)
---Âú®Á∫øÊîØ‰ªò(PAYMENT_ONLINE)
---Êó†ËßÑÂæã(PAYMENT_)
---Â§ßÈáëÈ¢ùCODÂ∞èÈáëÈ¢ùÂú®Á∫øÊîØ‰ªò()
+--÷ß∏∂∑Ω Ω£®PAYMENT_METHOD£©
+--≥£”√COD(PAYMENT_COD)
+--≥£”√÷ß∏∂±¶(PAYMENT_ALIPAY)
+--≥£”√Œ¢–≈÷ß∏∂(PAYMENT_WX)
+--≥£”√“¯––ø®÷ß∏∂(PAYMENT_BANKCARD)
+--‘⁄œﬂ÷ß∏∂(PAYMENT_ONLINE)
+--ŒﬁπÊ¬…(PAYMENT_)
+--¥ÛΩ∂ÓCOD–°Ω∂Ó‘⁄œﬂ÷ß∏∂()
 --************************************************************************
 INSERT INTO MEMBER_LABEL_LINK
   (MEMBER_KEY,
@@ -617,14 +617,14 @@ INSERT INTO MEMBER_LABEL_LINK
                                          A.ADD_TIME,
                                          TO_CHAR(A.ORDER_SN) ORDER_NO,
                                          CASE
-                                           WHEN UPPER(A.PAYMENTCHANNEL) = 'Á∫ø‰∏ãÊîØ‰ªò' OR
+                                           WHEN UPPER(A.PAYMENTCHANNEL) = 'œﬂœ¬÷ß∏∂' OR
                                                 A.PAYMENTCHANNEL IS NULL THEN
                                             'PAYMENT_COD'
                                            WHEN UPPER(A.PAYMENTCHANNEL) IN
                                                 ('ALIPAY_M',
                                                  'ALIPAY_W',
                                                  'ALIPAY_WAP',
-                                                 'ÊîØ‰ªòÂÆù') THEN
+                                                 '÷ß∏∂±¶') THEN
                                             'PAYMENT_ALIPAY'
                                            WHEN UPPER(A.PAYMENTCHANNEL) IN
                                                 ('WX',
@@ -634,10 +634,10 @@ INSERT INTO MEMBER_LABEL_LINK
                                                  'WX_WAP',
                                                  'ZXWX_I',
                                                  'ZXWX_W',
-                                                 'ÂæÆ‰ø°',
-                                                 'ÂæÆ‰ø°(APP)',
-                                                 'ÂæÆ‰ø°(ÁãóÂ∞è‰∫å)',
-                                                 'Ë¥¢‰ªòÈÄö') THEN
+                                                 'Œ¢–≈',
+                                                 'Œ¢–≈(APP)',
+                                                 'Œ¢–≈(π∑–°∂˛)',
+                                                 '≤∆∏∂Õ®') THEN
                                             'PAYMENT_WX'
                                            WHEN UPPER(A.PAYMENTCHANNEL) IN
                                                 ('CMB', 'CMBYWT_M') THEN
@@ -646,7 +646,7 @@ INSERT INTO MEMBER_LABEL_LINK
                                          A.ORDER_AMOUNT
                                     FROM FACT_EC_ORDER A
                                    WHERE A.ORDER_STATE >= 20
-                                        /*Êó•ÊúüÊù°‰ª∂-180Â§©*/
+                                        /*»’∆⁄Ãıº˛-180ÃÏ*/
                                      AND A.ADD_TIME BETWEEN
                                          TO_CHAR(TRUNC(&IN_POSTING_DATE - 179),
                                                  'YYYYMMDD') AND
@@ -692,7 +692,7 @@ INSERT INTO MEMBER_LABEL_LINK
                            GROUP BY B.MEMBER_KEY, B.PAYMENT_METHOD) C) D) E
    WHERE E.PAYMENT_LABEL IS NOT NULL;
 
---ÊîØ‰ªòÊñπÂºèÈáçÊûÑ
+--÷ß∏∂∑Ω Ω÷ÿππ
 MERGE /*+APPEND*/
 INTO (SELECT MEMBER_KEY,
              M_LABEL_ID,
@@ -718,11 +718,11 @@ USING (SELECT F.MEMBER_KEY,
                               D.RANK1,
                               D.TOTAL_ORDER_AMOUNT,
                               CASE
-                              /*ÊúÄÂ§ßÈáëÈ¢ùÁöÑÊîØ‰ªòÊñπÂºèÂ¶ÇÊûúË∂ÖËøá50%ÔºåÂàôÊ≠§ÊîØ‰ªòÊñπÂºè‰∏∫Â∏∏Áî®ÊîØ‰ªòÊñπÂºè*/
+                              /*◊Ó¥ÛΩ∂Óµƒ÷ß∏∂∑Ω Ω»Áπ˚≥¨π˝50%£¨‘Ú¥À÷ß∏∂∑Ω ΩŒ™≥£”√÷ß∏∂∑Ω Ω*/
                                 WHEN D.RANK1 = 1 AND
                                      D.TOTAL_ORDER_AMOUNT <= D.ORDER_AMOUNT * 2 THEN
                                  D.PAYMENT_METHOD
-                              /*Èì∂Ë°åÂç°„ÄÅÊîØ‰ªòÂÆù„ÄÅÂæÆ‰ø°ÂêàËÆ°ÊîØ‰ªòÈáëÈ¢ùË∂ÖËøá50%ÔºåÂàôÂ∏∏Áî®ÊñπÂºè‰∏∫ÁΩëÁªúÊîØ‰ªò*/
+                              /*“¯––ø®°¢÷ß∏∂±¶°¢Œ¢–≈∫œº∆÷ß∏∂Ω∂Ó≥¨π˝50%£¨‘Ú≥£”√∑Ω ΩŒ™Õ¯¬Á÷ß∏∂*/
                                 WHEN D.PAYMENT_METHOD IN
                                      ('PAYMENT_BANKCARD',
                                       'PAYMENT_ALIPAY',
@@ -735,8 +735,8 @@ USING (SELECT F.MEMBER_KEY,
                          FROM (SELECT C.MEMBER_KEY,
                                       C.PAYMENT_METHOD,
                                       C.ORDER_AMOUNT,
-                                      RANK() OVER(PARTITION BY C.MEMBER_KEY ORDER BY C.ORDER_AMOUNT DESC) RANK1 /*ËÆ¢ÂçïÈáëÈ¢ùÂÄíÂ∫èÊéíÂêç*/,
-                                      SUM(C.ORDER_AMOUNT) OVER(PARTITION BY C.MEMBER_KEY) TOTAL_ORDER_AMOUNT /*‰ºöÂëòÂêàËÆ°ËÆ¢ÂçïÈáëÈ¢ù*/
+                                      RANK() OVER(PARTITION BY C.MEMBER_KEY ORDER BY C.ORDER_AMOUNT DESC) RANK1 /*∂©µ•Ω∂Óµπ–Ú≈≈√˚*/,
+                                      SUM(C.ORDER_AMOUNT) OVER(PARTITION BY C.MEMBER_KEY) TOTAL_ORDER_AMOUNT /*ª·‘±∫œº∆∂©µ•Ω∂Ó*/
                                  FROM (SELECT B.MEMBER_KEY,
                                               B.PAYMENT_METHOD,
                                               SUM(B.ORDER_AMOUNT) ORDER_AMOUNT
@@ -745,15 +745,15 @@ USING (SELECT F.MEMBER_KEY,
                                                       TO_CHAR(A.ORDER_SN) ORDER_NO,
                                                       CASE
                                                         WHEN UPPER(A.PAYMENTCHANNEL) =
-                                                             'Á∫ø‰∏ãÊîØ‰ªò' OR
+                                                             'œﬂœ¬÷ß∏∂' OR
                                                              A.PAYMENTCHANNEL IS NULL THEN
                                                          'PAYMENT_COD' /*COD*/
                                                         WHEN UPPER(A.PAYMENTCHANNEL) IN
                                                              ('ALIPAY_M',
                                                               'ALIPAY_W',
                                                               'ALIPAY_WAP',
-                                                              'ÊîØ‰ªòÂÆù') THEN
-                                                         'PAYMENT_ALIPAY' /*ÊîØ‰ªòÂÆù*/
+                                                              '÷ß∏∂±¶') THEN
+                                                         'PAYMENT_ALIPAY' /*÷ß∏∂±¶*/
                                                         WHEN UPPER(A.PAYMENTCHANNEL) IN
                                                              ('WX',
                                                               'WXPAY_M',
@@ -762,25 +762,25 @@ USING (SELECT F.MEMBER_KEY,
                                                               'WX_WAP',
                                                               'ZXWX_I',
                                                               'ZXWX_W',
-                                                              'ÂæÆ‰ø°',
-                                                              'ÂæÆ‰ø°(APP)',
-                                                              'ÂæÆ‰ø°(ÁãóÂ∞è‰∫å)',
-                                                              'Ë¥¢‰ªòÈÄö') THEN
-                                                         'PAYMENT_WX' /*ÂæÆ‰ø°*/
+                                                              'Œ¢–≈',
+                                                              'Œ¢–≈(APP)',
+                                                              'Œ¢–≈(π∑–°∂˛)',
+                                                              '≤∆∏∂Õ®') THEN
+                                                         'PAYMENT_WX' /*Œ¢–≈*/
                                                         WHEN UPPER(A.PAYMENTCHANNEL) IN
                                                              ('CMB', 'CMBYWT_M') THEN
-                                                         'PAYMENT_BANKCARD' /*Èì∂Ë°åÂç°*/
+                                                         'PAYMENT_BANKCARD' /*“¯––ø®*/
                                                       END PAYMENT_METHOD,
                                                       A.ORDER_AMOUNT
                                                  FROM FACT_EC_ORDER A
-                                                WHERE A.ORDER_STATE >= 20 /*Â∑≤‰ªòÊ¨æËÆ¢Âçï*/
-                                                     /*Êó•ÊúüÊù°‰ª∂-180Â§©*/
+                                                WHERE A.ORDER_STATE >= 20 /*“—∏∂øÓ∂©µ•*/
+                                                     /*»’∆⁄Ãıº˛-180ÃÏ*/
                                                   AND A.ADD_TIME BETWEEN
                                                       TO_CHAR(TRUNC(&IN_POSTING_DATE - 179),
                                                               'YYYYMMDD') AND
                                                       TO_CHAR(TRUNC(&IN_POSTING_DATE),
                                                               'YYYYMMDD')
-                                                     /*Âè™ËÆ°ÁÆóÂΩìÂ§©ÊúâÊïàËÆ¢Ë¥≠ÁöÑ‰ºöÂëòÁöÑÂ∏∏Áî®ÊîØ‰ªòÊñπÂºè*/
+                                                     /*÷ªº∆À„µ±ÃÏ”––ß∂©π∫µƒª·‘±µƒ≥£”√÷ß∏∂∑Ω Ω*/
                                                   AND EXISTS
                                                 (SELECT 1
                                                          FROM FACT_EC_ORDER H
@@ -810,7 +810,7 @@ WHEN NOT MATCHED THEN
   VALUES
     (S.MEMBER_KEY, S.M_LABEL_ID, 1, SYSDATE, 'yangjin', SYSDATE, 'yangjin');
 
---ÊîØ‰ªòÊñπÂºèÈáçÊûÑ2
+--÷ß∏∂∑Ω Ω÷ÿππ2
 INSERT INTO MEMBER_LABEL_LINK
   (MEMBER_KEY,
    M_LABEL_ID,
@@ -833,7 +833,7 @@ INSERT INTO MEMBER_LABEL_LINK
                          D.RANK1,
                          D.TOTAL_ORDER_AMOUNT,
                          CASE
-                         /*CODÊîØ‰ªòÊñπÂºèÁöÑÈáëÈ¢ùÂ§ß‰∫éÂêàËÆ°ÊîØ‰ªòÈáëÈ¢ùÁöÑ60%*/
+                         /*COD÷ß∏∂∑Ω ΩµƒΩ∂Ó¥Û”⁄∫œº∆÷ß∏∂Ω∂Óµƒ60%*/
                            WHEN D.RANK1 = 1 AND
                                 D.PAYMENT_METHOD = 'PAYMENT_COD' AND
                                 D.ORDER_AMOUNT >= D.TOTAL_ORDER_AMOUNT * 0.6 THEN
@@ -842,8 +842,8 @@ INSERT INTO MEMBER_LABEL_LINK
                     FROM (SELECT C.MEMBER_KEY,
                                  C.PAYMENT_METHOD,
                                  C.ORDER_AMOUNT,
-                                 RANK() OVER(PARTITION BY C.MEMBER_KEY ORDER BY C.ORDER_AMOUNT DESC) RANK1 /*ËÆ¢ÂçïÈáëÈ¢ùÂÄíÂ∫èÊéíÂêç*/,
-                                 SUM(C.ORDER_AMOUNT) OVER(PARTITION BY C.MEMBER_KEY) TOTAL_ORDER_AMOUNT /*‰ºöÂëòÂêàËÆ°ËÆ¢ÂçïÈáëÈ¢ù*/
+                                 RANK() OVER(PARTITION BY C.MEMBER_KEY ORDER BY C.ORDER_AMOUNT DESC) RANK1 /*∂©µ•Ω∂Óµπ–Ú≈≈√˚*/,
+                                 SUM(C.ORDER_AMOUNT) OVER(PARTITION BY C.MEMBER_KEY) TOTAL_ORDER_AMOUNT /*ª·‘±∫œº∆∂©µ•Ω∂Ó*/
                             FROM (SELECT B.MEMBER_KEY,
                                          B.PAYMENT_METHOD,
                                          SUM(B.ORDER_AMOUNT) ORDER_AMOUNT
@@ -852,16 +852,16 @@ INSERT INTO MEMBER_LABEL_LINK
                                                  TO_CHAR(A.ORDER_SN) ORDER_NO,
                                                  CASE
                                                    WHEN UPPER(A.PAYMENTCHANNEL) =
-                                                        'Á∫ø‰∏ãÊîØ‰ªò' OR
+                                                        'œﬂœ¬÷ß∏∂' OR
                                                         A.PAYMENTCHANNEL IS NULL THEN
                                                     'PAYMENT_COD' /*COD*/
                                                    ELSE
-                                                    'PAYMENT_ONLINE' /*Âú®Á∫øÊîØ‰ªò*/
+                                                    'PAYMENT_ONLINE' /*‘⁄œﬂ÷ß∏∂*/
                                                  END PAYMENT_METHOD,
                                                  A.ORDER_AMOUNT
                                             FROM FACT_EC_ORDER A
-                                           WHERE A.ORDER_STATE >= 20 /*Â∑≤‰ªòÊ¨æËÆ¢Âçï*/
-                                                /*Êó•ÊúüÊù°‰ª∂-180Â§©*/
+                                           WHERE A.ORDER_STATE >= 20 /*“—∏∂øÓ∂©µ•*/
+                                                /*»’∆⁄Ãıº˛-180ÃÏ*/
                                              AND A.ADD_TIME BETWEEN
                                                  TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
                                                          'YYYYMMDD') AND
@@ -870,7 +870,7 @@ INSERT INTO MEMBER_LABEL_LINK
                                    WHERE B.PAYMENT_METHOD IS NOT NULL
                                    GROUP BY B.MEMBER_KEY, B.PAYMENT_METHOD) C) D) E
            WHERE E.PAYMENT_LABEL IS NOT NULL
-                /*ÂâîÈô§ÊéâËÆ¢Ë¥≠ÈáëÈ¢ù=0ÁöÑmember*/
+                /*Ãﬁ≥˝µÙ∂©π∫Ω∂Ó=0µƒmember*/
              AND E.TOTAL_ORDER_AMOUNT > 0) F,
          MEMBER_LABEL_HEAD G
    WHERE G.M_LABEL_ID = 141
@@ -880,16 +880,16 @@ SELECT * FROM MEMBER_LABEL_HEAD A ORDER BY A.M_LABEL_ID;
 
 --*************************************************************************************************************
 /*
-MEMBER_LIFE_PERIOD   Áî®Êà∑ÁîüÂëΩÂë®Êúü
-NEW_CUSTOMER_PERIOD  Êñ∞ÂÆ¢ÔºàÊú™‰∫ßÁîüËÆ¢Ë¥≠ÔºàÂåÖÊã¨ÊÄªËÆ¢Ë¥≠ÔºâÔºâ
-TRIAL_PERIOD         Â∞ùËØïÊúüÔºà‰∫ßÁîüËÆ¢Ë¥≠‰ΩÜÊú™‰∫ßÁîüÊúâÊïàËÆ¢Ë¥≠Ôºâ
-UNDERSTANDING_PERIOD ‰∫ÜËß£ÊúüÔºà‰∫ßÁîü1~3ÊØîÊúâÊïàËÆ¢Ë¥≠Ôºâ
-BELIEVE_PERIOD       Áõ∏‰ø°ÊúüÔºà‰∫ßÁîü4Âà∞6ÊØîÊúâÊïàËÆ¢Ë¥≠Ôºâ
-GOOD_FRIEND_PERIOD   Â•ΩÊúãÂèãÊúüÔºà‰∫ßÁîü7ÊØî‰ª•‰∏äÊúâÊïàËÆ¢Ë¥≠Ôºâ
-INJURED_PERIOD       Ë¢´‰º§ÂÆ≥ÊúüÔºà‰∫ßÁîüÈùû‰∏™‰∫∫ÂéüÂõ†ÊãíÈÄÄ„ÄÅÂÆ¢ËØâÂêéÊú™‰∫ßÁîüÊúâÊïàËÆ¢Ë¥≠„ÄÇÔºâ
+MEMBER_LIFE_PERIOD   ”√ªß…˙√¸÷‹∆⁄
+NEW_CUSTOMER_PERIOD  –¬øÕ£®Œ¥≤˙…˙∂©π∫£®∞¸¿®◊‹∂©π∫£©£©
+TRIAL_PERIOD         ≥¢ ‘∆⁄£®≤˙…˙∂©π∫µ´Œ¥≤˙…˙”––ß∂©π∫£©
+UNDERSTANDING_PERIOD ¡ÀΩ‚∆⁄£®≤˙…˙1~3±»”––ß∂©π∫£©
+BELIEVE_PERIOD       œ‡–≈∆⁄£®≤˙…˙4µΩ6±»”––ß∂©π∫£©
+GOOD_FRIEND_PERIOD   ∫√≈Û”—∆⁄£®≤˙…˙7±»“‘…œ”––ß∂©π∫£©
+INJURED_PERIOD       ±ª…À∫¶∆⁄£®≤˙…˙∑«∏ˆ»À‘≠“Úæ‹ÕÀ°¢øÕÀﬂ∫ÛŒ¥≤˙…˙”––ß∂©π∫°££©
 */
 --*************************************************************************************************************
---Áî®Êà∑ÁîüÂëΩÂë®Êúü
+--”√ªß…˙√¸÷‹∆⁄
 MERGE /*+APPEND*/
 INTO (SELECT MEMBER_KEY,
              M_LABEL_ID,
@@ -953,11 +953,11 @@ WHEN NOT MATCHED THEN
   VALUES
     (S.MEMBER_KEY, S.M_LABEL_ID, 1, SYSDATE, 'yangjin', SYSDATE, 'yangjin');
 
---Ë¢´‰º§ÂÆ≥Êúü(‰∫ßÁîüÈùû‰∏™‰∫∫ÂéüÂõ†ÊãíÈÄÄ„ÄÅÂÆ¢ËØâÂêéÊú™‰∫ßÁîüÊúâÊïàËÆ¢Ë¥≠)
+--±ª…À∫¶∆⁄(≤˙…˙∑«∏ˆ»À‘≠“Úæ‹ÕÀ°¢øÕÀﬂ∫ÛŒ¥≤˙…˙”––ß∂©π∫)
 /*
-Èùû‰∏™‰∫∫ÂéüÂõ†ÊãíÈÄÄ‰πãÂêéÊâì‰∏äË¢´‰º§ÂÆ≥ÊúüÊ†áÁ≠æÔºåÂ¶ÇÊûú‰ºöÂëòÈöèÂêé‰∫ßÁîü‰∫ÜÊúâÊïàËÆ¢Ë¥≠ÔºåÈÇ£‰πàÂéªÊéâË¢´‰º§ÂÆ≥ÊúüÊ†áÁ≠æ
+∑«∏ˆ»À‘≠“Úæ‹ÕÀ÷Æ∫Û¥Ú…œ±ª…À∫¶∆⁄±Í«©£¨»Áπ˚ª·‘±ÀÊ∫Û≤˙…˙¡À”––ß∂©π∫£¨ƒ«√¥»•µÙ±ª…À∫¶∆⁄±Í«©
 */
---Êâì‰º§ÂÆ≥ÊúüÊ†áÁ≠æ
+--¥Ú…À∫¶∆⁄±Í«©
 INSERT INTO MEMBER_LABEL_LINK
   (MEMBER_KEY,
    M_LABEL_ID,
@@ -981,7 +981,7 @@ INSERT INTO MEMBER_LABEL_LINK
                            ELSE
                             0
                          END IS_INJURED_PERIOD
-                    FROM (SELECT RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.ORDER_KEY DESC) RANK1, /*RANK1=1‰∏∫ÊúÄÊñ∞ËÆ¢ÂçïÔºåÂà§Êñ≠Ê≠§ËÆ¢ÂçïÊòØÂê¶ÊãíÈÄÄ*/
+                    FROM (SELECT RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.ORDER_KEY DESC) RANK1, /*RANK1=1Œ™◊Ó–¬∂©µ•£¨≈–∂œ¥À∂©µ• «∑Òæ‹ÕÀ*/
                                  A.ORDER_OBJ_ID O_ORDER_OBJ_ID,
                                  A.ORDER_KEY O_ORDER_KEY,
                                  B.ORDER_OBJ_ID R_ORDER_OBJ_ID,
@@ -1001,7 +1001,7 @@ INSERT INTO MEMBER_LABEL_LINK
                           /*AND A.MEMBER_KEY IN (1614619639, 1616669434)*/
                           ) C) D
            WHERE D.IS_INJURED_PERIOD = 1
-             AND /*Â¶ÇÊûúÂ∑≤ÁªèÊâì‰∏ä‰º§ÂÆ≥ÊúüÊ†áÁ≠æÂàô‰∏çÈáçÂ§çÊâì*/
+             AND /*»Áπ˚“—æ≠¥Ú…œ…À∫¶∆⁄±Í«©‘Ú≤ª÷ÿ∏¥¥Ú*/
                  NOT EXISTS (SELECT 1
                     FROM MEMBER_LABEL_LINK G
                    WHERE D.MEMBER_KEY = G.MEMBER_KEY
@@ -1019,14 +1019,14 @@ INSERT INTO MEMBER_LABEL_LINK
             FROM MEMBER_LABEL_HEAD
            WHERE M_LABEL_NAME = 'INJURED_PERIOD') F;
 
-/*ÂèñÊ∂à‰º§ÂÆ≥ÊúüÊ†áÁ≠æ*/
+/*»°œ˚…À∫¶∆⁄±Í«©*/
 DELETE MEMBER_LABEL_LINK C
  WHERE EXISTS
  (SELECT 1
           FROM (SELECT A.MEMBER_KEY
                   FROM FACT_ORDER A
                  WHERE A.POSTING_DATE_KEY = IN_POSTING_DATE_KEY
-                      /*Âà§Êñ≠‰ºöÂëòÁöÑÊúÄÂêé‰∏ÄÁ¨îËÆ¢Ë¥≠ÊòØÂê¶ÊòØÊúâÊïàËÆ¢Ë¥≠*/
+                      /*≈–∂œª·‘±µƒ◊Ó∫Û“ª± ∂©π∫ «∑Ò «”––ß∂©π∫*/
                    AND A.ORDER_STATE = 1
                    AND EXISTS
                  (SELECT 1
@@ -1036,7 +1036,7 @@ DELETE MEMBER_LABEL_LINK C
                                  GROUP BY F.MEMBER_KEY) E
                          WHERE A.MEMBER_KEY = E.MEMBER_KEY
                            AND A.ORDER_KEY = E.ORDER_KEY)
-                      /*Âà§Êñ≠ÊòØÂê¶Âú®MEMBER_LABEL_LINKÊúâËÆ∞ÂΩï*/
+                      /*≈–∂œ «∑Ò‘⁄MEMBER_LABEL_LINK”–º«¬º*/
                    AND EXISTS
                  (SELECT 1
                           FROM MEMBER_LABEL_LINK B
@@ -1077,7 +1077,7 @@ SELECT *
          WHERE B.POSTING_DATE_KEY = 20170926
            AND B.CANCEL_STATE = 0
            AND A.MEMBER_KEY = B.MEMBER_KEY);
---ÈÄÄÊç¢Ë¥ßÂéüÂõ†
+--ÕÀªªªı‘≠“Ú
 SELECT B.ONE_REASON, C.REASON_NM, B.TWO_REASON, D.REASON_NM
   FROM (SELECT DISTINCT A.ONE_REASON, A.TWO_REASON FROM FACT_ORDER_REVERSE A) B,
        DIM_RE_RESEAON_1 C,
@@ -1088,28 +1088,127 @@ SELECT B.ONE_REASON, C.REASON_NM, B.TWO_REASON, D.REASON_NM
 
 --*************************************************************************************************************
 /*
-WEBSITE_LOSS_SCORE   Êï¥Á´ôÊµÅÂ§±ËØÑÂàÜ
-EVERYDAY_SEE               ÊØèÊó•ÂøÖÁúãÔºàËøë30Â§©Ê¥ªË∑ÉÂ§©Êï∞Â§ß‰∫é15Â§©ÔºàÊ≥®ÂÜåÊó•ÊúüÂ§ß‰∫é30Â§©ÔºâÔºâ
-OCCASIONALLY_SEE           ÂÅ∂ÂÅ∂Êù•Êù•ÔºàËøë30Â§©ÂÜÖÊ¥ªË∑ÉÂ§©Êï∞Â∞ë‰∫é4Â§©ÔºàÊ≥®ÂÜåÊó•ÊúüÂ§ß‰∫é30Â§©ÔºâÔºâ
-REGISTERED_LESS_ONE_MONTH  Ëøë‰∏Ä‰∏™ÊúàÊ≥®ÂÜåÁî®Êà∑ÔºàÊ≥®ÂÜåÊó•ÊúüÂ∞è‰∫éÁ≠â‰∫é30Â§©Ôºâ
-ACTIVE                     Ê¥ªË∑ÉÔºàËøë30Â§©ÊúâÊ¥ªË∑ÉËÆ∞ÂΩïÁöÑÁî®Êà∑ÔºàÊ≥®ÂÜåÊó•ÊúüÂ§ß‰∫é30Â§©ÔºâÔºâ
-MAYBE_LOSS                 ÊµÖÊµÅÂ§±Ôºà30Â§©Âà∞60Â§©ÊúâË°å‰∏∫ËÆ∞ÂΩïÁî®Êà∑ÔºàÊ≥®ÂÜåÊó•ÊúüÂ§ß‰∫é30Â§©ÔºâÔºâ
-DEEP_LOSS                  Ê∑±Â∫¶ÊµÅÂ§±Ôºà60Â§©‰ª•‰∏äÊúâË°å‰∏∫ËÆ∞ÂΩïÁî®Êà∑ÔºàÊ≥®ÂÜåÊó•ÊúüÂ§ß‰∫é30Â§©ÔºâÔºâ
+WEBSITE_LOSS_SCORE   ’˚’æ¡˜ ß∆¿∑÷
+EVERYDAY_SEE               √ø»’±ÿø¥£®Ω¸30ÃÏªÓ‘æÃÏ ˝¥Û”⁄15ÃÏ£®◊¢≤·»’∆⁄¥Û”⁄30ÃÏ£©£©
+OCCASIONALLY_SEE           ≈º≈º¿¥¿¥£®Ω¸30ÃÏƒ⁄ªÓ‘æÃÏ ˝…Ÿ”⁄4ÃÏ£®◊¢≤·»’∆⁄¥Û”⁄30ÃÏ£©£©
+REGISTERED_LESS_ONE_MONTH  Ω¸“ª∏ˆ‘¬◊¢≤·”√ªß£®◊¢≤·»’∆⁄–°”⁄µ»”⁄30ÃÏ£©
+ACTIVE                     ªÓ‘æ£®Ω¸30ÃÏ”–ªÓ‘æº«¬ºµƒ”√ªß£®◊¢≤·»’∆⁄¥Û”⁄30ÃÏ£©£©
+MAYBE_LOSS                 «≥¡˜ ß£®30ÃÏµΩ60ÃÏ”–––Œ™º«¬º”√ªß£®◊¢≤·»’∆⁄¥Û”⁄30ÃÏ£©£©
+DEEP_LOSS                  …Ó∂»¡˜ ß£®60ÃÏ“‘…œ”–––Œ™º«¬º”√ªß£®◊¢≤·»’∆⁄¥Û”⁄30ÃÏ£©£©
 
 */
 --*************************************************************************************************************
-SELECT C.MEMBER_KEY, C.MAX_VISIT_DATE_KEY, D.CREATE_DATE_KEY
-  FROM (SELECT B.MEMBER_KEY, MAX(B.VISIT_DATE_KEY) MAX_VISIT_DATE_KEY
-          FROM (SELECT DISTINCT A.VISIT_DATE_KEY, A.MEMBER_KEY,1 CNT
-                  FROM FACT_PAGE_VIEW A
-                 WHERE A.VISIT_DATE_KEY >=
-                       TO_CHAR(TRUNC(SYSDATE - 60), 'YYYYMMDD')
-                   AND A.MEMBER_KEY <> 0) B
-         GROUP BY B.MEMBER_KEY) C,
-       (SELECT E.MEMBER_BP MEMBER_KEY, E.CREATE_DATE_KEY FROM DIM_MEMBER E) D
- WHERE C.MEMBER_KEY = D.MEMBER_KEY;
+MERGE /*+APPEND*/
+INTO (SELECT ROW_ID,
+             MEMBER_KEY,
+             M_LABEL_ID,
+             M_LABEL_TYPE_ID,
+             CREATE_DATE,
+             CREATE_USER_ID,
+             LAST_UPDATE_DATE,
+             LAST_UPDATE_USER_ID
+        FROM MEMBER_LABEL_LINK
+       WHERE M_LABEL_ID BETWEEN 202 AND 207) T
+USING (SELECT MEMBER_LABEL_LINK_SEQ.NEXTVAL ROW_ID,
+              G.MEMBER_KEY,
+              H.M_LABEL_ID,
+              H.M_LABEL_TYPE_ID,
+              SYSDATE CREATE_DATE,
+              'yangjin' CREATE_USER_ID,
+              SYSDATE LAST_UPDATE_DATE,
+              'yangjin' LAST_UPDATE_USER_ID
+         FROM (SELECT F.MEMBER_KEY,
+                      F.CREATE_DATE_KEY,
+                      F.MAX_VISIT_DATE_KEY,
+                      F.LESS_30_DAYS_ACTIVE,
+                      F.MORE_30_DAYS_ACTIVE,
+                      CASE
+                        WHEN F.CREATE_DATE_KEY >=
+                             TO_CHAR(TRUNC(SYSDATE - 30), 'YYYYMMDD') THEN
+                         'REGISTERED_LESS_ONE_MONTH'
+                        WHEN F.CREATE_DATE_KEY <
+                             TO_CHAR(TRUNC(SYSDATE - 30), 'YYYYMMDD') AND
+                             F.LESS_30_DAYS_ACTIVE >= 15 THEN
+                         'EVERYDAY_SEE'
+                        WHEN F.CREATE_DATE_KEY <
+                             TO_CHAR(TRUNC(SYSDATE - 30), 'YYYYMMDD') AND
+                             F.LESS_30_DAYS_ACTIVE >= 4 THEN
+                         'OCCASIONALLY_SEE'
+                        WHEN F.CREATE_DATE_KEY <
+                             TO_CHAR(TRUNC(SYSDATE - 30), 'YYYYMMDD') AND
+                             F.LESS_30_DAYS_ACTIVE > 0 THEN
+                         'ACTIVE'
+                        WHEN F.CREATE_DATE_KEY <
+                             TO_CHAR(TRUNC(SYSDATE - 30), 'YYYYMMDD') AND
+                             F.MORE_30_DAYS_ACTIVE > 0 THEN
+                         'MAYBE_LOSS'
+                        ELSE
+                         'DEEP_LOSS'
+                      END MEMBER_LABEL_NAME
+                 FROM (SELECT C.MEMBER_KEY,
+                              D.CREATE_DATE_KEY,
+                              C.MAX_VISIT_DATE_KEY,
+                              C.LESS_30_DAYS_ACTIVE,
+                              C.MORE_30_DAYS_ACTIVE
+                         FROM (SELECT B.MEMBER_KEY,
+                                      MAX(B.VISIT_DATE_KEY) MAX_VISIT_DATE_KEY,
+                                      SUM(CASE
+                                            WHEN B.VISIT_DATE_KEY >=
+                                                 TO_CHAR(TRUNC(SYSDATE - 30),
+                                                         'YYYYMMDD') THEN
+                                             1
+                                            ELSE
+                                             0
+                                          END) LESS_30_DAYS_ACTIVE,
+                                      SUM(CASE
+                                            WHEN B.VISIT_DATE_KEY <
+                                                 TO_CHAR(TRUNC(SYSDATE - 30),
+                                                         'YYYYMMDD') AND
+                                                 B.VISIT_DATE_KEY >=
+                                                 TO_CHAR(TRUNC(SYSDATE - 60),
+                                                         'YYYYMMDD') THEN
+                                             1
+                                            ELSE
+                                             0
+                                          END) MORE_30_DAYS_ACTIVE
+                                 FROM (SELECT DISTINCT A.VISIT_DATE_KEY,
+                                                       A.MEMBER_KEY,
+                                                       1 CNT
+                                         FROM FACT_PAGE_VIEW A
+                                        WHERE A.VISIT_DATE_KEY >=
+                                              TO_CHAR(TRUNC(SYSDATE - 65),
+                                                      'YYYYMMDD')
+                                          AND A.MEMBER_KEY <> 0) B
+                                GROUP BY B.MEMBER_KEY) C,
+                              (SELECT E.MEMBER_BP MEMBER_KEY, E.CREATE_DATE_KEY
+                                 FROM DIM_MEMBER E) D
+                        WHERE C.MEMBER_KEY = D.MEMBER_KEY) F) G,
+              MEMBER_LABEL_HEAD H
+        WHERE G.MEMBER_LABEL_NAME = H.M_LABEL_NAME) S
+ON (T.MEMBER_KEY = S.MEMBER_KEY)
+WHEN MATCHED THEN
+  UPDATE SET T.M_LABEL_ID = S.M_LABEL_ID, T.LAST_UPDATE_DATE = SYSDATE
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.ROW_ID,
+     T.MEMBER_KEY,
+     T.M_LABEL_ID,
+     T.M_LABEL_TYPE_ID,
+     T.CREATE_DATE,
+     T.CREATE_USER_ID,
+     T.LAST_UPDATE_DATE,
+     T.LAST_UPDATE_USER_ID)
+  VALUES
+    (MEMBER_LABEL_LINK_SEQ.NEXTVAL,
+     S.MEMBER_KEY,
+     S.M_LABEL_ID,
+     1,
+     SYSDATE,
+     'yangjin',
+     SYSDATE,
+     'yangjin');
 
-SELECT E.MEMBER_BP MEMBER_KEY, E.CREATE_DATE_KEY FROM DIM_MEMBER E;
+
 
 --tmp
 SELECT * FROM MEMBER_LABEL_HEAD ORDER BY M_LABEL_ID;
@@ -1118,6 +1217,10 @@ SELECT * FROM MEMBER_LABEL_LINK;
 SELECT * FROM MEMBER_LABEL_LINK_V;
 SELECT * FROM MEMBER_LABEL_LOG;
 
+SELECT * FROM MEMBER_LABEL_LINK A WHERE A.M_LABEL_ID BETWEEN 202 AND 207;
+
+SELECT * FROM S_PARAMETERS2 FOR UPDATE;
+	 
 SELECT * FROM S_PARAMETERS2 FOR UPDATE;
 SELECT A.START_TIME,
        A.END_TIME,
@@ -1130,17 +1233,4 @@ SELECT A.START_TIME,
  WHERE A.PROC_NAME = 'MEMBER_LABEL_PKG.MEMBER_LIFE_PERIOD'
  ORDER BY A.START_TIME DESC;
 
-SELECT COUNT(1) FROM MEMBER_LABEL_LINK A WHERE A.M_LABEL_ID = 167;
 
-SELECT A.MEMBER_KEY, COUNT(1)
-  FROM MEMBER_LABEL_LINK A
- WHERE A.M_LABEL_ID = 167
- group by a.member_key
-having count(1) > 1;
-SELECT *
-  FROM MEMBER_LABEL_LINK A
- WHERE A.M_LABEL_ID = 167
-   AND A.MEMBER_KEY = 1501970962;
-
-DELETE MEMBER_LABEL_LINK A WHERE A.M_LABEL_ID BETWEEN 162 AND 166;
-COMMIT;
