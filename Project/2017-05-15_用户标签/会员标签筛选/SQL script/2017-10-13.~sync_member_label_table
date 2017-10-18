@@ -1,0 +1,80 @@
+--*******************************************************************************
+--MEMBER_LABEL_HEAD
+--*******************************************************************************
+--1.源表创建物化视图日志
+create materialized view log on MEMBER_LABEL_HEAD  with primary key;
+
+--2.
+
+--3.
+
+--4.
+
+
+
+
+--*******************************************************************************
+--测试
+--*******************************************************************************
+--27
+CREATE TABLE MEMBER_LABEL_HEAD_TEST AS
+SELECT * FROM MEMBER_LABEL_HEAD;
+
+--创建物化视图日志
+create materialized view log on MEMBER_LABEL_HEAD_TEST  with primary key; 
+
+
+--23
+--创建物化视图
+CREATE MATERIALIZED VIEW MEMBER_LABEL_HEAD_MV_TEST 
+(      M_LABEL_ID,
+       M_LABEL_NAME,
+       M_LABEL_DESC,
+       M_LABEL_TYPE_ID,
+       M_LABEL_FATHER_ID,
+       CREATE_DATE,
+       CREATE_USER_ID,
+       LAST_UPDATE_DATE,
+       LAST_UPDATE_USER_ID,
+       CURRENT_FLAG,
+       SORT_FIELD) 
+PARALLEL 10
+REFRESH FAST WITH PRIMARY KEY ON DEMAND          
+NEXT SYSDATE + 1/(24*60) FOR UPDATE          
+AS 
+SELECT M_LABEL_ID,
+       M_LABEL_NAME,
+       M_LABEL_DESC,
+       M_LABEL_TYPE_ID,
+       M_LABEL_FATHER_ID,
+       CREATE_DATE,
+       CREATE_USER_ID,
+       LAST_UPDATE_DATE,
+       LAST_UPDATE_USER_ID,
+       CURRENT_FLAG,
+       SORT_FIELD
+  FROM MEMBER_LABEL_HEAD_TEST@DW27;
+
+--刷新物化视图
+dbms_refresh.refresh('"ML"."MEMBER_LABEL_HEAD_MV_TEST"');
+
+
+--删除物化视图日志
+drop materialized view log on MEMBER_LABEL_HEAD_TEST;
+
+--删除物化视图
+drop materialized view MEMBER_LABEL_HEAD_MV_TEST;
+
+
+SELECT A.M_LABEL_ID,
+       A.M_LABEL_NAME,
+       A.M_LABEL_DESC,
+       A.M_LABEL_TYPE_ID,
+       A.M_LABEL_FATHER_ID,
+       A.CREATE_DATE,
+       A.CREATE_USER_ID,
+       A.LAST_UPDATE_DATE,
+       A.LAST_UPDATE_USER_ID,
+       A.CURRENT_FLAG,
+       A.SORT_FIELD
+  FROM MEMBER_LABEL_HEAD_MV_TEST A;

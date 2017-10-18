@@ -2464,6 +2464,21 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
       YANGJIN_PKG.OPER_PRODUCT_DAILY_RPT(IN_POSTING_DATE_KEY);
     END;
   
+    BEGIN
+      --YANGJIN_PKG.OPER_MEMBER_NOT_IN_EC
+      YANGJIN_PKG.OPER_MEMBER_NOT_IN_EC(IN_POSTING_DATE_KEY);
+    END;
+  
+    BEGIN
+      --MEMBER_LABEL_PKG.MEMBER_REPURCHASE
+      MEMBER_LABEL_PKG.MEMBER_REPURCHASE(IN_POSTING_DATE_KEY);
+    END;
+  
+    BEGIN
+      --MEMBER_LABEL_PKG.MEMBER_INJURED_PERIOD
+      MEMBER_LABEL_PKG.MEMBER_INJURED_PERIOD(IN_POSTING_DATE_KEY);
+    END;
+  
   END FACT_GOODS_SALES_FIX;
 
   PROCEDURE DIM_GOOD_FIX IS
@@ -2711,7 +2726,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
                   WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     AND*/
                   F.ZMATERIAL NOT LIKE '%F%'
                AND F.ZEAMC027 IS NOT NULL
                AND F.ZEAMC027 != 0) TA

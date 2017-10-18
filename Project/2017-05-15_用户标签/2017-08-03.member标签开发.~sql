@@ -220,7 +220,7 @@ USING (SELECT F.MEMBER_KEY,
                                                       TO_CHAR(TRUNC(&IN_POSTING_DATE),
                                                               'YYYYMMDD') /*统计180天数据*/
                                                   AND A.MEMBER_KEY <> 0
-																									/*只对当天浏览的会员计算常用端口*/
+                                                     /*只对当天浏览的会员计算常用端口*/
                                                   AND EXISTS
                                                 (SELECT 1
                                                          FROM FACT_SESSION H
@@ -1085,6 +1085,31 @@ SELECT B.ONE_REASON, C.REASON_NM, B.TWO_REASON, D.REASON_NM
  WHERE B.ONE_REASON = C.CODE
    AND B.TWO_REASON = D.CODE
  ORDER BY B.ONE_REASON, B.TWO_REASON;
+
+--*************************************************************************************************************
+/*
+WEBSITE_LOSS_SCORE   整站流失评分
+EVERYDAY_SEE               每日必看（近30天活跃天数大于15天（注册日期大于30天））
+OCCASIONALLY_SEE           偶偶来来（近30天内活跃天数少于4天（注册日期大于30天））
+REGISTERED_LESS_ONE_MONTH  近一个月注册用户（注册日期小于等于30天）
+ACTIVE                     活跃（近30天有活跃记录的用户（注册日期大于30天））
+MAYBE_LOSS                 浅流失（30天到60天有行为记录用户（注册日期大于30天））
+DEEP_LOSS                  深度流失（60天以上有行为记录用户（注册日期大于30天））
+
+*/
+--*************************************************************************************************************
+SELECT C.MEMBER_KEY, C.MAX_VISIT_DATE_KEY, D.CREATE_DATE_KEY
+  FROM (SELECT B.MEMBER_KEY, MAX(B.VISIT_DATE_KEY) MAX_VISIT_DATE_KEY
+          FROM (SELECT DISTINCT A.VISIT_DATE_KEY, A.MEMBER_KEY
+                  FROM FACT_PAGE_VIEW A
+                 WHERE A.VISIT_DATE_KEY >=
+                       TO_CHAR(TRUNC(SYSDATE - 60), 'YYYYMMDD')
+                   AND A.MEMBER_KEY <> 0) B
+         GROUP BY B.MEMBER_KEY) C,
+       (SELECT E.MEMBER_BP MEMBER_KEY, E.CREATE_DATE_KEY FROM DIM_MEMBER E) D
+ WHERE C.MEMBER_KEY = D.MEMBER_KEY;
+
+SELECT E.MEMBER_BP MEMBER_KEY, E.CREATE_DATE_KEY FROM DIM_MEMBER E;
 
 --tmp
 SELECT * FROM MEMBER_LABEL_HEAD ORDER BY M_LABEL_ID;

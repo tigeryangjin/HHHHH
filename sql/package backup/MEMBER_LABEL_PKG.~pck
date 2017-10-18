@@ -1477,6 +1477,8 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                     WHERE A.ITEM_CODE = C.ITEM_CODE
                                       AND C.STORE_ID <> 1) THEN
                               'FIRST_ORDER_BBC'
+                             WHEN A.GROUP_ID = 2100 THEN
+                              'FIRST_ORDER_JD'
                              ELSE
                               'FIRST_ORDER_OTHER'
                            END ITEM_LABEL
@@ -2029,7 +2031,7 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
       /*插入大额CODE支付小额在线支付标签*/
       INSERT INTO MEMBER_LABEL_LINK
         (ROW_ID,
-				 MEMBER_KEY,
+         MEMBER_KEY,
          M_LABEL_ID,
          M_LABEL_TYPE_ID,
          CREATE_DATE,
@@ -2037,7 +2039,7 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
          LAST_UPDATE_DATE,
          LAST_UPDATE_USER_ID)
         SELECT MEMBER_LABEL_LINK_SEQ.NEXTVAL,
-				       F.MEMBER_KEY,
+               F.MEMBER_KEY,
                G.M_LABEL_ID,
                G.M_LABEL_TYPE_ID,
                SYSDATE CREATE_DATE,
