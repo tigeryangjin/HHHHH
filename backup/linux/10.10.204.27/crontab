@@ -1,0 +1,15 @@
+#yangjin
+08 9 * * * root flock -xn /tmp/merge_dim_member_zone.lock -c '/home/yangjin/script/merge_dim_member_zone.sh'
+#05 */1 * * * root flock -xn /tmp/member_label_message_push.lock -c '/home/yangjin/script/member_label_message_push.sh'
+30 0 * * * root flock -xn /tmp/sync_member_label.lock -c '/home/yangjin/script/sync_member_label.sh'
+10 2 * * * root flock -xn /tmp/process_market_ia.lock -c '/home/yangjin/script/process_market_ia.sh'
+15 3 * * * root flock -xn /tmp/ec_top_level.lock -c '/home/yangjin/script/ec_top_level.sh'
+50 8 * * * root flock -xn /tmp/member_label_top_level_daily.lock -c '/home/yangjin/script/member_label_top_level_daily.sh'
+00 1 * * * root flock -xn /tmp/member_label_loss_score.lock -c '/home/yangjin/script/member_label_loss_score.sh'
+20 8 * * * root flock -xn /tmp/data_acquisition_item_top_level.lock -c '/home/yangjin/script/data_acquisition_item_top_level.sh'
+50 8 * * * root flock -xn /tmp/oper_product_daily_rpt.lock -c '/home/yangjin/script/oper_product_daily_rpt.sh'
+50 8 * * * root flock -xn /tmp/oper_member_not_in_ec.lock -c '/home/yangjin/script/oper_member_not_in_ec.sh'
+30 8 * * * root flock -xn /tmp/oper_product_pvuv_daily_rpt.lock -c '/home/yangjin/script/oper_product_pvuv_daily_rpt.sh'
+00 8 * * * root flock -xn /tmp/oper_member_mblevel_dcgood.lock -c '/home/yangjin/script/oper_member_mblevel_dcgood.sh'
+#00 21 * * 6 root flock -xn /tmp/table_optimization.lock -c '/home/yangjin/script/table_optimization.sh'
+#yangjin

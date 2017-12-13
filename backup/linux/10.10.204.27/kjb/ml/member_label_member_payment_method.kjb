@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
-  <name>ec_order</name>
+  <name>member_label_member_payment_method</name>
     <description/>
     <extended_description/>
     <job_version/>
+    <job_status>0</job_status>
   <directory>&#x2f;</directory>
   <created_user>-</created_user>
-  <created_date>2017&#x2f;09&#x2f;15 10&#x3a;20&#x3a;15.376</created_date>
+  <created_date>2017&#x2f;05&#x2f;26 10&#x3a;00&#x3a;36.155</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2017&#x2f;09&#x2f;15 10&#x3a;20&#x3a;15.376</modified_date>
+  <modified_date>2017&#x2f;05&#x2f;26 10&#x3a;00&#x3a;36.155</modified_date>
     <parameters>
     </parameters>
     <slaveservers>
@@ -50,74 +51,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>233</xloc>
-      <yloc>157</yloc>
-      </entry>
-    <entry>
-      <name>ec_order_tmp</name>
-      <description/>
-      <type>TRANS</type>
-      <specification_method>filename</specification_method>
-      <trans_object_id/>
-      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;ec&#x2f;ec_order_tmp.ktr</filename>
-      <transname/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <clear_rows>N</clear_rows>
-      <clear_files>N</clear_files>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <cluster>N</cluster>
-      <slave_server_name/>
-      <set_append_logfile>N</set_append_logfile>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <create_parent_folder>N</create_parent_folder>
-      <logging_remote_work>N</logging_remote_work>
-      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>341</xloc>
-      <yloc>158</yloc>
-      </entry>
-    <entry>
-      <name>ec_order_merge</name>
-      <description/>
-      <type>TRANS</type>
-      <specification_method>filename</specification_method>
-      <trans_object_id/>
-      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;ec&#x2f;ec_order_merge.ktr</filename>
-      <transname/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <clear_rows>N</clear_rows>
-      <clear_files>N</clear_files>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <cluster>N</cluster>
-      <slave_server_name/>
-      <set_append_logfile>N</set_append_logfile>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <create_parent_folder>N</create_parent_folder>
-      <logging_remote_work>N</logging_remote_work>
-      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>446</xloc>
-      <yloc>162</yloc>
+      <xloc>122</xloc>
+      <yloc>124</yloc>
       </entry>
     <entry>
       <name>Success</name>
@@ -126,14 +61,47 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>559</xloc>
-      <yloc>161</yloc>
+      <xloc>523</xloc>
+      <yloc>130</yloc>
+      </entry>
+    <entry>
+      <name>member_label_member_payment_method</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;ml&#x2f;member_label_member_payment_method.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>289</xloc>
+      <yloc>129</yloc>
       </entry>
   </entries>
   <hops>
     <hop>
       <from>START</from>
-      <to>ec_order_tmp</to>
+      <to>member_label_member_payment_method</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -141,16 +109,7 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>ec_order_tmp</from>
-      <to>ec_order_merge</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>ec_order_merge</from>
+      <from>member_label_member_payment_method</from>
       <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
