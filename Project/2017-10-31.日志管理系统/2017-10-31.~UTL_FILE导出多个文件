@@ -1,0 +1,21 @@
+DECLARE
+  V_F1 UTL_FILE.FILE_TYPE;
+BEGIN
+  --外层循环得到内层循环BETWEEN的最小值和最大值
+  FOR J IN (SELECT (LEVEL - 1) * 3000 MINVAL, LEVEL * 3000 MAXVAL
+              FROM DUAL
+            CONNECT BY LEVEL <=
+                       (SELECT COUNT(1) FROM ALL_OBJECTS) / 10000 + 1) LOOP
+    V_F1 := UTL_FILE.FOPEN('UT', 'DATA' || J.MAXVAL || '.TXT', 'W');
+    --内层循环，获取需要导出的数据
+    FOR I IN (SELECT T.OWNER, T.OBJECT_NAME
+                FROM (SELECT ALL_OBJECTS.*,
+                             ROW_NUMBER() OVER(ORDER BY OBJECT_NAME) RN
+                        FROM ALL_OBJECTS) T
+               WHERE RN BETWEEN J.MINVAL AND J.MAXVAL) LOOP
+      --行数据依次写入文件
+      UTL_FILE.PUT_LINE(V_F1, I.OWNER || I.OBJECT_NAME);
+    END LOOP;
+    UTL_FILE.FCLOSE(V_F1);
+  END LOOP;
+END;

@@ -96,9 +96,10 @@ DELETE MEMBER_LABEL_LINK A
 --***********************************************************************************
 --5.创建同义词
 --***********************************************************************************
-CREATE OR REPLACE SYNONYM MEMBER_LIKE_ITEM_SYN FOR DW_USER.OPER_MEMBER_LIKE_ITEM;
-CREATE OR REPLACE SYNONYM MEMBER_LIKE_MATXL_SYN FOR DW_USER.OPER_MEMBER_LIKE_MATXL;
-CREATE OR REPLACE SYNONYM ML_MATERCATE_SYN FOR DIM_MATERCATE@DW27; 
+CREATE OR REPLACE PUBLIC SYNONYM MEMBER_LIKE_ITEM_SYN FOR DW_USER.OPER_MEMBER_LIKE_ITEM;
+CREATE OR REPLACE PUBLIC SYNONYM MEMBER_LIKE_MATXL_SYN FOR DW_USER.OPER_MEMBER_LIKE_MATXL;
+CREATE OR REPLACE PUBLIC SYNONYM ML_MATERCATE_SYN FOR DIM_MATERCATE@DW27; 
+CREATE OR REPLACE PUBLIC SYNONYM ML_MEMBER_MAPPING_SYN FOR DIM_MAPPING_MEM@DW27; 
 
 DROP SYNONYM OPER_MEMBER_LIKE_ITEM;
 DROP SYNONYM OPER_MEMBER_LIKE_MATXL;
@@ -108,6 +109,48 @@ SELECT * FROM DBA_SYNONYMS ;
 
 SELECT * FROM OPER_MEMBER_LIKE_ITEM;
 SELECT * FROM OPER_MEMBER_LIKE_MATXL;
+
+
+--***********************************************************************************
+--6.UTL_FILE导出文本文件
+--***********************************************************************************
+--执行UTL_FILE包的权限授予ML
+grant execute on UTL_FILE to ML;
+--在服务器上创建导出目录 
+create or replace directory member_label_output as '/data/htdocs/pushadmin.happigo.com/Public/download';
+--目录权限授权给用户
+grant read,write on directory member_label_output to ML;
+grant read,write on directory member_label_output to public;
+
+SELECT * FROM DBA_DIRECTORIES;
+
+--MEMBER_FILTER_RESULT插入测试数据
+SELECT * FROM MEMBER_FILTER_RESULT;
+
+INSERT INTO MEMBER_FILTER_RESULT
+  (ROW_ID, FILTER_ID, MEMBER_BP, VID, OPENID, PUSHID)
+  SELECT MEMBER_FILTER_RESULT_SEQ.NEXTVAL,
+         1,
+         A.MEMBER_KEY,
+         A.VID,
+         A.OPEN_ID,
+         A.PUSH_ID
+    FROM ML_MEMBER_MAPPING_SYN A
+   WHERE ROWNUM <= 10000;
+COMMIT;
+	
+SELECT * FROM ML_MEMBER_MAPPING_SYN;
+
+
+
+-- Create sequence 
+create sequence MEMBER_FILTER_RESULT_SEQ
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 1
+increment by 1
+cache 20;
+
 
 --tmp
 SELECT COUNT(1) FROM MEMBER_LABEL_LINK_TMP;

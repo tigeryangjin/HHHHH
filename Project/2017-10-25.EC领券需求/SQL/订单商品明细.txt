@@ -1,0 +1,25 @@
+SELECT
+    a.order_id AS '订单ID',
+    order_sn AS '订单编号',
+    cust_no as '顾客编号',
+    member_level as '会员等级',
+    order_sn as '订单编号',
+    goods_amount AS '商品金额',
+    order_amount AS '订单金额',
+    FROM_UNIXTIME(add_time) AS '下单时间',
+    erp_order_no AS 'homa编号',
+    erp_code AS '商品编号',
+    goods_name AS '商品名称',
+    goods_type
+FROM
+    ec_order a,
+    ec_order_goods c
+WHERE
+    a.order_id = c.order_id
+AND a.order_state >= '20'
+AND add_time >= UNIX_TIMESTAMP('2017-05-25 00:00')
+AND add_time <= UNIX_TIMESTAMP('2017-05-26 00:00')
+AND (
+    c.erp_code LIKE '216640%'
+    OR c.erp_code LIKE '216639%'
+)

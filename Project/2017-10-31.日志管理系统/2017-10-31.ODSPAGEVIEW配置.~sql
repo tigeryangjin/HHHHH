@@ -1,0 +1,7 @@
+--执行UTL_FILE包的权限授予ML
+grant execute on UTL_FILE to DW_USER;
+--在服务器上创建导出目录 
+create or replace directory log_test as '/home/yangjin/log';
+--目录权限授权给用户
+grant read,write on directory log_test to DW_USER;
+grant read,write on directory log_test to public;

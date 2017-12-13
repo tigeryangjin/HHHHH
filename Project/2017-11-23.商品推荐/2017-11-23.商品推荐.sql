@@ -1,0 +1,81 @@
+/*
+Commodity recommendation
+商品推荐
+
+算法1：
+1.基于一个商品先找出所有购买此商品的用户群，
+2.然后找出此用户群所购买的商品（购买人数最多）前50名。
+
+算法2：
+1.基于一个会员，找出他购买次数最多的N个商品（根据订单笔数），
+2.然后找出同样购买过这N个商品的用户群，
+3.然后找出此用户群所购买的商品（购买人数最多）前10名
+
+*/
+
+
+--1.CREATE BASE TABLE
+DROP TABLE GOODS_RECOMMEND_BASE;
+CREATE TABLE GOODS_RECOMMEND_BASE AS
+SELECT OH.ADD_TIME  ORDER_DATE,
+       OH.ORDER_SN  ORDER_NO,
+       OH.CUST_NO   MEMBER_BP,
+       OG.ERP_CODE  ITEM_CODE,
+       OG.GOODS_NUM QTY
+  FROM FACT_EC_ORDER_2 OH, FACT_EC_ORDER_GOODS OG
+ WHERE OH.ORDER_ID = OG.ORDER_ID
+   AND OH.ORDER_STATE >= 20;
+	 
+DROP TABLE GOODS_RECOMMEND_BASE;
+CREATE TABLE GOODS_RECOMMEND_BASE AS
+SELECT A.POSTING_DATE_KEY ORDER_DATE,
+       A.ORDER_KEY        ORDER_NO,
+       A.MEMBER_KEY       MEMBER_BP,
+       A.GOODS_COMMON_KEY ITEM_CODE
+  FROM FACT_GOODS_SALES A
+ WHERE A.ORDER_STATE = 1
+   AND A.GOODS_COMMON_KEY IS NOT NULL
+ ORDER BY A.POSTING_DATE_KEY, A.ORDER_KEY, A.MEMBER_KEY, A.GOODS_COMMON_KEY;
+
+--2.CUST_NO=1500394689,ERP_CODE=186222
+SELECT ROW_NUMBER() OVER(ORDER BY G.MEMBER_NUMBER DESC) TOPN,
+       G.ITEM_CODE,
+       G.MEMBER_NUMBER,
+       H.GOODS_NAME,
+       H.MATDL,
+       H.MATDLT,
+       H.MATZL,
+       H.MATZLT,
+       H.MATXL,
+       H.MATXLT
+  FROM (SELECT F.ITEM_CODE, F.MEMBER_NUMBER
+          FROM (SELECT B.ITEM_CODE, COUNT(DISTINCT B.MEMBER_BP) MEMBER_NUMBER
+                  FROM GOODS_RECOMMEND_BASE B
+                 WHERE EXISTS (SELECT 1
+                          FROM (SELECT A.MEMBER_BP
+                                  FROM GOODS_RECOMMEND_BASE A
+                                 WHERE A.ITEM_CODE = 225310) C
+                         WHERE B.MEMBER_BP = C.MEMBER_BP) /*购买此商品的所有会员*/
+                   AND NOT EXISTS
+                 (SELECT 1
+                          FROM (SELECT E.ITEM_CODE
+                                  FROM GOODS_RECOMMEND_BASE E
+                                 WHERE E.MEMBER_BP = 1111006723) D
+                         WHERE B.ITEM_CODE = D.ITEM_CODE) /*此会员已经购买过的商品*/
+                   AND B.ITEM_CODE <> 0
+                   AND B.ITEM_CODE <> 225310
+                   AND B.ORDER_DATE >= TO_CHAR(SYSDATE - 91, 'YYYYMMDD') /*日期范围最近90天*/
+                 GROUP BY B.ITEM_CODE) F
+         WHERE ROWNUM <= 50
+         ORDER BY F.MEMBER_NUMBER DESC) G,
+       DIM_GOOD H
+ WHERE G.ITEM_CODE = H.ITEM_CODE
+   AND H.CURRENT_FLG = 'Y';
+
+--3.
+
+--4.
+
+--tmp
+SELECT * FROM TABLE(YANGJIN_PKG_TEST.GET_GOODS_RECOMMEND_T(1111006723,225310));
+SELECT * FROM TABLE(GET_GOODS_RECOMMEND(1111006723,225310));

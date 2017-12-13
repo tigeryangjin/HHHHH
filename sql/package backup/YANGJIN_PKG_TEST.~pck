@@ -1,0 +1,165 @@
+CREATE OR REPLACE PACKAGE YANGJIN_PKG_TEST IS
+
+  -- AUTHOR  : YANGJIN
+  -- CREATED : 2017-05-31 10:41:42
+  -- PURPOSE : YANGJIN PACKAGE
+
+  FUNCTION GET_IP_CITY(IN_IP_INT IN NUMBER) RETURN VARCHAR2;
+  /*返回ip归属城市*/
+  FUNCTION MEMBER_REPURCHASE_CYCLE_DAYS(IN_MEMBER_KEY IN NUMBER)
+    RETURN NUMBER;
+  /*
+  函数名：      MEMBER_REPURCHASE_CYCLE_DAYS
+  目的：        返回会员的复购周期（天数）
+  创建时间：    2017/08/17
+  作者:         yangjin
+  创建时间：    2017/08/24
+  最后修改人：
+  最后更改日期：
+  */
+
+  
+
+  PROCEDURE LOG_TEST;
+  /*
+  功能名:       DATA_ACQUISITION_ITEM_MIN_PER
+  目的:         统计 DATA_ACQUISITION_ITEM的最小PERIOD
+  作者:         yangjin
+  创建时间：    2017/10/30
+  最后修改人：
+  最后更改日期：
+  */
+
+END YANGJIN_PKG_TEST;
+/
+CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG_TEST IS
+
+  FUNCTION GET_IP_CITY(IN_IP_INT IN NUMBER) RETURN VARCHAR2 IS
+    RESULT_IP_CITY VARCHAR2(50);
+  BEGIN
+    SELECT /*+ INDEX(A,IP_START_IDX) */
+     A.IP_CITY
+      INTO RESULT_IP_CITY
+      FROM DIM_IP_GEO A
+     WHERE A.IP_START <= IN_IP_INT
+       AND A.IP_END >= IN_IP_INT
+       AND A.IP_CITY IS NOT NULL;
+    RETURN(RESULT_IP_CITY);
+  END GET_IP_CITY;
+
+  FUNCTION MEMBER_REPURCHASE_CYCLE_DAYS(IN_MEMBER_KEY IN NUMBER)
+    RETURN NUMBER IS
+    RESULT_DAYS NUMBER;
+    /*返回会员的复购周期（天数）*/
+  BEGIN
+    SELECT ROUND(NVL(SUM(C.POSTING_DATE - C.LAST_POSTING_DATE) /
+                     COUNT(C.ORDER_KEY),
+                     -1))
+      INTO RESULT_DAYS
+      FROM (SELECT B.MEMBER_KEY,
+                   B.ORDER_KEY,
+                   B.POSTING_DATE,
+                   LAG(B.POSTING_DATE) OVER(PARTITION BY B.MEMBER_KEY ORDER BY B.POSTING_DATE) LAST_POSTING_DATE
+              FROM (SELECT A.MEMBER_KEY,
+                           TO_DATE(A.POSTING_DATE_KEY, 'yyyymmdd') POSTING_DATE,
+                           A.ORDER_KEY
+                      FROM MEMBER_LIFE_PERIOD_TMP_B A
+                     WHERE A.ORDER_STATE = 1
+                       AND A.MEMBER_KEY = IN_MEMBER_KEY
+                          /*只取2016年之后的数据*/
+                       AND A.POSTING_DATE_KEY >= 20160101) B) C
+     WHERE C.LAST_POSTING_DATE IS NOT NULL;
+    RETURN(RESULT_DAYS);
+  END MEMBER_REPURCHASE_CYCLE_DAYS;
+
+  
+
+  PROCEDURE LOG_TEST IS
+    V_OUTPUT_FILE UTL_FILE.FILE_TYPE;
+    V_FILE_NAME   VARCHAR2(50);
+  
+    /*
+    功能说明：DATA_ACQUISITION_MONTH_TOPN月销售排行  
+    作者时间：yangjin  2017-10-30
+    */
+  
+  BEGIN
+    --外层循环得到内层循环BETWEEN的最小值和最大值
+    FOR J IN (SELECT (LEVEL - 1) * 1000000 MINVAL, LEVEL * 1000000 MAXVAL
+                FROM DUAL
+              CONNECT BY LEVEL <=
+                         (SELECT COUNT(1) FROM ODSHAPPIGO.ODS_PAGEVIEW) /
+                         1000000 + 1) LOOP
+      /*统一文件名称*/
+      V_FILE_NAME := 'ods_pv_' || TO_CHAR(SYSDATE, 'YYYYMMDD_HH24MISS') ||
+                     '.log';
+      /*打开文件*/
+      V_OUTPUT_FILE := UTL_FILE.FOPEN('LOG_TEST', V_FILE_NAME, 'W', 32767);
+    
+      /*写入title*/
+      UTL_FILE.PUT_LINE(V_OUTPUT_FILE,
+                        'ID,VID,MID,V,T,HMSC,HMMD,HMPL,HMKW,HMCI,URL,QUERY,AGENT,IP,CREATEON,A,VER,P,ISPROCESSED');
+    
+      /*循环，获取需要导出的数据*/
+      FOR I IN (SELECT B.ID,
+                       B.VID,
+                       B.MID,
+                       B.V,
+                       B.T,
+                       B.HMSC,
+                       B.HMMD,
+                       B.HMPL,
+                       B.HMKW,
+                       B.HMCI,
+                       B.URL,
+                       B.QUERY,
+                       B.AGENT,
+                       B.IP,
+                       B.CREATEON,
+                       B.A,
+                       B.VER,
+                       B.P,
+                       B.ISPROCESSED
+                  FROM (SELECT A.ID,
+                               A.VID,
+                               A.MID,
+                               A.V,
+                               A.T,
+                               A.HMSC,
+                               A.HMMD,
+                               A.HMPL,
+                               A.HMKW,
+                               A.HMCI,
+                               A.URL,
+                               A.QUERY,
+                               A.AGENT,
+                               A.IP,
+                               A.CREATEON,
+                               A.A,
+                               A.VER,
+                               A.P,
+                               A.ISPROCESSED,
+                               ROW_NUMBER() OVER(ORDER BY A.ID) RN
+                          FROM ODSHAPPIGO.ODS_PAGEVIEW A) B
+                 WHERE B.RN BETWEEN J.MINVAL AND J.MAXVAL) LOOP
+      
+        /*行数据依次写入文件*/
+        UTL_FILE.PUT_LINE(V_OUTPUT_FILE,
+                          I.ID || ',' || I.VID || ',' || I.MID || ',' || I.V || ',' || I.T || ',' ||
+                          I.HMSC || ',' || I.HMMD || ',' || I.HMPL || ',' ||
+                          I.HMKW || ',' || I.HMCI || ',' || I.URL || ',' ||
+                          I.QUERY || ',' || I.AGENT || ',' || I.IP || ',' ||
+                          I.CREATEON || ',' || I.A || ',' || I.VER || ',' || I.P || ',' ||
+                          I.ISPROCESSED);
+      END LOOP;
+    
+      /*关闭文件*/
+      UTL_FILE.FCLOSE(V_OUTPUT_FILE);
+    END LOOP;
+  EXCEPTION
+    WHEN OTHERS THEN
+      DBMS_OUTPUT.PUT_LINE(SQLERRM);
+  END LOG_TEST;
+
+END YANGJIN_PKG_TEST;
+/

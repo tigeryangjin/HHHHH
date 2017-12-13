@@ -16,6 +16,26 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG IS
   FUNCTION GET_DIM_GOOD_PRICE_LEVEL(IN_ITEM_CODE IN NUMBER) RETURN VARCHAR2;
   /*返回商品价格在所属物料细类的等级*/
 
+  PROCEDURE YANGJIN_PKG_DATE_FIX(IN_POSTING_DATE_KEY IN NUMBER);
+  /*
+  功能名:       YANGJIN_PKG_DATE_FIX
+  目的:         
+  作者:         yangjin
+  创建时间：    2017/12/04
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE LOG_TEST;
+  /*
+  功能名:       DATA_ACQUISITION_ITEM_MIN_PER
+  目的:         统计 DATA_ACQUISITION_ITEM的最小PERIOD
+  作者:         yangjin
+  创建时间：    2017/10/30
+  最后修改人：
+  最后更改日期：
+  */
+
   PROCEDURE ALTER_TABLE_SHRINK_SPACE(IN_TABLE_NAME IN VARCHAR2);
   /*
   功能名:       ALTER_TABLE_SHRINK_SPACE
@@ -143,6 +163,107 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG IS
   目的:         住宅小区名字更新
   作者:         yangjin
   创建时间：    2017/07/30
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE DATA_ACQUISITION_ITEM_BASE(I_DATE_KEY NUMBER);
+  /*
+  功能名:       DATA_ACQUISITION_ITEM_BASE
+  目的:         清洗DATA_ACQUISITION_ITEM表，去除重复数据,插入中间表DATA_ACQUISITION_ITEM_TMP
+                然后再插入DATA_ACQUISITION_ITEM_BASE表。
+  作者:         yangjin
+  创建时间：    2017/11/01
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE DATA_ACQUISITION_ITEM_CURRENT(I_DATE_KEY NUMBER);
+  /*
+  功能名:       DATA_ACQUISITION_ITEM_CURRENT
+  目的:         从DATA_ACQUISITION_ITEM_BASE表取数，计算出当期的销售数量和销售金额写入DATA_ACQUISITION_ITEM_CURRENT表
+  作者:         yangjin
+  创建时间：    2017/11/01
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE DATA_ACQUISITION_ITEM_MIN_PER;
+  /*
+  功能名:       DATA_ACQUISITION_ITEM_MIN_PER
+  目的:         统计 DATA_ACQUISITION_ITEM的最小PERIOD
+  作者:         yangjin
+  创建时间：    2017/10/30
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE DATA_ACQUISITION_WEEK_TOPN(I_DATE_KEY NUMBER);
+  /*
+  功能名:       DATA_ACQUISITION_WEEK_TOPN
+  目的:         DATA_ACQUISITION_WEEK_TOPN周销售排行 
+  作者:         yangjin
+  创建时间：    2017/11/02
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE DATA_ACQUISITION_WEEK_NEW(I_DATE_KEY NUMBER);
+  /*
+  功能名:       DATA_ACQUISITION_WEEK_NEW
+  目的:         DATA_ACQUISITION_WEEK_NEW周新品销售排行 
+  作者:         yangjin
+  创建时间：    2017/11/02
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE DATA_ACQUISITION_MONTH_TOPN(I_DATE_KEY NUMBER);
+  /*
+  功能名:       DATA_ACQUISITION_MONTH_TOPN
+  目的:         DATA_ACQUISITION_MONTH_TOPN月销售排行 
+  作者:         yangjin
+  创建时间：    2017/10/30
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE DATA_ACQUISITION_MONTH_NEW(I_DATE_KEY NUMBER);
+  /*
+  功能名:       DATA_ACQUISITION_MONTH_NEW
+  目的:         DATA_ACQUISITION_MONTH_NEW月新品销售排行 
+  作者:         yangjin
+  创建时间：    2017/10/30
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE EC_NEW_MEMBER_TRACK_BASE(I_DATE_KEY NUMBER);
+  /*
+  功能名:       EC_NEW_MEMBER_TRACK_BASE
+  目的:         用于跟踪ec会员0-5单的订购情况，此表为基表，在此表基础上计算0-5单顺序 
+  作者:         yangjin
+  创建时间：    2017/11/09
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE EC_NEW_MEMBER_TRACK_RANK;
+  /*
+  功能名:       EC_NEW_MEMBER_TRACK_RANK
+  目的:         计算ec会员的第几单
+  作者:         yangjin
+  创建时间：    2017/11/09
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MERGE_DIM_MEMBER_ZONE;
+  /*
+  功能名:       MERGE_DIM_MEMBER_ZONE
+  目的:         member地区
+  作者:         yangjin
+  创建时间：    2017/11/22
   最后修改人：
   最后更改日期：
   */
@@ -305,6 +426,123 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     END;
     RETURN(V_GOOD_PRICE_LEVEL);
   END GET_DIM_GOOD_PRICE_LEVEL;
+
+  PROCEDURE YANGJIN_PKG_DATE_FIX(IN_POSTING_DATE_KEY IN NUMBER) IS
+  
+    /*
+    功能说明：DATA_ACQUISITION_MONTH_TOPN月销售排行  
+    作者时间：yangjin  2017-10-30
+    */
+  
+  BEGIN
+    BEGIN
+      YANGJIN_PKG.DATA_ACQUISITION_ITEM_BASE(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.DATA_ACQUISITION_ITEM_CURRENT(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.DATA_ACQUISITION_ITEM_MIN_PER;
+      YANGJIN_PKG.DATA_ACQUISITION_MONTH_NEW(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.DATA_ACQUISITION_MONTH_TOPN(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.DATA_ACQUISITION_WEEK_NEW(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.DATA_ACQUISITION_WEEK_TOPN(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.DIM_GOOD_PRICE_LEVEL_UPDATE;
+      YANGJIN_PKG.EC_NEW_MEMBER_TRACK_BASE(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.EC_NEW_MEMBER_TRACK_RANK;
+      YANGJIN_PKG.MERGE_DIM_MEMBER_ZONE;
+      YANGJIN_PKG.OPER_MEMBER_NOT_IN_EC(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.OPER_NM_PROMOTION_ITEM_RPT(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.OPER_NM_PROMOTION_ORDER_RPT(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.OPER_NM_VOUCHER_RPT;
+      YANGJIN_PKG.OPER_PRODUCT_DAILY_RPT(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.OPER_PRODUCT_PVUV_DAILY_RPT(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.PROCESSMAKETHMSC_IA(IN_POSTING_DATE_KEY);
+    END;
+  END YANGJIN_PKG_DATE_FIX;
+
+  PROCEDURE LOG_TEST IS
+    V_OUTPUT_FILE UTL_FILE.FILE_TYPE;
+    V_FILE_NAME   VARCHAR2(50);
+  
+    /*
+    功能说明：DATA_ACQUISITION_MONTH_TOPN月销售排行  
+    作者时间：yangjin  2017-10-30
+    */
+  
+  BEGIN
+    --外层循环得到内层循环BETWEEN的最小值和最大值
+    FOR J IN (SELECT (LEVEL - 1) * 1000000 MINVAL, LEVEL * 1000000 MAXVAL
+                FROM DUAL
+              CONNECT BY LEVEL <=
+                         (SELECT COUNT(1) FROM ODSHAPPIGO.ODS_PAGEVIEW) /
+                         1000000 + 1) LOOP
+      /*统一文件名称*/
+      V_FILE_NAME := 'ods_pv_' || TO_CHAR(SYSDATE, 'YYYYMMDD_HH24MISS') ||
+                     '.log';
+      /*打开文件*/
+      V_OUTPUT_FILE := UTL_FILE.FOPEN('LOG_TEST', V_FILE_NAME, 'W', 32767);
+    
+      /*写入title*/
+      UTL_FILE.PUT_LINE(V_OUTPUT_FILE,
+                        'ID,VID,MID,V,T,HMSC,HMMD,HMPL,HMKW,HMCI,URL,QUERY,AGENT,IP,CREATEON,A,VER,P,ISPROCESSED');
+    
+      /*循环，获取需要导出的数据*/
+      FOR I IN (SELECT B.ID,
+                       B.VID,
+                       B.MID,
+                       B.V,
+                       B.T,
+                       B.HMSC,
+                       B.HMMD,
+                       B.HMPL,
+                       B.HMKW,
+                       B.HMCI,
+                       B.URL,
+                       B.QUERY,
+                       B.AGENT,
+                       B.IP,
+                       B.CREATEON,
+                       B.A,
+                       B.VER,
+                       B.P,
+                       B.ISPROCESSED
+                  FROM (SELECT A.ID,
+                               A.VID,
+                               A.MID,
+                               A.V,
+                               A.T,
+                               A.HMSC,
+                               A.HMMD,
+                               A.HMPL,
+                               A.HMKW,
+                               A.HMCI,
+                               A.URL,
+                               A.QUERY,
+                               A.AGENT,
+                               A.IP,
+                               A.CREATEON,
+                               A.A,
+                               A.VER,
+                               A.P,
+                               A.ISPROCESSED,
+                               ROW_NUMBER() OVER(ORDER BY A.ID) RN
+                          FROM ODSHAPPIGO.ODS_PAGEVIEW A) B
+                 WHERE B.RN BETWEEN J.MINVAL AND J.MAXVAL) LOOP
+      
+        /*行数据依次写入文件*/
+        UTL_FILE.PUT_LINE(V_OUTPUT_FILE,
+                          I.ID || ',' || I.VID || ',' || I.MID || ',' || I.V || ',' || I.T || ',' ||
+                          I.HMSC || ',' || I.HMMD || ',' || I.HMPL || ',' ||
+                          I.HMKW || ',' || I.HMCI || ',' || I.URL || ',' ||
+                          I.QUERY || ',' || I.AGENT || ',' || I.IP || ',' ||
+                          I.CREATEON || ',' || I.A || ',' || I.VER || ',' || I.P || ',' ||
+                          I.ISPROCESSED);
+      END LOOP;
+    
+      /*关闭文件*/
+      UTL_FILE.FCLOSE(V_OUTPUT_FILE);
+    END LOOP;
+  EXCEPTION
+    WHEN OTHERS THEN
+      DBMS_OUTPUT.PUT_LINE(SQLERRM);
+  END LOG_TEST;
 
   PROCEDURE ALTER_TABLE_SHRINK_SPACE(IN_TABLE_NAME IN VARCHAR2) IS
   BEGIN
@@ -1932,14 +2170,18 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                   '限时抢'
                  WHEN X.XIANSHI_TYPE = 3 THEN
                   'TV直减'
+                 ELSE
+                  '限时折扣'
                END PROMOTION_TYPE, /*促销类型*/
                CASE
                  WHEN X.CRM_POLICY_ID = '0' THEN
                   '新媒体'
                  WHEN X.CRM_POLICY_ID <> '0' THEN
                   '同步促销'
+                 ELSE
+                  '新媒体'
                END PROMOTION_SOURCE, /*促销来源*/
-               X.CRM_POLICY_ID PROMOTION_NO, /*促销编号*/
+               NVL(X.CRM_POLICY_ID, 0) PROMOTION_NO, /*促销编号*/
                CASE
                  WHEN OH.APP_NAME = 'KLGiPhone' THEN
                   'APP'
@@ -1958,22 +2200,25 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                OG.GOODS_NAME ITEM_NAME, /*商品名称*/
                OG.GOODS_NUM SALES_QTY, /*有效订购件数*/
                OG.GOODS_NUM * OG.GOODS_PAY_PRICE SALES_AMOUNT, /*商品有效金额*/
-               (OG.GOODS_PRICE - OG.GOODS_PAY_PRICE - OG.APPORTION_PRICE) *
+               (NVL(OG.GOODS_PRICE, 0) - NVL(OG.GOODS_PAY_PRICE, 0) -
+               NVL(OG.TV_DISCOUNT_AMOUNT, 0) - NVL(OG.APPORTION_PRICE, 0)) *
                OG.GOODS_NUM COMPANY_APPORTION_AMOUNT, /*公司让利*/
                OG.APPORTION_PRICE * OG.GOODS_NUM SUPP_APPORTION_AMOUNT, /*供应商让利*/
                OG.SUPPLIER_ID, /*供应商编码*/
-               (OG.GOODS_PRICE - OG.GOODS_PAY_PRICE) * OG.GOODS_NUM TOTAL_APPORTION_AMOUNT, /*促销总成本*/
+               (NVL(OG.GOODS_PRICE, 0) - NVL(OG.GOODS_PAY_PRICE, 0) -
+               NVL(OG.TV_DISCOUNT_AMOUNT, 0)) * OG.GOODS_NUM TOTAL_APPORTION_AMOUNT, /*促销总成本*/
                TO_CHAR(OH.ORDER_SN) ORDER_SN /*订单编码*/
           FROM FACT_EC_ORDER_2         OH,
                FACT_EC_ORDER_GOODS     OG,
                FACT_EC_P_XIANSHI       X,
                FACT_EC_P_XIANSHI_GOODS XG
          WHERE OH.ORDER_ID = OG.ORDER_ID
-           AND OG.XIANSHI_GOODS_ID = XG.XIANSHI_GOODS_ID
-           AND X.XIANSHI_ID = XG.XIANSHI_ID
+           AND OG.XIANSHI_GOODS_ID = XG.XIANSHI_GOODS_ID(+)
+           AND XG.XIANSHI_ID = X.XIANSHI_ID(+)
               /*有效订购条件*/
            AND OH.ORDER_STATE >= 30
            AND OH.REFUND_STATE = 0
+           AND OG.GOODS_TYPE = 3
            AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE
         UNION ALL
         /*商品级促销-等级减*/
@@ -2011,6 +2256,43 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
            AND OH.ORDER_STATE >= 30
            AND OH.REFUND_STATE = 0
            AND OG.PML_DISCOUNT <> 0
+           AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE
+        UNION ALL
+        /*商品级促销-TV直播立减促销*/
+        SELECT TRUNC(OH.ADD_TIME) ADD_TIME, /*订购日期*/
+               '网站特享在线订购直播商品立减' PROMOTION_NAME, /*促销名称*/
+               'TV直播立减' PROMOTION_TYPE, /*促销类型*/
+               '新媒体' PROMOTION_SOURCE, /*促销来源*/
+               '' PROMOTION_NO, /*促销编号*/
+               CASE
+                 WHEN OH.APP_NAME = 'KLGiPhone' THEN
+                  'APP'
+                 WHEN OH.APP_NAME = 'KLGAndroid' THEN
+                  'APP'
+                 WHEN OH.APP_NAME = 'KLGPortal' THEN
+                  'WEB'
+                 WHEN OH.APP_NAME = 'KLGMPortal' THEN
+                  'WEB'
+                 WHEN OH.APP_NAME = 'KLGWX' THEN
+                  '微信'
+                 WHEN OH.APP_NAME = 'undefined' THEN
+                  '未知'
+               END PATHWAY, /*通路*/
+               OG.ERP_CODE ITEM_CODE, /*商品编码*/
+               OG.GOODS_NAME ITEM_NAME, /*商品名称*/
+               OG.GOODS_NUM SALES_QTY, /*有效订购件数*/
+               OG.GOODS_NUM * OG.GOODS_PAY_PRICE SALES_AMOUNT, /*商品有效金额*/
+               OG.TV_DISCOUNT_AMOUNT * OG.GOODS_NUM COMPANY_APPORTION_AMOUNT, /*公司让利*/
+               NVL(OG.APPORTION_PRICE, 0) * OG.GOODS_NUM SUPP_APPORTION_AMOUNT, /*供应商让利*/
+               OG.SUPPLIER_ID, /*供应商编码*/
+               OG.TV_DISCOUNT_AMOUNT * OG.GOODS_NUM TOTAL_APPORTION_AMOUNT, /*促销总成本*/
+               TO_CHAR(OH.ORDER_SN) ORDER_SN /*订单编码*/
+          FROM FACT_EC_ORDER_2 OH, FACT_EC_ORDER_GOODS OG
+         WHERE OH.ORDER_ID = OG.ORDER_ID
+              /*有效订购条件*/
+           AND OH.ORDER_STATE >= 30
+           AND OH.REFUND_STATE = 0
+           AND OG.TV_DISCOUNT_AMOUNT <> 0
            AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE;
       INSERT_ROWS := SQL%ROWCOUNT;
       COMMIT;
@@ -2726,7 +3008,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
                   WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              AND*/
                   F.ZMATERIAL NOT LIKE '%F%'
                AND F.ZEAMC027 IS NOT NULL
                AND F.ZEAMC027 != 0) TA
@@ -3010,6 +3292,1269 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
       END LOOP;
     END;
   END DISTRICT_NAME_UPDATE;
+
+  PROCEDURE DATA_ACQUISITION_ITEM_BASE(I_DATE_KEY NUMBER) IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+  
+    /*
+    功能说明：清洗DATA_ACQUISITION_ITEM表，去除重复数据,插入中间表DATA_ACQUISITION_ITEM_TMP
+                然后再插入DATA_ACQUISITION_ITEM_BASE表。
+    作者时间：yangjin  2017-11-01
+    */
+  
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.DATA_ACQUISITION_ITEM_BASE'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'DATA_ACQUISITION_ITEM_BASE'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*从源表DATA_ACQUISITION_ITEM取数，去除重复后插入中间表*/
+      EXECUTE IMMEDIATE 'TRUNCATE TABLE DATA_ACQUISITION_ITEM_TMP';
+      INSERT INTO DATA_ACQUISITION_ITEM_TMP
+        (PERIOD,
+         MATDLT,
+         MATZLT,
+         MATXLT,
+         ACQ_ITEM_CODE,
+         ACQ_NAME,
+         ACQ_URL,
+         ACQ_PIC,
+         ACQ_SHOP_NAME,
+         ACQ_PRICE,
+         ACQ_SALES,
+         SALES_AMT)
+        SELECT B.PERIOD,
+               B.MATDLT,
+               B.MATZLT,
+               B.MATXLT,
+               B.ACQ_ITEM_CODE,
+               B.ACQ_NAME,
+               B.ACQ_URL,
+               B.ACQ_PIC,
+               B.ACQ_SHOP_NAME,
+               B.ACQ_PRICE,
+               B.ACQ_SALES,
+               B.SALES_AMT
+          FROM (SELECT A.PERIOD,
+                       A.MATDLT,
+                       A.MATZLT,
+                       A.MATXLT,
+                       A.ACQ_ITEM_CODE,
+                       A.ACQ_NAME,
+                       A.ACQ_URL,
+                       A.ACQ_PIC,
+                       A.ACQ_SHOP_NAME,
+                       A.ACQ_PRICE,
+                       A.ACQ_SALES,
+                       A.SALES_AMT,
+                       ROW_NUMBER() OVER(PARTITION BY A.PERIOD, A.ACQ_ITEM_CODE ORDER BY A.DATA_SOURCE, A.PERIOD, A.ACQ_CATEGORY_NAME, A.MATDLT, A.MATZLT, A.MATXLT, A.ACQ_ITEM_CODE, A.ACQ_NAME, A.ACQ_URL, A.ACQ_PIC, A.ACQ_SHOP_NAME, A.ACQ_PRICE, A.ACQ_SALES, A.SALES_AMT, A.INSERT_DATE, A.VALID_FLAG) RN
+                  FROM DATA_ACQUISITION_ITEM A
+                 WHERE A.PERIOD = I_DATE_KEY
+                   AND A.ACQ_ITEM_CODE IS NOT NULL
+                   AND A.PERIOD IS NOT NULL) B
+         WHERE B.RN = 1;
+      COMMIT;
+    
+      /*从中间表DATA_ACQUISITION_ITEM_TMP插入DATA_ACQUISITION_ITEM_BASE基表*/
+      DELETE DATA_ACQUISITION_ITEM_BASE A WHERE A.PERIOD = I_DATE_KEY;
+      COMMIT;
+      INSERT INTO DATA_ACQUISITION_ITEM_BASE
+        (PERIOD,
+         MATDLT,
+         MATZLT,
+         MATXLT,
+         ACQ_ITEM_CODE,
+         ACQ_NAME,
+         ACQ_URL,
+         ACQ_PIC,
+         ACQ_SHOP_NAME,
+         ACQ_PRICE,
+         ACQ_SALES,
+         SALES_AMT)
+        SELECT A.PERIOD,
+               A.MATDLT,
+               A.MATZLT,
+               A.MATXLT,
+               A.ACQ_ITEM_CODE,
+               A.ACQ_NAME,
+               A.ACQ_URL,
+               A.ACQ_PIC,
+               A.ACQ_SHOP_NAME,
+               A.ACQ_PRICE,
+               A.ACQ_SALES,
+               A.SALES_AMT
+          FROM DATA_ACQUISITION_ITEM_TMP A;
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数[I_DATE_KEY]:' || I_DATE_KEY;
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END DATA_ACQUISITION_ITEM_BASE;
+
+  PROCEDURE DATA_ACQUISITION_ITEM_CURRENT(I_DATE_KEY NUMBER) IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    V_DATE      DATE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+  
+    /*
+    功能说明：从DATA_ACQUISITION_ITEM_BASE表取数，计算出当期的销售数量和销售金额写入DATA_ACQUISITION_ITEM_CURRENT表
+    作者时间：yangjin  2017-11-01
+    */
+  
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.DATA_ACQUISITION_ITEM_CURRENT'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'DATA_ACQUISITION_ITEM_CURRENT'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+    V_DATE           := TO_DATE(I_DATE_KEY, 'YYYYMMDD');
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*计算当期的销售数量和销售金额插入DATA_ACQUISITION_ITEM_CURRENT*/
+      DELETE DATA_ACQUISITION_ITEM_CURRENT A WHERE A.PERIOD = I_DATE_KEY;
+      COMMIT;
+      INSERT INTO DATA_ACQUISITION_ITEM_CURRENT
+        (PERIOD,
+         MATDLT,
+         MATZLT,
+         MATXLT,
+         ACQ_ITEM_CODE,
+         ACQ_NAME,
+         ACQ_URL,
+         ACQ_PIC,
+         ACQ_SHOP_NAME,
+         ACQ_PRICE,
+         CURRENT_ACQ_SALES,
+         CURRENT_SALES_AMT)
+        SELECT B.PERIOD,
+               B.MATDLT,
+               B.MATZLT,
+               B.MATXLT,
+               B.ACQ_ITEM_CODE,
+               B.ACQ_NAME,
+               B.ACQ_URL,
+               B.ACQ_PIC,
+               B.ACQ_SHOP_NAME,
+               B.ACQ_PRICE,
+               B.CURRENT_ACQ_SALES,
+               B.CURRENT_SALES_AMT
+          FROM (SELECT A.PERIOD,
+                       A.MATDLT,
+                       A.MATZLT,
+                       A.MATXLT,
+                       A.ACQ_ITEM_CODE,
+                       A.ACQ_NAME,
+                       A.ACQ_URL,
+                       A.ACQ_PIC,
+                       A.ACQ_SHOP_NAME,
+                       A.ACQ_PRICE,
+                       A.ACQ_SALES - LAG(A.ACQ_SALES, 1, 0) OVER(PARTITION BY A.ACQ_ITEM_CODE ORDER BY A.PERIOD) CURRENT_ACQ_SALES,
+                       A.SALES_AMT - LAG(A.SALES_AMT, 1, 0) OVER(PARTITION BY A.ACQ_ITEM_CODE ORDER BY A.PERIOD) CURRENT_SALES_AMT
+                  FROM DATA_ACQUISITION_ITEM_BASE A
+                 WHERE A.PERIOD BETWEEN TO_CHAR(V_DATE - 4, 'YYYYMMDD') AND
+                       TO_CHAR(V_DATE, 'YYYYMMDD')) B
+         WHERE B.PERIOD = I_DATE_KEY;
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数[I_DATE_KEY]:' || I_DATE_KEY;
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END DATA_ACQUISITION_ITEM_CURRENT;
+
+  PROCEDURE DATA_ACQUISITION_ITEM_MIN_PER IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+  
+    /*
+    功能说明：DATA_ACQUISITION_ITEM_MIN_PER存放商品的最小period  
+    作者时间：yangjin  2017-10-30
+    */
+  
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.DATA_ACQUISITION_ITEM_MIN_PER'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'DATA_ACQUISITION_ITEM_MIN_PER'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      INSERT INTO DATA_ACQUISITION_ITEM_MIN_PER
+        (ACQ_ITEM_CODE, MIN_PERIOD, INSERT_DT)
+        SELECT A.ACQ_ITEM_CODE, MIN(A.PERIOD) MIN_PERIOD, SYSDATE INSERT_DT
+          FROM DATA_ACQUISITION_ITEM_BASE A
+         WHERE A.ACQ_ITEM_CODE IS NOT NULL
+           AND NOT EXISTS
+         (SELECT 1
+                  FROM DATA_ACQUISITION_ITEM_MIN_PER B
+                 WHERE A.ACQ_ITEM_CODE = B.ACQ_ITEM_CODE)
+         GROUP BY A.ACQ_ITEM_CODE;
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END DATA_ACQUISITION_ITEM_MIN_PER;
+
+  PROCEDURE DATA_ACQUISITION_WEEK_TOPN(I_DATE_KEY NUMBER) IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    EXISTS_ROWS NUMBER;
+  
+    /*
+    功能说明：DATA_ACQUISITION_WEEK_TOPN周销售排行  
+    作者时间：yangjin  2017-10-30
+    */
+  
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.DATA_ACQUISITION_WEEK_TOPN'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'DATA_ACQUISITION_WEEK_TOPN'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*判断数据是否已经插入*/
+      SELECT COUNT(1)
+        INTO EXISTS_ROWS
+        FROM DATA_ACQUISITION_WEEK_TOPN A
+       WHERE A.PERIOD = I_DATE_KEY;
+      /*如果已经插入则删除*/
+      IF EXISTS_ROWS >= 0
+      THEN
+        DELETE DATA_ACQUISITION_WEEK_TOPN A WHERE A.PERIOD = I_DATE_KEY;
+        COMMIT;
+      END IF;
+    
+      /*插入数据*/
+      INSERT INTO DATA_ACQUISITION_WEEK_TOPN
+        (PERIOD,
+         MATDLT,
+         MATZLT,
+         MATXLT,
+         SALES_QTY_TOP_N,
+         ACQ_ITEM_CODE,
+         ACQ_NAME,
+         ACQ_URL,
+         ACQ_PIC,
+         ACQ_SHOP_NAME,
+         ACQ_PRICE,
+         SALES_QTY,
+         SALES_AMT)
+        SELECT D.PERIOD,
+               D.MATDLT,
+               D.MATZLT,
+               D.MATXLT,
+               D.SALES_QTY_TOP_N,
+               D.ACQ_ITEM_CODE,
+               D.ACQ_NAME,
+               D.ACQ_URL,
+               D.ACQ_PIC,
+               D.ACQ_SHOP_NAME,
+               D.ACQ_PRICE,
+               D.SALES_QTY,
+               D.SALES_AMT
+          FROM (SELECT C.PERIOD,
+                       C.MATDLT,
+                       C.MATZLT,
+                       C.MATXLT,
+                       ROW_NUMBER() OVER(ORDER BY C.SALES_QTY DESC) SALES_QTY_TOP_N, /*根据销售数量排名*/
+                       C.ACQ_ITEM_CODE,
+                       C.ACQ_NAME,
+                       C.ACQ_URL,
+                       C.ACQ_PIC,
+                       C.ACQ_SHOP_NAME,
+                       C.ACQ_PRICE,
+                       C.SALES_QTY,
+                       C.SALES_AMT
+                  FROM (SELECT B.PERIOD,
+                               B.MATDLT,
+                               B.MATZLT,
+                               B.MATXLT,
+                               B.ACQ_ITEM_CODE,
+                               B.ACQ_NAME,
+                               B.ACQ_URL,
+                               B.ACQ_PIC,
+                               B.ACQ_SHOP_NAME,
+                               B.ACQ_PRICE,
+                               SUM(B.CURRENT_ACQ_SALES) SALES_QTY,
+                               SUM(B.CURRENT_SALES_AMT) SALES_AMT
+                          FROM (SELECT A.PERIOD, /*日期*/
+                                       A.MATDLT, /*大类名称*/
+                                       A.MATZLT, /*中类名称*/
+                                       A.MATXLT, /*小类名称*/
+                                       A.ACQ_ITEM_CODE, /*商品编码*/
+                                       A.ACQ_NAME, /*商品名称*/
+                                       A.ACQ_URL, /*商品URL地址*/
+                                       A.ACQ_PIC, /*商品图片地址*/
+                                       A.ACQ_SHOP_NAME, /*商铺名称*/
+                                       A.ACQ_PRICE, /*商品售价*/
+                                       A.CURRENT_ACQ_SALES, /*销售数量*/
+                                       A.CURRENT_SALES_AMT /*销售金额*/
+                                  FROM DATA_ACQUISITION_ITEM_CURRENT A
+                                 WHERE A.PERIOD = I_DATE_KEY
+                                      /*剔除销售数量或者销售金额<=0*/
+                                   AND A.CURRENT_ACQ_SALES > 0
+                                   AND A.CURRENT_SALES_AMT > 0) B
+                         GROUP BY B.PERIOD,
+                                  B.MATDLT,
+                                  B.MATZLT,
+                                  B.MATXLT,
+                                  B.ACQ_ITEM_CODE,
+                                  B.ACQ_NAME,
+                                  B.ACQ_URL,
+                                  B.ACQ_PIC,
+                                  B.ACQ_SHOP_NAME,
+                                  B.ACQ_PRICE) C) D
+         WHERE D.SALES_QTY_TOP_N <= 2000 /*排名前2000*/
+         ORDER BY D.SALES_QTY_TOP_N;
+    
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数[I_DATE_KEY]:' || I_DATE_KEY;
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END DATA_ACQUISITION_WEEK_TOPN;
+
+  PROCEDURE DATA_ACQUISITION_WEEK_NEW(I_DATE_KEY NUMBER) IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    EXISTS_ROWS NUMBER;
+    V_DATE      DATE;
+  
+    /*
+    功能说明：DATA_ACQUISITION_WEEK_TOPN周销售排行  
+    作者时间：yangjin  2017-10-30
+    */
+  
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.DATA_ACQUISITION_WEEK_NEW'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'DATA_ACQUISITION_WEEK_NEW'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+    V_DATE           := TO_DATE(I_DATE_KEY, 'YYYYMMDD');
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*判断数据是否已经插入*/
+      SELECT COUNT(1)
+        INTO EXISTS_ROWS
+        FROM DATA_ACQUISITION_WEEK_NEW A
+       WHERE A.PERIOD = I_DATE_KEY;
+      /*如果已经插入则删除*/
+      IF EXISTS_ROWS >= 0
+      THEN
+        DELETE DATA_ACQUISITION_WEEK_NEW A WHERE A.PERIOD = I_DATE_KEY;
+        COMMIT;
+      END IF;
+    
+      /*插入数据*/
+      INSERT INTO DATA_ACQUISITION_WEEK_NEW
+        (PERIOD,
+         MATDLT,
+         MATZLT,
+         MATXLT,
+         SALES_QTY_TOP_N,
+         ACQ_ITEM_CODE,
+         ACQ_NAME,
+         ACQ_URL,
+         ACQ_PIC,
+         ACQ_SHOP_NAME,
+         ACQ_PRICE,
+         SALES_QTY,
+         SALES_AMT)
+        SELECT D.PERIOD,
+               D.MATDLT,
+               D.MATZLT,
+               D.MATXLT,
+               D.SALES_QTY_TOP_N,
+               D.ACQ_ITEM_CODE,
+               D.ACQ_NAME,
+               D.ACQ_URL,
+               D.ACQ_PIC,
+               D.ACQ_SHOP_NAME,
+               D.ACQ_PRICE,
+               D.SALES_QTY,
+               D.SALES_AMT
+          FROM (SELECT C.PERIOD,
+                       C.MATDLT,
+                       C.MATZLT,
+                       C.MATXLT,
+                       ROW_NUMBER() OVER(ORDER BY C.SALES_QTY DESC) SALES_QTY_TOP_N, /*根据销售数量排名*/
+                       C.ACQ_ITEM_CODE,
+                       C.ACQ_NAME,
+                       C.ACQ_URL,
+                       C.ACQ_PIC,
+                       C.ACQ_SHOP_NAME,
+                       C.ACQ_PRICE,
+                       C.SALES_QTY,
+                       C.SALES_AMT
+                  FROM (SELECT B.PERIOD,
+                               B.MATDLT,
+                               B.MATZLT,
+                               B.MATXLT,
+                               B.ACQ_ITEM_CODE,
+                               B.ACQ_NAME,
+                               B.ACQ_URL,
+                               B.ACQ_PIC,
+                               B.ACQ_SHOP_NAME,
+                               B.ACQ_PRICE,
+                               SUM(B.CURRENT_ACQ_SALES) SALES_QTY,
+                               SUM(B.CURRENT_SALES_AMT) SALES_AMT
+                          FROM (SELECT A.PERIOD, /*日期*/
+                                       A.MATDLT, /*大类名称*/
+                                       A.MATZLT, /*中类名称*/
+                                       A.MATXLT, /*小类名称*/
+                                       A.ACQ_ITEM_CODE, /*商品编码*/
+                                       A.ACQ_NAME, /*商品名称*/
+                                       A.ACQ_URL, /*商品URL地址*/
+                                       A.ACQ_PIC, /*商品图片地址*/
+                                       A.ACQ_SHOP_NAME, /*店铺名称*/
+                                       A.ACQ_PRICE, /*商品售价*/
+                                       A.CURRENT_ACQ_SALES, /*销售数量*/
+                                       A.CURRENT_SALES_AMT /*销售金额*/
+                                  FROM DATA_ACQUISITION_ITEM_CURRENT A
+                                 WHERE A.PERIOD = I_DATE_KEY
+                                      /*剔除销售数量或者销售金额<=0*/
+                                   AND A.CURRENT_ACQ_SALES > 0
+                                   AND A.CURRENT_SALES_AMT > 0
+                                   AND EXISTS
+                                /*最近六天算为新品*/
+                                 (SELECT 1
+                                          FROM DATA_ACQUISITION_ITEM_MIN_PER E
+                                         WHERE A.ACQ_ITEM_CODE =
+                                               E.ACQ_ITEM_CODE
+                                           AND E.MIN_PERIOD BETWEEN
+                                               TO_CHAR(V_DATE - 6, 'YYYYMMDD') AND
+                                               I_DATE_KEY)) B
+                         GROUP BY B.PERIOD,
+                                  B.MATDLT,
+                                  B.MATZLT,
+                                  B.MATXLT,
+                                  B.ACQ_ITEM_CODE,
+                                  B.ACQ_NAME,
+                                  B.ACQ_URL,
+                                  B.ACQ_PIC,
+                                  B.ACQ_SHOP_NAME,
+                                  B.ACQ_PRICE) C) D
+         ORDER BY D.SALES_QTY_TOP_N;
+    
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数[I_DATE_KEY]:' || I_DATE_KEY;
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END DATA_ACQUISITION_WEEK_NEW;
+
+  PROCEDURE DATA_ACQUISITION_MONTH_TOPN(I_DATE_KEY NUMBER) IS
+    S_ETL                  W_ETL_LOG%ROWTYPE;
+    SP_NAME                S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER            S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS            NUMBER;
+    UPDATE_ROWS            NUMBER;
+    EXISTS_ROWS            NUMBER;
+    V_YEAR_MONTH           NUMBER;
+    V_MONTH_FIRST_DATE_KEY NUMBER; /*上月的第一天key*/
+    V_MONTH_LAST_DATE_KEY  NUMBER; /*上月的最后一天key*/
+  
+    /*
+    功能说明：DATA_ACQUISITION_MONTH_TOPN月销售排行  
+    作者时间：yangjin  2017-10-30
+    */
+  
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.DATA_ACQUISITION_MONTH_TOPN'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'DATA_ACQUISITION_MONTH_TOPN'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*每月一日执行*/
+      IF TO_NUMBER(TO_CHAR(TO_DATE(I_DATE_KEY, 'YYYYMMDD'), 'DD')) = 1
+      THEN
+        /*日期初始化*/
+        V_MONTH_LAST_DATE_KEY  := TO_CHAR(TRUNC(TO_DATE(I_DATE_KEY,
+                                                        'YYYYMMDD'),
+                                                'MM') - 1,
+                                          'YYYYMMDD');
+        V_MONTH_FIRST_DATE_KEY := TO_CHAR(TRUNC(TO_DATE(V_MONTH_LAST_DATE_KEY,
+                                                        'YYYYMMDD'),
+                                                'MM'),
+                                          'YYYYMMDD');
+        V_YEAR_MONTH           := TO_CHAR(TO_DATE(V_MONTH_LAST_DATE_KEY,
+                                                  'YYYYMMDD'),
+                                          'YYYYMM');
+        /*判断数据是否已经插入*/
+        SELECT COUNT(1)
+          INTO EXISTS_ROWS
+          FROM DATA_ACQUISITION_MONTH_TOPN A
+         WHERE A.YEAR_MONTH = V_YEAR_MONTH;
+        /*如果已经插入则删除*/
+        IF EXISTS_ROWS >= 0
+        THEN
+          DELETE DATA_ACQUISITION_MONTH_TOPN A
+           WHERE A.YEAR_MONTH = V_YEAR_MONTH;
+          COMMIT;
+        END IF;
+      
+        /*插入数据*/
+        INSERT INTO DATA_ACQUISITION_MONTH_TOPN
+          (YEAR_MONTH,
+           MATDLT,
+           MATZLT,
+           MATXLT,
+           SALES_QTY_TOP_N,
+           ACQ_ITEM_CODE,
+           ACQ_NAME,
+           ACQ_URL,
+           ACQ_PIC,
+           ACQ_SHOP_NAME,
+           ACQ_PRICE,
+           SALES_QTY,
+           SALES_AMT)
+          SELECT D.YEAR_MONTH,
+                 D.MATDLT,
+                 D.MATZLT,
+                 D.MATXLT,
+                 D.SALES_QTY_TOP_N,
+                 D.ACQ_ITEM_CODE,
+                 D.ACQ_NAME,
+                 D.ACQ_URL,
+                 D.ACQ_PIC,
+                 D.ACQ_SHOP_NAME,
+                 D.ACQ_PRICE,
+                 D.SALES_QTY,
+                 D.SALES_AMT
+            FROM (SELECT C.YEAR_MONTH,
+                         C.MATDLT,
+                         C.MATZLT,
+                         C.MATXLT,
+                         ROW_NUMBER() OVER(ORDER BY C.SALES_QTY DESC) SALES_QTY_TOP_N, /*根据销售数量排名*/
+                         C.ACQ_ITEM_CODE,
+                         C.ACQ_NAME,
+                         C.ACQ_URL,
+                         C.ACQ_PIC,
+                         C.ACQ_SHOP_NAME,
+                         C.ACQ_PRICE,
+                         C.SALES_QTY,
+                         C.SALES_AMT
+                    FROM (SELECT SUBSTR(B.PERIOD, 1, 6) YEAR_MONTH,
+                                 B.MATDLT,
+                                 B.MATZLT,
+                                 B.MATXLT,
+                                 B.ACQ_ITEM_CODE,
+                                 B.ACQ_NAME,
+                                 B.ACQ_URL,
+                                 B.ACQ_PIC,
+                                 B.ACQ_SHOP_NAME,
+                                 B.ACQ_PRICE,
+                                 SUM(B.CURRENT_ACQ_SALES) SALES_QTY,
+                                 SUM(B.CURRENT_ACQ_SALES) SALES_AMT
+                            FROM (SELECT A.PERIOD, /*日期*/
+                                         A.MATDLT, /*大类名称*/
+                                         A.MATZLT, /*中类名称*/
+                                         A.MATXLT, /*小类名称*/
+                                         A.ACQ_ITEM_CODE, /*商品编码*/
+                                         A.ACQ_NAME, /*商品名称*/
+                                         A.ACQ_URL, /*商品URL地址*/
+                                         A.ACQ_PIC, /*商品图片地址*/
+                                         A.ACQ_SHOP_NAME, /*商铺名称*/
+                                         A.ACQ_PRICE, /*商品售价*/
+                                         A.CURRENT_ACQ_SALES, /*销售数量*/
+                                         A.CURRENT_SALES_AMT /*销售金额*/
+                                    FROM DATA_ACQUISITION_ITEM_CURRENT A
+                                   WHERE A.PERIOD BETWEEN
+                                         V_MONTH_FIRST_DATE_KEY AND
+                                         V_MONTH_LAST_DATE_KEY
+                                        /*剔除销售数量或者销售金额<=0*/
+                                     AND A.CURRENT_ACQ_SALES > 0
+                                     AND A.CURRENT_SALES_AMT > 0) B
+                           GROUP BY SUBSTR(B.PERIOD, 1, 6),
+                                    B.MATDLT,
+                                    B.MATZLT,
+                                    B.MATXLT,
+                                    B.ACQ_ITEM_CODE,
+                                    B.ACQ_NAME,
+                                    B.ACQ_URL,
+                                    B.ACQ_PIC,
+                                    B.ACQ_SHOP_NAME,
+                                    B.ACQ_PRICE) C) D
+           WHERE D.SALES_QTY_TOP_N <= 2000 /*排名前2000*/
+           ORDER BY D.SALES_QTY_TOP_N;
+        INSERT_ROWS := SQL%ROWCOUNT;
+        COMMIT;
+      END IF;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:' || I_DATE_KEY;
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END DATA_ACQUISITION_MONTH_TOPN;
+
+  PROCEDURE DATA_ACQUISITION_MONTH_NEW(I_DATE_KEY NUMBER) IS
+    S_ETL                      W_ETL_LOG%ROWTYPE;
+    SP_NAME                    S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER                S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS                NUMBER;
+    UPDATE_ROWS                NUMBER;
+    EXISTS_ROWS                NUMBER;
+    V_YEAR_MONTH               NUMBER;
+    V_MONTH_FIRST_DATE_KEY     NUMBER; /*上月的第一天key*/
+    V_MONTH_LAST_DATE_KEY      NUMBER; /*上月的最后一天key*/
+    V_AGO_MONTH_FIRST_DATE_KEY NUMBER;
+    V_AGO_MONTH_LAST_DATE_KEY  NUMBER;
+  
+    /*
+    功能说明：DATA_ACQUISITION_MONTH_NEW月新品销售排行  
+    作者时间：yangjin  2017-10-30
+    */
+  
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.DATA_ACQUISITION_MONTH_NEW'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'DATA_ACQUISITION_MONTH_NEW'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*每月一日执行*/
+      IF TO_NUMBER(TO_CHAR(TO_DATE(I_DATE_KEY, 'YYYYMMDD'), 'DD')) = 1
+      THEN
+        /*日期初始化*/
+        /*上月最后一天*/
+        V_MONTH_LAST_DATE_KEY := TO_CHAR(TRUNC(TO_DATE(I_DATE_KEY,
+                                                       'YYYYMMDD'),
+                                               'MM') - 1,
+                                         'YYYYMMDD');
+        /*上月第一天*/
+        V_MONTH_FIRST_DATE_KEY := TO_CHAR(TRUNC(TO_DATE(V_MONTH_LAST_DATE_KEY,
+                                                        'YYYYMMDD'),
+                                                'MM'),
+                                          'YYYYMMDD');
+        V_YEAR_MONTH           := TO_CHAR(TO_DATE(V_MONTH_LAST_DATE_KEY,
+                                                  'YYYYMMDD'),
+                                          'YYYYMM');
+        /*上上月最后一天*/
+        V_AGO_MONTH_LAST_DATE_KEY := TO_CHAR(TO_DATE(V_MONTH_FIRST_DATE_KEY,
+                                                     'YYYYMMDD') - 1,
+                                             'YYYYMMDD');
+        /*上上月第一天*/
+        V_AGO_MONTH_FIRST_DATE_KEY := TO_CHAR(TRUNC(TO_DATE(V_AGO_MONTH_LAST_DATE_KEY,
+                                                            'YYYYMMDD'),
+                                                    'MM'),
+                                              'YYYYMMDD');
+        /*判断数据是否已经插入*/
+        SELECT COUNT(1)
+          INTO EXISTS_ROWS
+          FROM DATA_ACQUISITION_MONTH_TOPN A
+         WHERE A.YEAR_MONTH = V_YEAR_MONTH;
+        /*如果已经插入则删除*/
+        IF EXISTS_ROWS >= 0
+        THEN
+          DELETE DATA_ACQUISITION_MONTH_TOPN A
+           WHERE A.YEAR_MONTH = V_YEAR_MONTH;
+          COMMIT;
+        END IF;
+      
+        /*插入数据*/
+        INSERT INTO DATA_ACQUISITION_MONTH_NEW
+          (YEAR_MONTH,
+           MATDLT,
+           MATZLT,
+           MATXLT,
+           SALES_QTY_TOP_N,
+           ACQ_ITEM_CODE,
+           ACQ_NAME,
+           ACQ_URL,
+           ACQ_PIC,
+           ACQ_SHOP_NAME,
+           ACQ_PRICE,
+           SALES_QTY,
+           SALES_AMT)
+          SELECT D.YEAR_MONTH,
+                 D.MATDLT,
+                 D.MATZLT,
+                 D.MATXLT,
+                 D.SALES_QTY_TOP_N,
+                 D.ACQ_ITEM_CODE,
+                 D.ACQ_NAME,
+                 D.ACQ_URL,
+                 D.ACQ_PIC,
+                 D.ACQ_SHOP_NAME,
+                 D.ACQ_PRICE,
+                 D.SALES_QTY,
+                 D.SALES_AMT
+            FROM (SELECT C.YEAR_MONTH,
+                         C.MATDLT,
+                         C.MATZLT,
+                         C.MATXLT,
+                         ROW_NUMBER() OVER(ORDER BY C.SALES_QTY DESC) SALES_QTY_TOP_N, /*根据销售数量排名*/
+                         C.ACQ_ITEM_CODE,
+                         C.ACQ_NAME,
+                         C.ACQ_URL,
+                         C.ACQ_PIC,
+                         C.ACQ_SHOP_NAME,
+                         C.ACQ_PRICE,
+                         C.SALES_QTY,
+                         C.SALES_AMT
+                    FROM (SELECT SUBSTR(B.PERIOD, 1, 6) YEAR_MONTH,
+                                 B.MATDLT,
+                                 B.MATZLT,
+                                 B.MATXLT,
+                                 B.ACQ_ITEM_CODE,
+                                 B.ACQ_NAME,
+                                 B.ACQ_URL,
+                                 B.ACQ_PIC,
+                                 B.ACQ_SHOP_NAME,
+                                 B.ACQ_PRICE,
+                                 SUM(B.CURRENT_ACQ_SALES) SALES_QTY,
+                                 SUM(B.CURRENT_SALES_AMT) SALES_AMT
+                            FROM (SELECT A.PERIOD, /*日期*/
+                                         A.MATDLT, /*大类名称*/
+                                         A.MATZLT, /*中类名称*/
+                                         A.MATXLT, /*小类名称*/
+                                         A.ACQ_ITEM_CODE, /*商品编码*/
+                                         A.ACQ_NAME, /*商品名称*/
+                                         A.ACQ_URL, /*商品URL地址*/
+                                         A.ACQ_PIC, /*商品图片地址*/
+                                         A.ACQ_SHOP_NAME, /*店铺名称*/
+                                         A.ACQ_PRICE, /*商品售价*/
+                                         A.CURRENT_ACQ_SALES, /*销售数量*/
+                                         A.CURRENT_SALES_AMT /*销售金额*/
+                                    FROM DATA_ACQUISITION_ITEM_CURRENT A
+                                   WHERE A.PERIOD BETWEEN
+                                         V_MONTH_FIRST_DATE_KEY AND
+                                         V_MONTH_LAST_DATE_KEY
+                                        /*剔除销售数量或者销售金额<=0*/
+                                     AND A.CURRENT_ACQ_SALES > 0
+                                     AND A.CURRENT_SALES_AMT > 0
+                                     AND EXISTS
+                                  /*从上上月的第一天到上月最后一天应该都算新品*/
+                                   (SELECT 1
+                                            FROM DATA_ACQUISITION_ITEM_MIN_PER E
+                                           WHERE A.ACQ_ITEM_CODE =
+                                                 E.ACQ_ITEM_CODE
+                                             AND E.MIN_PERIOD BETWEEN
+                                                 V_AGO_MONTH_FIRST_DATE_KEY AND
+                                                 V_MONTH_LAST_DATE_KEY)) B
+                           GROUP BY SUBSTR(B.PERIOD, 1, 6),
+                                    B.MATDLT,
+                                    B.MATZLT,
+                                    B.MATXLT,
+                                    B.ACQ_ITEM_CODE,
+                                    B.ACQ_NAME,
+                                    B.ACQ_URL,
+                                    B.ACQ_PIC,
+                                    B.ACQ_SHOP_NAME,
+                                    B.ACQ_PRICE) C) D
+           ORDER BY D.SALES_QTY_TOP_N;
+        INSERT_ROWS := SQL%ROWCOUNT;
+        COMMIT;
+      END IF;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:' || I_DATE_KEY;
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END DATA_ACQUISITION_MONTH_NEW;
+
+  PROCEDURE EC_NEW_MEMBER_TRACK_BASE(I_DATE_KEY NUMBER) IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    I_DATE      DATE;
+  
+    /*
+    功能说明：用于跟踪ec会员0-5单的订购情况，此表为基表，在此表基础上计算0-5单顺序 
+    作者时间：yangjin  2017-11-09
+    */
+  
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.EC_NEW_MEMBER_TRACK_BASE'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'OPER_EC_MEMBER_TRACK_BASE'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+    I_DATE           := TO_DATE(I_DATE_KEY, 'YYYYMMDD');
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE /*+APPEND*/
+      INTO OPER_EC_MEMBER_TRACK_BASE T
+      USING (SELECT C.MEMBER_BP,
+                    C.ADD_TIME,
+                    C.ORDER_ID,
+                    C.SALES_SOURCE_SECOND_DESC,
+                    C.ORDER_STATE,
+                    NVL(C.PROMOTION_DESC, '无优惠') PROMOTION_DESC,
+                    SYSDATE W_INSERT_DT,
+                    SYSDATE W_UPDATE_DT
+               FROM (SELECT A.MEMBER_BP,
+                            A.ADD_TIME,
+                            A.ORDER_ID,
+                            A.SALES_SOURCE_SECOND_DESC,
+                            A.ORDER_STATE,
+                            /*促销方式之间用逗号分割*/
+                            LISTAGG(A.PROMOTION_DESC, ',') WITHIN GROUP(ORDER BY A.PROMOTION_DESC) PROMOTION_DESC
+                       FROM (SELECT DISTINCT OH.CUST_NO MEMBER_BP, /*BP号*/
+                                             OH.ADD_TIME, /*订单日期*/
+                                             OH.ORDER_ID, /*订单编号*/
+                                             CASE
+                                               WHEN OH.APP_NAME IN
+                                                    ('KLGAndroid', 'KLGiPhone') THEN
+                                                'A20017'
+                                               WHEN OH.APP_NAME = 'KLGPortal' THEN
+                                                'A20020'
+                                               WHEN OH.APP_NAME = 'KLGWX' THEN
+                                                'A20021'
+                                               WHEN OH.APP_NAME = 'KLGMPortal' THEN
+                                                'A20022'
+                                             END SALES_SOURCE_SECOND_DESC, /*渠道*/
+                                             OH.ORDER_STATE, /*订单状态*/
+                                             CASE
+                                               WHEN OG.GOODS_TYPE = 3 THEN
+                                                '限时商品促销'
+                                             
+                                               WHEN OG.PML_DISCOUNT <> 0 THEN
+                                                '等级减'
+                                             
+                                               WHEN OG.TV_DISCOUNT_AMOUNT <> 0 THEN
+                                                'TV直播立减'
+                                             
+                                               WHEN OH.DISCOUNT_MANSONG_AMOUNT <> 0 THEN
+                                                '满立减'
+                                             
+                                               WHEN OH.DISCOUNT_PAYMENTWAY_AMOUNT <> 0 OR
+                                                    OH.DISCOUNT_PAYMENTCHANEL_AMOUNT <> 0 THEN
+                                                '支付立减'
+                                             END PROMOTION_DESC /*优惠方式*/
+                               FROM FACT_EC_ORDER_2 OH, FACT_EC_ORDER_GOODS OG
+                              WHERE OH.ORDER_ID = OG.ORDER_ID
+                                   /*同步最近一个月数据*/
+                                AND OH.ADD_TIME BETWEEN I_DATE - 30 AND I_DATE) A
+                      GROUP BY A.MEMBER_BP,
+                               A.ADD_TIME,
+                               A.ORDER_ID,
+                               A.SALES_SOURCE_SECOND_DESC,
+                               A.ORDER_STATE) C) S
+      ON (T.ORDER_ID = S.ORDER_ID)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.MEMBER_BP                = S.MEMBER_BP,
+               T.ADD_TIME                 = S.ADD_TIME,
+               T.SALES_SOURCE_SECOND_DESC = S.SALES_SOURCE_SECOND_DESC,
+               T.ORDER_STATE              = S.ORDER_STATE,
+               T.PROMOTION_DESC           = S.PROMOTION_DESC,
+               T.W_UPDATE_DT              = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.MEMBER_BP,
+           T.ADD_TIME,
+           T.ORDER_ID,
+           T.SALES_SOURCE_SECOND_DESC,
+           T.ORDER_STATE,
+           T.PROMOTION_DESC,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.MEMBER_BP,
+           S.ADD_TIME,
+           S.ORDER_ID,
+           S.SALES_SOURCE_SECOND_DESC,
+           S.ORDER_STATE,
+           S.PROMOTION_DESC,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+    
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+  
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:' || I_DATE_KEY;
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END EC_NEW_MEMBER_TRACK_BASE;
+
+  PROCEDURE EC_NEW_MEMBER_TRACK_RANK IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+  
+    /*
+    功能说明：计算ec会员的第几单
+    作者时间：yangjin  2017-11-09
+    */
+  
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.EC_NEW_MEMBER_TRACK_RANK'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'OPER_EC_MEMBER_TRACK_RANK'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      EXECUTE IMMEDIATE 'TRUNCATE TABLE OPER_EC_MEMBER_TRACK_RANK';
+      INSERT INTO OPER_EC_MEMBER_TRACK_RANK A
+        (A.MEMBER_BP,
+         A.ADD_TIME,
+         A.ORDER_ID,
+         A.SALES_SOURCE_SECOND_DESC,
+         A.PROMOTION_DESC,
+         A.RANK1)
+        SELECT B.MEMBER_BP,
+               B.ADD_TIME,
+               B.ORDER_ID,
+               B.SALES_SOURCE_SECOND_DESC,
+               B.PROMOTION_DESC,
+               B.RANK1
+          FROM (SELECT A.MEMBER_BP,
+                       A.ADD_TIME,
+                       A.ORDER_ID,
+                       A.SALES_SOURCE_SECOND_DESC,
+                       A.PROMOTION_DESC,
+                       /*根据ADD_TIME,ORDER_ID来排序订购顺序*/
+                       RANK() OVER(PARTITION BY A.MEMBER_BP ORDER BY A.ADD_TIME, A.ORDER_ID) RANK1
+                  FROM OPER_EC_MEMBER_TRACK_BASE A
+                 WHERE A.ORDER_STATE >= 30) B
+         WHERE B.RANK1 <= 5;
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+  
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END EC_NEW_MEMBER_TRACK_RANK;
+
+  PROCEDURE MERGE_DIM_MEMBER_ZONE IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+  
+    /*
+    功能说明：会员的地区表
+    作者时间：yangjin  2017-11-22
+    */
+  
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.MERGE_DIM_MEMBER_ZONE'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'DIM_MEMBER_ZONE'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE /*+APPEND*/
+      INTO DIM_MEMBER_ZONE T
+      USING (SELECT A.MEMBER_BP,
+                    B.ZONE,
+                    B.VTEXT1,
+                    B.VTEXT2,
+                    B.VTEXT3,
+                    B.VTEXT4
+               FROM DIM_MEMBER A, DIM_ZONE B
+              WHERE A.MEMBER_ZONE = B.ZONE
+                   /*分二种情况：1、member_zone已经变更，2、新增BP号*/
+                AND (EXISTS
+                     (SELECT 1
+                        FROM DIM_MEMBER_ZONE C
+                       WHERE A.MEMBER_BP = C.MEMBER_BP
+                         AND A.MEMBER_ZONE <> C.ZONE) OR NOT EXISTS
+                     (SELECT 1
+                        FROM DIM_MEMBER_ZONE D
+                       WHERE A.MEMBER_BP = D.MEMBER_BP))) S
+      ON (T.MEMBER_BP = S.MEMBER_BP)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.ZONE   = S.ZONE,
+               T.VTEXT1 = S.VTEXT1,
+               T.VTEXT2 = S.VTEXT2,
+               T.VTEXT3 = S.VTEXT3,
+               T.VTEXT4 = S.VTEXT4
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.MEMBER_BP, T.ZONE, T.VTEXT1, T.VTEXT2, T.VTEXT3, T.VTEXT4)
+        VALUES
+          (S.MEMBER_BP, S.ZONE, S.VTEXT1, S.VTEXT2, S.VTEXT3, S.VTEXT4);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+  
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_DIM_MEMBER_ZONE;
 
 END YANGJIN_PKG;
 /

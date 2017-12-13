@@ -1,0 +1,1 @@
+select regexp_substr('1.0/ec.orders/2453245', 'e[a-z.]*') from dual;

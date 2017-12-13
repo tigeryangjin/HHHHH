@@ -1095,7 +1095,6 @@ REGISTERED_LESS_ONE_MONTH  近一个月注册用户（注册日期小于等于30天）
 ACTIVE                     活跃（近30天有活跃记录的用户（注册日期大于30天））
 MAYBE_LOSS                 浅流失（30天到60天有行为记录用户（注册日期大于30天））
 DEEP_LOSS                  深度流失（60天以上有行为记录用户（注册日期大于30天））
-
 */
 --*************************************************************************************************************
 MERGE /*+APPEND*/
@@ -1208,6 +1207,121 @@ WHEN NOT MATCHED THEN
      SYSDATE,
      'yangjin');
 
+--*************************************************************************************************************
+/*
+APP_LOSS_SCORE   APP流失评分
+APP_EVERYDAY_SEE               每日必看（近30天活跃天数大于15天（注册日期大于30天））
+APP_OCCASIONALLY_SEE           偶偶来来（近30天内活跃天数少于4天（注册日期大于30天））
+APP_REGISTERED_LESS_ONE_MONTH  近一个月注册用户（注册日期小于等于30天）
+APP_ACTIVE                     活跃（近30天有活跃记录的用户（注册日期大于30天））
+APP_MAYBE_LOSS                 浅流失（30天到60天有行为记录用户（注册日期大于30天））
+APP_DEEP_LOSS                  深度流失（60天以上有行为记录用户（注册日期大于30天））
+*/
+--*************************************************************************************************************
+
+--*************************************************************************************************************
+/*
+WX_LOSS_SCORE   微信流失评分
+WX_EVERYDAY_SEE               每日必看（近30天活跃天数大于15天（注册日期大于30天））
+WX_OCCASIONALLY_SEE           偶偶来来（近30天内活跃天数少于4天（注册日期大于30天））
+WX_REGISTERED_LESS_ONE_MONTH  近一个月注册用户（注册日期小于等于30天）
+WX_ACTIVE                     活跃（近30天有活跃记录的用户（注册日期大于30天））
+WX_MAYBE_LOSS                 浅流失（30天到60天有行为记录用户（注册日期大于30天））
+WX_DEEP_LOSS                  深度流失（60天以上有行为记录用户（注册日期大于30天））
+*/
+--*************************************************************************************************************
+
+--*************************************************************************************************************
+/*
+
+MESSAGE_PUSH_LABEL消息已推送标签(7天内),398
+WX_IN_7DAYS  微信推送(7天内),399
+SMS_IN_7DAYS 短息推送(7天内),400
+APP_IN_7DAYS APP推送(7天内),401
+*/
+--*************************************************************************************************************
+--APP_7DAYS APP推送(7天内),401
+MERGE /*+APPEND*/
+INTO (SELECT ROW_ID,
+             MEMBER_KEY,
+             M_LABEL_ID,
+             M_LABEL_TYPE_ID,
+             CREATE_DATE,
+             CREATE_USER_ID,
+             LAST_UPDATE_DATE,
+             LAST_UPDATE_USER_ID
+        FROM MEMBER_LABEL_LINK
+       WHERE M_LABEL_ID = 401) T
+USING (SELECT MEMBER_LABEL_LINK_SEQ.NEXTVAL ROW_ID,
+              G.MEMBER_KEY,
+              H.M_LABEL_ID,
+              H.M_LABEL_TYPE_ID,
+              SYSDATE CREATE_DATE,
+              'yangjin' CREATE_USER_ID,
+              SYSDATE LAST_UPDATE_DATE,
+              'yangjin' LAST_UPDATE_USER_ID
+         FROM (SELECT B.SEND_MEMBER MEMBER_KEY,
+                      CASE
+                        WHEN B.TASK_TYPE = 3 THEN
+                         'APP_IN_7DAYS'
+                      END MEMBER_LABEL_NAME
+                 FROM (SELECT A.SEND_MEMBER, A.TASK_TYPE, MAX(A.CREATE_TIME)
+                         FROM PUSH_MSG_LOG A
+                        WHERE A.CREATE_TIME >= SYSDATE - 7
+                          AND A.TASK_TYPE = 3
+                        GROUP BY A.SEND_MEMBER, A.TASK_TYPE) B) G,
+              MEMBER_LABEL_HEAD H
+        WHERE G.MEMBER_LABEL_NAME = H.M_LABEL_NAME) S
+ON (T.MEMBER_KEY = S.MEMBER_KEY)
+WHEN MATCHED THEN
+  UPDATE SET T.M_LABEL_ID = S.M_LABEL_ID, T.LAST_UPDATE_DATE = SYSDATE
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.ROW_ID,
+     T.MEMBER_KEY,
+     T.M_LABEL_ID,
+     T.M_LABEL_TYPE_ID,
+     T.CREATE_DATE,
+     T.CREATE_USER_ID,
+     T.LAST_UPDATE_DATE,
+     T.LAST_UPDATE_USER_ID)
+  VALUES
+    (MEMBER_LABEL_LINK_SEQ.NEXTVAL,
+     S.MEMBER_KEY,
+     S.M_LABEL_ID,
+     1,
+     SYSDATE,
+     'yangjin',
+     SYSDATE,
+     'yangjin');
+
+--消息推送执行监控
+SELECT *
+  FROM (SELECT A.START_TIME,
+               A.END_TIME,
+               A.ETL_DURATION,
+               A.PROC_NAME,
+               A.ETL_RECORD_INS,
+               A.ETL_RECORD_UPD,
+               A.ETL_RECORD_DEL,
+               A.ETL_STATUS
+          FROM W_ETL_LOG A
+         WHERE A.PROC_NAME IN
+               ('MEMBER_LABEL_PKG.MERGE_PUSH_MSG_LOG',
+                'MEMBER_LABEL_PKG.MESSAGE_PUSH_LABEL')
+        UNION ALL
+        SELECT B.START_TIME,
+               B.END_TIME,
+               B.ETL_DURATION,
+               B.PROC_NAME,
+               B.ETL_RECORD_INS,
+               B.ETL_RECORD_UPD,
+               B.ETL_RECORD_DEL,
+               B.ETL_STATUS
+          FROM W_ETL_LOG@ML18 B
+         WHERE B.PROC_NAME =
+               'MEMBER_FILTER_PKG.SYNC_MEMBER_LABEL_LINK_MSGPUSH') C
+ ORDER BY C.START_TIME DESC;
 
 
 --tmp
@@ -1217,10 +1331,10 @@ SELECT * FROM MEMBER_LABEL_LINK;
 SELECT * FROM MEMBER_LABEL_LINK_V;
 SELECT * FROM MEMBER_LABEL_LOG;
 
-SELECT * FROM MEMBER_LABEL_LINK A WHERE A.M_LABEL_ID BETWEEN 202 AND 207;
+SELECT SYSDATE - 7 FROM DUAL;
 
 SELECT * FROM S_PARAMETERS2 FOR UPDATE;
-	 
+
 SELECT * FROM S_PARAMETERS2 FOR UPDATE;
 SELECT A.START_TIME,
        A.END_TIME,
@@ -1230,7 +1344,12 @@ SELECT A.START_TIME,
        A.ERR_MSG,
        A.PROC_NAME
   FROM W_ETL_LOG A
- WHERE A.PROC_NAME = 'MEMBER_LABEL_PKG.MEMBER_LIFE_PERIOD'
+ WHERE A.PROC_NAME = 'MEMBER_LABEL_PKG.MESSAGE_PUSH_LABEL'
  ORDER BY A.START_TIME DESC;
 
+SELECT A.m_label_id, A.m_label_name, A.m_label_desc, COUNT(1)
+  FROM MEMBER_LABEL_LINK_V A
+ GROUP BY A.m_label_id, A.m_label_name, A.m_label_desc
+ ORDER BY A.m_label_id;
 
+SELECT * FROM MEMBER_LABEL_HEAD FOR UPDATE;

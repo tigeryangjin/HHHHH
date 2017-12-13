@@ -1,0 +1,17 @@
+select
+    voucher_ref as '券号',
+    voucher_name as '券名称',
+    voucher_price as '券名称',
+    cust_no as '顾客编号',
+    member_level as '会员等级',
+    CONCAT('`',order_sn) as '订单编号',
+    CONCAT('`',a.erp_order_no) AS 'ERP订单编号',
+    goods_amount AS '商品金额',
+    order_amount AS '订单金额',
+    FROM_UNIXTIME(add_time) AS '下单时间'
+from ec_order a,ec_order_common b
+where a.order_id = b.order_id 
+and a.order_state >= '20'  and add_time >= UNIX_TIMESTAMP('2017-10-20 00:00:00') and add_time <= UNIX_TIMESTAMP('2017-10-23 00:00')
+and b.voucher_ref in 
+('4269','4270','4271','4272','4273','4274','4275','4276','4277','4278')
+ORDER BY voucher_ref,a.order_id

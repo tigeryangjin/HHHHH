@@ -1,0 +1,2 @@
+select count(1) as '优惠券领取数' from ec_voucher where voucher_t_id in ('4367');
+select count(1) as '优惠券使用数' from ec_voucher where voucher_order_id > 0 and voucher_t_id in ('4367');

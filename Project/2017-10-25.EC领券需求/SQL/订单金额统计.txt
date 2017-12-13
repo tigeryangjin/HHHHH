@@ -1,0 +1,20 @@
+SELECT
+    count(1) AS '订单数',
+    sum(goods_amount) as '商品总金额',
+    SUM(order_amount) as '支付总金额'
+FROM
+    (
+        SELECT
+            a.order_id, goods_amount, order_amount
+        FROM
+            ec_order a,
+            ec_order_goods c
+        WHERE
+            a.order_id = c.order_id
+        AND a.order_state >= '20'
+        AND add_time >= UNIX_TIMESTAMP('2017-10-25 00:00')
+        AND add_time <= UNIX_TIMESTAMP('2017-10-26 00:00')
+        AND (c.erp_code LIKE '228107%')
+        GROUP BY
+            a.order_id
+    ) AS t

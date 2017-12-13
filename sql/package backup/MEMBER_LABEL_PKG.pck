@@ -16,6 +16,16 @@ CREATE OR REPLACE PACKAGE MEMBER_LABEL_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE ML_DATE_FIX(IN_POSTING_DATE_KEY IN NUMBER);
+  /*
+  功能名:       ML_DATE_FIX
+  目的:         所有会员标签指定日期的数据补全
+  作者:         yangjin
+  创建时间：    2017/12/04
+  最后修改人：
+  最后更改日期：
+  */
+
   PROCEDURE CREATE_MEMBER_LABEL(IN_M_LABEL_NAME      IN VARCHAR2,
                                 IN_M_LABEL_DESC      IN VARCHAR2,
                                 IN_M_LABEL_TYPE_ID   IN NUMBER,
@@ -231,6 +241,56 @@ CREATE OR REPLACE PACKAGE MEMBER_LABEL_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE APP_LOSS_SCORE(IN_POSTING_DATE_KEY IN NUMBER);
+  /*
+  功能名:       APP_LOSS_SCORE
+  目的:         APP流失评分
+  作者:         yangjin
+  创建时间：    2017/10/19
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE WX_LOSS_SCORE(IN_POSTING_DATE_KEY IN NUMBER);
+  /*
+  功能名:       WX_LOSS_SCORE
+  目的:         微信流失评分
+  作者:         yangjin
+  创建时间：    2017/10/19
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MERGE_PUSH_MSG_LOG;
+  /*
+  功能名:       MERGE_PUSH_MSG_LOG
+  目的:         从push_msg_log_tmp把数据插入push_msg_log
+  作者:         yangjin
+  创建时间：    2017/11/21
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MERGE_PUSH_TASK_RULE;
+  /*
+  功能名:       MERGE_PUSH_TASK_RULE
+  目的:         从push_task_rule_tmp把数据插入push_task_rule
+  作者:         yangjin
+  创建时间：    2017/11/30
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MESSAGE_PUSH_LABEL;
+  /*
+  功能名:       MESSAGE_PUSH_LABEL
+  目的:         从push_msg_log取数打标签
+  作者:         yangjin
+  创建时间：    2017/11/29
+  最后修改人：
+  最后更改日期：
+  */
+
 END MEMBER_LABEL_PKG;
 /
 CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
@@ -259,6 +319,34 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
      WHERE C.LAST_POSTING_DATE IS NOT NULL;
     RETURN(RESULT_DAYS);
   END MEMBER_REPURCHASE_CYCLE_DAYS;
+
+  PROCEDURE ML_DATE_FIX(IN_POSTING_DATE_KEY IN NUMBER) IS
+    /*
+    功能说明：所有会员标签指定日期的数据补全
+    作者时间：yangjin  2017-12-04
+    */
+  BEGIN
+    BEGIN
+      -- CALL THE PROCEDURE
+      MEMBER_LABEL_PKG.APP_LOSS_SCORE(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.COMMON_PORT(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.FIRST_ORDER_GIFT(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.FIRST_ORDER_ITEM(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.FIRST_ORDER_NOT(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.MEMBER_INJURED_PERIOD(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.MEMBER_LEVEL(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.MEMBER_LIFE_PERIOD(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.MEMBER_PAYMENT_METHOD(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.MEMBER_REPURCHASE(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.MIXED_CUSTOMER(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.ONLY_BROADCAST(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.ONLY_ONLINE_RETAIL(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.ONLY_SELF_SALES(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.ONLY_TV(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.WEBSITE_LOSS_SCORE(IN_POSTING_DATE_KEY);
+      MEMBER_LABEL_PKG.WX_LOSS_SCORE(IN_POSTING_DATE_KEY);
+    END;
+  END ML_DATE_FIX;
 
   PROCEDURE CREATE_MEMBER_LABEL(IN_M_LABEL_NAME      IN VARCHAR2,
                                 IN_M_LABEL_DESC      IN VARCHAR2,
@@ -2654,7 +2742,7 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                                    1
                                                   ELSE
                                                    0
-                                                END) LESS_30_DAYS_ACTIVE,
+                                                END) LESS_30_DAYS_ACTIVE, /*近30天*/
                                             SUM(CASE
                                                   WHEN B.VISIT_DATE_KEY <
                                                        IN_30_DAYS_DATE_KEY AND
@@ -2663,14 +2751,14 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                                    1
                                                   ELSE
                                                    0
-                                                END) MORE_30_DAYS_ACTIVE
+                                                END) MORE_30_DAYS_ACTIVE /*30天到60天*/
                                        FROM (SELECT DISTINCT A.VISIT_DATE_KEY,
                                                              A.MEMBER_KEY,
                                                              1 CNT
                                                FROM FACT_PAGE_VIEW A
                                               WHERE A.VISIT_DATE_KEY >=
                                                     TO_CHAR(TRUNC(IN_POSTING_DATE - 65),
-                                                            'YYYYMMDD')
+                                                            'YYYYMMDD') /*统计最近65天的访问记录*/
                                                 AND A.MEMBER_KEY <> 0) B
                                       GROUP BY B.MEMBER_KEY) C,
                                     (SELECT E.MEMBER_BP MEMBER_KEY,
@@ -2723,6 +2811,752 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
       SP_SBI_W_ETL_LOG(S_ETL);
       RETURN;
   END WEBSITE_LOSS_SCORE;
+
+  PROCEDURE APP_LOSS_SCORE(IN_POSTING_DATE_KEY IN NUMBER) IS
+    S_ETL               W_ETL_LOG%ROWTYPE;
+    SP_NAME             S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER         S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS         NUMBER;
+    DELETE_ROWS         NUMBER;
+    IN_POSTING_DATE     DATE;
+    IN_30_DAYS_DATE_KEY NUMBER;
+    IN_60_DAYS_DATE_KEY NUMBER;
+    /*
+    功能说明：  APP_LOSS_SCORE   APP流失评分
+                APP_EVERYDAY_SEE               每日必看（近30天活跃天数大于15天（注册日期大于30天））
+                APP_OCCASIONALLY_SEE           偶偶来来（近30天内活跃天数少于4天（注册日期大于30天））
+                APP_REGISTERED_LESS_ONE_MONTH  近一个月注册用户（注册日期小于等于30天）
+                APP_ACTIVE                     活跃（近30天有活跃记录的用户（注册日期大于30天））
+                APP_MAYBE_LOSS                 浅流失（30天到60天有行为记录用户（注册日期大于30天））
+                APP_DEEP_LOSS                  深度流失（60天以上有行为记录用户（注册日期大于30天））
+    作者时间：yangjin  2017-10-19
+    */
+  BEGIN
+    SP_NAME             := 'MEMBER_LABEL_PKG.APP_LOSS_SCORE'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME    := 'MEMBER_LABEL_LINK'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME     := SP_NAME;
+    S_ETL.START_TIME    := SYSDATE;
+    S_PARAMETER         := 0;
+    IN_POSTING_DATE     := TO_DATE(IN_POSTING_DATE_KEY, 'YYYYMMDD');
+    IN_30_DAYS_DATE_KEY := TO_CHAR(TRUNC(SYSDATE - 30), 'YYYYMMDD');
+    IN_60_DAYS_DATE_KEY := TO_CHAR(TRUNC(SYSDATE - 30), 'YYYYMMDD');
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE /*+APPEND*/
+      INTO (SELECT ROW_ID,
+                   MEMBER_KEY,
+                   M_LABEL_ID,
+                   M_LABEL_TYPE_ID,
+                   CREATE_DATE,
+                   CREATE_USER_ID,
+                   LAST_UPDATE_DATE,
+                   LAST_UPDATE_USER_ID
+              FROM MEMBER_LABEL_LINK
+             WHERE M_LABEL_ID BETWEEN 222 AND 227) T
+      USING (SELECT G.MEMBER_KEY,
+                    H.M_LABEL_ID,
+                    H.M_LABEL_TYPE_ID,
+                    SYSDATE CREATE_DATE,
+                    'yangjin' CREATE_USER_ID,
+                    SYSDATE LAST_UPDATE_DATE,
+                    'yangjin' LAST_UPDATE_USER_ID
+               FROM (SELECT F.MEMBER_KEY,
+                            F.CREATE_DATE_KEY,
+                            F.MAX_VISIT_DATE_KEY,
+                            F.LESS_30_DAYS_ACTIVE,
+                            F.MORE_30_DAYS_ACTIVE,
+                            CASE
+                              WHEN F.CREATE_DATE_KEY >= IN_30_DAYS_DATE_KEY THEN
+                               'APP_REGISTERED_LESS_ONE_MONTH'
+                              WHEN F.CREATE_DATE_KEY < IN_30_DAYS_DATE_KEY AND
+                                   F.LESS_30_DAYS_ACTIVE >= 15 THEN
+                               'APP_EVERYDAY_SEE'
+                              WHEN F.CREATE_DATE_KEY < IN_30_DAYS_DATE_KEY AND
+                                   F.LESS_30_DAYS_ACTIVE >= 4 THEN
+                               'APP_OCCASIONALLY_SEE'
+                              WHEN F.CREATE_DATE_KEY < IN_30_DAYS_DATE_KEY AND
+                                   F.LESS_30_DAYS_ACTIVE > 0 THEN
+                               'APP_ACTIVE'
+                              WHEN F.CREATE_DATE_KEY < IN_30_DAYS_DATE_KEY AND
+                                   F.MORE_30_DAYS_ACTIVE > 0 THEN
+                               'APP_MAYBE_LOSS'
+                              ELSE
+                               'APP_DEEP_LOSS'
+                            END MEMBER_LABEL_NAME
+                       FROM (SELECT C.MEMBER_KEY,
+                                    D.CREATE_DATE_KEY,
+                                    C.MAX_VISIT_DATE_KEY,
+                                    C.LESS_30_DAYS_ACTIVE,
+                                    C.MORE_30_DAYS_ACTIVE
+                               FROM (SELECT B.MEMBER_KEY,
+                                            MAX(B.VISIT_DATE_KEY) MAX_VISIT_DATE_KEY,
+                                            SUM(CASE
+                                                  WHEN B.VISIT_DATE_KEY >=
+                                                       IN_30_DAYS_DATE_KEY THEN
+                                                   1
+                                                  ELSE
+                                                   0
+                                                END) LESS_30_DAYS_ACTIVE, /*近30天*/
+                                            SUM(CASE
+                                                  WHEN B.VISIT_DATE_KEY <
+                                                       IN_30_DAYS_DATE_KEY AND
+                                                       B.VISIT_DATE_KEY >=
+                                                       IN_60_DAYS_DATE_KEY THEN
+                                                   1
+                                                  ELSE
+                                                   0
+                                                END) MORE_30_DAYS_ACTIVE /*30天到60天*/
+                                       FROM (SELECT DISTINCT A.VISIT_DATE_KEY,
+                                                             A.MEMBER_KEY,
+                                                             1 CNT
+                                               FROM FACT_PAGE_VIEW A
+                                              WHERE A.APPLICATION_KEY IN
+                                                    (10, 20) /*APP*/
+                                                AND A.VISIT_DATE_KEY >=
+                                                    TO_CHAR(TRUNC(IN_POSTING_DATE - 65),
+                                                            'YYYYMMDD') /*统计最近65天的访问记录*/
+                                                AND A.MEMBER_KEY <> 0) B
+                                      GROUP BY B.MEMBER_KEY) C,
+                                    (SELECT E.MEMBER_BP MEMBER_KEY,
+                                            E.CREATE_DATE_KEY
+                                       FROM DIM_MEMBER E) D
+                              WHERE C.MEMBER_KEY = D.MEMBER_KEY) F) G,
+                    MEMBER_LABEL_HEAD H
+              WHERE G.MEMBER_LABEL_NAME = H.M_LABEL_NAME
+                AND H.M_LABEL_ID BETWEEN 222 AND 227) S
+      ON (T.MEMBER_KEY = S.MEMBER_KEY)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.M_LABEL_ID = S.M_LABEL_ID, T.LAST_UPDATE_DATE = SYSDATE
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ROW_ID,
+           T.MEMBER_KEY,
+           T.M_LABEL_ID,
+           T.M_LABEL_TYPE_ID,
+           T.CREATE_DATE,
+           T.CREATE_USER_ID,
+           T.LAST_UPDATE_DATE,
+           T.LAST_UPDATE_USER_ID)
+        VALUES
+          (MEMBER_LABEL_LINK_SEQ.NEXTVAL,
+           S.MEMBER_KEY,
+           S.M_LABEL_ID,
+           1,
+           SYSDATE,
+           'yangjin',
+           SYSDATE,
+           'yangjin');
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:IN_POSTING_DATE_KEY:' ||
+                            TO_CHAR(IN_POSTING_DATE_KEY);
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END APP_LOSS_SCORE;
+
+  PROCEDURE WX_LOSS_SCORE(IN_POSTING_DATE_KEY IN NUMBER) IS
+    S_ETL               W_ETL_LOG%ROWTYPE;
+    SP_NAME             S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER         S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS         NUMBER;
+    DELETE_ROWS         NUMBER;
+    IN_POSTING_DATE     DATE;
+    IN_30_DAYS_DATE_KEY NUMBER;
+    IN_60_DAYS_DATE_KEY NUMBER;
+    /*
+    功能说明：  WX_LOSS_SCORE   微信流失评分
+                WX_EVERYDAY_SEE               每日必看（近30天活跃天数大于15天（注册日期大于30天））
+                WX_OCCASIONALLY_SEE           偶偶来来（近30天内活跃天数少于4天（注册日期大于30天））
+                WX_REGISTERED_LESS_ONE_MONTH  近一个月注册用户（注册日期小于等于30天）
+                WX_ACTIVE                     活跃（近30天有活跃记录的用户（注册日期大于30天））
+                WX_MAYBE_LOSS                 浅流失（30天到60天有行为记录用户（注册日期大于30天））
+                WX_DEEP_LOSS                  深度流失（60天以上有行为记录用户（注册日期大于30天））
+    作者时间：yangjin  2017-10-19
+    */
+  BEGIN
+    SP_NAME             := 'MEMBER_LABEL_PKG.WX_LOSS_SCORE'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME    := 'MEMBER_LABEL_LINK'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME     := SP_NAME;
+    S_ETL.START_TIME    := SYSDATE;
+    S_PARAMETER         := 0;
+    IN_POSTING_DATE     := TO_DATE(IN_POSTING_DATE_KEY, 'YYYYMMDD');
+    IN_30_DAYS_DATE_KEY := TO_CHAR(TRUNC(SYSDATE - 30), 'YYYYMMDD');
+    IN_60_DAYS_DATE_KEY := TO_CHAR(TRUNC(SYSDATE - 30), 'YYYYMMDD');
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE /*+APPEND*/
+      INTO (SELECT ROW_ID,
+                   MEMBER_KEY,
+                   M_LABEL_ID,
+                   M_LABEL_TYPE_ID,
+                   CREATE_DATE,
+                   CREATE_USER_ID,
+                   LAST_UPDATE_DATE,
+                   LAST_UPDATE_USER_ID
+              FROM MEMBER_LABEL_LINK
+             WHERE M_LABEL_ID BETWEEN 229 AND 234) T
+      USING (SELECT G.MEMBER_KEY,
+                    H.M_LABEL_ID,
+                    H.M_LABEL_TYPE_ID,
+                    SYSDATE CREATE_DATE,
+                    'yangjin' CREATE_USER_ID,
+                    SYSDATE LAST_UPDATE_DATE,
+                    'yangjin' LAST_UPDATE_USER_ID
+               FROM (SELECT F.MEMBER_KEY,
+                            F.CREATE_DATE_KEY,
+                            F.MAX_VISIT_DATE_KEY,
+                            F.LESS_30_DAYS_ACTIVE,
+                            F.MORE_30_DAYS_ACTIVE,
+                            CASE
+                              WHEN F.CREATE_DATE_KEY >= IN_30_DAYS_DATE_KEY THEN
+                               'WX_REGISTERED_LESS_ONE_MONTH'
+                              WHEN F.CREATE_DATE_KEY < IN_30_DAYS_DATE_KEY AND
+                                   F.LESS_30_DAYS_ACTIVE >= 15 THEN
+                               'WX_EVERYDAY_SEE'
+                              WHEN F.CREATE_DATE_KEY < IN_30_DAYS_DATE_KEY AND
+                                   F.LESS_30_DAYS_ACTIVE >= 4 THEN
+                               'WX_OCCASIONALLY_SEE'
+                              WHEN F.CREATE_DATE_KEY < IN_30_DAYS_DATE_KEY AND
+                                   F.LESS_30_DAYS_ACTIVE > 0 THEN
+                               'WX_ACTIVE'
+                              WHEN F.CREATE_DATE_KEY < IN_30_DAYS_DATE_KEY AND
+                                   F.MORE_30_DAYS_ACTIVE > 0 THEN
+                               'WX_MAYBE_LOSS'
+                              ELSE
+                               'WX_DEEP_LOSS'
+                            END MEMBER_LABEL_NAME
+                       FROM (SELECT C.MEMBER_KEY,
+                                    D.CREATE_DATE_KEY,
+                                    C.MAX_VISIT_DATE_KEY,
+                                    C.LESS_30_DAYS_ACTIVE,
+                                    C.MORE_30_DAYS_ACTIVE
+                               FROM (SELECT B.MEMBER_KEY,
+                                            MAX(B.VISIT_DATE_KEY) MAX_VISIT_DATE_KEY,
+                                            SUM(CASE
+                                                  WHEN B.VISIT_DATE_KEY >=
+                                                       IN_30_DAYS_DATE_KEY THEN
+                                                   1
+                                                  ELSE
+                                                   0
+                                                END) LESS_30_DAYS_ACTIVE, /*近30天*/
+                                            SUM(CASE
+                                                  WHEN B.VISIT_DATE_KEY <
+                                                       IN_30_DAYS_DATE_KEY AND
+                                                       B.VISIT_DATE_KEY >=
+                                                       IN_60_DAYS_DATE_KEY THEN
+                                                   1
+                                                  ELSE
+                                                   0
+                                                END) MORE_30_DAYS_ACTIVE /*30天到60天*/
+                                       FROM (SELECT DISTINCT A.VISIT_DATE_KEY,
+                                                             A.MEMBER_KEY,
+                                                             1 CNT
+                                               FROM FACT_PAGE_VIEW A
+                                              WHERE A.APPLICATION_KEY = 50 /*微信*/
+                                                AND A.VISIT_DATE_KEY >=
+                                                    TO_CHAR(TRUNC(IN_POSTING_DATE - 65),
+                                                            'YYYYMMDD') /*统计最近65天的访问记录*/
+                                                AND A.MEMBER_KEY <> 0) B
+                                      GROUP BY B.MEMBER_KEY) C,
+                                    (SELECT E.MEMBER_BP MEMBER_KEY,
+                                            E.CREATE_DATE_KEY
+                                       FROM DIM_MEMBER E) D
+                              WHERE C.MEMBER_KEY = D.MEMBER_KEY) F) G,
+                    MEMBER_LABEL_HEAD H
+              WHERE G.MEMBER_LABEL_NAME = H.M_LABEL_NAME
+                AND H.M_LABEL_ID BETWEEN 229 AND 234) S
+      ON (T.MEMBER_KEY = S.MEMBER_KEY)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.M_LABEL_ID = S.M_LABEL_ID, T.LAST_UPDATE_DATE = SYSDATE
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ROW_ID,
+           T.MEMBER_KEY,
+           T.M_LABEL_ID,
+           T.M_LABEL_TYPE_ID,
+           T.CREATE_DATE,
+           T.CREATE_USER_ID,
+           T.LAST_UPDATE_DATE,
+           T.LAST_UPDATE_USER_ID)
+        VALUES
+          (MEMBER_LABEL_LINK_SEQ.NEXTVAL,
+           S.MEMBER_KEY,
+           S.M_LABEL_ID,
+           1,
+           SYSDATE,
+           'yangjin',
+           SYSDATE,
+           'yangjin');
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:IN_POSTING_DATE_KEY:' ||
+                            TO_CHAR(IN_POSTING_DATE_KEY);
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END WX_LOSS_SCORE;
+
+  PROCEDURE MERGE_PUSH_MSG_LOG IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    DELETE_ROWS NUMBER;
+    /*
+    功能说明：  从push_msg_log_tmp把数据插入push_msg_log
+    作者时间：yangjin  2017-11-21
+    */
+  BEGIN
+    SP_NAME          := 'MEMBER_LABEL_PKG.MERGE_PUSH_MSG_LOG'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'PUSH_MSG_LOG'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*task_type=1 openid*/
+      UPDATE PUSH_MSG_LOG_TMP A
+         SET A.MEMBER_BP =
+             (SELECT B.MEMBER_KEY
+                FROM (SELECT C.MEMBER_KEY,
+                             C.OPEN_ID,
+                             ROW_NUMBER() OVER(PARTITION BY C.OPEN_ID ORDER BY C.CREATE_DATE_KEY DESC) RANK1
+                        FROM DIM_MAPPING_MEM C) B
+               WHERE A.SEND_MEMBER = B.OPEN_ID
+                 AND B.RANK1 = 1)
+       WHERE A.TASK_TYPE = 1
+         AND A.MEMBER_BP IS NULL
+         AND EXISTS (SELECT 1
+                FROM (SELECT E.MEMBER_KEY,
+                             E.OPEN_ID,
+                             ROW_NUMBER() OVER(PARTITION BY E.OPEN_ID ORDER BY E.CREATE_DATE_KEY DESC) RANK1
+                        FROM DIM_MAPPING_MEM E) D
+               WHERE A.SEND_MEMBER = D.OPEN_ID
+                 AND D.RANK1 = 1);
+      COMMIT;
+    
+      /*task_type=3 member_bp*/
+      UPDATE PUSH_MSG_LOG_TMP A
+         SET A.MEMBER_BP = TO_NUMBER(TRIM(TRAILING CHR(9) FROM A.SEND_MEMBER))
+       WHERE A.TASK_TYPE = 3
+         AND A.MEMBER_BP IS NULL;
+      COMMIT;
+    
+      /*push_msg_log_tmp-->push_msg_log*/
+      MERGE /*+APPEND*/
+      INTO PUSH_MSG_LOG T
+      USING (SELECT A.ID,
+                    A.TASK_ID,
+                    A.TASK_TYPE,
+                    A.SEND_MEMBER,
+                    A.MEMBER_BP,
+                    A.PUSH_STATE,
+                    A.PUSH_MESSAGE,
+                    A.RESULT_MESSAGE,
+                    A.CREATE_TIME,
+                    A.START_TIME,
+                    A.END_TIME,
+                    A.PUSH_DELAY,
+                    A.PUSH_THREAD_ID,
+                    A.REMARK,
+                    SYSDATE          W_INSERT_DT,
+                    SYSDATE          W_UPDATE_DT
+               FROM PUSH_MSG_LOG_TMP A) S
+      ON (T.ID = S.ID)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.TASK_ID        = S.TASK_ID,
+               T.TASK_TYPE      = S.TASK_TYPE,
+               T.SEND_MEMBER    = S.SEND_MEMBER,
+               T.MEMBER_BP      = S.MEMBER_BP,
+               T.PUSH_STATE     = S.PUSH_STATE,
+               T.PUSH_MESSAGE   = S.PUSH_MESSAGE,
+               T.RESULT_MESSAGE = S.RESULT_MESSAGE,
+               T.CREATE_TIME    = S.CREATE_TIME,
+               T.START_TIME     = S.START_TIME,
+               T.END_TIME       = S.END_TIME,
+               T.PUSH_DELAY     = S.PUSH_DELAY,
+               T.PUSH_THREAD_ID = S.PUSH_THREAD_ID,
+               T.REMARK         = S.REMARK,
+               T.W_UPDATE_DT    = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ID,
+           T.TASK_ID,
+           T.TASK_TYPE,
+           T.SEND_MEMBER,
+           T.MEMBER_BP,
+           T.PUSH_STATE,
+           T.PUSH_MESSAGE,
+           T.RESULT_MESSAGE,
+           T.CREATE_TIME,
+           T.START_TIME,
+           T.END_TIME,
+           T.PUSH_DELAY,
+           T.PUSH_THREAD_ID,
+           T.REMARK,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.ID,
+           S.TASK_ID,
+           S.TASK_TYPE,
+           S.SEND_MEMBER,
+           S.MEMBER_BP,
+           S.PUSH_STATE,
+           S.PUSH_MESSAGE,
+           S.RESULT_MESSAGE,
+           S.CREATE_TIME,
+           S.START_TIME,
+           S.END_TIME,
+           S.PUSH_DELAY,
+           S.PUSH_THREAD_ID,
+           S.REMARK,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_PUSH_MSG_LOG;
+
+  PROCEDURE MERGE_PUSH_TASK_RULE IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    DELETE_ROWS NUMBER;
+    /*
+    功能说明：  从push_task_rule_tmp把数据插入push_task_rule
+    作者时间：yangjin  2017-11-30
+    */
+  BEGIN
+    SP_NAME          := 'MEMBER_LABEL_PKG.MERGE_PUSH_TASK_RULE'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'PUSH_TASK_RULE'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*push_task_rule_tmp-->push_task_rule*/
+      MERGE /*+APPEND*/
+      INTO PUSH_TASK_RULE T
+      USING (SELECT A.ID,
+                    A.TASK_NAME,
+                    A.TASK_TYPE,
+                    A.ADD_TIME,
+                    A.START_TIME,
+                    A.MEMBER_GROUP_ID,
+                    A.MSG_T_ID,
+                    A.MSG_CONTENT,
+                    A.TASK_STAUTS,
+                    A.RUN_RECORDS,
+                    A.RESULT_RECORDS,
+                    A.FAIL_RECORDS,
+                    A.REMARK,
+                    SYSDATE           W_INSERT_DT,
+                    SYSDATE           W_UPDATE_DT
+               FROM PUSH_TASK_RULE_TMP A) S
+      ON (T.ID = S.ID)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.TASK_NAME       = S.TASK_NAME,
+               T.TASK_TYPE       = S.TASK_TYPE,
+               T.ADD_TIME        = S.ADD_TIME,
+               T.START_TIME      = S.START_TIME,
+               T.MEMBER_GROUP_ID = S.MEMBER_GROUP_ID,
+               T.MSG_T_ID        = S.MSG_T_ID,
+               T.MSG_CONTENT     = S.MSG_CONTENT,
+               T.TASK_STAUTS     = S.TASK_STAUTS,
+               T.RUN_RECORDS     = S.RUN_RECORDS,
+               T.RESULT_RECORDS  = S.RESULT_RECORDS,
+               T.FAIL_RECORDS    = S.FAIL_RECORDS,
+               T.REMARK          = S.REMARK,
+               T.W_UPDATE_DT     = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ID,
+           T.TASK_NAME,
+           T.TASK_TYPE,
+           T.ADD_TIME,
+           T.START_TIME,
+           T.MEMBER_GROUP_ID,
+           T.MSG_T_ID,
+           T.MSG_CONTENT,
+           T.TASK_STAUTS,
+           T.RUN_RECORDS,
+           T.RESULT_RECORDS,
+           T.FAIL_RECORDS,
+           T.REMARK,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.ID,
+           S.TASK_NAME,
+           S.TASK_TYPE,
+           S.ADD_TIME,
+           S.START_TIME,
+           S.MEMBER_GROUP_ID,
+           S.MSG_T_ID,
+           S.MSG_CONTENT,
+           S.TASK_STAUTS,
+           S.RUN_RECORDS,
+           S.RESULT_RECORDS,
+           S.FAIL_RECORDS,
+           S.REMARK,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_PUSH_TASK_RULE;
+
+  PROCEDURE MESSAGE_PUSH_LABEL IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    DELETE_ROWS NUMBER;
+    /*
+    功能说明：  从push_msg_log_tmp把数据插入push_msg_log
+    作者时间：yangjin  2017-11-21
+    */
+  BEGIN
+    SP_NAME          := 'MEMBER_LABEL_PKG.MESSAGE_PUSH_LABEL'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'MEMBER_LABEL_LINK'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*打上标签*/
+      /*
+      WX_IN_7DAYS  微信推送(7天内),399
+      SMS_IN_7DAYS 短息推送(7天内),400
+      APP_IN_7DAYS APP推送(7天内) ,401
+      */
+      MERGE /*+APPEND*/
+      INTO (SELECT ROW_ID,
+                   MEMBER_KEY,
+                   M_LABEL_ID,
+                   M_LABEL_TYPE_ID,
+                   CREATE_DATE,
+                   CREATE_USER_ID,
+                   LAST_UPDATE_DATE,
+                   LAST_UPDATE_USER_ID
+              FROM MEMBER_LABEL_LINK
+             WHERE M_LABEL_ID BETWEEN 399 AND 401) T
+      USING (SELECT G.MEMBER_KEY,
+                    H.M_LABEL_ID,
+                    H.M_LABEL_TYPE_ID,
+                    SYSDATE CREATE_DATE,
+                    'yangjin' CREATE_USER_ID,
+                    SYSDATE LAST_UPDATE_DATE,
+                    'yangjin' LAST_UPDATE_USER_ID
+               FROM (SELECT B.MEMBER_BP MEMBER_KEY,
+                            CASE
+                              WHEN B.TASK_TYPE = 1 THEN
+                               'WX_IN_7DAYS' /*微信推送*/
+                              WHEN B.TASK_TYPE = 2 THEN
+                               'SMS_IN_7DAYS' /*短信推送*/
+                              WHEN B.TASK_TYPE = 3 THEN
+                               'APP_IN_7DAYS' /*APP推送*/
+                            END MEMBER_LABEL_NAME
+                       FROM (SELECT A.MEMBER_BP,
+                                    A.TASK_TYPE,
+                                    MAX(A.CREATE_TIME)
+                               FROM PUSH_MSG_LOG A
+                              WHERE A.CREATE_TIME >= SYSDATE - 7 /*7天内*/
+                                AND A.PUSH_STATE = 10 /*推送成功才打上标签*/
+                                AND A.MEMBER_BP IS NOT NULL /*BP号不为空*/
+                              GROUP BY A.MEMBER_BP, A.TASK_TYPE) B) G,
+                    MEMBER_LABEL_HEAD H
+              WHERE G.MEMBER_LABEL_NAME = H.M_LABEL_NAME) S
+      ON (T.MEMBER_KEY = S.MEMBER_KEY AND T.M_LABEL_ID = S.M_LABEL_ID)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.LAST_UPDATE_DATE    = SYSDATE,
+               T.LAST_UPDATE_USER_ID = 'yangjin'
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ROW_ID,
+           T.MEMBER_KEY,
+           T.M_LABEL_ID,
+           T.M_LABEL_TYPE_ID,
+           T.CREATE_DATE,
+           T.CREATE_USER_ID,
+           T.LAST_UPDATE_DATE,
+           T.LAST_UPDATE_USER_ID)
+        VALUES
+          (MEMBER_LABEL_LINK_SEQ.NEXTVAL,
+           S.MEMBER_KEY,
+           S.M_LABEL_ID,
+           1,
+           SYSDATE,
+           'yangjin',
+           SYSDATE,
+           'yangjin');
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+      /*删除标签，当最后一次推送消息的时间大于7天时*/
+      /*
+      WX_IN_7DAYS  微信推送(7天内),399
+      SMS_IN_7DAYS 短息推送(7天内),400
+      APP_IN_7DAYS APP推送(7天内) ,401
+      */
+      DELETE MEMBER_LABEL_LINK A
+       WHERE A.M_LABEL_ID BETWEEN 399 AND 401
+         AND NOT EXISTS (SELECT 1
+                FROM (SELECT C.MEMBER_BP MEMBER_KEY,
+                             CASE
+                               WHEN C.TASK_TYPE = 1 THEN
+                                399
+                               WHEN C.TASK_TYPE = 2 THEN
+                                400
+                               WHEN C.TASK_TYPE = 3 THEN
+                                401
+                             END M_LABEL_ID
+                        FROM PUSH_MSG_LOG C
+                       WHERE C.CREATE_TIME >= SYSDATE - 7) B
+               WHERE A.MEMBER_KEY = B.MEMBER_KEY
+                 AND A.M_LABEL_ID = B.M_LABEL_ID);
+      DELETE_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MESSAGE_PUSH_LABEL;
 
 END MEMBER_LABEL_PKG;
 /

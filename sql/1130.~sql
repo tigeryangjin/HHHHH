@@ -1,0 +1,22 @@
+SELECT A.M_LABEL_ID, COUNT(1)
+  FROM MEMBER_LABEL_LINK A
+ WHERE A.M_LABEL_ID BETWEEN 399 AND 401
+ GROUP BY A.M_LABEL_ID;
+
+SELECT C.MEMBER_LABEL_NAME, COUNT(1)
+  FROM (SELECT B.MEMBER_BP MEMBER_KEY,
+               CASE
+                 WHEN B.TASK_TYPE = 1 THEN
+                  'WX_IN_7DAYS' /*微信推送*/
+                 WHEN B.TASK_TYPE = 2 THEN
+                  'SMS_IN_7DAYS' /*短信推送*/
+                 WHEN B.TASK_TYPE = 3 THEN
+                  'APP_IN_7DAYS' /*APP推送*/
+               END MEMBER_LABEL_NAME
+          FROM (SELECT A.MEMBER_BP, A.TASK_TYPE, MAX(A.CREATE_TIME)
+                  FROM PUSH_MSG_LOG A
+                 WHERE A.CREATE_TIME >= SYSDATE - 7 /*7天内*/
+                   AND A.PUSH_STATE = 10 /*推送成功才打上标签*/
+                   AND A.MEMBER_BP IS NOT NULL /*BP号不为空*/
+                 GROUP BY A.MEMBER_BP, A.TASK_TYPE) B) C
+ GROUP BY C.MEMBER_LABEL_NAME;
