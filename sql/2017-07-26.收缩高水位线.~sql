@@ -1,5 +1,5 @@
 alter table odshappigo.ods_zmaterial enable row movement;
-alter table odshappigo.ods_zmaterial shrink space;
+alter table odshappigo.ods_zmaterial shrink space compact;
 alter table odshappigo.ods_zmaterial disable row movement;
 
 begin
@@ -13,13 +13,32 @@ SELECT A.TABLE_NAME,
        A.NUM_ROWS,
        A.AVG_ROW_LEN * A.NUM_ROWS / 1024 / 1024 / 0.9 NEED,
        A.BLOCKS * 8 / 1024 TRUE,
-       (A.BLOCKS * 8 / 1024 - A.AVG_ROW_LEN * A.NUM_ROWS / 1024 / 1024 / 0.9) RECOVER_MB
+       (A.BLOCKS * 8 / 1024 -
+       A.AVG_ROW_LEN * A.NUM_ROWS / 1024 / 1024 / 0.9) RECOVER_MB
   FROM dba_tables A
  WHERE /*tablespace_name = 'PSAPSR3'
    AND*/
  A.BLOCKS * 8 / 1024 - A.AVG_ROW_LEN * A.NUM_ROWS / 1024 / 1024 / 0.9 > 100
- /*AND rownum < 11*/
+/*AND rownum < 11*/
  order by RECOVER_MB desc;
+
+--1	FACT_DAILY_ZHUANGTI	244	95104	94860	388.770491803279
+SELECT A.OWNER,
+       A.TABLE_NAME,
+       A.TBLOCKS,
+       A.SBLOCKS,
+       A.SBLOCKS - A.TBLOCKS WBLOCKS,
+       (A.SBLOCKS - A.TBLOCKS) / A.TBLOCKS
+  FROM (SELECT T.OWNER,
+               T.TABLE_NAME,
+               T.BLOCKS TBLOCKS,
+               SUM(S.blocks) SBLOCKS
+          FROM dba_segments S, dba_tables T
+         WHERE S.segment_name = T.TABLE_NAME
+           AND S.owner = T.OWNER
+           AND T.BLOCKS > 0
+         GROUP BY T.OWNER,T.TABLE_NAME, T.BLOCKS) A
+ ORDER BY 6 DESC;
 
 --
 BEGIN

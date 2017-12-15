@@ -559,9 +559,11 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   PROCEDURE TABLE_OPTIMIZATION IS
   BEGIN
     /*
-    
+    每周六20:00开始执行
     */
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('MEMBER_LABEL_LINK');
+    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('DATA_ACQUISITION_ITEM_BASE');
+    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('DATA_ACQUISITION_ITEM_CURRENT');
+    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('DATA_ACQUISITION_MONTH_NEW');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_ORDER_2');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_ORDER_COMMON');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_ORDER_GOODS');
@@ -571,11 +573,13 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_P_XIANSHI_GOODS');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_VOUCHER');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_VOUCHER_BATCH');
+    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('MEMBER_LABEL_LINK');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ITEM_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ORDER_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_VOUCHER_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_PRODUCT_DAILY_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_PRODUCT_PVUV_DAILY_REPORT');
+    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('PUSH_MSG_LOG');
   END TABLE_OPTIMIZATION;
 
   PROCEDURE PROCESSMAKETHMSC_IA(STARTPOINT IN NUMBER) IS
@@ -3008,7 +3012,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
                   WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               AND*/
                   F.ZMATERIAL NOT LIKE '%F%'
                AND F.ZEAMC027 IS NOT NULL
                AND F.ZEAMC027 != 0) TA

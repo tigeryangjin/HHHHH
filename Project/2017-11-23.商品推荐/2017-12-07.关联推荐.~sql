@@ -3,12 +3,17 @@
 用户购买的商品之间频繁项集
 */
 
+--********************************************************************************************************************
+--二个商品
+--********************************************************************************************************************
 --1.购买记录基表
-CREATE TABLE MEMBER_ITEM_APRIORI_BASE AS
-SELECT DISTINCT A.MEMBER_KEY MEMBER_BP, A.GOODS_COMMON_KEY ITEM_CODE
-  FROM FACT_GOODS_SALES A
- WHERE A.ORDER_STATE = 1
-   AND A.GOODS_COMMON_KEY IS NOT NULL;
+TRUNCATE TABLE MEMBER_ITEM_APRIORI_BASE;
+INSERT INTO MEMBER_ITEM_APRIORI_BASE
+  SELECT DISTINCT A.MEMBER_KEY MEMBER_BP, A.GOODS_COMMON_KEY ITEM_CODE
+    FROM FACT_GOODS_SALES A
+   WHERE A.ORDER_STATE = 1
+     AND A.ORDER_AMOUNT > 0
+     AND A.GOODS_COMMON_KEY IS NOT NULL;
 
 --2.确定商品范围
 --2353786
@@ -49,7 +54,7 @@ SELECT E.ITEM_CODE_A, F.GOODS_NAME, E.ITEM_CODE_B, G.GOODS_NAME, E.BP_COUNT
                            AND A.ITEM_CODE <> B.ITEM_CODE) C
                  GROUP BY C.ITEM_CODE_A, C.ITEM_CODE_B
                  ORDER BY COUNT(C.MEMBER_BP) DESC) D
-         WHERE ROWNUM <= 10000) E,
+         WHERE ROWNUM <= 100000) E,
        DIM_GOOD F,
        DIM_GOOD G
  WHERE E.ITEM_CODE_A = F.ITEM_CODE(+)
@@ -75,3 +80,115 @@ SELECT *
          GROUP BY E.ITEM_CODE_A, E.ITEM_CODE_B
          ORDER BY COUNT(E.MEMBER_BP) DESC) F
  WHERE ROWNUM <= 100;
+
+--********************************************************************************************************************
+--三个商品
+--********************************************************************************************************************
+--1.
+--1.1
+--数据量太大，报临时表空间不足
+SELECT E.MEMBER_BP, E.ITEM_CODE_A, E.ITEM_CODE_B, E.ITEM_CODE_C, E.BP_COUNT
+  FROM (SELECT D.MEMBER_BP,
+               D.ITEM_CODE_A,
+               D.ITEM_CODE_B,
+               D.ITEM_CODE_C,
+               COUNT(D.MEMBER_BP) BP_COUNT
+          FROM (SELECT A.MEMBER_BP,
+                       A.ITEM_CODE ITEM_CODE_A,
+                       B.ITEM_CODE ITEM_CODE_B,
+                       C.ITEM_CODE ITEM_CODE_C
+                  FROM MEMBER_ITEM_APRIORI_BASE A,
+                       MEMBER_ITEM_APRIORI_BASE B,
+                       MEMBER_ITEM_APRIORI_BASE C
+                 WHERE A.MEMBER_BP = B.MEMBER_BP
+                   AND A.MEMBER_BP = C.MEMBER_BP
+                   AND A.ITEM_CODE <> B.ITEM_CODE
+                   AND A.ITEM_CODE <> C.ITEM_CODE
+                   AND B.ITEM_CODE <> C.ITEM_CODE) D
+         WHERE EXISTS (SELECT 1
+                  FROM (SELECT G.ITEM_CODE_A, G.ITEM_CODE_B, G.BP_COUNT
+                          FROM (SELECT H.ITEM_CODE_A,
+                                       H.ITEM_CODE_B,
+                                       COUNT(H.MEMBER_BP) BP_COUNT
+                                  FROM (SELECT I.MEMBER_BP,
+                                               I.ITEM_CODE ITEM_CODE_A,
+                                               J.ITEM_CODE ITEM_CODE_B
+                                          FROM MEMBER_ITEM_APRIORI_BASE I,
+                                               MEMBER_ITEM_APRIORI_BASE J
+                                         WHERE I.MEMBER_BP = J.MEMBER_BP
+                                           AND I.ITEM_CODE <> J.ITEM_CODE) H
+                                 GROUP BY H.ITEM_CODE_A, H.ITEM_CODE_B
+                                 ORDER BY COUNT(H.MEMBER_BP) DESC) G
+                         WHERE ROWNUM <= 100000) F
+                 WHERE D.ITEM_CODE_A = F.ITEM_CODE_A
+                   AND D.ITEM_CODE_B = F.ITEM_CODE_B)
+         GROUP BY D.MEMBER_BP, D.ITEM_CODE_A, D.ITEM_CODE_B, D.ITEM_CODE_C
+         ORDER BY COUNT(D.MEMBER_BP) DESC) E
+ WHERE ROWNUM <= 10000;
+
+--1.2
+DROP TABLE MEMBER_ITEM_APRIORI_ITEMSET2;
+CREATE TABLE MEMBER_ITEM_APRIORI_ITEMSET2 AS
+SELECT D.ITEM_CODE_A, D.ITEM_CODE_B, D.BP_COUNT
+  FROM (SELECT C.ITEM_CODE_A, C.ITEM_CODE_B, COUNT(C.MEMBER_BP) BP_COUNT
+          FROM (SELECT A.MEMBER_BP,
+                       A.ITEM_CODE ITEM_CODE_A,
+                       B.ITEM_CODE ITEM_CODE_B
+                  FROM MEMBER_ITEM_APRIORI_BASE A, MEMBER_ITEM_APRIORI_BASE B
+                 WHERE A.MEMBER_BP = B.MEMBER_BP
+                   AND A.ITEM_CODE <> B.ITEM_CODE) C
+         GROUP BY C.ITEM_CODE_A, C.ITEM_CODE_B
+         ORDER BY COUNT(C.MEMBER_BP) DESC) D
+ WHERE ROWNUM <= 100000;
+
+SELECT I.ITEM_CODE_A,
+       J.GOODS_NAME,
+       I.ITEM_CODE_B,
+       K.GOODS_NAME,
+       I.ITEM_CODE_C,
+       L.GOODS_NAME,
+       I.BP_COUNT
+  FROM (SELECT H.ITEM_CODE_A, H.ITEM_CODE_B, H.ITEM_CODE_C, H.BP_COUNT
+          FROM (SELECT G.ITEM_CODE_A,
+                       G.ITEM_CODE_B,
+                       G.ITEM_CODE_C,
+                       COUNT(G.MEMBER_BP) BP_COUNT
+                  FROM (SELECT E.MEMBER_BP,
+                               E.ITEM_CODE_A,
+                               E.ITEM_CODE_B,
+                               F.ITEM_CODE ITEM_CODE_C
+                          FROM (SELECT A.MEMBER_BP,
+                                       A.ITEM_CODE ITEM_CODE_A,
+                                       B.ITEM_CODE ITEM_CODE_B
+                                  FROM MEMBER_ITEM_APRIORI_BASE A,
+                                       MEMBER_ITEM_APRIORI_BASE B
+                                 WHERE A.MEMBER_BP = B.MEMBER_BP
+                                   AND A.ITEM_CODE <> B.ITEM_CODE
+                                   AND EXISTS
+                                 (SELECT 1
+                                          FROM (SELECT D.ITEM_CODE_A,
+                                                       D.ITEM_CODE_B
+                                                  FROM MEMBER_ITEM_APRIORI_ITEMSET2 D
+                                                 WHERE D.BP_COUNT >= 2000) C
+                                         WHERE A.ITEM_CODE = C.ITEM_CODE_A
+                                           AND B.ITEM_CODE = C.ITEM_CODE_B)) E,
+                               MEMBER_ITEM_APRIORI_BASE F
+                         WHERE E.MEMBER_BP = F.MEMBER_BP
+                           AND E.ITEM_CODE_A <> F.ITEM_CODE
+                           AND E.ITEM_CODE_B <> F.ITEM_CODE) G
+                 GROUP BY G.ITEM_CODE_A, G.ITEM_CODE_B, G.ITEM_CODE_C
+                 ORDER BY COUNT(G.MEMBER_BP) DESC) H
+         WHERE ROWNUM <= 10000) I,
+       DIM_GOOD J,
+       DIM_GOOD K,
+       DIM_GOOD L
+ WHERE I.ITEM_CODE_A = J.ITEM_CODE(+)
+   AND I.ITEM_CODE_B = K.ITEM_CODE(+)
+   AND I.ITEM_CODE_C = L.ITEM_CODE(+);
+
+--2.
+
+--3.
+
+--tmp
+SELECT * FROM MEMBER_ITEM_APRIORI_BASE A WHERE A.MEMBER_BP=1614284419;

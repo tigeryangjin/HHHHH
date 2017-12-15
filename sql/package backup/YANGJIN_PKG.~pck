@@ -16,6 +16,16 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG IS
   FUNCTION GET_DIM_GOOD_PRICE_LEVEL(IN_ITEM_CODE IN NUMBER) RETURN VARCHAR2;
   /*返回商品价格在所属物料细类的等级*/
 
+  PROCEDURE YANGJIN_PKG_DATE_FIX(IN_POSTING_DATE_KEY IN NUMBER);
+  /*
+  功能名:       YANGJIN_PKG_DATE_FIX
+  目的:         
+  作者:         yangjin
+  创建时间：    2017/12/04
+  最后修改人：
+  最后更改日期：
+  */
+
   PROCEDURE LOG_TEST;
   /*
   功能名:       DATA_ACQUISITION_ITEM_MIN_PER
@@ -417,6 +427,36 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     RETURN(V_GOOD_PRICE_LEVEL);
   END GET_DIM_GOOD_PRICE_LEVEL;
 
+  PROCEDURE YANGJIN_PKG_DATE_FIX(IN_POSTING_DATE_KEY IN NUMBER) IS
+  
+    /*
+    功能说明：DATA_ACQUISITION_MONTH_TOPN月销售排行  
+    作者时间：yangjin  2017-10-30
+    */
+  
+  BEGIN
+    BEGIN
+      YANGJIN_PKG.DATA_ACQUISITION_ITEM_BASE(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.DATA_ACQUISITION_ITEM_CURRENT(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.DATA_ACQUISITION_ITEM_MIN_PER;
+      YANGJIN_PKG.DATA_ACQUISITION_MONTH_NEW(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.DATA_ACQUISITION_MONTH_TOPN(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.DATA_ACQUISITION_WEEK_NEW(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.DATA_ACQUISITION_WEEK_TOPN(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.DIM_GOOD_PRICE_LEVEL_UPDATE;
+      YANGJIN_PKG.EC_NEW_MEMBER_TRACK_BASE(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.EC_NEW_MEMBER_TRACK_RANK;
+      YANGJIN_PKG.MERGE_DIM_MEMBER_ZONE;
+      YANGJIN_PKG.OPER_MEMBER_NOT_IN_EC(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.OPER_NM_PROMOTION_ITEM_RPT(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.OPER_NM_PROMOTION_ORDER_RPT(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.OPER_NM_VOUCHER_RPT;
+      YANGJIN_PKG.OPER_PRODUCT_DAILY_RPT(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.OPER_PRODUCT_PVUV_DAILY_RPT(IN_POSTING_DATE_KEY);
+      YANGJIN_PKG.PROCESSMAKETHMSC_IA(IN_POSTING_DATE_KEY);
+    END;
+  END YANGJIN_PKG_DATE_FIX;
+
   PROCEDURE LOG_TEST IS
     V_OUTPUT_FILE UTL_FILE.FILE_TYPE;
     V_FILE_NAME   VARCHAR2(50);
@@ -521,7 +561,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     /*
     
     */
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('MEMBER_LABEL_LINK');
+    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('DATA_ACQUISITION_ITEM_BASE');
+		YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('DATA_ACQUISITION_ITEM_CURRENT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_ORDER_2');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_ORDER_COMMON');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_ORDER_GOODS');
@@ -531,6 +572,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_P_XIANSHI_GOODS');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_VOUCHER');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_VOUCHER_BATCH');
+		YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('MEMBER_LABEL_LINK');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ITEM_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ORDER_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_VOUCHER_REPORT');
@@ -2968,7 +3010,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
                   WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              AND*/
                   F.ZMATERIAL NOT LIKE '%F%'
                AND F.ZEAMC027 IS NOT NULL
                AND F.ZEAMC027 != 0) TA

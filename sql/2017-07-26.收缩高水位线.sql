@@ -13,13 +13,32 @@ SELECT A.TABLE_NAME,
        A.NUM_ROWS,
        A.AVG_ROW_LEN * A.NUM_ROWS / 1024 / 1024 / 0.9 NEED,
        A.BLOCKS * 8 / 1024 TRUE,
-       (A.BLOCKS * 8 / 1024 - A.AVG_ROW_LEN * A.NUM_ROWS / 1024 / 1024 / 0.9) RECOVER_MB
+       (A.BLOCKS * 8 / 1024 -
+       A.AVG_ROW_LEN * A.NUM_ROWS / 1024 / 1024 / 0.9) RECOVER_MB
   FROM dba_tables A
  WHERE /*tablespace_name = 'PSAPSR3'
    AND*/
  A.BLOCKS * 8 / 1024 - A.AVG_ROW_LEN * A.NUM_ROWS / 1024 / 1024 / 0.9 > 100
- /*AND rownum < 11*/
+/*AND rownum < 11*/
  order by RECOVER_MB desc;
+
+--1266	DW_USER	FACT_GOODS_SALES	3807101	3909632	102531	0.0269315156072823
+SELECT A.OWNER,
+       A.TABLE_NAME,
+       A.TBLOCKS,
+       A.SBLOCKS,
+       A.SBLOCKS - A.TBLOCKS WBLOCKS,
+       (A.SBLOCKS - A.TBLOCKS) / A.TBLOCKS
+  FROM (SELECT T.OWNER,
+               T.TABLE_NAME,
+               T.BLOCKS TBLOCKS,
+               SUM(S.blocks) SBLOCKS
+          FROM dba_segments S, dba_tables T
+         WHERE S.segment_name = T.TABLE_NAME
+           AND S.owner = T.OWNER
+           AND T.BLOCKS > 0
+         GROUP BY T.OWNER,T.TABLE_NAME, T.BLOCKS) A
+ ORDER BY 6 DESC;
 
 --
 BEGIN
