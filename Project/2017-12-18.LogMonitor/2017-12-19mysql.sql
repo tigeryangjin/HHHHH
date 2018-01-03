@@ -11,9 +11,9 @@ SELECT
   a.id,
   a.task_id,
   a.time_unit,
-  from_unixtime(a.create_time) create_time,
-  from_unixtime(a.start_time)  start_time,
-  from_unixtime(a.end_time)    end_time,
+  from_unixtime(a.create_time + 28800) create_time,
+  from_unixtime(a.start_time + 28800)  start_time,
+  from_unixtime(a.end_time + 28800)    end_time,
   a.count_all,
   a.count_info,
   a.count_error,
@@ -391,5 +391,40 @@ SET
                             '|select case when count(1) is null then 0 else count(1) end count_all,case when sum(case when loglevel=''info'' then 1 else 0 end) is null then 0 else sum(case when loglevel=''info'' then 1 else 0 end) end count_info,case when sum(case when loglevel=''error'' then 1 else 0 end) is null then 0 else sum(case when loglevel=''error'' then 1 else 0 end) end count_error,case when sum(case when loglevel=''warning'' then 1 else 0 end) is null then 0 else sum(case when loglevel=''warning'' then 1 else 0 end) end count_warning,case when sum(case when loglevel=''trace'' then 1 else 0 end) is null then 0 else sum(case when loglevel=''trace'' then 1 else 0 end) end count_trace,case when round(avg(totalexpend)) is null then 0 else round(avg(totalexpend)) end avg_expend_all,case when round(avg(case when loglevel=''info'' then totalexpend end)) is null then 0 else round(avg(case when loglevel=''info'' then totalexpend  end)) end avg_expend_info,case when round(avg(case when loglevel=''error'' then totalexpend end)) is null then 0 else round(avg(case when loglevel=''error'' then totalexpend end)) end avg_expend_error,case when round(avg(case when loglevel=''warning'' then totalexpend end)) is null then 0 else round(avg(case when loglevel=''warning'' then totalexpend end)) end avg_expend_warning,case when round(avg(case when loglevel=''trace'' then totalexpend end)) is null then 0 else round(avg(case when loglevel=''trace'' then totalexpend end)) end avg_expend_trace')
 WHERE A.logstore = 'happigo-restapi' AND A.task_query_sql IS NULL;
 
+#没有数据的task，把task_state写成-1
+UPDATE log_monitor_task a
+SET a.task_state = -1
+WHERE a.logstore = 'happigo-restapi'
+      /*count_all合计=0*/
+      AND exists(SELECT 1
+                 FROM (SELECT
+                         c.task_id,
+                         sum(c.count_all) count_all
+                       FROM log_monitor_task_detail c
+                       WHERE c.remark IS NULL
+                       GROUP BY c.task_id) b
+                 WHERE a.task_id = b.task_id AND b.count_all = 0)
+      /*不存在bak中*/
+      AND NOT exists(SELECT 1
+                     FROM (SELECT concat(substring_index(substring_index(upper(d.task_name), '_', 1), '/', 1), '.',
+                                         substring_index(upper(d.task_name), '_', -1)) task_name1
+                           FROM log_monitor_task_bak d
+                           ORDER BY d.task_name) e
+                     WHERE concat(substring_index(substring_index(upper(a.task_name), '_', 1), '/', 1), '.',
+                                  substring_index(upper(a.task_name), '_', -1)) = e.task_name1);
 
+SELECT * from log_monitor_task a ;
 
+SELECT
+  concat(substring_index(substring_index(upper(a.task_name), '_', 1), '/', 1), '.',
+         substring_index(upper(a.task_name), '_', -1)) task_name1,
+  count(1)
+FROM log_monitor_task_bak a
+GROUP BY concat(substring_index(substring_index(upper(a.task_name), '_', 1), '/', 1), '.',
+                substring_index(upper(a.task_name), '_', -1))
+HAVING count(1) > 1;
+
+SELECT *
+FROM log_monitor_task_bak a
+WHERE concat(substring_index(substring_index(upper(a.task_name), '_', 1), '/', 1), '.',
+             substring_index(upper(a.task_name), '_', -1)) = 'EC.GOODS.CLASS.GET';

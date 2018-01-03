@@ -13,7 +13,7 @@ FROM (SELECT
                               count(1) cnt
                             FROM ec_group_purchase_task a
                             WHERE
-                              a.add_time > UNIX_TIMESTAMP('2017-11-24') AND a.add_time < UNIX_TIMESTAMP('2017-11-30')
+                              a.add_time > UNIX_TIMESTAMP('2017-12-15') AND a.add_time < UNIX_TIMESTAMP('2017-12-25')
                             GROUP BY a.goods_commonid) c
 WHERE b.goods_commonid = c.goods_commonid
 ORDER BY c.cnt DESC;

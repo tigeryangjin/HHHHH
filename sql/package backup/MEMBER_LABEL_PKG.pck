@@ -1808,26 +1808,28 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
       /*插入临时表*/
       EXECUTE IMMEDIATE 'TRUNCATE TABLE ML_MEMBER_LEVEL_TMP';
       INSERT INTO ML_MEMBER_LEVEL_TMP
-        SELECT MEMBER_BP,
+        SELECT A.MEMBER_BP,
                CASE
-                 WHEN MEMBER_LEVEL = 'HAPP_T0' THEN
+                 WHEN A.MEMBER_LEVEL = 'HAPP_T0' THEN
                   62
-                 WHEN MEMBER_LEVEL = 'HAPP_T1' THEN
+                 WHEN A.MEMBER_LEVEL = 'HAPP_T1' THEN
                   63
-                 WHEN MEMBER_LEVEL = 'HAPP_T2' THEN
+                 WHEN A.MEMBER_LEVEL = 'HAPP_T2' THEN
                   64
-                 WHEN MEMBER_LEVEL = 'HAPP_T3' THEN
+                 WHEN A.MEMBER_LEVEL = 'HAPP_T3' THEN
                   65
-                 WHEN MEMBER_LEVEL = 'HAPP_T4' THEN
+                 WHEN A.MEMBER_LEVEL = 'HAPP_T4' THEN
                   66
-                 WHEN MEMBER_LEVEL = 'HAPP_T5' THEN
+                 WHEN A.MEMBER_LEVEL = 'HAPP_T5' THEN
                   67
-                 WHEN MEMBER_LEVEL = 'HAPP_T6' THEN
+                 WHEN A.MEMBER_LEVEL = 'HAPP_T6' THEN
                   68
                END MEMBER_LEVEL_ID
-          FROM DIM_MEMBER
-         WHERE CH_DATE_KEY = IN_POSTING_DATE_KEY
-           AND MEMBER_LEVEL IS NOT NULL;
+          FROM (SELECT B.MEMBER_BP, MAX(B.MEMBER_LEVEL) MEMBER_LEVEL
+                  FROM DIM_MEMBER B
+                 WHERE B.CH_DATE_KEY = IN_POSTING_DATE_KEY
+                   AND B.MEMBER_LEVEL IS NOT NULL
+                 GROUP BY B.MEMBER_BP) A;
       COMMIT;
     
       /*插入MEMBER_LABEL_LINK*/
@@ -2762,8 +2764,9 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                                 AND A.MEMBER_KEY <> 0) B
                                       GROUP BY B.MEMBER_KEY) C,
                                     (SELECT E.MEMBER_BP MEMBER_KEY,
-                                            E.CREATE_DATE_KEY
-                                       FROM DIM_MEMBER E) D
+                                            MAX(E.CREATE_DATE_KEY) CREATE_DATE_KEY
+                                       FROM DIM_MEMBER E
+                                      GROUP BY E.MEMBER_BP) D
                               WHERE C.MEMBER_KEY = D.MEMBER_KEY) F) G,
                     MEMBER_LABEL_HEAD H
               WHERE G.MEMBER_LABEL_NAME = H.M_LABEL_NAME) S
@@ -2929,8 +2932,9 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                                 AND A.MEMBER_KEY <> 0) B
                                       GROUP BY B.MEMBER_KEY) C,
                                     (SELECT E.MEMBER_BP MEMBER_KEY,
-                                            E.CREATE_DATE_KEY
-                                       FROM DIM_MEMBER E) D
+                                            MAX(E.CREATE_DATE_KEY) CREATE_DATE_KEY
+                                       FROM DIM_MEMBER E
+                                      GROUP BY E.MEMBER_BP) D
                               WHERE C.MEMBER_KEY = D.MEMBER_KEY) F) G,
                     MEMBER_LABEL_HEAD H
               WHERE G.MEMBER_LABEL_NAME = H.M_LABEL_NAME
@@ -3096,8 +3100,9 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                                 AND A.MEMBER_KEY <> 0) B
                                       GROUP BY B.MEMBER_KEY) C,
                                     (SELECT E.MEMBER_BP MEMBER_KEY,
-                                            E.CREATE_DATE_KEY
-                                       FROM DIM_MEMBER E) D
+                                            MAX(E.CREATE_DATE_KEY) CREATE_DATE_KEY
+                                       FROM DIM_MEMBER E
+                                      GROUP BY E.MEMBER_BP) D
                               WHERE C.MEMBER_KEY = D.MEMBER_KEY) F) G,
                     MEMBER_LABEL_HEAD H
               WHERE G.MEMBER_LABEL_NAME = H.M_LABEL_NAME

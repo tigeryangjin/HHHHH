@@ -36,6 +36,7 @@ SELECT A.OWNER,
           FROM dba_segments S, dba_tables T
          WHERE S.segment_name = T.TABLE_NAME
            AND S.owner = T.OWNER
+					 AND S.owner='DW_USER'
            AND T.BLOCKS > 0
          GROUP BY T.OWNER,T.TABLE_NAME, T.BLOCKS) A
  ORDER BY 6 DESC;

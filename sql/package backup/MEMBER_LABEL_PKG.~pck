@@ -3179,14 +3179,22 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
       /*task_type=1 openid*/
       UPDATE PUSH_MSG_LOG_TMP A
          SET A.MEMBER_BP =
-             (SELECT MIN(B.MEMBER_KEY) MEMBER_KEY
-                FROM DIM_MAPPING_MEM B
-               WHERE A.SEND_MEMBER = B.OPEN_ID)
+             (SELECT B.MEMBER_KEY
+                FROM (SELECT C.MEMBER_KEY,
+                             C.OPEN_ID,
+                             ROW_NUMBER() OVER(PARTITION BY C.OPEN_ID ORDER BY C.CREATE_DATE_KEY DESC) RANK1
+                        FROM DIM_MAPPING_MEM C) B
+               WHERE A.SEND_MEMBER = B.OPEN_ID
+                 AND B.RANK1 = 1)
        WHERE A.TASK_TYPE = 1
          AND A.MEMBER_BP IS NULL
          AND EXISTS (SELECT 1
-                FROM DIM_MAPPING_MEM C
-               WHERE A.SEND_MEMBER = C.OPEN_ID);
+                FROM (SELECT E.MEMBER_KEY,
+                             E.OPEN_ID,
+                             ROW_NUMBER() OVER(PARTITION BY E.OPEN_ID ORDER BY E.CREATE_DATE_KEY DESC) RANK1
+                        FROM DIM_MAPPING_MEM E) D
+               WHERE A.SEND_MEMBER = D.OPEN_ID
+                 AND D.RANK1 = 1);
       COMMIT;
     
       /*task_type=3 member_bp*/
