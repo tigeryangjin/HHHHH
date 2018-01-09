@@ -3427,7 +3427,7 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
     INSERT_ROWS NUMBER;
     DELETE_ROWS NUMBER;
     /*
-    功能说明：  从push_msg_log_tmp把数据插入push_msg_log
+    功能说明：  7天内推送消息打标签
     作者时间：yangjin  2017-11-21
     */
   BEGIN

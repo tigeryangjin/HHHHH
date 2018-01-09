@@ -1,0 +1,23 @@
+ ---------订单
+ select CRMPOSTDAT,count(1) from odshappigo.ods_order where CRMPOSTDAT between   '20180101' and  '20180106'
+ group by CRMPOSTDAT
+
+  
+ --------会员
+ select bb2.createdon,count(1) from odshappigo.ods_zbpartner bb2 where bb2.createdon between   '20180101' and  '20180106'
+  group by bb2.createdon
+  
+ --------商品
+ select bb2.createdon,count(1) from odshappigo.ods_zmaterial bb2 where bb2.createdon between   '20180101' and  '20180106'
+  group by bb2.createdon
+
+
+
+远程的机子IP 10.10.204.20  账号administrator   密码a1b@c3d$
+
+分别执行新媒体数据导出_order ,新媒体数据导出_zbp,新媒体数据导出_zmaterial即可。
+
+另外最后执行你那边订单的跑批和下面两个跑批
+sh /home/script/processcreatedimmb.sh
+sh /home/script/processgoodzx.sh
+

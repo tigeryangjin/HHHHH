@@ -1,0 +1,38 @@
+--report1
+--CREATE TABLE YJ_TMP_20180104 AS
+SELECT DISTINCT A.VID, A.MEMBER_KEY
+  FROM FACT_PAGE_VIEW A
+ WHERE A.VISIT_DATE_KEY BETWEEN 20171218 AND 20171225
+   AND A.HMKW IN ('MyFiveListapp', 'MyFiveList')
+   AND A.MEMBER_KEY > 0;
+
+SELECT E.APPLICATION__CN_NAME 渠道,
+       C.MEMBER_BP 会员BP号,
+       D.MEMBER_LEVEL 会员等级,
+       C.START_TIME 参与开始时间,
+       C.END_TIME 参与截止时间,
+       C.CNT 参与次数,
+       C.ONLINE_TIME 总在线时长_秒,
+       C.ONLINE_TIME / C.CNT 平均在线时长_秒
+  FROM (SELECT A.MEMBER_KEY MEMBER_BP,
+               A.APPLICATION_KEY,
+               MIN(A.START_TIME) START_TIME,
+               MAX(A.END_TIME) END_TIME,
+               COUNT(1) CNT,
+               SUM(A.LIFE_TIME) ONLINE_TIME
+          FROM FACT_SESSION A
+         WHERE A.START_DATE_KEY >= 20171218
+           AND A.END_DATE_KEY <= 20171225
+           AND EXISTS (SELECT 1
+                  FROM YJ_TMP_20180104 B
+                 WHERE A.VID = B.VID
+                   AND A.MEMBER_KEY = B.MEMBER_KEY)
+         GROUP BY A.MEMBER_KEY, A.APPLICATION_KEY) C,
+       DIM_MEMBER D,
+       DIM_APPLICATION E
+ WHERE C.MEMBER_BP = D.MEMBER_BP(+)
+   AND C.APPLICATION_KEY = E.APPLICATION_KEY(+);
+
+--report2
+
+--report3

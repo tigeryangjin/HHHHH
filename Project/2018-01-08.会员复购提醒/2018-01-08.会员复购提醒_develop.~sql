@@ -1,0 +1,29 @@
+/*
+FACT_GOODS_DIM_TOTAL表：ZJ_STATE:商品是否在架，STOCK_NUMS:商品库存数量
+存储过程processgoodsorderdayly往FACT_GOODS_DIM_TOTAL表插入数据。
+ZJ_STATE列来源于：fact_daily_goodszj_stat.zj_state，STOCK_NUMS列来源于：fact_ecgoods_stock.goods_stock,fact_ecgoods_stock为空表
+fact_daily_goodszj_stat.zj_state来源于fact_daily_goodzj.zj_state，
+/home/bobo/ktr/ec/factecgoodsstock.ktr插入fact_ecgoods_stock，来源于：ec_goods_common.goods_storage
+/home/liqiao/bifile/processgoodzaixian.ktr插入FACT_DAILY_GOODZAIJIA，来源于：ec_goods_common,goods_state=1
+*/
+
+SELECT * FROM DIM_GOOD A WHERE A.ITEM_CODE=201278;
+SELECT * FROM DIM_GOOD A WHERE A.ITEM_CODE=203999;
+SELECT * FROM DIM_GOOD A WHERE A.MATXL=510601;
+SELECT * FROM FACT_GOODS_SALES A WHERE A.POSTING_DATE_KEY=20180107;
+
+SELECT * FROM ALL_COL_COMMENTS A WHERE A.COMMENTS LIKE '%在架%';
+SELECT * FROM FACT_DAILY_GOODSZJ_STAT;
+SELECT * FROM FACT_GOODS_DIM_TOTAL;
+
+SELECT * FROM FACT_GOODS_DIM_TOTAL A WHERE A.ZJ_STATE<>0 AND A.STOCK_NUMS<>0;
+
+SELECT * FROM FACT_GOODS_DIM_TOTAL A WHERE A.ITEM_CODE=189019;
+
+SELECT * FROM ALL_SOURCE A WHERE UPPER(A.TEXT) LIKE '%FACT_DAILY_GOODZAIJIA%';
+
+PROCESSGOODSORDERDAYLY;
+PROCESSDAILYGOODSZJSTAT;
+PROCESSDAILYGOODSZJSTAT
+
+

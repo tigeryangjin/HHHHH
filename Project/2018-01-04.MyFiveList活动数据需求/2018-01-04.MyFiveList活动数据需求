@@ -1,0 +1,1 @@
+SELECT distinct a.page_name FROM FACT_PAGE_VIEW a where a.visit_date_key between 20171218 and 20171225;

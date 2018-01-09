@@ -269,6 +269,25 @@ SELECT *
 
 CALL YANGJIN_PKG.DIM_GOOD_FIX();
 
+--2.4.
+---------订单
+select CRMPOSTDAT, count(1)
+  from odshappigo.ods_order
+ where CRMPOSTDAT between '20180101' and '20180106'
+ group by CRMPOSTDAT;
+
+--------会员
+select bb2.createdon, count(1)
+  from odshappigo.ods_zbpartner bb2
+ where bb2.createdon between '20180101' and '20180106'
+ group by bb2.createdon;
+
+--------商品
+select bb2.createdon, count(1)
+  from odshappigo.ods_zmaterial bb2
+ where bb2.createdon between '20180101' and '20180106'
+ group by bb2.createdon;
+
 --**************************************************************************
 --3.查询单个任务执行日志
 --**************************************************************************

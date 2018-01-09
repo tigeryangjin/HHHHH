@@ -1,0 +1,161 @@
+/*
+FACT_GOODS_DIM_TOTAL表：ZJ_STATE:商品是否在架，STOCK_NUMS:商品库存数量
+存储过程processgoodsorderdayly往FACT_GOODS_DIM_TOTAL表插入数据。
+ZJ_STATE列来源于：fact_daily_goodszj_stat.zj_state，STOCK_NUMS列来源于：fact_ecgoods_stock.goods_stock,fact_ecgoods_stock为空表
+fact_daily_goodszj_stat.zj_state来源于fact_daily_goodzj.zj_state，
+/home/bobo/ktr/ec/factecgoodsstock.ktr插入fact_ecgoods_stock，来源于：ec_goods_common.goods_storage
+/home/liqiao/bifile/processgoodzaixian.ktr插入FACT_DAILY_GOODZAIJIA，来源于：ec_goods_common,goods_state=1
+*/
+
+SELECT * FROM DIM_GOOD A WHERE A.ITEM_CODE = 201278;
+SELECT * FROM DIM_GOOD A WHERE A.ITEM_CODE = 203999;
+SELECT * FROM DIM_GOOD A WHERE A.MATXL = 510601;
+SELECT * FROM FACT_GOODS_SALES A WHERE A.POSTING_DATE_KEY = 20180107;
+
+SELECT * FROM ALL_COL_COMMENTS A WHERE A.COMMENTS LIKE '%在架%';
+SELECT * FROM FACT_DAILY_GOODSZJ_STAT;
+SELECT * FROM FACT_GOODS_DIM_TOTAL;
+
+SELECT *
+  FROM FACT_GOODS_DIM_TOTAL A
+ WHERE A.ZJ_STATE <> 0
+   AND A.STOCK_NUMS <> 0;
+
+SELECT * FROM FACT_GOODS_DIM_TOTAL A WHERE A.ITEM_CODE = 189019;
+
+SELECT *
+  FROM ALL_SOURCE A
+ WHERE UPPER(A.TEXT) LIKE '%FACT_DAILY_GOODZAIJIA%';
+
+PROCESSGOODSORDERDAYLY;
+PROCESSDAILYGOODSZJSTAT;
+PROCESSDAILYGOODSZJSTAT;
+
+SELECT A.GOODS_COMMONID,
+       A.ITEM_CODE,
+       A.GOODS_NAME,
+       A.GOODS_JINGLE,
+       A.GOODS_JINGLE2,
+       A.GOODS_SHORT_DESC,
+       A.GC_ID,
+       A.GC_ID_1,
+       A.GC_ID_2,
+       A.GC_ID_3,
+       A.GC_NAME,
+       A.GC_SUB_ID,
+       A.MATDL,
+       A.MATZL,
+       A.MATXL,
+       A.MATKL,
+       A.STORE_ID,
+       A.STORE_NAME,
+       A.SPEC_NAME,
+       A.SPEC_VALUE,
+       A.BRAND_ID,
+       A.BRAND_NAME,
+       A.TYPE_ID,
+       A.GOODS_IMAGE,
+       A.GOODS_ANIMATION,
+       A.GOODS_VIDEOURL,
+       A.GOODS_ATTR,
+       A.GOODS_BODY,
+       A.MOBILE_BODY,
+       A.GOODS_STATE,
+       A.GOODS_STATEREMARK,
+       A.GOODS_VERIFY,
+       A.GOODS_VERIFYREMARK,
+       A.GOODS_LOCK,
+       A.GOODS_ADDTIME,
+       A.GOODS_SELLTIME,
+       A.GOODS_SPECNAME,
+       A.GOODS_PRICE,
+       A.GOODS_MARKETPRICE,
+       A.GOODS_COSTPRICE,
+       A.GOODS_DISCOUNT,
+       A.GOODS_PROMOTION_PRICE,
+       A.GOODS_PROMOTION_PRICE_APP,
+       A.GOODS_PROMOTION_PRICE_WX,
+       A.GOODS_PROMOTION_PRICE_3G,
+       A.GOODS_SERIAL,
+       A.GOODS_STORAGE,
+       A.GOODS_STORAGE_ALARM,
+       A.TRANSPORT_ID,
+       A.TRANSPORT_TITLE,
+       A.GOODS_COMMEND,
+       A.GOODS_FREIGHT,
+       A.GOODS_VAT,
+       A.AREAID_1,
+       A.AREAID_2,
+       A.GOODS_STCIDS,
+       A.PLATEID_TOP,
+       A.PLATEID_BOTTOM,
+       A.IS_VIRTUAL,
+       A.VIRTUAL_INDATE,
+       A.VIRTUAL_LIMIT,
+       A.VIRTUAL_INVALID_REFUND,
+       A.IS_FCODE,
+       A.IS_APPOINT,
+       A.APPOINT_SATEDATE,
+       A.IS_PRESELL,
+       A.PRESELL_DELIVERDATE,
+       A.IS_OWN_SHOP,
+       A.IS_TV,
+       A.IS_ADD_CART,
+       A.RETENTION_TIME,
+       A.SUPPLIER_ID,
+       A.SUPPLIER_NAME,
+       A.IS_LIVE_PROMOTION,
+       A.IS_ALLOW_OFFLINE,
+       A.IS_ALLOW_POINT,
+       A.IS_ALLOW_VOUCHER,
+       A.IS_ALLOW_PAYPROMOTION,
+       A.PAYPROMOTION_AMOUNT,
+       A.IS_ALLOW_BANKPROMOTION,
+       A.GOODS_SALENUM,
+       A.GOODS_POP,
+       A.GIFT_NUM,
+       A.IS_VALUABLES,
+       A.IS_BIG,
+       A.GIVE_POINTS,
+       A.IS_SHIPPING_SELF,
+       A.IS_NEW_MEMBER_GIFT,
+       A.IS_ALLOW_RETURN,
+       A.IS_APPRECIATION,
+       A.GOODS_WEIGHT,
+       A.IS_RESERVED,
+       A.PV_TOTAL,
+       A.UV_TOTAL,
+       A.SALENUM_D1,
+       A.SALENUM_D7,
+       A.SALENUM_D30,
+       A.SALENUM_D90,
+       A.COLLECT_TOTAL,
+       A.EVALUATION_TOTAL,
+       A.SEARCH_KEY,
+       A.SUPERSCRIPT_ID,
+       A.EXTRA_POINT,
+       A.IS_RESERVATION_DELIVERY,
+       A.GOODS_REMINDER,
+       A.GOODS_SERVICE,
+       A.GOODS_SERVICE_IDS,
+       A.FIRSTONSELLTIME,
+       A.NEWGOODSRATE,
+       A.FASTBUYENABLE,
+       A.CUSTOMER_SERVICE,
+       A.PHYSICAL_INVENTORY,
+       A.USE_DATE,
+       A.EXTRA_GIFT,
+       A.ZTLHRP,
+       A.ZT_PIC,
+       A.ZT_URL,
+       A.PML_ID,
+       A.PML_TITLE,
+       A.PML_MAX_PROMOTION,
+       A.PML_PROMOTION,
+       A.PML_ENABLE,
+       A.LIVE_IMAGE,
+       A.IS_GROUP_PURCHASE,
+       A.COMMISSION_RULE,
+       A.COMMISSION_RATE,
+       A.DELAY_DAYS
+  FROM EC_GOODS_COMMON_TMP A;
