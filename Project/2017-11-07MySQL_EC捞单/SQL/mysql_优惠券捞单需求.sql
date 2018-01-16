@@ -69,12 +69,18 @@ GROUP BY a.order_id
 ORDER BY discount_mansong_id, a.order_id;
 
 /*优惠券领取使用数*/
-SELECT count(1) AS '优惠券领取数'
+SELECT
+  voucher_t_id,
+  count(1) AS '优惠券领取数'
 FROM ec_voucher
-WHERE voucher_t_id IN ('4367');
-SELECT count(1) AS '优惠券使用数'
+WHERE voucher_t_id IN ('4998', '4999', '5000', '5001')
+GROUP BY voucher_t_id;
+SELECT
+  voucher_t_id,
+  count(1) AS '优惠券使用数'
 FROM ec_voucher
-WHERE voucher_order_id > 0 AND voucher_t_id IN ('4367');
+WHERE voucher_order_id > 0 AND voucher_t_id IN ('4998', '4999', '5000', '5001')
+GROUP BY voucher_t_id;
 
 #券号，使用渠道，使用数
 SELECT

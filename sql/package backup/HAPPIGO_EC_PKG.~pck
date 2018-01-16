@@ -4,6 +4,16 @@ CREATE OR REPLACE PACKAGE HAPPIGO_EC_PKG IS
   -- CREATED : 2017-09-14 15:53:17
   -- PURPOSE : 从mysql的happigo_ec数据库抽取数据放在临时表之后，通过此package把临时表数据写入正式表
 
+  PROCEDURE MERGE_EC_TOP_LEVEL;
+  /*
+  功能名:       MERGE_EC_TOP_LEVEL
+  目的:         
+  作者:         yangjin
+  创建时间：    2017/12/04
+  最后修改人：
+  最后更改日期：
+  */
+
   PROCEDURE MERGE_EC_ORDER;
   /*
   功能名:       MERGE_EC_ORDER
@@ -103,10 +113,41 @@ CREATE OR REPLACE PACKAGE HAPPIGO_EC_PKG IS
   最后修改人：
   最后更改日期：
   */
+	
+  PROCEDURE MERGE_EC_GOODS_COMMON;
+  /*
+  功能名:       MERGE_EC_GOODS_COMMON
+  目的:         
+  作者:         yangjin
+  创建时间：    2018/01/11
+  最后修改人：
+  最后更改日期：
+  */
 
 END HAPPIGO_EC_PKG;
 /
 CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
+
+  PROCEDURE MERGE_EC_TOP_LEVEL IS
+    /*
+    功能说明：
+    作者时间：yangjin  2017-09-14
+    */
+  BEGIN
+    BEGIN
+      -- CALL THE PROCEDURE
+      HAPPIGO_EC_PKG.MERGE_EC_ORDER;
+      HAPPIGO_EC_PKG.MERGE_EC_ORDER_GOODS;
+      HAPPIGO_EC_PKG.MERGE_EC_ORDER_COMMON;
+      HAPPIGO_EC_PKG.MERGE_EC_P_XIANSHI;
+      HAPPIGO_EC_PKG.MERGE_EC_P_XIANSHI_GOODS;
+      HAPPIGO_EC_PKG.MERGE_EC_P_MANSONG;
+      HAPPIGO_EC_PKG.MERGE_EC_P_MANSONG_GOODS;
+      HAPPIGO_EC_PKG.MERGE_EC_VOUCHER;
+      HAPPIGO_EC_PKG.MERGE_EC_VOUCHER_BATCH;
+      HAPPIGO_EC_PKG.MERGE_EC_VOUCHER_PRICE;
+    END;
+  END MERGE_EC_TOP_LEVEL;
 
   PROCEDURE MERGE_EC_ORDER IS
     S_ETL       W_ETL_LOG%ROWTYPE;
@@ -1750,6 +1791,88 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
       SP_SBI_W_ETL_LOG(S_ETL);
       RETURN;
   END MERGE_EC_VOUCHER_PRICE;
+
+PROCEDURE MERGE_EC_GOODS_COMMON IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-01-11
+    */
+  BEGIN
+    SP_NAME          := 'HAPPIGO_EC_PKG.MERGE_EC_GOODS_COMMON'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'FACT_EC_GOODS_COMMON'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE /*+APPEND*/
+      INTO FACT_EC_VOUCHER_PRICE T
+      USING (SELECT A.VOUCHER_PRICE_ID,
+                    A.VOUCHER_PRICE_DESCRIBE,
+                    A.VOUCHER_PRICE,
+                    A.VOUCHER_DEFAULTPOINTS,
+                    SYSDATE                  W_INSERT_DT,
+                    SYSDATE                  W_UPDATE_DT
+               FROM EC_VOUCHER_PRICE_TMP A) S
+      ON (T.VOUCHER_PRICE_ID = S.VOUCHER_PRICE_ID)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.VOUCHER_PRICE_DESCRIBE = S.VOUCHER_PRICE_DESCRIBE,
+               T.VOUCHER_PRICE          = S.VOUCHER_PRICE,
+               T.VOUCHER_DEFAULTPOINTS  = S.VOUCHER_DEFAULTPOINTS,
+               T.W_UPDATE_DT            = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.VOUCHER_PRICE_ID,
+           T.VOUCHER_PRICE_DESCRIBE,
+           T.VOUCHER_PRICE,
+           T.VOUCHER_DEFAULTPOINTS,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.VOUCHER_PRICE_ID,
+           S.VOUCHER_PRICE_DESCRIBE,
+           S.VOUCHER_PRICE,
+           S.VOUCHER_DEFAULTPOINTS,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_EC_GOODS_COMMON;
 
 END HAPPIGO_EC_PKG;
 /

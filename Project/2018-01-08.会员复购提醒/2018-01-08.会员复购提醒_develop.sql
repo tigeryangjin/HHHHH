@@ -7,155 +7,294 @@ fact_daily_goodszj_stat.zj_state来源于fact_daily_goodzj.zj_state，
 /home/liqiao/bifile/processgoodzaixian.ktr插入FACT_DAILY_GOODZAIJIA，来源于：ec_goods_common,goods_state=1
 */
 
-SELECT * FROM DIM_GOOD A WHERE A.ITEM_CODE = 201278;
-SELECT * FROM DIM_GOOD A WHERE A.ITEM_CODE = 203999;
-SELECT * FROM DIM_GOOD A WHERE A.MATXL = 510601;
-SELECT * FROM FACT_GOODS_SALES A WHERE A.POSTING_DATE_KEY = 20180107;
+--1.ec_goods_common同步到oracle，fact_ec_goods_common
+select * from ec_goods_common_tmp;
+select * from fact_ec_goods_common;
 
-SELECT * FROM ALL_COL_COMMENTS A WHERE A.COMMENTS LIKE '%在架%';
-SELECT * FROM FACT_DAILY_GOODSZJ_STAT;
-SELECT * FROM FACT_GOODS_DIM_TOTAL;
+--2.oper_repurchase_item
+-- Create sequence 
+create sequence OPER_REPURCHASE_ITEM_SEQ minvalue 1 maxvalue 9999999999999999999999999999 start
+  with 1 increment by 1 cache 20;
 
-SELECT *
-  FROM FACT_GOODS_DIM_TOTAL A
- WHERE A.ZJ_STATE <> 0
-   AND A.STOCK_NUMS <> 0;
+CREATE TABLE OPER_REPURCHASE_ITEM_TMP AS
+  SELECT A.ITEM_CODE, A.REPURCHASE_DAYS FROM OPER_REPURCHASE_ITEM A;
 
-SELECT * FROM FACT_GOODS_DIM_TOTAL A WHERE A.ITEM_CODE = 189019;
+SELECT A.ITEM_CODE, A.REPURCHASE_DAYS
+  FROM OPER_REPURCHASE_ITEM_TMP A
+   FOR UPDATE;
 
-SELECT *
-  FROM ALL_SOURCE A
- WHERE UPPER(A.TEXT) LIKE '%FACT_DAILY_GOODZAIJIA%';
+INSERT INTO OPER_REPURCHASE_ITEM A
+  (A.ROW_ID, A.ITEM_CODE, A.REPURCHASE_DAYS)
+  SELECT OPER_REPURCHASE_ITEM_SEQ.NEXTVAL, B.ITEM_CODE, B.REPURCHASE_DAYS
+    FROM OPER_REPURCHASE_ITEM_TMP B;
 
-PROCESSGOODSORDERDAYLY;
-PROCESSDAILYGOODSZJSTAT;
-PROCESSDAILYGOODSZJSTAT;
+UPDATE OPER_REPURCHASE_ITEM A
+   SET (A.MATDL, A.MATZL, A.MATXL, A.W_INSERT_DT, A.W_UPDATE_DT) =
+       (SELECT B.MATDL,
+               B.MATZL,
+               B.MATXL,
+               SYSDATE W_INSERT_DT,
+               SYSDATE W_UPDATE_DT
+          FROM DIM_GOOD B
+         WHERE B.CURRENT_FLG = 'Y'
+           AND A.ITEM_CODE = B.ITEM_CODE)
+ WHERE A.W_UPDATE_DT IS NULL
+   AND EXISTS (SELECT 1
+          FROM DIM_GOOD C
+         WHERE C.CURRENT_FLG = 'Y'
+           AND A.ITEM_CODE = C.ITEM_CODE);
 
-SELECT A.GOODS_COMMONID,
+--3.oper_repurchase_member_track
+create sequence OPER_REPUR_MEMBER_TRACK_SEQ minvalue 1 maxvalue 9999999999999999999999999999 start
+  with 1 increment by 1 cache 20;
+
+--3.1.
+SELECT * FROM OPER_REPURCHASE_MEMBER_TRACK;
+INSERT INTO OPER_REPURCHASE_MEMBER_TRACK
+  (ROW_ID,
+   ITEM_CODE,
+   MEMBER_BP,
+   LATEST_ORDER_DATE,
+   REPURCHASE_DAYS,
+   ON_SHELF,
+   STOCK_QTY,
+   W_INSERT_DT,
+   W_UPDATE_DT)
+  SELECT OPER_REPUR_MEMBER_TRACK_SEQ.NEXTVAL ROW_ID,
+         G.ITEM_CODE,
+         G.MEMBER_BP,
+         G.LATEST_ORDER_DATE,
+         G.REPURCHASE_DAYS,
+         G.ON_SHELF,
+         G.STOCK_QTY,
+         SYSDATE                             W_INSERT_DT,
+         SYSDATE                             W_UPDATE_DT
+    FROM (SELECT E.ITEM_CODE,
+                 E.MEMBER_BP,
+                 E.LATEST_ORDER_DATE,
+                 E.REPURCHASE_DAYS,
+                 F.GOODS_STATE       ON_SHELF,
+                 F.GOODS_STORAGE     STOCK_QTY
+            FROM (SELECT C.ITEM_CODE,
+                         C.MEMBER_BP,
+                         C.LATEST_ORDER_DATE,
+                         D.REPURCHASE_DAYS
+                    FROM (SELECT B.ITEM_CODE,
+                                 A.MEMBER_KEY MEMBER_BP,
+                                 MAX(TO_DATE(A.POSTING_DATE_KEY, 'YYYYMMDD')) LATEST_ORDER_DATE
+                            FROM FACT_GOODS_SALES A, OPER_REPURCHASE_ITEM B
+                           WHERE A.ORDER_STATE = 1
+                             AND A.TRAN_TYPE = 0
+                             AND A.GOODS_COMMON_KEY = B.ITEM_CODE
+                           GROUP BY A.MEMBER_KEY, B.ITEM_CODE) C,
+                         OPER_REPURCHASE_ITEM D
+                   WHERE C.ITEM_CODE = D.ITEM_CODE) E,
+                 FACT_EC_GOODS_COMMON F
+           WHERE E.ITEM_CODE = F.ITEM_CODE(+)) G;
+
+MERGE /*+APPEND*/
+INTO OPER_REPURCHASE_MEMBER_TRACK T
+USING (SELECT G.ITEM_CODE,
+              G.MEMBER_BP,
+              G.LATEST_ORDER_DATE,
+              G.REPURCHASE_DAYS,
+              G.ON_SHELF,
+              G.STOCK_QTY,
+              SYSDATE             W_INSERT_DT,
+              SYSDATE             W_UPDATE_DT
+         FROM (SELECT E.ITEM_CODE,
+                      E.MEMBER_BP,
+                      E.LATEST_ORDER_DATE,
+                      E.REPURCHASE_DAYS,
+                      F.GOODS_STATE       ON_SHELF,
+                      F.GOODS_STORAGE     STOCK_QTY
+                 FROM (SELECT C.ITEM_CODE,
+                              C.MEMBER_BP,
+                              C.LATEST_ORDER_DATE,
+                              D.REPURCHASE_DAYS
+                         FROM (SELECT B.ITEM_CODE,
+                                      A.MEMBER_KEY MEMBER_BP,
+                                      MAX(TO_DATE(A.POSTING_DATE_KEY,
+                                                  'YYYYMMDD')) LATEST_ORDER_DATE
+                                 FROM FACT_GOODS_SALES     A,
+                                      OPER_REPURCHASE_ITEM B
+                                WHERE A.ORDER_STATE = 1
+                                  AND A.TRAN_TYPE = 0
+                                  AND A.GOODS_COMMON_KEY = B.ITEM_CODE
+                                GROUP BY A.MEMBER_KEY, B.ITEM_CODE) C,
+                              OPER_REPURCHASE_ITEM D
+                        WHERE C.ITEM_CODE = D.ITEM_CODE) E,
+                      FACT_EC_GOODS_COMMON F
+                WHERE E.ITEM_CODE = F.ITEM_CODE(+)) G) S
+ON (T.ITEM_CODE = S.ITEM_CODE AND T.MEMBER_BP = S.MEMBER_BP)
+WHEN MATCHED THEN
+  UPDATE
+     SET T.LATEST_ORDER_DATE = S.LATEST_ORDER_DATE,
+         T.REPURCHASE_DAYS   = S.REPURCHASE_DAYS,
+         T.ON_SHELF          = S.ON_SHELF,
+         T.STOCK_QTY         = S.STOCK_QTY,
+         T.W_UPDATE_DT       = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.ROW_ID,
+     T.ITEM_CODE,
+     T.MEMBER_BP,
+     T.LATEST_ORDER_DATE,
+     T.REPURCHASE_DAYS,
+     T.ON_SHELF,
+     T.STOCK_QTY,
+     T.W_INSERT_DT,
+     T.W_UPDATE_DT)
+  VALUES
+    (OPER_REPUR_MEMBER_TRACK_SEQ.NEXTVAL,
+     S.ITEM_CODE,
+     S.MEMBER_BP,
+     S.LATEST_ORDER_DATE,
+     S.REPURCHASE_DAYS,
+     S.ON_SHELF,
+     S.STOCK_QTY,
+     S.W_INSERT_DT,
+     S.W_UPDATE_DT);
+
+--3.2.商品上架标志和库存数量
+UPDATE OPER_REPURCHASE_MEMBER_TRACK A
+   SET (A.ON_SHELF, A.STOCK_QTY, A.W_UPDATE_DT) =
+       (SELECT NVL(B.GOODS_STATE, 0) GOODS_STATE,
+               NVL(B.GOODS_STORAGE, 0) GOODS_STORAGE,
+               SYSDATE W_UPDATE_DT
+          FROM FACT_EC_GOODS_COMMON B
+         WHERE A.ITEM_CODE = B.ITEM_CODE
+           AND (A.ON_SHELF <> B.GOODS_STATE OR
+               A.STOCK_QTY <> B.GOODS_STORAGE))
+ WHERE EXISTS (SELECT 1
+          FROM FACT_EC_GOODS_COMMON C
+         WHERE A.ITEM_CODE = C.ITEM_CODE
+           AND (A.ON_SHELF <> C.GOODS_STATE OR
+               A.STOCK_QTY <> C.GOODS_STORAGE));
+
+--3.3.推送人数的3%>=库存数量
+SELECT A.ROW_ID,
        A.ITEM_CODE,
-       A.GOODS_NAME,
-       A.GOODS_JINGLE,
-       A.GOODS_JINGLE2,
-       A.GOODS_SHORT_DESC,
-       A.GC_ID,
-       A.GC_ID_1,
-       A.GC_ID_2,
-       A.GC_ID_3,
-       A.GC_NAME,
-       A.GC_SUB_ID,
-       A.MATDL,
-       A.MATZL,
-       A.MATXL,
-       A.MATKL,
-       A.STORE_ID,
-       A.STORE_NAME,
-       A.SPEC_NAME,
-       A.SPEC_VALUE,
-       A.BRAND_ID,
-       A.BRAND_NAME,
-       A.TYPE_ID,
-       A.GOODS_IMAGE,
-       A.GOODS_ANIMATION,
-       A.GOODS_VIDEOURL,
-       A.GOODS_ATTR,
-       A.GOODS_BODY,
-       A.MOBILE_BODY,
-       A.GOODS_STATE,
-       A.GOODS_STATEREMARK,
-       A.GOODS_VERIFY,
-       A.GOODS_VERIFYREMARK,
-       A.GOODS_LOCK,
-       A.GOODS_ADDTIME,
-       A.GOODS_SELLTIME,
-       A.GOODS_SPECNAME,
-       A.GOODS_PRICE,
-       A.GOODS_MARKETPRICE,
-       A.GOODS_COSTPRICE,
-       A.GOODS_DISCOUNT,
-       A.GOODS_PROMOTION_PRICE,
-       A.GOODS_PROMOTION_PRICE_APP,
-       A.GOODS_PROMOTION_PRICE_WX,
-       A.GOODS_PROMOTION_PRICE_3G,
-       A.GOODS_SERIAL,
-       A.GOODS_STORAGE,
-       A.GOODS_STORAGE_ALARM,
-       A.TRANSPORT_ID,
-       A.TRANSPORT_TITLE,
-       A.GOODS_COMMEND,
-       A.GOODS_FREIGHT,
-       A.GOODS_VAT,
-       A.AREAID_1,
-       A.AREAID_2,
-       A.GOODS_STCIDS,
-       A.PLATEID_TOP,
-       A.PLATEID_BOTTOM,
-       A.IS_VIRTUAL,
-       A.VIRTUAL_INDATE,
-       A.VIRTUAL_LIMIT,
-       A.VIRTUAL_INVALID_REFUND,
-       A.IS_FCODE,
-       A.IS_APPOINT,
-       A.APPOINT_SATEDATE,
-       A.IS_PRESELL,
-       A.PRESELL_DELIVERDATE,
-       A.IS_OWN_SHOP,
-       A.IS_TV,
-       A.IS_ADD_CART,
-       A.RETENTION_TIME,
-       A.SUPPLIER_ID,
-       A.SUPPLIER_NAME,
-       A.IS_LIVE_PROMOTION,
-       A.IS_ALLOW_OFFLINE,
-       A.IS_ALLOW_POINT,
-       A.IS_ALLOW_VOUCHER,
-       A.IS_ALLOW_PAYPROMOTION,
-       A.PAYPROMOTION_AMOUNT,
-       A.IS_ALLOW_BANKPROMOTION,
-       A.GOODS_SALENUM,
-       A.GOODS_POP,
-       A.GIFT_NUM,
-       A.IS_VALUABLES,
-       A.IS_BIG,
-       A.GIVE_POINTS,
-       A.IS_SHIPPING_SELF,
-       A.IS_NEW_MEMBER_GIFT,
-       A.IS_ALLOW_RETURN,
-       A.IS_APPRECIATION,
-       A.GOODS_WEIGHT,
-       A.IS_RESERVED,
-       A.PV_TOTAL,
-       A.UV_TOTAL,
-       A.SALENUM_D1,
-       A.SALENUM_D7,
-       A.SALENUM_D30,
-       A.SALENUM_D90,
-       A.COLLECT_TOTAL,
-       A.EVALUATION_TOTAL,
-       A.SEARCH_KEY,
-       A.SUPERSCRIPT_ID,
-       A.EXTRA_POINT,
-       A.IS_RESERVATION_DELIVERY,
-       A.GOODS_REMINDER,
-       A.GOODS_SERVICE,
-       A.GOODS_SERVICE_IDS,
-       A.FIRSTONSELLTIME,
-       A.NEWGOODSRATE,
-       A.FASTBUYENABLE,
-       A.CUSTOMER_SERVICE,
-       A.PHYSICAL_INVENTORY,
-       A.USE_DATE,
-       A.EXTRA_GIFT,
-       A.ZTLHRP,
-       A.ZT_PIC,
-       A.ZT_URL,
-       A.PML_ID,
-       A.PML_TITLE,
-       A.PML_MAX_PROMOTION,
-       A.PML_PROMOTION,
-       A.PML_ENABLE,
-       A.LIVE_IMAGE,
-       A.IS_GROUP_PURCHASE,
-       A.COMMISSION_RULE,
-       A.COMMISSION_RATE,
-       A.DELAY_DAYS
-  FROM EC_GOODS_COMMON_TMP A;
+       A.MEMBER_BP,
+       A.LATEST_ORDER_DATE,
+       A.REPURCHASE_DAYS,
+       A.LATEST_ORDER_DATE + A.REPURCHASE_DAYS REMIND_DATE,
+       A.ON_SHELF,
+       A.STOCK_QTY,
+       (SELECT COUNT(B.MEMBER_BP)
+          FROM OPER_REPURCHASE_MEMBER_TRACK B
+         WHERE B.ITEM_CODE = A.ITEM_CODE) PUSH_MEMBER_COUNT,
+       A.W_INSERT_DT,
+       A.W_UPDATE_DT
+  FROM OPER_REPURCHASE_MEMBER_TRACK A
+ WHERE A.LATEST_ORDER_DATE + A.REPURCHASE_DAYS = TRUNC(SYSDATE)
+   AND A.ON_SHELF = 1;
+
+--4.oper_repurchase_push
+/*
+member_bp number(20)
+item_code number(20)
+push_date_key number
+w_insert_dt date
+w_update_dt date
+*/
+-- Create sequence 
+create sequence OPER_REPURCHASE_PUSH_SEQ minvalue 1 maxvalue 9999999999999999999999999999 start
+  with 1 increment by 1 cache 20;
+
+INSERT INTO OPER_REPURCHASE_PUSH
+  (ROW_ID,
+   MEMBER_BP,
+   ITEM_CODE,
+   PUSH_DATE_KEY,
+   ON_SHELF,
+   STOCK_QTY,
+   W_INSERT_DT,
+   W_UPDATE_DT)
+  SELECT OPER_REPURCHASE_PUSH_SEQ.NEXTVAL ROW_ID,
+         B.MEMBER_BP,
+         B.ITEM_CODE,
+         B.PUSH_DATE_KEY,
+         B.ON_SHELF,
+         B.STOCK_QTY,
+         SYSDATE                          W_INSERT_DT,
+         SYSDATE                          W_UPDATE_DT
+    FROM (SELECT A.MEMBER_BP,
+                 A.ITEM_CODE,
+                 TO_CHAR(A.LATEST_ORDER_DATE + A.REPURCHASE_DAYS, 'YYYYMMDD') PUSH_DATE_KEY,
+                 A.ON_SHELF,
+                 A.STOCK_QTY,
+                 (SELECT COUNT(C.MEMBER_BP)
+                    FROM OPER_REPURCHASE_MEMBER_TRACK C
+                   WHERE A.ITEM_CODE = C.ITEM_CODE) PUSH_MEMBER_COUNT
+            FROM OPER_REPURCHASE_MEMBER_TRACK A
+           WHERE A.LATEST_ORDER_DATE + A.REPURCHASE_DAYS = TRUNC(SYSDATE)
+             AND A.ON_SHELF = 1) B
+   WHERE B.PUSH_MEMBER_COUNT * 0.03 >= B.STOCK_QTY;
+
+SELECT A.ROW_ID,
+       A.MEMBER_BP,
+       A.ITEM_CODE,
+       A.PUSH_DATE_KEY,
+       A.ON_SHELF,
+       A.STOCK_QTY,
+       A.W_INSERT_DT,
+       A.W_UPDATE_DT
+  FROM OPER_REPURCHASE_PUSH A;
+
+
+
+--初始化
+begin
+  -- Call the procedure
+  member_repurchase_pkg.member_repurchase_tract_proc(20100101);
+	member_repurchase_pkg.member_repurchase_push_proc(20180112);
+	member_repurchase_pkg.member_repurchase_push_proc(20180113);
+	member_repurchase_pkg.member_repurchase_push_proc(20180114);
+end;
+
+
+--tmp
+TRUNCATE TABLE OPER_REPURCHASE_PUSH;
+SELECT A.ROW_ID,
+       A.ITEM_CODE,
+       A.MEMBER_BP,
+       A.LATEST_ORDER_DATE,
+       A.REPURCHASE_DAYS,
+       A.LATEST_ORDER_DATE + A.REPURCHASE_DAYS REMIND_DATE,
+       A.ON_SHELF,
+       A.STOCK_QTY,
+       A.W_INSERT_DT,
+       A.W_UPDATE_DT
+  FROM OPER_REPURCHASE_MEMBER_TRACK A
+ WHERE A.LATEST_ORDER_DATE + A.REPURCHASE_DAYS = TRUNC(SYSDATE)
+   AND A.ON_SHELF = 1;
+
+SELECT E.ITEM_CODE,
+       E.MEMBER_BP,
+       E.LATEST_ORDER_DATE,
+       E.REPURCHASE_DAYS,
+       F.GOODS_STATE       ON_SHELF,
+       F.GOODS_STORAGE     STOCK_QTY
+  FROM (SELECT C.ITEM_CODE,
+               C.MEMBER_BP,
+               C.LATEST_ORDER_DATE,
+               D.REPURCHASE_DAYS
+          FROM (SELECT B.ITEM_CODE,
+                       A.MEMBER_KEY MEMBER_BP,
+                       MAX(TO_DATE(A.POSTING_DATE_KEY, 'YYYYMMDD')) LATEST_ORDER_DATE
+                  FROM FACT_GOODS_SALES A, OPER_REPURCHASE_ITEM B
+                 WHERE A.ORDER_STATE = 1
+                   AND A.TRAN_TYPE = 0
+                   AND A.GOODS_COMMON_KEY = B.ITEM_CODE
+                 GROUP BY A.MEMBER_KEY, B.ITEM_CODE) C,
+               OPER_REPURCHASE_ITEM D
+         WHERE C.ITEM_CODE = D.ITEM_CODE) E,
+       FACT_EC_GOODS_COMMON F
+ WHERE E.ITEM_CODE = F.ITEM_CODE(+);
+
+SELECT * FROM FACT_EC_GOODS_COMMON A WHERE A.GOODS_STATE IS NULL;
+SELECT * FROM DIM_GOOD A WHERE A.GOODS_COMMONID = 154056;
+SELECT * FROM DIM_GOOD A WHERE A.Item_Code = 154056;
+--日本 肌美精（Kracie）绿茶祛痘面膜 5片/盒 绿黑色
+select * from dim_good a where a.goods_name like '%肌美精%绿茶%';

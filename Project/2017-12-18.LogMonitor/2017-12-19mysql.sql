@@ -413,7 +413,8 @@ WHERE a.logstore = 'happigo-restapi'
                      WHERE concat(substring_index(substring_index(upper(a.task_name), '_', 1), '/', 1), '.',
                                   substring_index(upper(a.task_name), '_', -1)) = e.task_name1);
 
-SELECT * from log_monitor_task a ;
+SELECT *
+FROM log_monitor_task a;
 
 SELECT
   concat(substring_index(substring_index(upper(a.task_name), '_', 1), '/', 1), '.',
@@ -428,3 +429,47 @@ SELECT *
 FROM log_monitor_task_bak a
 WHERE concat(substring_index(substring_index(upper(a.task_name), '_', 1), '/', 1), '.',
              substring_index(upper(a.task_name), '_', -1)) = 'EC.GOODS.CLASS.GET';
+
+/*-------------------------------------------------------------------------------------
+慢查询日志监控
+-------------------------------------------------------------------------------------*/
+INSERT log_monitor_slow_query (ip, project, logstore, task_name_display, task_query_sql, task_state, time_units)
+VALUES ('10.16.2.156', 'happigo-application', 'happigo_mysql_slow_log', 'ip:10.16.2.156',
+        '* and source: 10.16.2.156 and Query_time|select count(1) cnt limit 1000', 1, '5,10,60');
+INSERT log_monitor_slow_query (ip, project, logstore, task_name_display, task_query_sql, task_state, time_units)
+VALUES ('10.16.2.187', 'happigo-application', 'happigo_mysql_slow_log', 'ip:10.16.2.187',
+        '* and source: 10.16.2.187 and Query_time|select count(1) cnt limit 1000', 1, '5,10,60');
+INSERT log_monitor_slow_query (ip, project, logstore, task_name_display, task_query_sql, task_state, time_units)
+VALUES ('10.16.2.201', 'happigo-application', 'happigo_mysql_slow_log', 'ip:10.16.2.201',
+        '* and source: 10.16.2.201 and Query_time|select count(1) cnt limit 1000', 1, '5,10,60');
+INSERT log_monitor_slow_query (ip, project, logstore, task_name_display, task_query_sql, task_state, time_units)
+VALUES ('10.16.2.98', 'happigo-application', 'happigo_mysql_slow_log', 'ip:10.16.2.98',
+        '* and source: 10.16.2.98 and Query_time|select count(1) cnt limit 1000', 1, '5,10,60');
+INSERT log_monitor_slow_query (ip, project, logstore, task_name_display, task_query_sql, task_state, time_units)
+VALUES ('10.16.2.177', 'happigo-application', 'happigo_mysql_slow_log', 'ip:10.16.2.177',
+        '* and source: 10.16.2.177 and Query_time|select count(1) cnt limit 1000', 1, '5,10,60');
+INSERT log_monitor_slow_query (ip, project, logstore, task_name_display, task_query_sql, task_state, time_units)
+VALUES ('10.16.2.180', 'happigo-application', 'happigo_mysql_slow_log', 'ip:10.16.2.180',
+        '* and source: 10.16.2.180 and Query_time|select count(1) cnt limit 1000', 1, '5,10,60');
+INSERT log_monitor_slow_query (ip, project, logstore, task_name_display, task_query_sql, task_state, time_units)
+VALUES ('10.16.2.181', 'happigo-application', 'happigo_mysql_slow_log', 'ip:10.16.2.181',
+        '* and source: 10.16.2.181 and Query_time|select count(1) cnt limit 1000', 1, '5,10,60');
+INSERT log_monitor_slow_query (ip, project, logstore, task_name_display, task_query_sql, task_state, time_units)
+VALUES ('10.16.2.182', 'happigo-application', 'happigo_mysql_slow_log', 'ip:10.16.2.182',
+        '* and source: 10.16.2.182 and Query_time|select count(1) cnt limit 1000', 1, '5,10,60');
+INSERT log_monitor_slow_query (ip, project, logstore, task_name_display, task_query_sql, task_state, time_units)
+VALUES ('10.16.2.183', 'happigo-application', 'happigo_mysql_slow_log', 'ip:10.16.2.183',
+        '* and source: 10.16.2.183 and Query_time|select count(1) cnt limit 1000', 1, '5,10,60');
+INSERT log_monitor_slow_query (ip, project, logstore, task_name_display, task_query_sql, task_state, time_units)
+VALUES ('10.16.2.188', 'happigo-application', 'happigo_mysql_slow_log', 'ip:10.16.2.188',
+        '* and source: 10.16.2.188 and Query_time|select count(1) cnt limit 1000', 1, '5,10,60');
+
+
+SELECT *
+FROM log_monitor_slow_query;
+SELECT *
+FROM log_monitor_task;
+SELECT *
+FROM log_monitor_task_detail;
+SELECT *
+FROM log_monitor_slow_query_detail;
