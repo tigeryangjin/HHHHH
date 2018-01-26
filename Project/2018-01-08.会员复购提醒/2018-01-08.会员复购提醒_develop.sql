@@ -252,10 +252,14 @@ begin
 	member_repurchase_pkg.member_repurchase_push_proc(20180113);
 	member_repurchase_pkg.member_repurchase_push_proc(20180114);
 end;
-
+/
 
 --tmp
-TRUNCATE TABLE OPER_REPURCHASE_PUSH;
+select * from OPER_REPURCHASE_PUSH t order by t.push_date_key,t.item_code,t.member_bp;
+delete OPER_REPURCHASE_PUSH a where a.push_date_key<>20180115;
+commit;
+select * from OPER_REPURCHASE_PUSH t WHERE T.PUSH_DATE_KEY=20180115 AND T.ITEM_CODE=227939;
+SELECT * FROM OPER_REPURCHASE_MEMBER_TRACK A WHERE A.ITEM_CODE=227939;
 SELECT A.ROW_ID,
        A.ITEM_CODE,
        A.MEMBER_BP,

@@ -12,10 +12,10 @@ SELECT
   FROM_UNIXTIME(add_time)     AS '下单时间'
 FROM happigo_ec.ec_order a, happigo_ec.ec_order_common b
 WHERE a.order_id = b.order_id
-      AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2017-10-20 00:00:00') AND
-      add_time <= UNIX_TIMESTAMP('2017-10-23 00:00')
+      AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2018-01-15 10:00:00') AND
+      add_time <= UNIX_TIMESTAMP('2018-01-17 10:00')
       AND b.voucher_ref IN
-          ('4269', '4270', '4271', '4272', '4273', '4274', '4275', '4276', '4277', '4278')
+          ('5029', '5030', '5031', '5032')
 ORDER BY voucher_ref, a.order_id;
 
 /*优惠券商品级捞单SQL*/
@@ -35,10 +35,10 @@ SELECT
   goods_num                   AS '商品数量'
 FROM happigo_ec.ec_order a, happigo_ec.ec_order_common b, happigo_ec.ec_order_goods c
 WHERE a.order_id = b.order_id AND b.order_id = c.order_id AND a.order_id = c.order_id
-      AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2017-10-23 00:00:00') AND
-      add_time <= UNIX_TIMESTAMP('2017-10-26 00:00')
+      AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2018-01-15 10:00:00') AND
+      add_time <= UNIX_TIMESTAMP('2018-01-17 10:00')
       AND b.voucher_ref IN
-          ('4269', '4270', '4271', '4272', '4273', '4274', '4275', '4276', '4277', '4278')
+          ('5029', '5030', '5031', '5032')
 ORDER BY voucher_ref, a.order_id;
 
 /*满减数据捞单*/
@@ -73,13 +73,13 @@ SELECT
   voucher_t_id,
   count(1) AS '优惠券领取数'
 FROM ec_voucher
-WHERE voucher_t_id IN ('4998', '4999', '5000', '5001')
+WHERE voucher_t_id IN ('5029', '5030', '5031', '5032')
 GROUP BY voucher_t_id;
 SELECT
   voucher_t_id,
   count(1) AS '优惠券使用数'
 FROM ec_voucher
-WHERE voucher_order_id > 0 AND voucher_t_id IN ('4998', '4999', '5000', '5001')
+WHERE voucher_order_id > 0 AND voucher_t_id IN ('5029', '5030', '5031', '5032')
 GROUP BY voucher_t_id;
 
 #券号，使用渠道，使用数

@@ -1,0 +1,70 @@
+declare
+  json_varchar2 varchar2(4000);
+  inJson        json;
+  paramlist     json_list;
+  paramJson     json;
+  oneJson       json;
+
+  --变量  
+  --第一层  
+  db_marketcode VARCHAR2(8);
+  db_marketname VARCHAR2(64);
+  db_address    VARCHAR2(64);
+  db_tel        VARCHAR2(11);
+  --第二层  
+  db_name      VARCHAR2(64);
+  db_fruitcode VARCHAR2(8);
+
+begin
+  json_varchar2 := '{  
+    "marketcode": "123456",  
+    "marketname": "好吃的水果店",  
+    "address": "一个好地方",  
+    "tel": "12345678901",  
+    "fruitlist": {  
+        "name": "apple",  
+        "fruitcode": "223344",  
+        "applelist": [  
+            {  
+                "applename": "redapple ",  
+                "applecode": "111000",  
+                "price": "10"  
+            },  
+            {  
+                "applename": "greenapple ",  
+                "applecode": "111111",  
+                "price": "12"  
+            },  
+            {  
+                "applename": "yellowapple ",  
+                "applecode": "111222",  
+                "price": "8"  
+            }  
+        ]  
+    }  
+}';
+  inJson        := json(json_varchar2);
+  --获取第一层json值  
+  db_marketcode = json_get_string(inJson, 'marketcode');
+  db_marketname = json_get_string(inJson, 'marketname');
+  db_address = json_get_string(inJson, 'address');
+  db_tel = json_get_string(inJson, 'tel');
+  --第二层  
+  db_name      := json_get_string_ext(inJson, 'fruitlist.name');
+  db_fruitcode := json_get_string_ext(inJson, 'fruitlist.fruitcode');
+  --接下来获取第三层，使用json_list来存放json列表  
+  paramJson := json();
+  paramlist := json_list();
+  oneJson   := json();
+  paramlist := json_ext.get_json_list(inJson, 'fruitlist.applelist');
+  --使用循环返回每个json部分的值  
+  FOR i in 1 .. paramlist.count LOOP
+  
+    oneJson := JSON(paramlist.get(i));
+  
+    dbms_output.put_line(json_get_string(oneJson, 'applename'));
+    dbms_output.put_line(json_get_string(oneJson, 'applecode'));
+    dbms_output.put_line(json_get_string(oneJson, 'price'));
+  
+  end loop;
+end;
