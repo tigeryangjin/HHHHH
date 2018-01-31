@@ -1,0 +1,54 @@
+--1.
+MERGE /*+APPEND*/
+INTO FACT_EC_GOODS_MANUAL T
+USING (SELECT A.MANUAL_ID,
+              A.ITEM_CODE,
+              A.COMMON_ID,
+              A.ZMALAB,
+              A.ZLABNAME,
+              A.ZMALABTXT,
+              A.CHECKED,
+              A.ADD_TIME,
+              A.SHOW_SORT,
+              SYSDATE     W_INSERT_DT,
+              SYSDATE     W_UPDATE_DT
+         FROM EC_GOODS_MANUAL_TMP A) S
+ON (T.MANUAL_ID = S.MANUAL_ID)
+WHEN MATCHED THEN
+  UPDATE
+     SET T.ITEM_CODE   = S.ITEM_CODE,
+         T.COMMON_ID   = S.COMMON_ID,
+         T.ZMALAB      = S.ZMALAB,
+         T.ZLABNAME    = S.ZLABNAME,
+         T.ZMALABTXT   = S.ZMALABTXT,
+         T.CHECKED     = S.CHECKED,
+         T.ADD_TIME    = S.ADD_TIME,
+         T.SHOW_SORT   = S.SHOW_SORT,
+         T.W_UPDATE_DT = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.MANUAL_ID,
+     T.ITEM_CODE,
+     T.COMMON_ID,
+     T.ZMALAB,
+     T.ZLABNAME,
+     T.ZMALABTXT,
+     T.CHECKED,
+     T.ADD_TIME,
+     T.SHOW_SORT,
+     T.W_INSERT_DT,
+     T.W_UPDATE_DT)
+  VALUES
+    (S.MANUAL_ID,
+     S.ITEM_CODE,
+     S.COMMON_ID,
+     S.ZMALAB,
+     S.ZLABNAME,
+     S.ZMALABTXT,
+     S.CHECKED,
+     S.ADD_TIME,
+     S.SHOW_SORT,
+     S.W_INSERT_DT,
+     S.W_UPDATE_DT);
+
+SELECT * FROM S_PARAMETERS2 FOR UPDATE;

@@ -1,30 +1,4 @@
-SELECT H.GEVAL_ADDTIME_KEY,
-       H.ITEM_CODE,
-       SUM(H.LOW_EVAL) LOW_EVAL_COUNT, /*差评次数*/
-       SUM(H.MED_EVAL) MED_EVAL_COUNT, /*中评次数*/
-       SUM(H.HIGH_EVAL) HIGH_EVAL_COUNT /*好评次数*/
-  FROM (SELECT G.GEVAL_ADDTIME_KEY,
-               G.ITEM_CODE,
-               CASE
-                 WHEN G.GEVAL_SCORES IN (1, 2) THEN
-                  1
-                 ELSE
-                  0
-               END LOW_EVAL,
-               CASE
-                 WHEN G.GEVAL_SCORES IN (3) THEN
-                  1
-                 ELSE
-                  0
-               END MED_EVAL,
-               CASE
-                 WHEN G.GEVAL_SCORES IN (4, 5) THEN
-                  1
-                 ELSE
-                  0
-               END HIGH_EVAL
-          FROM FACT_GOODS_EVALUATE G
-         WHERE G.GEVAL_ADDTIME_KEY = &IN_POSTING_DATE_KEY) H
- GROUP BY H.GEVAL_ADDTIME_KEY, H.ITEM_CODE;
- 
-SELECT * FROM FACT_GOODS_EVALUATE A WHERE A.GEVAL_ADDTIME_KEY=20170301;
+SELECT *
+  FROM FACT_PAGE_VIEW A
+ WHERE A.VISIT_DATE_KEY = 20180128
+   AND (UPPER(A.PAGE_NAME) LIKE 'SL_%' OR UPPER(A.PAGE_NAME) LIKE 'LS_%');

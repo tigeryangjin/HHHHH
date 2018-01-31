@@ -79,6 +79,16 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE OPER_PRODUCT_DAILY_PREVIEW(IN_POSTING_DATE_KEY IN NUMBER);
+  /*
+  功能名:       OPER_PRODUCT_DAILY_PREVIEW
+  目的:         新媒体中心每日商品预览
+  作者:         yangjin
+  创建时间：    2018/01/19
+  最后修改人：
+  最后更改日期：
+  */
+
   PROCEDURE OPER_PRODUCT_PVUV_DAILY_RPT(IN_VISIT_DATE_KEY IN NUMBER);
   /*
   功能名:       OPER_PRODUCT_PVUV_DAILY_RPT
@@ -588,6 +598,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_P_XIANSHI_GOODS');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_VOUCHER');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_VOUCHER_BATCH');
+		YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_GOODS_COMMON');
+		YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_GOODS_MANUAL');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('MEMBER_LABEL_LINK');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ITEM_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ORDER_REPORT');
@@ -1995,6 +2007,318 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     
   END OPER_PRODUCT_DAILY_RPT;
 
+  PROCEDURE OPER_PRODUCT_DAILY_PREVIEW(IN_POSTING_DATE_KEY IN NUMBER) IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：新媒体中心每日商品预览
+    作者时间：yangjin  2018-01-19
+    */
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.OPER_PRODUCT_DAILY_PREVIEW'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'OPER_PRODUCT_DAILY_PREVIEW'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*中间表ETL*/
+      --OPER_PRODUCT_DAILY_DS_S
+      EXECUTE IMMEDIATE 'TRUNCATE TABLE OPER_PRODUCT_DAILY_DS_S';
+      INSERT INTO OPER_PRODUCT_DAILY_DS_S
+        (POSTING_DATE_KEY,
+         MATDLT,
+         MATZLT,
+         MATXLT,
+         ITEM_CODE,
+         DS_ORDER_QTY,
+         DS_PROFIT_AMOUNT,
+         DS_PROFIT_RATE,
+         DS_ORDER_AMOUNT,
+         DS_ORDER_MEMBER_COUNT,
+         DS_REJECT_MEMBER_COUNT,
+         DS_REJECT_QTY,
+         DS_REVERSE_MEMBER_COUNT,
+         DS_REVERSE_QTY)
+        SELECT A1.POSTING_DATE_KEY,
+               A1.MATDLT,
+               A1.MATZLT,
+               A1.MATXLT,
+               A1.ITEM_CODE,
+               SUM(A1.TOTAL_ORDER_QTY) DS_ORDER_QTY, /*电商销售件数*/
+               SUM(A1.GROSS_PROFIT_AMOUNT) DS_PROFIT_AMOUNT, /*电商毛利额*/
+               SUM(A1.GROSS_PROFIT_RATE) DS_PROFIT_RATE, /*电商毛利率*/
+               SUM(A1.TOTAL_ORDER_AMOUNT) DS_ORDER_AMOUNT, /*电商销售金额*/
+               SUM(A1.TOTAL_ORDER_MEMBER_COUNT) DS_ORDER_MEMBER_COUNT, /*电商订购人数*/
+               SUM(A1.REJECT_MEMBER_COUNT) DS_REJECT_MEMBER_COUNT, /*电商拒收人数*/
+               SUM(A1.REJECT_QTY) DS_REJECT_QTY, /*电商拒收件数*/
+               SUM(A1.REVERSE_MEMBER_COUNT) DS_REVERSE_MEMBER_COUNT, /*电商退货人数*/
+               SUM(A1.REVERSE_QTY) DS_REVERSE_QTY /*电商退货件数*/
+          FROM OPER_PRODUCT_DAILY_REPORT A1
+         WHERE A1.POSTING_DATE_KEY = IN_POSTING_DATE_KEY
+           AND A1.SALES_SOURCE_NAME = '电商'
+           AND A1.ITEM_CODE IS NOT NULL
+         GROUP BY A1.POSTING_DATE_KEY,
+                  A1.MATDLT,
+                  A1.MATZLT,
+                  A1.MATXLT,
+                  A1.ITEM_CODE;
+      COMMIT;
+    
+      --OPER_PRODUCT_DAILY_TV_S
+      EXECUTE IMMEDIATE 'TRUNCATE TABLE OPER_PRODUCT_DAILY_TV_S';
+      INSERT INTO OPER_PRODUCT_DAILY_TV_S
+        (POSTING_DATE_KEY,
+         MATDLT,
+         MATZLT,
+         MATXLT,
+         ITEM_CODE,
+         TV_ORDER_QTY,
+         TV_ORDER_AMOUNT)
+        SELECT A1.POSTING_DATE_KEY,
+               A1.MATDLT,
+               A1.MATZLT,
+               A1.MATXLT,
+               A1.ITEM_CODE,
+               SUM(A1.TOTAL_ORDER_QTY) TV_ORDER_QTY, /*TV销售件数*/
+               SUM(A1.TOTAL_ORDER_AMOUNT) TV_ORDER_AMOUNT /*TV销售金额*/
+          FROM OPER_PRODUCT_DAILY_REPORT A1
+         WHERE A1.POSTING_DATE_KEY = IN_POSTING_DATE_KEY
+           AND A1.SALES_SOURCE_NAME = 'TV'
+           AND A1.ITEM_CODE IS NOT NULL
+         GROUP BY A1.POSTING_DATE_KEY,
+                  A1.MATDLT,
+                  A1.MATZLT,
+                  A1.MATXLT,
+                  A1.ITEM_CODE;
+      COMMIT;
+    
+      --OPER_PRODUCT_DAILY_PUV_S
+      EXECUTE IMMEDIATE 'TRUNCATE TABLE OPER_PRODUCT_DAILY_PUV_S';
+      INSERT INTO OPER_PRODUCT_DAILY_PUV_S
+        (VISIT_DATE_KEY, ITEM_CODE, PV, UV)
+        SELECT C1.VISIT_DATE_KEY,
+               SUBSTR(C1.ITEM_CODE, 1, 6) ITEM_CODE,
+               SUM(C1.GOODPV) PV,
+               SUM(C1.GOODUV) UV
+          FROM FACT_DAILY_GOODORDER C1
+         WHERE C1.VISIT_DATE_KEY = IN_POSTING_DATE_KEY
+         GROUP BY C1.VISIT_DATE_KEY, SUBSTR(C1.ITEM_CODE, 1, 6);
+      COMMIT;
+    
+      --OPER_PRODUCT_DAILY_EVAL_S
+      EXECUTE IMMEDIATE 'TRUNCATE TABLE OPER_PRODUCT_DAILY_EVAL_S';
+      INSERT INTO OPER_PRODUCT_DAILY_EVAL_S
+        (GEVAL_ADDTIME_KEY,
+         ITEM_CODE,
+         LOW_EVAL_COUNT,
+         MED_EVAL_COUNT,
+         HIGH_EVAL_COUNT)
+        SELECT H.GEVAL_ADDTIME_KEY,
+               H.ITEM_CODE,
+               SUM(H.LOW_EVAL) LOW_EVAL_COUNT, /*差评次数*/
+               SUM(H.MED_EVAL) MED_EVAL_COUNT, /*中评次数*/
+               SUM(H.HIGH_EVAL) HIGH_EVAL_COUNT /*好评次数*/
+          FROM (SELECT G.GEVAL_ADDTIME_KEY,
+                       G.ITEM_CODE,
+                       CASE
+                         WHEN G.GEVAL_SCORES IN (1, 2) THEN
+                          1
+                         ELSE
+                          0
+                       END LOW_EVAL,
+                       CASE
+                         WHEN G.GEVAL_SCORES IN (3) THEN
+                          1
+                         ELSE
+                          0
+                       END MED_EVAL,
+                       CASE
+                         WHEN G.GEVAL_SCORES IN (4, 5) THEN
+                          1
+                         ELSE
+                          0
+                       END HIGH_EVAL
+                  FROM FACT_GOODS_EVALUATE G
+                 WHERE G.GEVAL_ADDTIME_KEY = IN_POSTING_DATE_KEY
+                   AND G.ITEM_CODE IS NOT NULL) H
+         GROUP BY H.GEVAL_ADDTIME_KEY, H.ITEM_CODE;
+      COMMIT;
+    
+      --OPER_PRODUCT_DAILY_FAV_S
+      EXECUTE IMMEDIATE 'TRUNCATE TABLE OPER_PRODUCT_DAILY_FAV_S';
+      INSERT INTO OPER_PRODUCT_DAILY_FAV_S
+        (FAV_TIME, ITEM_CODE, FAV_COUNT)
+        SELECT J1.FAV_TIME, J1.FAV_ID ITEM_CODE, COUNT(1) FAV_COUNT
+          FROM FACT_FAVORITES J1
+         WHERE J1.FAV_TYPE = 'goods'
+           AND J1.FAV_TIME = IN_POSTING_DATE_KEY
+         GROUP BY J1.FAV_TIME, J1.FAV_ID;
+      COMMIT;
+    
+      --OPER_PRODUCT_DAILY_CAR_S
+      EXECUTE IMMEDIATE 'TRUNCATE TABLE OPER_PRODUCT_DAILY_CAR_S';
+      INSERT INTO OPER_PRODUCT_DAILY_CAR_S
+        (CREATE_DATE_KEY, ITEM_CODE, CAR_COUNT)
+        SELECT K1.CREATE_DATE_KEY, K1.SCGID ITEM_CODE, COUNT(1) CAR_COUNT
+          FROM FACT_SHOPPINGCAR K1
+         WHERE K1.PAGE_NAME = 'good'
+           AND K1.CREATE_DATE_KEY = IN_POSTING_DATE_KEY
+         GROUP BY K1.CREATE_DATE_KEY, K1.SCGID;
+      COMMIT;
+    
+      /*删除指定日期的数据*/
+      DELETE OPER_PRODUCT_DAILY_PREVIEW T
+       WHERE T.POSTING_DATE_KEY = IN_POSTING_DATE_KEY;
+      COMMIT;
+    
+      INSERT INTO OPER_PRODUCT_DAILY_PREVIEW
+        (POSTING_DATE_KEY,
+         MATDLT,
+         MATZLT,
+         MATXLT,
+         ITEM_CODE,
+         GOOD_NAME,
+         GOOD_S_PRICE,
+         GOOD_C_PRICE,
+         GROUP_NAME,
+         IS_ONTV,
+         IS_SHIPPING_SELF,
+         TV_ORDER_AMOUNT,
+         TV_ORDER_QTY,
+         DS_ORDER_AMOUNT,
+         DS_ORDER_QTY,
+         DS_PROFIT_AMOUNT,
+         DS_PROFIT_RATE,
+         PV,
+         UV,
+         DS_ORDER_MEMBER_COUNT,
+         CONVERSION_RATE,
+         FAV_COUNT,
+         CAR_COUNT,
+         LOW_EVAL_COUNT,
+         MED_EVAL_COUNT,
+         HIGH_EVAL_COUNT,
+         DS_REJECT_MEMBER_COUNT,
+         DS_REJECT_QTY,
+         DS_REVERSE_MEMBER_COUNT,
+         DS_REVERSE_QTY,
+         W_INSERT_DT,
+         W_UPDATE_DT)
+        SELECT B.POSTING_DATE_KEY POSTING_DATE_KEY, /*日期*/
+               B.MATDLT, /*一级分类名称*/
+               B.MATZLT, /*二级分类名称*/
+               B.MATXLT, /*三级分类名称*/
+               B.ITEM_CODE, /*商品编码*/
+               B.GOODS_NAME GOOD_NAME, /*商品名称*/
+               B.GOODS_PRICE GOOD_S_PRICE, /*商品价格*/
+               (SELECT NVL(MAX(D.COST_PRICE), 0)
+                  FROM FACT_GOODS_SALES D
+                 WHERE D.POSTING_DATE_KEY = 20180117
+                   AND B.ITEM_CODE = D.GOODS_COMMON_KEY) GOOD_C_PRICE, /*商品进价*/
+               (SELECT E.GROUP_NAME
+                  FROM DIM_GOOD E
+                 WHERE B.ITEM_CODE = E.ITEM_CODE
+                   AND E.CURRENT_FLG = 'Y') GROUP_NAME, /*提报组*/
+               NVL((SELECT MAX(1)
+                     FROM DIM_TV_GOOD F
+                    WHERE B.ITEM_CODE = F.ITEM_CODE
+                      AND F.TV_STARTDAY_KEY = 20180117),
+                   0) IS_ONTV, /*是否当天播出*/
+               B.IS_SHIPPING_SELF, /*是否仓配*/
+               NVL(L.TV_ORDER_AMOUNT, 0) TV_ORDER_AMOUNT, /*TV销售金额*/
+               NVL(L.TV_ORDER_QTY, 0) TV_ORDER_QTY, /*TV销售件数*/
+               NVL(A.DS_ORDER_AMOUNT, 0) DS_ORDER_AMOUNT, /*电商销售金额*/
+               NVL(A.DS_ORDER_QTY, 0) DS_ORDER_QTY, /*电商销售件数*/
+               NVL(A.DS_PROFIT_AMOUNT, 0) DS_PROFIT_AMOUNT, /*电商毛利额*/
+               NVL(A.DS_PROFIT_RATE, 0) DS_PROFIT_RATE, /*电商毛利率*/
+               NVL(C.PV, 0) PV, /*浏览次数*/
+               NVL(C.UV, 0) UV, /*浏览人数*/
+               NVL(A.DS_ORDER_MEMBER_COUNT, 0) DS_ORDER_MEMBER_COUNT, /*电商订购人数*/
+               DECODE(NVL(C.UV, 0),
+                      0,
+                      0,
+                      ROUND(NVL(A.DS_ORDER_MEMBER_COUNT, 0) / NVL(C.UV, 0),
+                            2)) CONVERSION_RATE, /*转换率*/
+               NVL(J.FAV_COUNT, 0) FAV_COUNT, /*收藏次数*/
+               NVL(K.CAR_COUNT, 0) CAR_COUNT, /*加购物车次数*/
+               NVL(I.LOW_EVAL_COUNT, 0) LOW_EVAL_COUNT, /*差评次数*/
+               NVL(I.MED_EVAL_COUNT, 0) MED_EVAL_COUNT, /*中评次数*/
+               NVL(I.HIGH_EVAL_COUNT, 0) HIGH_EVAL_COUNT, /*好评次数*/
+               NVL(A.DS_REJECT_MEMBER_COUNT, 0) DS_REJECT_MEMBER_COUNT, /*电商拒收人数*/
+               NVL(A.DS_REJECT_QTY, 0) DS_REJECT_QTY, /*电商拒收件数*/
+               NVL(A.DS_REVERSE_MEMBER_COUNT, 0) DS_REVERSE_MEMBER_COUNT, /*电商退货人数*/
+               NVL(A.DS_REVERSE_QTY, 0) DS_REVERSE_QTY, /*电商退货件数*/
+               SYSDATE W_INSERT_DT,
+               SYSDATE W_UPDATE_DT
+          FROM (SELECT IN_POSTING_DATE_KEY POSTING_DATE_KEY,
+                       N.ITEM_CODE,
+                       N.GOODS_NAME,
+                       N.MATDLT,
+                       N.MATZLT,
+                       N.MATXLT,
+                       N.GOODS_PRICE,
+                       N.IS_SHIPPING_SELF
+                  FROM DIM_EC_GOOD N) B,
+               OPER_PRODUCT_DAILY_DS_S A,
+               OPER_PRODUCT_DAILY_TV_S L,
+               OPER_PRODUCT_DAILY_PUV_S C,
+               OPER_PRODUCT_DAILY_EVAL_S I,
+               OPER_PRODUCT_DAILY_FAV_S J,
+               OPER_PRODUCT_DAILY_CAR_S K
+         WHERE B.ITEM_CODE = A.ITEM_CODE(+)
+           AND B.ITEM_CODE = C.ITEM_CODE(+)
+           AND B.ITEM_CODE = I.ITEM_CODE(+)
+           AND B.ITEM_CODE = J.ITEM_CODE(+)
+           AND B.ITEM_CODE = K.ITEM_CODE(+)
+           AND B.ITEM_CODE = L.ITEM_CODE(+)
+           AND B.POSTING_DATE_KEY = A.POSTING_DATE_KEY(+)
+           AND B.POSTING_DATE_KEY = L.POSTING_DATE_KEY(+)
+           AND B.POSTING_DATE_KEY = C.VISIT_DATE_KEY(+)
+           AND B.POSTING_DATE_KEY = I.GEVAL_ADDTIME_KEY(+)
+           AND B.POSTING_DATE_KEY = J.FAV_TIME(+)
+           AND B.POSTING_DATE_KEY = K.CREATE_DATE_KEY(+)
+           AND (A.DS_ORDER_QTY <> 0 OR L.TV_ORDER_QTY <> 0 OR C.PV <> 0 OR
+               I.LOW_EVAL_COUNT <> 0 OR I.MED_EVAL_COUNT <> 0 OR
+               I.HIGH_EVAL_COUNT <> 0 OR J.FAV_COUNT <> 0 OR
+               K.CAR_COUNT <> 0);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+  
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:IN_POSTING_DATE_KEY:' ||
+                            TO_CHAR(IN_POSTING_DATE_KEY);
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END OPER_PRODUCT_DAILY_PREVIEW;
+
   PROCEDURE OPER_PRODUCT_PVUV_DAILY_RPT(IN_VISIT_DATE_KEY IN NUMBER) IS
     S_ETL       W_ETL_LOG%ROWTYPE;
     SP_NAME     S_PARAMETERS2.PNAME%TYPE;
@@ -3027,7 +3351,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
                   WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                AND*/
                   F.ZMATERIAL NOT LIKE '%F%'
                AND F.ZEAMC027 IS NOT NULL
                AND F.ZEAMC027 != 0) TA
