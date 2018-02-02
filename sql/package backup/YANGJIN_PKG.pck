@@ -281,6 +281,16 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE FACT_TV_QRC_PROC(IN_POSTING_DATE_KEY IN NUMBER);
+  /*
+  功能名:       FACT_TV_QRC_PROC
+  目的:         tv商品扫码行为记录
+  作者:         yangjin
+  创建时间：    2018/01/31
+  最后修改人：
+  最后更改日期：
+  */
+
 END YANGJIN_PKG;
 /
 CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
@@ -598,8 +608,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_P_XIANSHI_GOODS');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_VOUCHER');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_VOUCHER_BATCH');
-		YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_GOODS_COMMON');
-		YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_GOODS_MANUAL');
+    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_GOODS_COMMON');
+    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_GOODS_MANUAL');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('MEMBER_LABEL_LINK');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ITEM_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ORDER_REPORT');
@@ -3351,7 +3361,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
                   WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          AND*/
                   F.ZMATERIAL NOT LIKE '%F%'
                AND F.ZEAMC027 IS NOT NULL
                AND F.ZEAMC027 != 0) TA
@@ -4898,6 +4908,96 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
       SP_SBI_W_ETL_LOG(S_ETL);
       RETURN;
   END MERGE_DIM_MEMBER_ZONE;
+
+  PROCEDURE FACT_TV_QRC_PROC(IN_POSTING_DATE_KEY IN NUMBER) IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+  
+    /*
+    功能说明：TV商品扫码行为记录
+    作者时间：yangjin  2018-01-31
+    */
+  
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.FACT_TV_QRC_PROC'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'FACT_TV_QRC'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*删除当天数据*/
+      DELETE FACT_TV_QRC A WHERE A.VISIT_DATE_KEY = IN_POSTING_DATE_KEY;
+      COMMIT;
+    
+      /*插入数据*/
+      INSERT INTO FACT_TV_QRC
+        (VID,
+         VISIT_DATE_KEY,
+         VISIT_DATE,
+         TV_START_TIME,
+         TV_END_TIME,
+         ITEM_CODE,
+         W_INSERT_DT,
+         W_UPDATE_DT)
+        SELECT DISTINCT A.VID,
+                        TO_CHAR(A.VISIT_DATE, 'YYYYMMDD') VISIT_DATE_KEY,
+                        A.VISIT_DATE,
+                        B.TV_START_TIME,
+                        B.TV_END_TIME,
+                        B.ITEM_CODE,
+                        SYSDATE W_INSERT_DT,
+                        SYSDATE W_UPDATE_DT
+          FROM (SELECT VID, VISIT_DATE
+                  FROM FACT_PAGE_VIEW
+                 WHERE VISIT_DATE_KEY = IN_POSTING_DATE_KEY
+                   AND PAGE_NAME = 'TV_QRC') A,
+               (SELECT TV_START_TIME,
+                       /*如果时间为23:59:00，则取值23:59:59，其余不变*/
+                       DECODE(TO_CHAR(TV_END_TIME, 'hh24:mi:ss'),
+                              '23:59:00',
+                              TV_END_TIME + 59 / 86400,
+                              TV_END_TIME) TV_END_TIME,
+                       ITEM_CODE
+                  FROM DIM_TV_GOOD
+                 WHERE TV_STARTDAY_KEY = IN_POSTING_DATE_KEY) B
+         WHERE A.VISIT_DATE BETWEEN B.TV_START_TIME AND B.TV_END_TIME;
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+  
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:IN_POSTING_DATE_KEY:' ||
+                            TO_CHAR(IN_POSTING_DATE_KEY);
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END FACT_TV_QRC_PROC;
 
 END YANGJIN_PKG;
 /
