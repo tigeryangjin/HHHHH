@@ -19,3 +19,5 @@ projectname=EC.MemberOrderStatus.task|select case when count(1) is null then 0 e
 * and Query_time|select __source__ as ip,count(1) cnt group by __source__ order by count(1) desc limit 1000
 #慢查询日志监控
 * and source: 10.33.2.180 and Query_time|select count(1) cnt limit 1000
+
+Wxcms.AdminSendHb.Api and loglevel=error and message=改红包不存在

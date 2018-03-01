@@ -291,6 +291,16 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE CR_DATA_BASE_PROC(IN_POSTING_DATE_KEY IN NUMBER);
+  /*
+  功能名:       CR_DATA_BASE_PROC
+  目的:         商品推荐基础表，用于阿里云的输入数据。
+  作者:         yangjin
+  创建时间：    2018/02/07
+  最后修改人：
+  最后更改日期：
+  */
+
 END YANGJIN_PKG;
 /
 CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
@@ -610,6 +620,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_VOUCHER_BATCH');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_GOODS_COMMON');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_GOODS_MANUAL');
+    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('KPI_ACTIVE_VID_BASE');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('MEMBER_LABEL_LINK');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ITEM_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ORDER_REPORT');
@@ -2238,7 +2249,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                B.GOODS_PRICE GOOD_S_PRICE, /*商品价格*/
                (SELECT NVL(MAX(D.COST_PRICE), 0)
                   FROM FACT_GOODS_SALES D
-                 WHERE D.POSTING_DATE_KEY = 20180117
+                 WHERE D.POSTING_DATE_KEY = IN_POSTING_DATE_KEY
                    AND B.ITEM_CODE = D.GOODS_COMMON_KEY) GOOD_C_PRICE, /*商品进价*/
                (SELECT E.GROUP_NAME
                   FROM DIM_GOOD E
@@ -2247,7 +2258,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                NVL((SELECT MAX(1)
                      FROM DIM_TV_GOOD F
                     WHERE B.ITEM_CODE = F.ITEM_CODE
-                      AND F.TV_STARTDAY_KEY = 20180117),
+                      AND F.TV_STARTDAY_KEY = IN_POSTING_DATE_KEY),
                    0) IS_ONTV, /*是否当天播出*/
                B.IS_SHIPPING_SELF, /*是否仓配*/
                NVL(L.TV_ORDER_AMOUNT, 0) TV_ORDER_AMOUNT, /*TV销售金额*/
@@ -3361,7 +3372,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
                   WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                AND*/
                   F.ZMATERIAL NOT LIKE '%F%'
                AND F.ZEAMC027 IS NOT NULL
                AND F.ZEAMC027 != 0) TA
@@ -4998,6 +5009,110 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
       SP_SBI_W_ETL_LOG(S_ETL);
       RETURN;
   END FACT_TV_QRC_PROC;
+
+  PROCEDURE CR_DATA_BASE_PROC(IN_POSTING_DATE_KEY IN NUMBER) IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+  
+    /*
+    功能说明：商品推荐基础表，用于阿里云的输入数据。
+    作者时间：yangjin  2018-02-07
+    */
+  
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.CR_DATA_BASE_PROC'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'CR_DATA_BASE'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*删除当天数据*/
+      DELETE CR_DATA_BASE A WHERE A.ACTIVE_DATE = IN_POSTING_DATE_KEY;
+      COMMIT;
+    
+      /*插入数据
+      0表示点击，1表示购买，2表示收藏，3表示购物车*/
+      INSERT INTO CR_DATA_BASE
+        (USER_ID, ITEM_ID, ACTIVE_TYPE, ACTIVE_DATE)
+      /*active_type=0*/
+        SELECT DISTINCT TO_CHAR(A1.MEMBER_KEY) USER_ID,
+                        TO_CHAR(A1.PAGE_VALUE) AS ITEM_ID,
+                        0 ACTIVE_TYPE,
+                        TO_CHAR(A1.VISIT_DATE_KEY) ACTIVE_DATE
+          FROM FACT_PAGE_VIEW A1
+         WHERE A1.PAGE_KEY IN
+               (1924, 2303, 2841, 2842, 11586, 24146, 38629, 40899, 40903)
+           AND REGEXP_LIKE(A1.PAGE_VALUE, '^[1-9]\d{5}$')
+           AND A1.VISIT_DATE_KEY = IN_POSTING_DATE_KEY
+           AND A1.MEMBER_KEY <> 0
+        UNION ALL
+        /*active_type=1*/
+        SELECT TO_CHAR(A2.MEMBER_KEY) USER_ID,
+               TO_CHAR(A2.GOODS_COMMON_KEY) ITEM_ID,
+               1 ACTIVE_TYPE,
+               TO_CHAR(A2.POSTING_DATE_KEY) ACTIVE_DATE
+          FROM FACT_GOODS_SALES A2
+         WHERE A2.ORDER_STATE = 1
+           AND A2.ORDER_AMOUNT > 0 /*剔除赠品*/
+           AND A2.POSTING_DATE_KEY = IN_POSTING_DATE_KEY
+        UNION ALL
+        /*active_type=2*/
+        SELECT (SELECT TO_CHAR(MAX(B3.MEMBER_CRMBP))
+                  FROM FACT_ECMEMBER B3
+                 WHERE A3.MEMBER_ID = B3.MEMBER_ID) USER_ID,
+               TO_CHAR(A3.FAV_ID) ITEM_ID,
+               2 ACTIVE_TYPE,
+               TO_CHAR(A3.FAV_TIME) ACTIVE_DATE
+          FROM FACT_FAVORITES A3
+         WHERE A3.FAV_TYPE = 'goods'
+           AND A3.FAV_TIME = IN_POSTING_DATE_KEY
+        UNION ALL
+        /*active_type=3*/
+        SELECT TO_CHAR(A4.MEMBER_KEY) USER_ID,
+               TO_CHAR(A4.SCGID) ITEM_ID,
+               3 ACTIVE_TYPE,
+               TO_CHAR(A4.CREATE_DATE_KEY) ACTIVE_DATE
+          FROM FACT_SHOPPINGCAR A4
+         WHERE A4.PAGE_KEY IN (297, 11586)
+           AND A4.CREATE_DATE_KEY = IN_POSTING_DATE_KEY
+           AND A4.MEMBER_KEY <> 0;
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+  
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:IN_POSTING_DATE_KEY:' ||
+                            TO_CHAR(IN_POSTING_DATE_KEY);
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END CR_DATA_BASE_PROC;
 
 END YANGJIN_PKG;
 /

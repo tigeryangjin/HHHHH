@@ -1,0 +1,816 @@
+--1.
+/*CREATE TABLE KPI_ACTIVE_VID_BASE AS
+SELECT A.START_DATE_KEY,
+       A.APPLICATION_KEY,
+       A.VID,
+       SYSDATE           W_INSERT_DT,
+       SYSDATE           W_UPDATE_DT
+  FROM FACT_SESSION A
+ WHERE A.START_DATE_KEY = 20180222;*/
+
+--2.
+DECLARE
+  IN_DATE_INT NUMBER(8);
+  IN_DATE     DATE;
+  BEGIN_DATE  DATE := DATE '2015-06-05';
+  END_DATE    DATE := DATE '2018-02-22';
+BEGIN
+  IN_DATE := BEGIN_DATE;
+  WHILE IN_DATE <= END_DATE LOOP
+    IN_DATE_INT := TO_CHAR(IN_DATE, 'YYYYMMDD');
+    HAPPIGO_KPI_PKG.KPI_ACTIVE_VID_BASE_PROC(IN_DATE_INT);
+    IN_DATE := IN_DATE + 1;
+  END LOOP;
+END;
+/
+
+--3.
+CREATE TABLE KPI_VID_FIRST_VISIT AS
+  SELECT A.VID, MIN(A.START_DATE_KEY) MIN_VISIT_DATE_KEY
+    FROM KPI_ACTIVE_VID_BASE A
+   GROUP BY A.VID;
+
+--4.
+MERGE /*+APPEND*/
+INTO KPI_VID_FIRST_VISIT T
+USING (SELECT A.VID,
+              MIN(A.START_DATE_KEY) MIN_VISIT_DATE_KEY,
+              SYSDATE W_INSERT_DT,
+              SYSDATE W_UPDATE_DT
+         FROM KPI_ACTIVE_VID_BASE A
+        GROUP BY A.VID) S
+ON (T.VID = S.VID)
+WHEN MATCHED THEN
+  UPDATE
+     SET T.MIN_VISIT_DATE_KEY = S.MIN_VISIT_DATE_KEY,
+         T.W_UPDATE_DT        = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.VID, T.MIN_VISIT_DATE_KEY, T.W_INSERT_DT, T.W_UPDATE_DT)
+  VALUES
+    (S.VID, S.MIN_VISIT_DATE_KEY, S.W_INSERT_DT, S.W_UPDATE_DT);
+
+--5.APP MAU
+INSERT INTO KPI_ASMT_APP_MAU
+  (MONTH_KEY, MAU, W_INSERT_DT, W_UPDATE_DT)
+  SELECT SUBSTR(A.START_DATE_KEY, 1, 6) MONTH_KEY,
+         COUNT(DISTINCT A.VID) MAU,
+         SYSDATE W_INSERT_DT,
+         SYSDATE W_UPDATE_DT
+    FROM KPI_ACTIVE_VID_BASE A
+   WHERE A.APPLICATION_KEY IN (10, 20)
+     AND A.START_DATE_KEY BETWEEN 20180101 AND 20180131
+   GROUP BY SUBSTR(A.START_DATE_KEY, 1, 6);
+
+INSERT INTO KPI_ASMT_APP_MAU
+  (MONTH_KEY, MAU, W_INSERT_DT, W_UPDATE_DT)
+  SELECT SUBSTR(A.START_DATE_KEY, 1, 6) MONTH_KEY,
+         COUNT(DISTINCT A.VID) MAU,
+         SYSDATE W_INSERT_DT,
+         SYSDATE W_UPDATE_DT
+    FROM KPI_ACTIVE_VID_BASE A
+   WHERE A.APPLICATION_KEY IN (10, 20)
+   GROUP BY SUBSTR(A.START_DATE_KEY, 1, 6)
+   ORDER BY SUBSTR(A.START_DATE_KEY, 1, 6);
+COMMIT;
+
+--6.
+CREATE TABLE KPI_ASMT_WX_DAU AS
+  SELECT SUBSTR(A.VISIT_DATE_KEY, 1, 6) MONTH_KEY,
+         ROUND(AVG(A.UVCNT)) DAU,
+         SYSDATE W_INSERT_DT,
+         SYSDATE W_UPDATE_DT
+    FROM FACT_DAILY_WX A
+   WHERE A.VISIT_DATE_KEY BETWEEN 20180201 AND 20180223
+   GROUP BY SUBSTR(A.VISIT_DATE_KEY, 1, 6);
+
+MERGE /*+APPEND*/
+INTO KPI_ASMT_WX_DAU T
+USING (SELECT SUBSTR(A.VISIT_DATE_KEY, 1, 6) MONTH_KEY,
+              ROUND(AVG(A.UVCNT)) DAU,
+              SYSDATE W_INSERT_DT,
+              SYSDATE W_UPDATE_DT
+         FROM FACT_DAILY_WX A
+        GROUP BY SUBSTR(A.VISIT_DATE_KEY, 1, 6)) S
+ON (T.MONTH_KEY = S.MONTH_KEY)
+WHEN MATCHED THEN
+  UPDATE SET T.DAU = S.DAU, T.W_UPDATE_DT = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.MONTH_KEY, T.DAU, T.W_INSERT_DT, T.W_UPDATE_DT)
+  VALUES
+    (S.MONTH_KEY, S.DAU, S.W_INSERT_DT, S.W_UPDATE_DT);
+
+--7.
+CREATE TABLE KPI_ASMT_WX_NEW_REG AS
+  SELECT SUBSTR(A.VISIT_DATE_KEY, 1, 6) MONTH_KEY,
+         ROUND(AVG(A.NEWVTCOUNT)) NEW_REG_COUNT,
+         SYSDATE W_INSERT_DT,
+         SYSDATE W_UPDATE_DT
+    FROM FACT_DAILY_WX A
+   WHERE A.VISIT_DATE_KEY BETWEEN 20180201 AND 20180223
+   GROUP BY SUBSTR(A.VISIT_DATE_KEY, 1, 6);
+
+MERGE /*+APPEND*/
+INTO KPI_ASMT_WX_NEW_REG T
+USING (SELECT SUBSTR(A.VISIT_DATE_KEY, 1, 6) MONTH_KEY,
+              ROUND(AVG(A.UVCNT)) NEW_REG_COUNT,
+              SYSDATE W_INSERT_DT,
+              SYSDATE W_UPDATE_DT
+         FROM FACT_DAILY_WX A
+        WHERE A.VISIT_DATE_KEY BETWEEN V_MONTH_FIRST_DATE_KEY AND
+              IN_DATE_KEY
+        GROUP BY SUBSTR(A.VISIT_DATE_KEY, 1, 6)) S
+ON (T.MONTH_KEY = S.MONTH_KEY)
+WHEN MATCHED THEN
+  UPDATE
+     SET T.NEW_REG_COUNT = S.NEW_REG_COUNT, T.W_UPDATE_DT = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.MONTH_KEY, T.NEW_REG_COUNT, T.W_INSERT_DT, T.W_UPDATE_DT)
+  VALUES
+    (S.MONTH_KEY, S.NEW_REG_COUNT, S.W_INSERT_DT, S.W_UPDATE_DT);
+
+--8.
+CREATE TABLE KPI_ASMT_NEW_UV AS
+  SELECT A.START_DATE_KEY DATE_KEY,
+         COUNT(DISTINCT A.VID) NEW_VISIT_COUNT,
+         SYSDATE W_INSERT_DT,
+         SYSDATE W_UPDATE_DT
+    FROM KPI_ACTIVE_VID_BASE A
+   WHERE NOT EXISTS (SELECT 1
+            FROM KPI_VID_FIRST_VISIT B
+           WHERE A.VID = B.VID
+             AND B.MIN_VISIT_DATE_KEY <> 20180222)
+     AND A.START_DATE_KEY = 20180222
+   GROUP BY A.START_DATE_KEY;
+
+MERGE /*+APPEND*/
+INTO KPI_ASMT_NEW_UV T
+USING (SELECT A.START_DATE_KEY DATE_KEY,
+              COUNT(DISTINCT A.VID) NEW_VISIT_COUNT,
+              SYSDATE W_INSERT_DT,
+              SYSDATE W_UPDATE_DT
+         FROM KPI_ACTIVE_VID_BASE A
+        WHERE NOT EXISTS (SELECT 1
+                 FROM KPI_VID_FIRST_VISIT B
+                WHERE A.VID = B.VID
+                  AND B.MIN_VISIT_DATE_KEY <> 20180222)
+          AND A.START_DATE_KEY = 20180222
+        GROUP BY A.START_DATE_KEY) S
+ON (T.DATE_KEY = S.DATE_KEY)
+WHEN MATCHED THEN
+  UPDATE
+     SET T.NEW_VISIT_COUNT = S.NEW_VISIT_COUNT,
+         T.W_UPDATE_DT     = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.DATE_KEY, T.NEW_VISIT_COUNT, T.W_INSERT_DT, T.W_UPDATE_DT)
+  VALUES
+    (S.DATE_KEY, S.NEW_VISIT_COUNT, S.W_INSERT_DT, S.W_UPDATE_DT);
+
+--9.
+CREATE TABLE KPI_ASMT_OLD_UV AS
+  SELECT A.START_DATE_KEY DATE_KEY,
+         COUNT(DISTINCT A.VID) OLD_VISIT_COUNT,
+         SYSDATE W_INSERT_DT,
+         SYSDATE W_UPDATE_DT
+    FROM KPI_ACTIVE_VID_BASE A
+   WHERE EXISTS (SELECT 1
+            FROM KPI_VID_FIRST_VISIT B
+           WHERE A.VID = B.VID
+             AND B.MIN_VISIT_DATE_KEY <> 20180222)
+     AND A.START_DATE_KEY = 20180222
+   GROUP BY A.START_DATE_KEY;
+
+--10.
+DECLARE
+  IN_DATE_INT NUMBER(8);
+  IN_DATE     DATE;
+  BEGIN_DATE  DATE := DATE '2015-06-05';
+  END_DATE    DATE := DATE '2018-02-23';
+BEGIN
+  IN_DATE := BEGIN_DATE;
+  WHILE IN_DATE <= END_DATE LOOP
+    IN_DATE_INT := TO_CHAR(IN_DATE, 'YYYYMMDD');
+    HAPPIGO_KPI_PKG.KPI_ASMT_NEW_UV_PROC(IN_DATE_INT);
+    HAPPIGO_KPI_PKG.KPI_ASMT_OLD_UV_PROC(IN_DATE_INT);
+    IN_DATE := IN_DATE + 1;
+  END LOOP;
+END;
+/
+
+--11.
+CREATE TABLE KPI_ASMT_APP_NET_ORDER_CVR AS
+  SELECT SUBSTR(A.VISIT_DATE_KEY, 1, 6) MONTH_KEY,
+         ROUND(AVG(NVL(A.ORDERRATE, 0)), 4) CVR,
+         SYSDATE W_INSERT_DT,
+         SYSDATE W_UPDATE_DT
+    FROM FACT_DAILY_APP A
+   GROUP BY SUBSTR(A.VISIT_DATE_KEY, 1, 6)
+   ORDER BY SUBSTR(A.VISIT_DATE_KEY, 1, 6);
+
+MERGE /*+APPEND*/
+INTO KPI_ASMT_APP_NET_ORDER_CVR T
+USING (SELECT SUBSTR(A.VISIT_DATE_KEY, 1, 6) MONTH_KEY,
+              ROUND(AVG(NVL(A.ORDERRATE, 0)), 4) CVR,
+              SYSDATE W_INSERT_DT,
+              SYSDATE W_UPDATE_DT
+         FROM FACT_DAILY_APP A
+        WHERE A.VISIT_DATE_KEY BETWEEN 20180201 AND 20180225
+        GROUP BY SUBSTR(A.VISIT_DATE_KEY, 1, 6)
+        ORDER BY SUBSTR(A.VISIT_DATE_KEY, 1, 6)) S
+ON (T.MONTH_KEY = S.MONTH_KEY)
+WHEN MATCHED THEN
+  UPDATE SET T.CVR = S.CVR, T.W_UPDATE_DT = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.MONTH_KEY, T.CVR, T.W_INSERT_DT, T.W_UPDATE_DT)
+  VALUES
+    (S.MONTH_KEY, S.CVR, S.W_INSERT_DT, S.W_UPDATE_DT);
+
+--11.
+CREATE TABLE KPI_ASMT_APP_ITEM_CVR AS
+  SELECT A.VISIT_DATE_KEY DATE_KEY,
+         A.GC_NAME,
+         A.VISIT_COUNT,
+         B.ORDER_COUNT,
+         SYSDATE          W_INSERT_DT,
+         SYSDATE          W_UPDATE_DT
+    FROM (SELECT GC_NAME,
+                 VISIT_DATE_KEY,
+                 COUNT(DISTINCT(VID)) AS VISIT_COUNT
+            FROM (SELECT VID, TO_CHAR(PAGE_VALUE) PAGE_VALUE, VISIT_DATE_KEY
+                    FROM FACT_PAGE_VIEW
+                   WHERE VISIT_DATE_KEY = 20180225
+                     AND APPLICATION_KEY IN (10, 20)
+                     AND PAGE_NAME = 'Good') A
+            LEFT JOIN (SELECT GC_NAME, TO_CHAR(GOODS_COMMONID) GOODS_COMMONID
+                        FROM (SELECT GOODS_COMMONID, MATDL FROM DIM_EC_GOOD) AA
+                        JOIN (SELECT MATDL, GC_NAME
+                               FROM DIM_GOOD_CLASS
+                              WHERE GC_NAME IS NOT NULL) BB
+                          ON AA.MATDL = BB.MATDL
+                       GROUP BY GC_NAME, GOODS_COMMONID) B
+              ON A.PAGE_VALUE = B.GOODS_COMMONID
+           GROUP BY GC_NAME, VISIT_DATE_KEY) A
+    LEFT JOIN (SELECT GC_NAME,
+                      VISIT_DATE_KEY,
+                      COUNT(DISTINCT(VID)) AS ORDER_COUNT
+                 FROM (SELECT VID,
+                              TO_CHAR(PAGE_VALUE) PAGE_VALUE,
+                              VISIT_DATE_KEY
+                         FROM FACT_PAGE_VIEW_HIT
+                        WHERE VISIT_DATE_KEY = 20180225
+                          AND APPLICATION_KEY IN (10, 20)
+                          AND PAGE_NAME IN
+                              ('SL_Good_Order', 'SL_Good_Shoppcar')) A
+                 LEFT JOIN (SELECT GC_NAME,
+                                  TO_CHAR(GOODS_COMMONID) GOODS_COMMONID
+                             FROM (SELECT GOODS_COMMONID, MATDL
+                                     FROM DIM_EC_GOOD) AA
+                             JOIN (SELECT MATDL, GC_NAME
+                                    FROM DIM_GOOD_CLASS
+                                  /*WHERE GC_NAME IS NOT NULL*/
+                                  ) BB
+                               ON AA.MATDL = BB.MATDL
+                            GROUP BY GC_NAME, GOODS_COMMONID) B
+                   ON A.PAGE_VALUE = B.GOODS_COMMONID
+                GROUP BY GC_NAME, VISIT_DATE_KEY) B
+      ON A.GC_NAME = B.GC_NAME
+     AND A.VISIT_DATE_KEY = B.VISIT_DATE_KEY
+   WHERE A.GC_NAME IS NOT NULL
+     AND B.GC_NAME IS NOT NULL;
+
+MERGE /*+APPEND*/
+INTO KPI_ASMT_APP_ITEM_CVR T
+USING (SELECT A.VISIT_DATE_KEY DATE_KEY,
+              A.GC_NAME,
+              A.VISIT_COUNT,
+              B.ORDER_COUNT,
+              SYSDATE          W_INSERT_DT,
+              SYSDATE          W_UPDATE_DT
+         FROM (SELECT GC_NAME,
+                      VISIT_DATE_KEY,
+                      COUNT(DISTINCT(VID)) AS VISIT_COUNT
+                 FROM (SELECT VID,
+                              TO_CHAR(PAGE_VALUE) PAGE_VALUE,
+                              VISIT_DATE_KEY
+                         FROM FACT_PAGE_VIEW
+                        WHERE VISIT_DATE_KEY = 20180225
+                          AND APPLICATION_KEY IN (10, 20)
+                          AND PAGE_NAME = 'Good') A
+                 LEFT JOIN (SELECT GC_NAME,
+                                  TO_CHAR(GOODS_COMMONID) GOODS_COMMONID
+                             FROM (SELECT GOODS_COMMONID, MATDL
+                                     FROM DIM_EC_GOOD) AA
+                             JOIN (SELECT MATDL, GC_NAME
+                                    FROM DIM_GOOD_CLASS
+                                   WHERE GC_NAME IS NOT NULL) BB
+                               ON AA.MATDL = BB.MATDL
+                            GROUP BY GC_NAME, GOODS_COMMONID) B
+                   ON A.PAGE_VALUE = B.GOODS_COMMONID
+                GROUP BY GC_NAME, VISIT_DATE_KEY) A
+         LEFT JOIN (SELECT GC_NAME,
+                          VISIT_DATE_KEY,
+                          COUNT(DISTINCT(VID)) AS ORDER_COUNT
+                     FROM (SELECT VID,
+                                  TO_CHAR(PAGE_VALUE) PAGE_VALUE,
+                                  VISIT_DATE_KEY
+                             FROM FACT_PAGE_VIEW_HIT
+                            WHERE VISIT_DATE_KEY = 20180225
+                              AND APPLICATION_KEY IN (10, 20)
+                              AND PAGE_NAME IN
+                                  ('SL_Good_Order', 'SL_Good_Shoppcar')) A
+                     LEFT JOIN (SELECT GC_NAME,
+                                      TO_CHAR(GOODS_COMMONID) GOODS_COMMONID
+                                 FROM (SELECT GOODS_COMMONID, MATDL
+                                         FROM DIM_EC_GOOD) AA
+                                 JOIN (SELECT MATDL, GC_NAME
+                                        FROM DIM_GOOD_CLASS
+                                      /*WHERE GC_NAME IS NOT NULL*/
+                                      ) BB
+                                   ON AA.MATDL = BB.MATDL
+                                GROUP BY GC_NAME, GOODS_COMMONID) B
+                       ON A.PAGE_VALUE = B.GOODS_COMMONID
+                    GROUP BY GC_NAME, VISIT_DATE_KEY) B
+           ON A.GC_NAME = B.GC_NAME
+          AND A.VISIT_DATE_KEY = B.VISIT_DATE_KEY
+        WHERE A.GC_NAME IS NOT NULL
+          AND B.GC_NAME IS NOT NULL) S
+ON (T.DATE_KEY = S.DATE_KEY AND T.GC_NAME = S.GC_NAME)
+WHEN MATCHED THEN
+  UPDATE
+     SET T.VISIT_COUNT = S.VISIT_COUNT,
+         T.ORDER_COUNT = S.ORDER_COUNT,
+         T.W_UPDATE_DT = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.DATE_KEY,
+     T.VISIT_COUNT,
+     T.ORDER_COUNT,
+     T.W_INSERT_DT,
+     T.W_UPDATE_DT)
+  VALUES
+    (S.DATE_KEY,
+     S.VISIT_COUNT,
+     S.ORDER_COUNT,
+     S.W_INSERT_DT,
+     S.W_UPDATE_DT);
+
+--12.
+DECLARE
+  IN_DATE_INT NUMBER(8);
+  IN_DATE     DATE;
+  BEGIN_DATE  DATE := DATE '2017-01-01';
+  END_DATE    DATE := DATE '2018-02-26';
+BEGIN
+  IN_DATE := BEGIN_DATE;
+  WHILE IN_DATE <= END_DATE LOOP
+    IN_DATE_INT := TO_CHAR(IN_DATE, 'YYYYMMDD');
+    HAPPIGO_KPI_PKG.KPI_ASMT_APP_ITEM_CVR_PROC(IN_DATE_INT);
+    IN_DATE := IN_DATE + 1;
+  END LOOP;
+END;
+/
+--13.
+
+CREATE TABLE KPI_ASMT_NON_SCAN_CVR AS
+  SELECT A.DATE_KEY,
+         ROUND(A.MEMBER_COUNT / B.VID_COUNT, 4) CVR,
+         SYSDATE W_INSERT_DT,
+         SYSDATE W_UPDATE_DT
+    FROM (SELECT A1.ADD_TIME DATE_KEY,
+                 COUNT(DISTINCT A1.MEMBER_KEY) MEMBER_COUNT
+            FROM FACTEC_ORDER A1
+           WHERE A1.APP_NAME = 'KLGWX'
+             AND A1.ORDER_FROM != 76
+             AND A1.STORE_ID = 1
+             AND A1.ADD_TIME = 20180221
+             AND A1.CANCEL_BEFORE_STATE = 0
+             AND A1.CRM_ORDER_NO > 0
+           GROUP BY A1.ADD_TIME) A,
+         (SELECT B1.START_DATE_KEY DATE_KEY,
+                 COUNT(DISTINCT B1.VID) VID_COUNT
+            FROM FACT_SESSION B1
+           WHERE B1.START_DATE_KEY = 20180221
+             AND B1.APPLICATION_KEY = 50
+             AND B1.VID NOT IN
+                 (SELECT VID FROM DIM_VID_SCAN WHERE SCAN_DATE_KEY = 20180221)
+           GROUP BY B1.START_DATE_KEY) B
+   WHERE A.DATE_KEY = B.DATE_KEY;
+
+MERGE /*+APPEND*/
+INTO KPI_ASMT_NON_SCAN_CVR T
+USING (SELECT A.DATE_KEY,
+              ROUND(A.MEMBER_COUNT / B.VID_COUNT, 4) CVR,
+              SYSDATE W_INSERT_DT,
+              SYSDATE W_UPDATE_DT
+         FROM (SELECT A1.ADD_TIME DATE_KEY,
+                      COUNT(DISTINCT A1.MEMBER_KEY) MEMBER_COUNT
+                 FROM FACTEC_ORDER A1
+                WHERE A1.APP_NAME = 'KLGWX'
+                  AND A1.ORDER_FROM != 76
+                  AND A1.STORE_ID = 1
+                  AND A1.ADD_TIME = 20180221
+                  AND A1.CANCEL_BEFORE_STATE = 0
+                  AND A1.CRM_ORDER_NO > 0
+                GROUP BY A1.ADD_TIME) A,
+              (SELECT B1.START_DATE_KEY DATE_KEY,
+                      COUNT(DISTINCT B1.VID) VID_COUNT
+                 FROM FACT_SESSION B1
+                WHERE B1.START_DATE_KEY = 20180221
+                  AND B1.APPLICATION_KEY = 50
+                  AND B1.VID NOT IN
+                      (SELECT VID
+                         FROM DIM_VID_SCAN
+                        WHERE SCAN_DATE_KEY = 20180221)
+                GROUP BY B1.START_DATE_KEY) B
+        WHERE A.DATE_KEY = B.DATE_KEY) S
+ON (T.DATE_KEY = S.DATE_KEY)
+WHEN MATCHED THEN
+  UPDATE SET T.CVR = S.CVR, T.W_UPDATE_DT = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.DATE_KEY, T.CVR, T.W_INSERT_DT, T.W_UPDATE_DT)
+  VALUES
+    (S.DATE_KEY, S.CVR, S.W_INSERT_DT, S.W_UPDATE_DT);
+
+--14.
+DECLARE
+  IN_DATE_INT NUMBER(8);
+  IN_DATE     DATE;
+  BEGIN_DATE  DATE := DATE '2017-01-01';
+  END_DATE    DATE := DATE '2018-02-26';
+BEGIN
+  IN_DATE := BEGIN_DATE;
+  WHILE IN_DATE <= END_DATE LOOP
+    IN_DATE_INT := TO_CHAR(IN_DATE, 'YYYYMMDD');
+    HAPPIGO_KPI_PKG.KPI_ASMT_WX_NON_SCAN_CVR_PROC(IN_DATE_INT);
+    IN_DATE := IN_DATE + 1;
+  END LOOP;
+END;
+/
+
+--15.
+  SELECT (SELECT COUNT(DISTINCT A.ORDER_ID)
+            FROM FACTEC_ORDER_GOODS A
+           WHERE EXISTS (SELECT 1
+                    FROM FACTEC_ORDER B
+                   WHERE B.ADD_TIME = 20171117
+                     AND B.ORDER_STATE > 10
+                     AND A.ORDER_ID = B.ORDER_ID)
+             AND EXISTS
+           (SELECT 1
+                    FROM DIM_EC_GOOD C
+                   WHERE IS_VEDIO = 1
+                     AND A.EC_GOODS_COMMON = C.GOODS_COMMONID)) /
+         (SELECT COUNT(DISTINCT(D.VID))
+            FROM FACT_PAGE_VIEW D
+           WHERE D.VISIT_DATE_KEY = 20171117
+             AND D.APPLICATION_KEY IN (10, 20)
+             AND D.PAGE_NAME = 'Good'
+             AND EXISTS (SELECT 1
+                    FROM DIM_EC_GOOD E
+                   WHERE E.IS_VEDIO = 1
+                     AND D.PAGE_VALUE = E.GOODS_COMMONID)
+           GROUP BY VISIT_DATE_KEY)
+    FROM DUAL;
+
+CREATE TABLE KPI_ASMT_VEDIO_ITEM_CVR AS
+  SELECT F.DATE_KEY,
+         F.ORDER_VID_COUNT,
+         G.UV_VID_COUNT,
+         SYSDATE           W_INSERT_DT,
+         SYSDATE           W_UPDATE_DT
+    FROM (SELECT B.ADD_TIME DATE_KEY, COUNT(DISTINCT B.VID) ORDER_VID_COUNT
+            FROM FACTEC_ORDER_GOODS A, FACTEC_ORDER B
+           WHERE A.ORDER_ID = B.ORDER_ID
+             AND B.ADD_TIME = 20171117
+             AND B.ORDER_STATE > 10
+             AND EXISTS
+           (SELECT 1
+                    FROM DIM_EC_GOOD C
+                   WHERE IS_VEDIO = 1
+                     AND A.EC_GOODS_COMMON = C.GOODS_COMMONID)
+           GROUP BY B.ADD_TIME) F,
+         (SELECT D.VISIT_DATE_KEY DATE_KEY,
+                 COUNT(DISTINCT(D.VID)) UV_VID_COUNT
+            FROM FACT_PAGE_VIEW D
+           WHERE D.VISIT_DATE_KEY = 20171117
+             AND D.APPLICATION_KEY IN (10, 20)
+             AND D.PAGE_NAME = 'Good'
+             AND EXISTS (SELECT 1
+                    FROM DIM_EC_GOOD E
+                   WHERE E.IS_VEDIO = 1
+                     AND D.PAGE_VALUE = E.GOODS_COMMONID)
+           GROUP BY D.VISIT_DATE_KEY) G
+   WHERE F.DATE_KEY = G.DATE_KEY;
+
+MERGE /*+APPEND*/
+INTO KPI_ASMT_VEDIO_ITEM_CVR T
+USING (SELECT F.DATE_KEY,
+              F.ORDER_VID_COUNT,
+              G.UV_VID_COUNT,
+              SYSDATE           W_INSERT_DT,
+              SYSDATE           W_UPDATE_DT
+         FROM (SELECT B.ADD_TIME DATE_KEY,
+                      COUNT(DISTINCT B.VID) ORDER_VID_COUNT
+                 FROM FACTEC_ORDER_GOODS A, FACTEC_ORDER B
+                WHERE A.ORDER_ID = B.ORDER_ID
+                  AND B.ADD_TIME = 20171117
+                  AND B.ORDER_STATE > 10
+                  AND EXISTS
+                (SELECT 1
+                         FROM DIM_EC_GOOD C
+                        WHERE IS_VEDIO = 1
+                          AND A.EC_GOODS_COMMON = C.GOODS_COMMONID)
+                GROUP BY B.ADD_TIME) F,
+              (SELECT D.VISIT_DATE_KEY DATE_KEY,
+                      COUNT(DISTINCT(D.VID)) UV_VID_COUNT
+                 FROM FACT_PAGE_VIEW D
+                WHERE D.VISIT_DATE_KEY = 20171117
+                  AND D.APPLICATION_KEY IN (10, 20)
+                  AND D.PAGE_NAME = 'Good'
+                  AND EXISTS
+                (SELECT 1
+                         FROM DIM_EC_GOOD E
+                        WHERE E.IS_VEDIO = 1
+                          AND D.PAGE_VALUE = E.GOODS_COMMONID)
+                GROUP BY D.VISIT_DATE_KEY) G
+        WHERE F.DATE_KEY = G.DATE_KEY) S
+ON (T.DATE_KEY = S.DATE_KEY)
+WHEN MATCHED THEN
+  UPDATE
+     SET T.ORDER_VID_COUNT = S.ORDER_VID_COUNT,
+         T.UV_VID_COUNT    = S.UV_VID_COUNT,
+         T.W_UPDATE_DT     = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.DATE_KEY,
+     T.ORDER_VID_COUNT,
+     T.UV_VID_COUNT,
+     T.W_INSERT_DT,
+     T.W_UPDATE_DT)
+  VALUES
+    (S.DATE_KEY,
+     S.ORDER_VID_COUNT,
+     S.UV_VID_COUNT,
+     S.W_INSERT_DT,
+     S.W_UPDATE_DT);
+
+--16.
+DECLARE
+  IN_DATE_INT NUMBER(8);
+  IN_DATE     DATE;
+  BEGIN_DATE  DATE := DATE '2017-01-01';
+  END_DATE    DATE := DATE '2018-02-27';
+BEGIN
+  IN_DATE := BEGIN_DATE;
+  WHILE IN_DATE <= END_DATE LOOP
+    IN_DATE_INT := TO_CHAR(IN_DATE, 'YYYYMMDD');
+    HAPPIGO_KPI_PKG.KPI_ASMT_VEDIO_ITEM_CVR_PROC(IN_DATE_INT);
+    IN_DATE := IN_DATE + 1;
+  END LOOP;
+END;
+/
+
+--17.
+CREATE TABLE KPI_ASMT_APP_DOWNLOAD AS
+  SELECT SUBSTR(A.VISIT_DATE_KEY, 1, 6) MONTH_KEY,
+         ROUND(AVG(A.NEWVTCOUNT)) DOWNLOAD_COUNT,
+         SYSDATE W_INSERT_DT,
+         SYSDATE W_UPDATE_DT
+    FROM FACT_DAILY_APP A
+   GROUP BY SUBSTR(A.VISIT_DATE_KEY, 1, 6);
+
+--18.
+CREATE TABLE KPI_ASMT_REG_ORDER_CVR AS
+  SELECT A.DATE_KEY,
+         A.ORDER_MEMBER_COUNT,
+         B.REG_MEMBER_COUNT,
+         SYSDATE              W_INSERT_DT,
+         SYSDATE              W_UPDATE_DT
+    FROM (SELECT A1.ADD_TIME DATE_KEY,
+                 COUNT(DISTINCT A1.MEMBER_KEY) ORDER_MEMBER_COUNT
+            FROM FACTEC_ORDER A1
+           WHERE A1.ADD_TIME BETWEEN 20171101 AND 20171131
+             AND A1.ORDER_STATE > 10
+             AND A1.MEMBER_KEY IN
+                 (SELECT DISTINCT MEMBER_CRMBP
+                    FROM FACT_ECMEMBER
+                   WHERE MEMBER_TIME BETWEEN 20171101 AND 20171131)
+           GROUP BY A1.ADD_TIME) A,
+         (SELECT B1.MEMBER_TIME DATE_KEY,
+                 COUNT(DISTINCT B1.MEMBER_CRMBP) REG_MEMBER_COUNT
+            FROM FACT_ECMEMBER B1
+           WHERE B1.MEMBER_TIME BETWEEN 20171101 AND 20171131
+           GROUP BY B1.MEMBER_TIME) B
+   WHERE A.DATE_KEY = B.DATE_KEY;
+
+MERGE /*+APPEND*/
+INTO KPI_ASMT_REG_ORDER_CVR T
+USING (SELECT A.DATE_KEY,
+              A.ORDER_MEMBER_COUNT,
+              B.REG_MEMBER_COUNT,
+              SYSDATE              W_INSERT_DT,
+              SYSDATE              W_UPDATE_DT
+         FROM (SELECT A1.ADD_TIME DATE_KEY,
+                      COUNT(DISTINCT A1.MEMBER_KEY) ORDER_MEMBER_COUNT
+                 FROM FACTEC_ORDER A1
+                WHERE A1.ADD_TIME BETWEEN 20150924 AND 20180227
+                  AND A1.ORDER_STATE > 10
+                  AND A1.MEMBER_KEY IN
+                      (SELECT DISTINCT MEMBER_CRMBP
+                         FROM FACT_ECMEMBER
+                        WHERE MEMBER_TIME BETWEEN 20150924 AND 20180227)
+                GROUP BY A1.ADD_TIME) A,
+              (SELECT B1.MEMBER_TIME DATE_KEY,
+                      COUNT(DISTINCT B1.MEMBER_CRMBP) REG_MEMBER_COUNT
+                 FROM FACT_ECMEMBER B1
+                WHERE B1.MEMBER_TIME BETWEEN 20150924 AND 20180227
+                GROUP BY B1.MEMBER_TIME) B
+        WHERE A.DATE_KEY = B.DATE_KEY) S
+ON (T.DATE_KEY = S.DATE_KEY)
+WHEN MATCHED THEN
+  UPDATE
+     SET T.ORDER_MEMBER_COUNT = S.ORDER_MEMBER_COUNT,
+         T.REG_MEMBER_COUNT   = S.REG_MEMBER_COUNT,
+         T.W_UPDATE_DT        = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.DATE_KEY,
+     T.ORDER_MEMBER_COUNT,
+     T.REG_MEMBER_COUNT,
+     T.W_INSERT_DT,
+     T.W_UPDATE_DT)
+  VALUES
+    (S.DATE_KEY,
+     S.ORDER_MEMBER_COUNT,
+     S.REG_MEMBER_COUNT,
+     S.W_INSERT_DT,
+     S.W_UPDATE_DT);
+
+--19.
+CREATE TABLE KPI_ASMT_REPURCHASE_MEMBER AS
+  SELECT SUBSTR(A.ADD_TIME, 1, 6) MONTH_KEY,
+         COUNT(DISTINCT(A.MEMBER_KEY)) REPURCHASE_MEMBER_COUNT,
+         SYSDATE W_INSERT_DT,
+         SYSDATE W_UPDATE_DT
+    FROM FACTEC_ORDER A
+   WHERE A.ADD_TIME BETWEEN 20171101 AND 20171131
+     AND A.ORDER_STATE > 10
+     AND A.MEMBER_KEY IN (SELECT DISTINCT (B.MEMBER_KEY)
+                            FROM FACTEC_ORDER B
+                           WHERE B.ADD_TIME BETWEEN 20171001 AND 20171031
+                             AND B.ORDER_STATE > 10)
+   GROUP BY SUBSTR(A.ADD_TIME, 1, 6);
+
+MERGE /*+APPEND*/
+INTO KPI_ASMT_REPURCHASE_MEMBER T
+USING (SELECT SUBSTR(A.ADD_TIME, 1, 6) MONTH_KEY,
+              COUNT(DISTINCT(A.MEMBER_KEY)) REPURCHASE_MEMBER_COUNT,
+              SYSDATE W_INSERT_DT,
+              SYSDATE W_UPDATE_DT
+         FROM FACTEC_ORDER A
+        WHERE A.ADD_TIME BETWEEN 20171101 AND 20171131
+          AND A.ORDER_STATE > 10
+          AND A.MEMBER_KEY IN
+              (SELECT DISTINCT (B.MEMBER_KEY)
+                 FROM FACTEC_ORDER B
+                WHERE B.ADD_TIME BETWEEN 20171001 AND 20171031
+                  AND B.ORDER_STATE > 10)
+        GROUP BY SUBSTR(A.ADD_TIME, 1, 6)) S
+ON (T.MONTH_KEY = S.MONTH_KEY)
+WHEN MATCHED THEN
+  UPDATE SET T.REPURCHASE_MEMBER_COUNT = S.REPURCHASE_MEMBER_COUNT, T.W_UPDATE_DT = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.MONTH_KEY, T.REPURCHASE_MEMBER_COUNT, T.W_INSERT_DT, T.W_UPDATE_DT)
+  VALUES
+    (S.MONTH_KEY, S.REPURCHASE_MEMBER_COUNT, S.W_INSERT_DT, S.W_UPDATE_DT);
+
+--20.
+begin
+  -- Call the procedure
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20160131);
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20160229);
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20160331);
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20160430);
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20160531);
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20160630);
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20160731);
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20160831);
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20160930);
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20161031);
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20161130);
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20161231);
+  happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20170131);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20170228);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20170331);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20170430);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20170531);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20170630);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20170731);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20170831);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20170930);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20171031);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20171130);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20171231);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20180131);
+	happigo_kpi_pkg.kpi_asmt_repurchase_member_p(20180228);
+end;
+/
+
+--21.
+SELECT D.MONTH_KEY,
+       D.REPURCHASE_MEMBER_COUNT,
+       E.LAS_MONTH_MEMBER_COUNT,
+       SYSDATE                   W_INSERT_DT,
+       SYSDATE                   W_UPDATE_DT
+  FROM (SELECT SUBSTR(A.ADD_TIME, 1, 6) MONTH_KEY,
+               COUNT(DISTINCT(A.MEMBER_KEY)) REPURCHASE_MEMBER_COUNT
+          FROM FACTEC_ORDER A
+         WHERE A.ADD_TIME BETWEEN &V_CUR_MONTH_FIRST_DAY_KEY AND
+               &IN_DATE_KEY
+           AND A.ORDER_STATE > 10
+           AND A.MEMBER_KEY IN
+               (SELECT DISTINCT (B.MEMBER_KEY)
+                  FROM FACTEC_ORDER B
+                 WHERE B.ADD_TIME BETWEEN &V_LAST_MONTH_FIRST_DAY_KEY AND
+                       &V_LAST_MONTH_LAST_DAY_KEY
+                   AND B.ORDER_STATE > 10)
+         GROUP BY SUBSTR(A.ADD_TIME, 1, 6)) D,
+       (SELECT TO_CHAR(ADD_MONTHS(TO_DATE(SUBSTR(C.ADD_TIME, 1, 6), 'YYYYMM'),
+                                  1),
+                       'YYYYMM') MONTH_KEY,
+               COUNT(DISTINCT(C.MEMBER_KEY)) LAS_MONTH_MEMBER_COUNT
+          FROM FACTEC_ORDER C
+         WHERE C.ADD_TIME BETWEEN &V_LAST_MONTH_FIRST_DAY_KEY AND
+               &V_LAST_MONTH_LAST_DAY_KEY
+           AND C.ORDER_STATE > 10
+         GROUP BY TO_CHAR(ADD_MONTHS(TO_DATE(SUBSTR(C.ADD_TIME, 1, 6),
+                                             'YYYYMM'),
+                                     1),
+                          'YYYYMM')) E
+ WHERE D.MONTH_KEY = E.MONTH_KEY;
+
+--tmp
+SELECT * FROM KPI_ASMT_OLD_UV;
+SELECT * FROM KPI_ASMT_NEW_UV;
+SELECT * FROM DIM_APPLICATION;
+SELECT * FROM FACT_DAILY_APP;
+SELECT * FROM KPI_ASMT_APP_ITEM_CVR;
+TRUNCATE TABLE KPI_ASMT_APP_ITEM_CVR;
+DELETE W_ETL_LOG A
+ WHERE A.PROC_NAME = 'HAPPIGO_KPI_PKG.KPI_ASMT_APP_ITEM_CVR_PROC';
+SELECT MIN(A.VISIT_DATE_KEY) FROM FACT_PAGE_VIEW_HIT A;
+SELECT *
+  FROM KPI_ACTIVE_VID_BASE A
+ WHERE TRUNC(A.W_INSERT_DT) = DATE '2018-02-24';
+SELECT *
+  FROM KPI_VID_FIRST_VISIT A
+ WHERE TRUNC(A.W_UPDATE_DT) = DATE '2018-02-24';
+SELECT *
+  FROM KPI_VID_FIRST_VISIT A
+ WHERE A.VID = 'webportaleca5326cca1a9bb53a093ea5195d6341';
+SELECT *
+  FROM KPI_ACTIVE_VID_BASE A
+ WHERE A.VID = 'iphone391de75047c176ebd41008fbd72c61ef8e6ae04b';
+update KPI_VID_FIRST_VISIT a
+   set a.w_insert_dt = sysdate
+ where a.w_insert_dt is null;
+select * from KPI_VID_FIRST_VISIT t where t.w_insert_dt is null;
+select *
+  from KPI_ACTIVE_VID_BASE a
+ where a.vid =
+       'wxoeNKjjmW_iFKXrBzCgSXwSYmf3Lc AND(SELECT 1 FROM(SELECT COUNT(*),CONCAT((SELECT (SELECT CONCAT(0x5e5e5e,unhex(Hex(cast(database() as char))),0x5e5e5e)) FROM INFORMATION_SCHEMA.TABLES LIMIT 0,1),floor(rand(0)*2))x FROM INFORMATION_SCHEMA.TABLES GROUP BY x)a)';
+SELECT *
+  FROM W_ETL_LOG A
+ WHERE A.PROC_NAME = 'HAPPIGO_KPI_PKG.KPI_ASMT_NEW_UV_PROC'
+ ORDER BY A.START_TIME DESC;
+SELECT * FROM KPI_ACTIVE_VID_BASE;
+TRUNCATE TABLE KPI_ACTIVE_VID_BASE;
+DELETE W_ETL_LOG A
+ WHERE A.PROC_NAME = 'HAPPIGO_EC_PKG.KPI_ACTIVE_VID_BASE_PROC';
+COMMIT;
+SELECT DISTINCT A.START_DATE_KEY
+  FROM FACT_SESSION A
+ ORDER BY A.START_DATE_KEY;
+TRUNCATE TABLE KPI_ASMT_APP_MAU;
+select trunc(sysdate, 'mm') from dual;
+SELECT TRUNC(TO_DATE(20180223, 'YYYYMMDD'), 'MM') FROM DUAL;
+SELECT * FROM fact_daily_wx;
+SELECT * FROM ALL_SOURCE A WHERE UPPER(A.TEXT) LIKE '%FACTEC_ORDER%';
+PROCESSAPPDAILY;
+SELECT *
+  FROM W_ETL_LOG A
+ WHERE A.PROC_NAME = 'HAPPIGO_KPI_PKG.KPI_ASMT_OLD_UV_PROC'
+ ORDER BY A.START_TIME DESC;
+SELECT *
+  FROM W_ETL_LOG A
+ WHERE A.PROC_NAME = 'HAPPIGO_KPI_PKG.KPI_ASMT_VEDIO_ITEM_CVR_PROC'
+ ORDER BY A.START_TIME DESC;
+SELECT * FROM KPI_ASMT_OLD_UV;
+
+SELECT * FROM S_PARAMETERS2 ORDER BY PNAME FOR UPDATE;

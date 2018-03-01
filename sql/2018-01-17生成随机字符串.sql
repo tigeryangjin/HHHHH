@@ -28,7 +28,6 @@ BEGIN
       RETURN_STR := RETURN_STR ||
                     SUBSTR(CHARS_STR, TRUNC(DBMS_RANDOM.VALUE(1, 32)), 1);
     END LOOP;
-    IN_COUNT := IN_COUNT + 1;
     SELECT COUNT(1)
       INTO IS_EXISTS
       FROM YANGJIN_JUAN A
@@ -40,6 +39,7 @@ BEGIN
       VALUES
         (RETURN_STR, IN_JUAN_NAME);
       COMMIT;
+      IN_COUNT := IN_COUNT + 1;
     END IF;
   END LOOP;
 END;
