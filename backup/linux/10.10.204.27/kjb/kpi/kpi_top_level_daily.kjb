@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
-  <name>ec_table_top_level</name>
+  <name>kpi_top_level_daily</name>
     <description/>
     <extended_description/>
     <job_version/>
     <job_status>0</job_status>
   <directory>&#x2f;</directory>
   <created_user>-</created_user>
-  <created_date>2017&#x2f;09&#x2f;15 10&#x3a;54&#x3a;59.365</created_date>
+  <created_date>2017&#x2f;05&#x2f;26 10&#x3a;00&#x3a;36.155</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2017&#x2f;09&#x2f;15 10&#x3a;54&#x3a;59.365</modified_date>
+  <modified_date>2017&#x2f;05&#x2f;26 10&#x3a;00&#x3a;36.155</modified_date>
     <parameters>
     </parameters>
     <slaveservers>
@@ -48,11 +48,11 @@
       <minutes>0</minutes>
       <weekDay>1</weekDay>
       <DayOfMonth>1</DayOfMonth>
-      <parallel>Y</parallel>
+      <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>20</xloc>
-      <yloc>292</yloc>
+      <xloc>118</xloc>
+      <yloc>446</yloc>
       </entry>
     <entry>
       <name>Success</name>
@@ -61,398 +61,476 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>505</xloc>
-      <yloc>283</yloc>
+      <xloc>845</xloc>
+      <yloc>436</yloc>
       </entry>
     <entry>
-      <name>ec_order</name>
+      <name>kpi_active_vid_base</name>
       <description/>
-      <type>JOB</type>
+      <type>TRANS</type>
       <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;ec_order.kjb</filename>
-      <jobname/>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_active_vid_base.ktr</filename>
+      <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
       <logfile/>
       <logext/>
       <add_date>N</add_date>
       <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
       <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
       <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <force_separate_logging>N</force_separate_logging>
+      <logging_remote_work>N</logging_remote_work>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>217</xloc>
-      <yloc>7</yloc>
-      </entry>
-    <entry>
-      <name>ec_order_goods</name>
-      <description/>
-      <type>JOB</type>
-      <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;ec_order_goods.kjb</filename>
-      <jobname/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
-      <slave_server_name/>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
-      <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <force_separate_logging>N</force_separate_logging>
-      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>217</xloc>
-      <yloc>68</yloc>
-      </entry>
-    <entry>
-      <name>ec_order_common</name>
-      <description/>
-      <type>JOB</type>
-      <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;ec_order_common.kjb</filename>
-      <jobname/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
-      <slave_server_name/>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
-      <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <force_separate_logging>N</force_separate_logging>
-      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>220</xloc>
-      <yloc>132</yloc>
-      </entry>
-    <entry>
-      <name>ec_p_mansong</name>
-      <description/>
-      <type>JOB</type>
-      <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;ec_p_mansong.kjb</filename>
-      <jobname/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
-      <slave_server_name/>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
-      <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <force_separate_logging>N</force_separate_logging>
-      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
+      </parameters>      <parallel>Y</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>222</xloc>
-      <yloc>195</yloc>
+      <yloc>448</yloc>
       </entry>
     <entry>
-      <name>ec_p_mansong_goods</name>
+      <name>kpi_vid_first_visit</name>
       <description/>
-      <type>JOB</type>
+      <type>TRANS</type>
       <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;ec_p_mansong_goods.kjb</filename>
-      <jobname/>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_vid_first_visit.ktr</filename>
+      <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
       <logfile/>
       <logext/>
       <add_date>N</add_date>
       <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
       <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
       <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <force_separate_logging>N</force_separate_logging>
+      <logging_remote_work>N</logging_remote_work>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
+      </parameters>      <parallel>Y</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>222</xloc>
-      <yloc>256</yloc>
+      <xloc>458</xloc>
+      <yloc>70</yloc>
       </entry>
     <entry>
-      <name>ec_p_xianshi</name>
+      <name>kpi_asmt_app_mau</name>
       <description/>
-      <type>JOB</type>
+      <type>TRANS</type>
       <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;ec_p_xianshi.kjb</filename>
-      <jobname/>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_asmt_app_mau.ktr</filename>
+      <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
       <logfile/>
       <logext/>
       <add_date>N</add_date>
       <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
       <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
       <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <force_separate_logging>N</force_separate_logging>
+      <logging_remote_work>N</logging_remote_work>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
+      </parameters>      <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>222</xloc>
-      <yloc>316</yloc>
+      <xloc>461</xloc>
+      <yloc>209</yloc>
       </entry>
     <entry>
-      <name>ec_p_xianshi_goods</name>
+      <name>kpi_asmt_wx_dau</name>
       <description/>
-      <type>JOB</type>
+      <type>TRANS</type>
       <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;ec_p_xianshi_goods.kjb</filename>
-      <jobname/>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_asmt_wx_dau.ktr</filename>
+      <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
       <logfile/>
       <logext/>
       <add_date>N</add_date>
       <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
       <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
       <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <force_separate_logging>N</force_separate_logging>
+      <logging_remote_work>N</logging_remote_work>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
+      </parameters>      <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>222</xloc>
-      <yloc>378</yloc>
+      <xloc>462</xloc>
+      <yloc>265</yloc>
       </entry>
     <entry>
-      <name>ec_voucher</name>
+      <name>kpi_asmt_wx_new_reg</name>
       <description/>
-      <type>JOB</type>
+      <type>TRANS</type>
       <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;ec_voucher.kjb</filename>
-      <jobname/>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_asmt_wx_new_reg.ktr</filename>
+      <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
       <logfile/>
       <logext/>
       <add_date>N</add_date>
       <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
       <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
       <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <force_separate_logging>N</force_separate_logging>
+      <logging_remote_work>N</logging_remote_work>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
+      </parameters>      <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>224</xloc>
-      <yloc>435</yloc>
+      <xloc>465</xloc>
+      <yloc>324</yloc>
       </entry>
     <entry>
-      <name>ec_voucher_batch</name>
+      <name>kpi_asmt_new_uv</name>
       <description/>
-      <type>JOB</type>
+      <type>TRANS</type>
       <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;ec_voucher_batch.kjb</filename>
-      <jobname/>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_asmt_new_uv.ktr</filename>
+      <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
       <logfile/>
       <logext/>
       <add_date>N</add_date>
       <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
       <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
       <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <force_separate_logging>N</force_separate_logging>
+      <logging_remote_work>N</logging_remote_work>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
+      </parameters>      <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>224</xloc>
-      <yloc>495</yloc>
+      <xloc>583</xloc>
+      <yloc>66</yloc>
       </entry>
     <entry>
-      <name>ec_voucher_price</name>
+      <name>kpi_asmt_old_uv</name>
       <description/>
-      <type>JOB</type>
+      <type>TRANS</type>
       <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;ec_voucher_price.kjb</filename>
-      <jobname/>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_asmt_old_uv.ktr</filename>
+      <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
       <logfile/>
       <logext/>
       <add_date>N</add_date>
       <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
       <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
       <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <force_separate_logging>N</force_separate_logging>
+      <logging_remote_work>N</logging_remote_work>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
+      </parameters>      <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>223</xloc>
-      <yloc>557</yloc>
+      <xloc>582</xloc>
+      <yloc>135</yloc>
       </entry>
     <entry>
-      <name>ec_goods_common</name>
+      <name>kpi_asmt_app_net_order_cvr</name>
       <description/>
-      <type>JOB</type>
+      <type>TRANS</type>
       <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;ec_goods_common.kjb</filename>
-      <jobname/>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_asmt_app_net_order_cvr.ktr</filename>
+      <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
       <logfile/>
       <logext/>
       <add_date>N</add_date>
       <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
       <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
       <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <force_separate_logging>N</force_separate_logging>
+      <logging_remote_work>N</logging_remote_work>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
+      </parameters>      <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>223</xloc>
-      <yloc>624</yloc>
+      <xloc>466</xloc>
+      <yloc>380</yloc>
       </entry>
     <entry>
-      <name>ec_goods_manual</name>
+      <name>kpi_asmt_app_item_cvr</name>
       <description/>
-      <type>JOB</type>
+      <type>TRANS</type>
       <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>&#x24;&#x7b;Internal.Job.Filename.Directory&#x7d;&#x2f;ec_goods_manual.kjb</filename>
-      <jobname/>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_asmt_app_item_cvr.ktr</filename>
+      <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
       <logfile/>
       <logext/>
       <add_date>N</add_date>
       <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
       <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
       <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <force_separate_logging>N</force_separate_logging>
+      <logging_remote_work>N</logging_remote_work>
       <parameters>        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
+      </parameters>      <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>223</xloc>
-      <yloc>686</yloc>
+      <xloc>467</xloc>
+      <yloc>437</yloc>
+      </entry>
+    <entry>
+      <name>kpi_asmt_wx_non_scan_cvr</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_asmt_wx_non_scan_cvr.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>470</xloc>
+      <yloc>494</yloc>
+      </entry>
+    <entry>
+      <name>kpi_asmt_vedio_item_cvr</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_asmt_vedio_item_cvr.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>472</xloc>
+      <yloc>550</yloc>
+      </entry>
+    <entry>
+      <name>kpi_asmt_app_download</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_asmt_app_download.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>473</xloc>
+      <yloc>610</yloc>
+      </entry>
+    <entry>
+      <name>kpi_asmt_reg_order_cvr</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_asmt_reg_order_cvr.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>476</xloc>
+      <yloc>670</yloc>
+      </entry>
+    <entry>
+      <name>kpi_asmt_repurchase_member</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;kpi&#x2f;kpi_asmt_repurchase_member.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>477</xloc>
+      <yloc>734</yloc>
       </entry>
   </entries>
   <hops>
     <hop>
       <from>START</from>
-      <to>ec_order</to>
+      <to>kpi_active_vid_base</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -460,211 +538,229 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>START</from>
-      <to>ec_p_mansong</to>
+      <from>kpi_active_vid_base</from>
+      <to>kpi_vid_first_visit</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>START</from>
-      <to>ec_p_xianshi</to>
+      <from>kpi_active_vid_base</from>
+      <to>kpi_asmt_app_mau</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>START</from>
-      <to>ec_voucher</to>
+      <from>kpi_asmt_app_mau</from>
+      <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>ec_voucher_price</from>
-      <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>ec_order_common</from>
-      <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>ec_p_mansong_goods</from>
-      <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>ec_p_xianshi_goods</from>
-      <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>START</from>
-      <to>ec_order_goods</to>
+      <from>kpi_active_vid_base</from>
+      <to>kpi_asmt_wx_dau</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>START</from>
-      <to>ec_order_common</to>
+      <from>kpi_asmt_wx_dau</from>
+      <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>START</from>
-      <to>ec_p_mansong_goods</to>
+      <from>kpi_active_vid_base</from>
+      <to>kpi_asmt_wx_new_reg</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>START</from>
-      <to>ec_p_xianshi_goods</to>
+      <from>kpi_asmt_wx_new_reg</from>
+      <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>START</from>
-      <to>ec_voucher_batch</to>
+      <from>kpi_vid_first_visit</from>
+      <to>kpi_asmt_new_uv</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>START</from>
-      <to>ec_voucher_price</to>
+      <from>kpi_asmt_new_uv</from>
+      <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>ec_order</from>
-      <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>ec_order_goods</from>
-      <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>ec_p_mansong</from>
-      <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>ec_p_xianshi</from>
-      <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>ec_voucher</from>
-      <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>ec_voucher_batch</from>
-      <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>START</from>
-      <to>ec_goods_common</to>
+      <from>kpi_vid_first_visit</from>
+      <to>kpi_asmt_old_uv</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>ec_goods_common</from>
+      <from>kpi_asmt_old_uv</from>
       <to>Success</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>START</from>
-      <to>ec_goods_manual</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>ec_goods_manual</from>
+      <from>kpi_active_vid_base</from>
+      <to>kpi_asmt_app_net_order_cvr</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_asmt_app_net_order_cvr</from>
       <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_active_vid_base</from>
+      <to>kpi_asmt_app_item_cvr</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_asmt_app_item_cvr</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_active_vid_base</from>
+      <to>kpi_asmt_wx_non_scan_cvr</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_asmt_wx_non_scan_cvr</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_active_vid_base</from>
+      <to>kpi_asmt_vedio_item_cvr</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_asmt_vedio_item_cvr</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_active_vid_base</from>
+      <to>kpi_asmt_app_download</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_asmt_app_download</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_active_vid_base</from>
+      <to>kpi_asmt_reg_order_cvr</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_asmt_reg_order_cvr</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_active_vid_base</from>
+      <to>kpi_asmt_repurchase_member</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>kpi_asmt_repurchase_member</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>

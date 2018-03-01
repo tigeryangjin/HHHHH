@@ -47,11 +47,11 @@
       <minutes>0</minutes>
       <weekDay>1</weekDay>
       <DayOfMonth>1</DayOfMonth>
-      <parallel>N</parallel>
+      <parallel>Y</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>122</xloc>
-      <yloc>124</yloc>
+      <xloc>111</xloc>
+      <yloc>165</yloc>
       </entry>
     <entry>
       <name>Success</name>
@@ -60,8 +60,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>460</xloc>
-      <yloc>129</yloc>
+      <xloc>608</xloc>
+      <yloc>158</yloc>
       </entry>
     <entry>
       <name>process_market_ia</name>
@@ -93,14 +93,65 @@
       </parameters>      <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>302</xloc>
+      <xloc>316</xloc>
       <yloc>125</yloc>
+      </entry>
+    <entry>
+      <name>fact_tv_qrc_proc</name>
+      <description/>
+      <type>TRANS</type>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>&#x2f;home&#x2f;yangjin&#x2f;ktr&#x2f;fact_tv_qrc_proc.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <parameters>        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>319</xloc>
+      <yloc>209</yloc>
       </entry>
   </entries>
   <hops>
     <hop>
       <from>START</from>
       <to>process_market_ia</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>fact_tv_qrc_proc</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>fact_tv_qrc_proc</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
