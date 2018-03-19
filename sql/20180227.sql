@@ -1,78 +1,56 @@
---6.
-select (select count(distinct(MEMBER_KEY))
-          from factec_order
-         where add_time between 20171101 and 20171131
-           and order_state > 10
-           and MEMBER_KEY in (select distinct (MEMBER_KEY)
-                                from factec_order
-                               where add_time between 20171001 and 20171031
-                                 and order_state > 10)) /
-       (select count(distinct(MEMBER_KEY))
-          from factec_order
-         where add_time between 20171001 and 20171031
-           and order_state > 10)
-  from dual;
-
---5.
-select count(distinct(MEMBER_KEY))
-  from factec_order
- where add_time between 20171101 and 20171131
-   and order_state > 10
-   and MEMBER_KEY in (select distinct (MEMBER_KEY)
-                        from factec_order
-                       where add_time between 20171001 and 20171031
-                         and order_state > 10);
-
-select sysdate, add_months(sysdate, 1) from dual;
-
-SELECT SUBSTR(A.ADD_TIME, 1, 6) MONTH_KEY,
-       COUNT(DISTINCT(A.MEMBER_KEY)) REPURCHASE_MEMBER_COUNT,
+SELECT A.DATE_KEY,
+       A.ORDER_VID_COUNT,
+       B.NON_SCAN_VID_COUNT,
+       ROUND(A.ORDER_VID_COUNT / B.NON_SCAN_VID_COUNT, 4) CVR,
        SYSDATE W_INSERT_DT,
        SYSDATE W_UPDATE_DT
-  FROM FACTEC_ORDER A
- WHERE A.ADD_TIME BETWEEN V_CUR_MONTH_FIRST_DAY_KEY AND IN_DATE_KEY
-   AND A.ORDER_STATE > 10
-   AND A.MEMBER_KEY IN (SELECT DISTINCT (B.MEMBER_KEY)
-                          FROM FACTEC_ORDER B
-                         WHERE B.ADD_TIME BETWEEN V_LAST_MONTH_FIRST_DAY_KEY AND
-                               V_LAST_MONTH_LAST_DAY_KEY
-                           AND B.ORDER_STATE > 10)
- GROUP BY SUBSTR(A.ADD_TIME, 1, 6);
-
-SELECT D.MONTH_KEY,
-       D.REPURCHASE_MEMBER_COUNT,
-       E.LAS_MONTH_MEMBER_COUNT,
-       SYSDATE                   W_INSERT_DT,
-       SYSDATE                   W_UPDATE_DT
-  FROM (SELECT SUBSTR(A.ADD_TIME, 1, 6) MONTH_KEY,
-               COUNT(DISTINCT(A.MEMBER_KEY)) REPURCHASE_MEMBER_COUNT
-          FROM FACTEC_ORDER A
-         WHERE A.ADD_TIME BETWEEN &V_CUR_MONTH_FIRST_DAY_KEY AND
+  FROM (SELECT A1.ADD_TIME DATE_KEY, COUNT(DISTINCT A1.VID) ORDER_VID_COUNT
+          FROM FACTEC_ORDER A1
+         WHERE A1.APP_NAME = 'KLGWX'
+           AND A1.ORDER_FROM != 76
+           AND A1.STORE_ID = 1
+           AND A1.ADD_TIME BETWEEN &V_MONTH_FIRST_DATE_KEY AND &IN_DATE_KEY
+           AND A1.CANCEL_BEFORE_STATE = 0
+           AND A1.CRM_ORDER_NO > 0
+         GROUP BY A1.ADD_TIME) A,
+       (SELECT B1.START_DATE_KEY DATE_KEY,
+               COUNT(DISTINCT B1.VID) NON_SCAN_VID_COUNT
+          FROM FACT_SESSION B1
+         WHERE B1.START_DATE_KEY BETWEEN &V_MONTH_FIRST_DATE_KEY AND
                &IN_DATE_KEY
-           AND A.ORDER_STATE > 10
-           AND A.MEMBER_KEY IN
-               (SELECT DISTINCT (B.MEMBER_KEY)
-                  FROM FACTEC_ORDER B
-                 WHERE B.ADD_TIME BETWEEN &V_LAST_MONTH_FIRST_DAY_KEY AND
-                       &V_LAST_MONTH_LAST_DAY_KEY
-                   AND B.ORDER_STATE > 10)
-         GROUP BY SUBSTR(A.ADD_TIME, 1, 6)) D,
-       (SELECT TO_CHAR(ADD_MONTHS(TO_DATE(SUBSTR(C.ADD_TIME, 1, 6), 'YYYYMM'),
-                                  1),
-                       'YYYYMM') MONTH_KEY,
-               COUNT(DISTINCT(C.MEMBER_KEY)) LAS_MONTH_MEMBER_COUNT
-          FROM FACTEC_ORDER C
-         WHERE C.ADD_TIME BETWEEN &V_LAST_MONTH_FIRST_DAY_KEY AND
-               &V_LAST_MONTH_LAST_DAY_KEY
-           AND C.ORDER_STATE > 10
-         GROUP BY TO_CHAR(ADD_MONTHS(TO_DATE(SUBSTR(C.ADD_TIME, 1, 6),
-                                             'YYYYMM'),
-                                     1),
-                          'YYYYMM')) E
- WHERE D.MONTH_KEY = E.MONTH_KEY;
+           AND B1.APPLICATION_KEY = 50
+           AND B1.VID NOT IN
+               (SELECT VID
+                  FROM DIM_VID_SCAN
+                 WHERE SCAN_DATE_KEY BETWEEN &V_MONTH_FIRST_DATE_KEY AND
+                       &IN_DATE_KEY)
+         GROUP BY B1.START_DATE_KEY) B
+ WHERE A.DATE_KEY = B.DATE_KEY;
 
-SELECT TO_CHAR(ADD_MONTHS(TO_DATE('201801', 'YYYYMM'), 1), 'YYYYMM')
-  FROM DUAL;
-
-TO_CHAR(ADD_MONTHS(TO_DATE(SUBSTR(C.ADD_TIME, 1, 6), 'YYYYMM'), 1),
-        'YYYYMM')
+SELECT A.MONTH_KEY,
+       A.ORDER_VID_COUNT,
+       B.NON_SCAN_VID_COUNT,
+       ROUND(A.ORDER_VID_COUNT / B.NON_SCAN_VID_COUNT, 4) CVR,
+       SYSDATE W_INSERT_DT,
+       SYSDATE W_UPDATE_DT
+  FROM (SELECT SUBSTR(A1.ADD_TIME, 1, 6) MONTH_KEY,
+               COUNT(DISTINCT A1.VID) ORDER_VID_COUNT
+          FROM FACTEC_ORDER A1
+         WHERE A1.APP_NAME = 'KLGWX'
+           AND A1.ORDER_FROM != 76
+           AND A1.STORE_ID = 1
+           AND A1.ADD_TIME BETWEEN &V_MONTH_FIRST_DATE_KEY AND &IN_DATE_KEY
+           AND A1.CANCEL_BEFORE_STATE = 0
+           AND A1.CRM_ORDER_NO > 0
+         GROUP BY SUBSTR(A1.ADD_TIME, 1, 6)) A,
+       (SELECT SUBSTR(B1.START_DATE_KEY, 1, 6) MONTH_KEY,
+               COUNT(DISTINCT B1.VID) NON_SCAN_VID_COUNT
+          FROM FACT_SESSION B1
+         WHERE B1.START_DATE_KEY BETWEEN &V_MONTH_FIRST_DATE_KEY AND &IN_DATE_KEY
+           AND B1.APPLICATION_KEY = 50
+           AND B1.VID NOT IN
+               (SELECT VID
+                  FROM DIM_VID_SCAN
+                 WHERE SCAN_DATE_KEY BETWEEN &V_MONTH_FIRST_DATE_KEY AND &IN_DATE_KEY)
+         GROUP BY SUBSTR(B1.START_DATE_KEY, 1, 6)) B
+ WHERE A.MONTH_KEY = B.MONTH_KEY;

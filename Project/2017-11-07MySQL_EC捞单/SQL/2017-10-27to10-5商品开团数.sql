@@ -76,7 +76,6 @@ FROM (SELECT
 WHERE f.goods_commonid = d.goods_commonid
 ORDER BY d.cdate, f.item_code;
 
-
 #开团数
 SELECT count(1)
 FROM ec_group_purchase_task

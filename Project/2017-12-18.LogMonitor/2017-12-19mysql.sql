@@ -618,3 +618,24 @@ INSERT INTO log_monitor_task_group (groupName, task_id) VALUES ('快乐问答', 
 INSERT INTO log_monitor_task_group (groupName, task_id) VALUES ('快乐问答', 1172);
 INSERT INTO log_monitor_task_group (groupName, task_id) VALUES ('快乐问答', 1173);
 INSERT INTO log_monitor_task_group (groupName, task_id) VALUES ('快乐问答', 1174);
+
+/*
+2018-03-09
+1.0/ha.activity.user.role_POST
+1.0/ha.user.revivecard_POST
+ */
+CALL log_monitor_add('happigo-restapi', '1.0/ha.activity.user.role_POST');
+CALL log_monitor_add('happigo-restapi', '1.0/ha.user.revivecard_POST');
+
+SELECT * FROM log_monitor_task;
+
+INSERT log_monitor_task_group(groupName, task_id, group_id) VALUES ('快乐问答',1175,1);
+INSERT log_monitor_task_group(groupName, task_id, group_id) VALUES ('快乐问答',1176,1);
+
+SELECT * FROM log_monitor_task_group;
+
+/*
+2018-03-14
+Game.Activity.choumiandan
+*/
+CALL log_monitor_add('happigo-application', 'Game.Activity.choumiandan');

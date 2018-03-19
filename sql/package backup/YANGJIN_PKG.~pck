@@ -1439,6 +1439,15 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                 ODU1.PURCHASE_AMOUNT /*订购成本*/,
                                                 ODU1.PROFIT_AMOUNT /*折扣金额*/
                                           FROM FACT_GOODS_SALES ODU1
+                                         WHERE
+                                        /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
+                                         NOT EXISTS
+                                         (SELECT 1
+                                            FROM FACT_EC_ORDER_2 FEO
+                                           WHERE ODU1.ORDER_KEY =
+                                                 FEO.CRM_ORDER_NO
+                                             AND FEO.ORDER_FROM = '76')
+                                        
                                         UNION ALL
                                         /*取消的订单，按更新日期UPDATE_TIME记逆向订单（虚拟记录）。
                                         2017-06-14 yangjin*/
@@ -1471,8 +1480,13 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                            AND ODU2.CANCEL_BEFORE_STATE = 1 /*发货前取消的订单才虚拟出记录*/
                                            AND ODU2.POSTING_DATE_KEY <=
                                                ODU2.UPDATE_TIME
-                                        
-                                        ) OD
+                                              /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
+                                           AND NOT EXISTS
+                                         (SELECT 1
+                                                  FROM FACT_EC_ORDER_2 FEO
+                                                 WHERE ODU2.ORDER_KEY =
+                                                       FEO.CRM_ORDER_NO
+                                                   AND FEO.ORDER_FROM = '76')) OD
                                  WHERE OD.POSTING_DATE_KEY =
                                        IN_POSTING_DATE_KEY
                                    AND OD.TRAN_TYPE = 0 /*只显示主品*/
@@ -1914,6 +1928,13 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                          WHERE RDU1.CANCEL_REASON IN
                                                (10, 20, 30)
                                            AND RDU1.TRAN_DESC = 'REN'
+                                              /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
+                                           AND NOT EXISTS
+                                         (SELECT 1
+                                                  FROM FACT_EC_ORDER_2 FEO
+                                                 WHERE RDU1.ORDER_KEY =
+                                                       FEO.CRM_ORDER_NO
+                                                   AND FEO.ORDER_FROM = '76')
                                         UNION ALL
                                         /*取消的订单，按过账日期POSTING_DATE_KEY记逆向订单。
                                         2017-06-15 yangjin*/
@@ -1947,8 +1968,13 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                            AND RDU2.CANCEL_STATE = 1
                                            AND RDU2.POSTING_DATE_KEY <=
                                                RDU2.UPDATE_TIME
-                                        
-                                        ) RD
+                                              /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
+                                           AND NOT EXISTS
+                                         (SELECT 1
+                                                  FROM FACT_EC_ORDER_2 FEO
+                                                 WHERE RDU2.ORDER_KEY =
+                                                       FEO.CRM_ORDER_NO
+                                                   AND FEO.ORDER_FROM = '76')) RD
                                  WHERE RD.POSTING_DATE_KEY =
                                        IN_POSTING_DATE_KEY
                                    AND RD.CANCEL_REASON IN (10, 20, 30)
@@ -2249,7 +2275,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                B.GOODS_PRICE GOOD_S_PRICE, /*商品价格*/
                (SELECT NVL(MAX(D.COST_PRICE), 0)
                   FROM FACT_GOODS_SALES D
-                 WHERE D.POSTING_DATE_KEY = 20180117
+                 WHERE D.POSTING_DATE_KEY = IN_POSTING_DATE_KEY
                    AND B.ITEM_CODE = D.GOODS_COMMON_KEY) GOOD_C_PRICE, /*商品进价*/
                (SELECT E.GROUP_NAME
                   FROM DIM_GOOD E
@@ -2258,7 +2284,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                NVL((SELECT MAX(1)
                      FROM DIM_TV_GOOD F
                     WHERE B.ITEM_CODE = F.ITEM_CODE
-                      AND F.TV_STARTDAY_KEY = 20180117),
+                      AND F.TV_STARTDAY_KEY = IN_POSTING_DATE_KEY),
                    0) IS_ONTV, /*是否当天播出*/
                B.IS_SHIPPING_SELF, /*是否仓配*/
                NVL(L.TV_ORDER_AMOUNT, 0) TV_ORDER_AMOUNT, /*TV销售金额*/
@@ -2583,6 +2609,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
            AND OH.ORDER_STATE >= 30
            AND OH.REFUND_STATE = 0
            AND OG.GOODS_TYPE = 3
+           AND OH.STORE_ID = 1 /*自营*/
            AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE
         UNION ALL
         /*商品级促销-等级减*/
@@ -2620,6 +2647,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
            AND OH.ORDER_STATE >= 30
            AND OH.REFUND_STATE = 0
            AND OG.PML_DISCOUNT <> 0
+           AND OH.STORE_ID = 1 /*自营*/
            AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE
         UNION ALL
         /*商品级促销-TV直播立减促销*/
@@ -2656,6 +2684,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
               /*有效订购条件*/
            AND OH.ORDER_STATE >= 30
            AND OH.REFUND_STATE = 0
+           AND OH.STORE_ID = 1 /*自营*/
            AND OG.TV_DISCOUNT_AMOUNT <> 0
            AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE;
       INSERT_ROWS := SQL%ROWCOUNT;
@@ -2752,6 +2781,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
               /*有效订购条件*/
            AND OH.ORDER_STATE >= 30
            AND OH.REFUND_STATE = 0
+           AND OH.STORE_ID = 1 /*自营*/
            AND OH.DISCOUNT_MANSONG_AMOUNT <> 0
            AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE
         UNION ALL
@@ -2781,6 +2811,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
         /*有效订购条件*/
          OH.ORDER_STATE >= 30
          AND OH.REFUND_STATE = 0
+         AND OH.STORE_ID = 1 /*自营*/
          AND OH.DISCOUNT_PAYMENTWAY_AMOUNT <> 0
          AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE
         UNION ALL
@@ -2810,6 +2841,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
         /*有效订购条件*/
          OH.ORDER_STATE >= 30
          AND OH.REFUND_STATE = 0
+         AND OH.STORE_ID = 1 /*自营*/
          AND OH.DISCOUNT_PAYMENTCHANEL_AMOUNT <> 0
          AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE;
       INSERT_ROWS := SQL%ROWCOUNT;
@@ -2918,7 +2950,9 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                             TRUNC(V.VOUCHER_END_DATE) VOUCHER_END_DATE,
                                             NVL(V.COUPON_TV_ID, 0) COUPON_TV_ID,
                                             V.VOUCHER_PRICE
-                                       FROM FACT_EC_VOUCHER V) A,
+                                       FROM FACT_EC_VOUCHER V
+                                     /*WHERE V.VOUCHER_END_DATE >= SYSDATE - 180*/
+                                     ) A,
                                     (SELECT C.VOUCHER_REF,
                                             C.VOUCHER_CODE,
                                             C.DCISSUE_SEQ,
@@ -2929,9 +2963,10 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                       WHERE O.ORDER_ID = C.ORDER_ID
                                         AND O.ORDER_STATE >= 30
                                         AND O.REFUND_STATE = 0
+                                        AND O.STORE_ID = 1 /*自营*/
                                         AND C.VOUCHER_CODE IS NOT NULL) B
-                              WHERE A.VOUCHER_T_ID = B.VOUCHER_REF(+)
-                                AND A.VOUCHER_CODE = B.VOUCHER_CODE(+)) D
+                              WHERE A.VOUCHER_T_ID = B.VOUCHER_REF
+                                AND A.VOUCHER_CODE = B.VOUCHER_CODE) D
                       GROUP BY D.VOUCHER_T_ID,
                                D.COUPON_TV_ID,
                                D.VOUCHER_TITLE,
@@ -3372,7 +3407,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
                   WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           AND*/
                   F.ZMATERIAL NOT LIKE '%F%'
                AND F.ZEAMC027 IS NOT NULL
                AND F.ZEAMC027 != 0) TA

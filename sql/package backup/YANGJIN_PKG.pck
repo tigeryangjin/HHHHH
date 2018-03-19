@@ -79,6 +79,16 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE OPER_PRODUCT_SCAN_DAILY_RPT(IN_POSTING_DATE_KEY IN NUMBER);
+  /*
+  功能名:       OPER_PRODUCT_SCAN_DAILY_RPT
+  目的:         新媒体中心数据日报-扫码购
+  作者:         yangjin
+  创建时间：    2018/03/16
+  最后修改人：
+  最后更改日期：
+  */
+
   PROCEDURE OPER_PRODUCT_DAILY_PREVIEW(IN_POSTING_DATE_KEY IN NUMBER);
   /*
   功能名:       OPER_PRODUCT_DAILY_PREVIEW
@@ -1439,6 +1449,15 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                 ODU1.PURCHASE_AMOUNT /*订购成本*/,
                                                 ODU1.PROFIT_AMOUNT /*折扣金额*/
                                           FROM FACT_GOODS_SALES ODU1
+                                         WHERE
+                                        /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
+                                         NOT EXISTS
+                                         (SELECT 1
+                                            FROM FACT_EC_ORDER_2 FEO
+                                           WHERE ODU1.ORDER_KEY =
+                                                 FEO.CRM_ORDER_NO
+                                             AND FEO.ORDER_FROM = '76')
+                                        
                                         UNION ALL
                                         /*取消的订单，按更新日期UPDATE_TIME记逆向订单（虚拟记录）。
                                         2017-06-14 yangjin*/
@@ -1471,8 +1490,13 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                            AND ODU2.CANCEL_BEFORE_STATE = 1 /*发货前取消的订单才虚拟出记录*/
                                            AND ODU2.POSTING_DATE_KEY <=
                                                ODU2.UPDATE_TIME
-                                        
-                                        ) OD
+                                              /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
+                                           AND NOT EXISTS
+                                         (SELECT 1
+                                                  FROM FACT_EC_ORDER_2 FEO
+                                                 WHERE ODU2.ORDER_KEY =
+                                                       FEO.CRM_ORDER_NO
+                                                   AND FEO.ORDER_FROM = '76')) OD
                                  WHERE OD.POSTING_DATE_KEY =
                                        IN_POSTING_DATE_KEY
                                    AND OD.TRAN_TYPE = 0 /*只显示主品*/
@@ -1914,6 +1938,13 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                          WHERE RDU1.CANCEL_REASON IN
                                                (10, 20, 30)
                                            AND RDU1.TRAN_DESC = 'REN'
+                                              /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
+                                           AND NOT EXISTS
+                                         (SELECT 1
+                                                  FROM FACT_EC_ORDER_2 FEO
+                                                 WHERE RDU1.ORDER_KEY =
+                                                       FEO.CRM_ORDER_NO
+                                                   AND FEO.ORDER_FROM = '76')
                                         UNION ALL
                                         /*取消的订单，按过账日期POSTING_DATE_KEY记逆向订单。
                                         2017-06-15 yangjin*/
@@ -1947,8 +1978,13 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                            AND RDU2.CANCEL_STATE = 1
                                            AND RDU2.POSTING_DATE_KEY <=
                                                RDU2.UPDATE_TIME
-                                        
-                                        ) RD
+                                              /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
+                                           AND NOT EXISTS
+                                         (SELECT 1
+                                                  FROM FACT_EC_ORDER_2 FEO
+                                                 WHERE RDU2.ORDER_KEY =
+                                                       FEO.CRM_ORDER_NO
+                                                   AND FEO.ORDER_FROM = '76')) RD
                                  WHERE RD.POSTING_DATE_KEY =
                                        IN_POSTING_DATE_KEY
                                    AND RD.CANCEL_REASON IN (10, 20, 30)
@@ -2027,6 +2063,1102 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
       RETURN;
     
   END OPER_PRODUCT_DAILY_RPT;
+
+  PROCEDURE OPER_PRODUCT_SCAN_DAILY_RPT(IN_POSTING_DATE_KEY IN NUMBER) IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：新媒体中心数据日报
+    作者时间：yangjin  2016-06-13
+    */
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.OPER_PRODUCT_SCAN_DAILY_RPT'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'OPER_PRODUCT_SCAN_DLY_REPORT'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*删除指定日期的数据*/
+      DELETE OPER_PRODUCT_SCAN_DLY_REPORT T
+       WHERE T.POSTING_DATE_KEY = IN_POSTING_DATE_KEY;
+      COMMIT;
+    
+      INSERT INTO OPER_PRODUCT_SCAN_DLY_REPORT
+        (ROW_ID,
+         POSTING_DATE_KEY,
+         SALES_SOURCE_NAME,
+         SALES_SOURCE_SECOND_NAME,
+         OWN_ACCOUNT,
+         BRAND_NAME,
+         TRAN_TYPE,
+         TRAN_TYPE_NAME,
+         ITEM_OR_GIFT,
+         MATDLT,
+         MATZLT,
+         MATXLT,
+         MD_PERSON,
+         ITEM_CODE,
+         GOODS_KEY,
+         GOODS_NAME,
+         TOTAL_ORDER_AMOUNT,
+         NET_ORDER_AMOUNT,
+         EFFECTIVE_ORDER_AMOUNT,
+         CANCEL_ORDER_AMOUNT,
+         REVERSE_ORDER_AMOUNT,
+         REJECT_ORDER_AMOUNT,
+         CANCEL_REVERSE_AMOUNT,
+         CANCEL_REJECT_AMOUNT,
+         TOTAL_SALES_AMOUNT,
+         NET_SALES_AMOUNT,
+         EFFECTIVE_SALES_AMOUNT,
+         TOTAL_ORDER_MEMBER_COUNT,
+         NET_ORDER_MEMBER_COUNT,
+         EFFECTIVE_ORDER_MEMBER_COUNT,
+         CANCEL_ORDER_MEMBER_COUNT,
+         REVERSE_MEMBER_COUNT,
+         REJECT_MEMBER_COUNT,
+         CANCEL_REVERSE_MEMBER_COUNT,
+         CANCEL_REJECT_MEMBER_COUNT,
+         TOTAL_ORDER_COUNT,
+         NET_ORDER_COUNT,
+         EFFECTIVE_ORDER_COUNT,
+         CANCEL_ORDER_COUNT,
+         REVERSE_COUNT,
+         REJECT_COUNT,
+         CANCEL_REVERSE_COUNT,
+         CANCEL_REJECT_COUNT,
+         GROSS_PROFIT_AMOUNT,
+         NET_PROFIT_AMOUNT,
+         EFFECTIVE_PROFIT_AMOUNT,
+         GROSS_PROFIT_RATE,
+         NET_PROFIT_RATE,
+         EFFECTIVE_PROFIT_RATE,
+         TOTAL_ORDER_QTY,
+         NET_ORDER_QTY,
+         EFFECTIVE_ORDER_QTY,
+         CANCEL_ORDER_QTY,
+         REVERSE_QTY,
+         REJECT_QTY,
+         CANCEL_REVERSE_QTY,
+         CANCEL_REJECT_QTY,
+         NET_ORDER_CUST_PRICE,
+         EFFECTIVE_ORDER_CUST_PRICE,
+         NET_ORDER_UNIT_PRICE,
+         EFFECTIVE_ORDER_UNIT_PRICE,
+         TOTAL_PURCHASE_AMOUNT,
+         NET_PURCHASE_AMOUNT,
+         EFFECTIVE_PURCHASE_AMOUNT,
+         PROFIT_AMOUNT,
+         COUPONS_AMOUNT,
+         FREIGHT_AMOUNT,
+         PRODUCT_AVG_PRICE,
+         REJECT_AMOUNT,
+         LIVE_OR_REPLAY)
+        SELECT OPER_PRODUCT_DAILY_REPORT_SEQ.NEXTVAL,
+               FO.POSTING_DATE_KEY /*过账日期key*/,
+               DS.SALES_SOURCE_NAME /*销售一级组织名称*/,
+               DS.SALES_SOURCE_SECOND_NAME /*销售二级组织名称*/,
+               DG.OWN_ACCOUNT /*是否自营*/,
+               DG.BRAND_NAME /*品牌*/,
+               FO.TRAN_TYPE /*交易类型*/,
+               FO.TRAN_TYPE_NAME /*交易类型说明*/,
+               FO.ITEM_OR_GIFT /*主赠品*/,
+               DG.MATDLT /*物料大类*/,
+               DG.MATZLT /*物料中类*/,
+               DG.MATXLT /*物料小类*/,
+               FO.MD_PERSON /*MD工号*/,
+               DG.ITEM_CODE /*商品短编码*/,
+               FO.GOODS_KEY /*商品长编码*/,
+               DG.GOODS_NAME /*商品名称*/,
+               FO.TOTAL_ORDER_AMOUNT /*总订购金额*/,
+               FO.NET_ORDER_AMOUNT /*净订购金额*/,
+               FO.EFFECTIVE_ORDER_AMOUNT /*有效订购金额*/,
+               FO.CANCEL_ORDER_AMOUNT /*取消订购金额*/,
+               FO.REVERSE_ORDER_AMOUNT /*退货订购金额*/,
+               FO.REJECT_ORDER_AMOUNT /*拒收订购金额*/,
+               FO.CANCEL_REVERSE_AMOUNT /*退货取消订购金额*/,
+               FO.CANCEL_REJECT_AMOUNT /*拒收取消订购金额*/,
+               FO.TOTAL_SALES_AMOUNT /*总售价金额*/,
+               FO.NET_SALES_AMOUNT /*净售价金额*/,
+               FO.EFFECTIVE_SALES_AMOUNT /*有效售价金额*/,
+               FO.TOTAL_ORDER_MEMBER_COUNT /*总订购人数*/,
+               FO.NET_ORDER_MEMBER_COUNT /*净订购人数*/,
+               FO.EFFECTIVE_ORDER_MEMBER_COUNT /*有效订购人数*/,
+               FO.CANCEL_ORDER_MEMBER_COUNT /*取消订购人数*/,
+               FO.REVERSE_MEMBER_COUNT /*退货订购人数*/,
+               FO.REJECT_MEMBER_COUNT /*拒收订购人数*/,
+               FO.CANCEL_REVERSE_MEMBER_COUNT /*退货取消订购人数*/,
+               FO.CANCEL_REJECT_MEMBER_COUNT /*拒收取消订购人数*/,
+               FO.TOTAL_ORDER_COUNT /*总订购单数*/,
+               FO.NET_ORDER_COUNT /*净订购单数*/,
+               FO.EFFECTIVE_ORDER_COUNT /*有效订购单数*/,
+               FO.CANCEL_ORDER_COUNT /*取消订购单数*/,
+               FO.REVERSE_COUNT /*退货订购单数*/,
+               FO.REJECT_COUNT /*拒收订购单数*/,
+               FO.CANCEL_REVERSE_COUNT /*退货取消订购件数*/,
+               FO.CANCEL_REJECT_COUNT /*拒收取消订购件数*/,
+               FO.GROSS_PROFIT_AMOUNT /*还原后总毛利额*/,
+               FO.NET_PROFIT_AMOUNT /*还原后净毛利额*/,
+               FO.EFFECTIVE_PROFIT_AMOUNT /*还原后有效毛利额*/,
+               FO.GROSS_PROFIT_RATE /*还原后总毛利率*/,
+               FO.NET_PROFIT_RATE /*还原后净毛利率*/,
+               FO.EFFECTIVE_PROFIT_RATE /*还原后有效毛利率*/,
+               FO.TOTAL_ORDER_QTY /*总订购数量*/,
+               FO.NET_ORDER_QTY /*净订购数量*/,
+               FO.EFFECTIVE_ORDER_QTY /*有效订购数量*/,
+               FO.CANCEL_ORDER_QTY /*取消订购数量*/,
+               FO.REVERSE_QTY /*退货订购数量*/,
+               FO.REJECT_QTY /*拒收订购数量*/,
+               FO.CANCEL_REVERSE_QTY /*退货取消订购数量*/,
+               FO.CANCEL_REJECT_QTY /*拒收取消订购数量*/,
+               FO.NET_ORDER_CUST_PRICE /*净订购客单价*/,
+               FO.EFFECTIVE_ORDER_CUST_PRICE /*有效订购客单价*/,
+               FO.NET_ORDER_UNIT_PRICE /*净订购件单价*/,
+               FO.EFFECTIVE_ORDER_UNIT_PRICE /*有效订购件单价*/,
+               FO.TOTAL_PURCHASE_AMOUNT /*总订购成本*/,
+               FO.NET_PURCHASE_AMOUNT /*净订购成本*/,
+               FO.EFFECTIVE_PURCHASE_AMOUNT /*有效订购成本*/,
+               FO.PROFIT_AMOUNT /*折扣金额*/,
+               FO.COUPONS_AMOUNT /*优惠券金额*/,
+               FO.FREIGHT_AMOUNT /*运费*/,
+               FO.PRODUCT_AVG_PRICE /*商品平均售价*/,
+               FO.REJECT_AMOUNT /*拒退金额*/,
+               FO.LIVE_OR_REPLAY /*直播重播*/
+          FROM (SELECT OD2.GOODS_KEY /**/,
+                       OD2.GOODS_COMMON_KEY /**/,
+                       OD2.SALES_SOURCE_SECOND_KEY /*销售二级组织key*/,
+                       OD2.ITEM_OR_GIFT /*主赠品*/,
+                       OD2.TRAN_TYPE /*交易类型*/,
+                       DECODE(OD2.TRAN_TYPE,
+                              'TAN',
+                              '主品',
+                              'REN',
+                              '主品退货') TRAN_TYPE_NAME /*交易类型说明*/,
+                       OD2.MD_PERSON /*MD工号*/,
+                       OD2.POSTING_DATE_KEY /*过账日期key*/,
+                       OD2.LIVE_OR_REPLAY /*是否播出*/,
+                       OD2.TOTAL_ORDER_AMOUNT /*总订购金额*/,
+                       OD2.NET_ORDER_AMOUNT /*净订购金额*/,
+                       OD2.EFFECTIVE_ORDER_AMOUNT /*有效订购金额*/,
+                       OD2.CANCEL_ORDER_AMOUNT /*取消订购金额*/,
+                       OD2.REVERSE_ORDER_AMOUNT /*退货订购金额*/,
+                       OD2.REJECT_ORDER_AMOUNT /*拒收订购金额*/,
+                       OD2.CANCEL_REVERSE_AMOUNT /*退货取消订购金额*/,
+                       OD2.CANCEL_REJECT_AMOUNT /*拒收取消订购金额*/,
+                       OD2.TOTAL_SALES_AMOUNT /*总售价金额*/,
+                       OD2.NET_SALES_AMOUNT /*净售价金额*/,
+                       OD2.EFFECTIVE_SALES_AMOUNT /*有效售价金额*/,
+                       OD2.TOTAL_ORDER_MEMBER_COUNT /*总订购人数*/,
+                       OD2.NET_ORDER_MEMBER_COUNT /*净订购人数*/,
+                       OD2.EFFECTIVE_ORDER_MEMBER_COUNT /*有效订购人数*/,
+                       OD2.CANCEL_ORDER_MEMBER_COUNT /*取消订购人数*/,
+                       OD2.REVERSE_MEMBER_COUNT /*退货订购人数*/,
+                       OD2.REJECT_MEMBER_COUNT /*拒收订购人数*/,
+                       OD2.CANCEL_REVERSE_MEMBER_COUNT /*退货取消订购人数*/,
+                       OD2.CANCEL_REJECT_MEMBER_COUNT /*拒收取消订购人数*/,
+                       OD2.TOTAL_ORDER_COUNT /*总订购单数*/,
+                       OD2.NET_ORDER_COUNT /*净订购单数*/,
+                       OD2.EFFECTIVE_ORDER_COUNT /*有效订购单数*/,
+                       OD2.CANCEL_ORDER_COUNT /*取消订购单数*/,
+                       OD2.REVERSE_COUNT /*退货订购单数*/,
+                       OD2.REJECT_COUNT /*拒收订购单数*/,
+                       OD2.CANCEL_REVERSE_COUNT /*退货取消订购件数*/,
+                       OD2.CANCEL_REJECT_COUNT /*拒收取消订购件数*/,
+                       OD2.TOTAL_ORDER_AMOUNT + OD2.PROFIT_AMOUNT -
+                       OD2.TOTAL_PURCHASE_AMOUNT GROSS_PROFIT_AMOUNT /*还原后总毛利额*/,
+                       OD2.NET_ORDER_AMOUNT + OD2.PROFIT_AMOUNT -
+                       OD2.NET_PURCHASE_AMOUNT NET_PROFIT_AMOUNT /*还原后净毛利额*/,
+                       OD2.EFFECTIVE_ORDER_AMOUNT + OD2.PROFIT_AMOUNT -
+                       OD2.EFFECTIVE_PURCHASE_AMOUNT EFFECTIVE_PROFIT_AMOUNT /*还原后有效毛利额*/,
+                       DECODE(OD2.TOTAL_ORDER_AMOUNT,
+                              0,
+                              0,
+                              (OD2.TOTAL_ORDER_AMOUNT + OD2.PROFIT_AMOUNT -
+                              OD2.TOTAL_PURCHASE_AMOUNT) /
+                              OD2.TOTAL_ORDER_AMOUNT) GROSS_PROFIT_RATE /*还原后总毛利率*/,
+                       DECODE(OD2.NET_ORDER_AMOUNT,
+                              0,
+                              0,
+                              (OD2.NET_ORDER_AMOUNT + OD2.PROFIT_AMOUNT -
+                              OD2.NET_PURCHASE_AMOUNT) / OD2.NET_ORDER_AMOUNT) NET_PROFIT_RATE /*还原后净毛利率*/,
+                       DECODE(OD2.EFFECTIVE_ORDER_AMOUNT,
+                              0,
+                              0,
+                              (OD2.EFFECTIVE_ORDER_AMOUNT + OD2.PROFIT_AMOUNT -
+                              OD2.EFFECTIVE_PURCHASE_AMOUNT) /
+                              OD2.EFFECTIVE_ORDER_AMOUNT) EFFECTIVE_PROFIT_RATE /*还原后有效毛利率*/,
+                       OD2.TOTAL_ORDER_QTY /*总订购数量*/,
+                       OD2.NET_ORDER_QTY /*净订购数量*/,
+                       OD2.EFFECTIVE_ORDER_QTY /*有效订购数量*/,
+                       OD2.CANCEL_ORDER_QTY /*取消订购数量*/,
+                       OD2.REVERSE_QTY /*退货订购数量*/,
+                       OD2.REJECT_QTY /*拒收订购数量*/,
+                       OD2.CANCEL_REVERSE_QTY /*退货取消订购数量*/,
+                       OD2.CANCEL_REJECT_QTY /*拒收取消订购数量*/,
+                       OD2.NET_ORDER_CUST_PRICE /*净订购客单价*/,
+                       OD2.EFFECTIVE_ORDER_CUST_PRICE /*有效订购客单价*/,
+                       OD2.NET_ORDER_UNIT_PRICE /*净订购件单价*/,
+                       OD2.EFFECTIVE_ORDER_UNIT_PRICE /*有效订购件单价*/,
+                       OD2.TOTAL_PURCHASE_AMOUNT /*总订购成本*/,
+                       OD2.NET_PURCHASE_AMOUNT /*净订购成本*/,
+                       OD2.EFFECTIVE_PURCHASE_AMOUNT /*有效订购成本*/,
+                       OD2.PROFIT_AMOUNT /*折扣金额*/,
+                       OD2.COUPONS_AMOUNT /*优惠券金额*/,
+                       OD2.FREIGHT_AMOUNT /*运费*/,
+                       OD2.PRODUCT_AVG_PRICE /*商品平均售价*/,
+                       OD2.REJECT_AMOUNT /*拒退金额*/
+                  FROM (SELECT OD1.GOODS_KEY /**/,
+                               OD1.GOODS_COMMON_KEY /**/,
+                               OD1.SALES_SOURCE_SECOND_KEY /*销售二级组织key*/,
+                               DECODE(OD1.TRAN_TYPE, 0, '主品', 1, '赠品') ITEM_OR_GIFT /*主赠品*/,
+                               DECODE(OD1.CANCEL_STATE, 0, 'TAN', 1, 'REN') TRAN_TYPE /*交易类型*/,
+                               OD1.MD_PERSON /*MD工号*/,
+                               OD1.POSTING_DATE_KEY /*过账日期key*/,
+                               DECODE(OD1.LIVE_OR_REPLAY,
+                                      '10',
+                                      '直播',
+                                      '01',
+                                      '重播',
+                                      '未分配') LIVE_OR_REPLAY /*是否播出*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.TOTAL_ORDER_AMOUNT,
+                                          1,
+                                          0)) TOTAL_ORDER_AMOUNT /*总订购金额*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.NET_ORDER_AMOUNT,
+                                          1,
+                                          -ABS(OD1.NET_ORDER_AMOUNT))) NET_ORDER_AMOUNT /*净订购金额*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.EFFECTIVE_ORDER_AMOUNT,
+                                          1,
+                                          -ABS(OD1.EFFECTIVE_ORDER_AMOUNT))) EFFECTIVE_ORDER_AMOUNT /*有效订购金额*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          0,
+                                          1,
+                                          OD1.TOTAL_ORDER_AMOUNT)) CANCEL_ORDER_AMOUNT /*取消订购金额*/,
+                               0 REVERSE_ORDER_AMOUNT /*退货订购金额*/,
+                               0 REJECT_ORDER_AMOUNT /*拒收订购金额*/,
+                               0 CANCEL_REVERSE_AMOUNT /*退货取消订购金额*/,
+                               0 CANCEL_REJECT_AMOUNT /*拒收取消订购金额*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.TOTAL_SALES_AMOUNT,
+                                          1,
+                                          0)) TOTAL_SALES_AMOUNT /*总售价金额*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.NET_SALES_AMOUNT,
+                                          1,
+                                          -ABS(OD1.NET_SALES_AMOUNT))) NET_SALES_AMOUNT /*净售价金额*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.EFFECTIVE_SALES_AMOUNT,
+                                          1,
+                                          -ABS(OD1.EFFECTIVE_SALES_AMOUNT))) EFFECTIVE_SALES_AMOUNT /*有效售价金额*/,
+                               DECODE(OD1.CANCEL_STATE,
+                                      0,
+                                      COUNT(DISTINCT OD1.MEMBER_KEY),
+                                      1,
+                                      0) TOTAL_ORDER_MEMBER_COUNT /*总订购人数*/,
+                               DECODE(OD1.CANCEL_STATE,
+                                      0,
+                                      COUNT(DISTINCT OD1.MEMBER_KEY),
+                                      1,
+                                      -COUNT(DISTINCT OD1.MEMBER_KEY)) NET_ORDER_MEMBER_COUNT /*净订购人数*/,
+                               DECODE(OD1.CANCEL_STATE,
+                                      0,
+                                      COUNT(DISTINCT OD1.MEMBER_KEY),
+                                      1,
+                                      -COUNT(DISTINCT OD1.MEMBER_KEY)) EFFECTIVE_ORDER_MEMBER_COUNT /*有效订购人数*/,
+                               DECODE(OD1.CANCEL_STATE,
+                                      0,
+                                      0,
+                                      1,
+                                      COUNT(DISTINCT OD1.MEMBER_KEY)) CANCEL_ORDER_MEMBER_COUNT /*取消订购人数*/,
+                               0 REVERSE_MEMBER_COUNT /*退货订购人数*/,
+                               0 REJECT_MEMBER_COUNT /*拒收订购人数*/,
+                               0 CANCEL_REVERSE_MEMBER_COUNT /*退货取消订购人数*/,
+                               0 CANCEL_REJECT_MEMBER_COUNT /*拒收取消订购人数*/,
+                               DECODE(OD1.CANCEL_STATE,
+                                      0,
+                                      COUNT(DISTINCT OD1.ORDER_H_KEY),
+                                      1,
+                                      0) TOTAL_ORDER_COUNT /*总订购单数*/,
+                               DECODE(OD1.CANCEL_STATE,
+                                      0,
+                                      COUNT(DISTINCT OD1.ORDER_H_KEY),
+                                      1,
+                                      -COUNT(DISTINCT OD1.ORDER_H_KEY)) NET_ORDER_COUNT /*净订购单数*/,
+                               DECODE(OD1.CANCEL_STATE,
+                                      0,
+                                      COUNT(DISTINCT OD1.ORDER_H_KEY),
+                                      1,
+                                      -COUNT(DISTINCT OD1.ORDER_H_KEY)) EFFECTIVE_ORDER_COUNT /*有效订购单数*/,
+                               DECODE(OD1.CANCEL_STATE,
+                                      0,
+                                      0,
+                                      1,
+                                      COUNT(DISTINCT OD1.ORDER_H_KEY)) CANCEL_ORDER_COUNT /*取消订购单数*/,
+                               0 REVERSE_COUNT /*退货订购单数*/,
+                               0 REJECT_COUNT /*拒收订购单数*/,
+                               0 CANCEL_REVERSE_COUNT /*退货取消订购件数*/,
+                               0 CANCEL_REJECT_COUNT /*拒收取消订购件数*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.TOTAL_ORDER_QTY,
+                                          1,
+                                          0)) TOTAL_ORDER_QTY /*总订购数量*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.NET_ORDER_QTY,
+                                          1,
+                                          -ABS(OD1.NET_ORDER_QTY))) NET_ORDER_QTY /*净订购数量*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.EFFECTIVE_ORDER_QTY,
+                                          1,
+                                          -ABS(OD1.EFFECTIVE_ORDER_QTY))) EFFECTIVE_ORDER_QTY /*有效订购数量*/,
+                               DECODE(OD1.CANCEL_STATE,
+                                      0,
+                                      0,
+                                      1,
+                                      COUNT(DISTINCT OD1.TOTAL_ORDER_QTY)) CANCEL_ORDER_QTY /*取消订购数量*/,
+                               0 REVERSE_QTY /*退货订购数量*/,
+                               0 REJECT_QTY /*拒收订购数量*/,
+                               0 CANCEL_REVERSE_QTY /*退货取消订购数量*/,
+                               0 CANCEL_REJECT_QTY /*拒收取消订购数量*/,
+                               SUM(OD1.NET_ORDER_AMOUNT) /
+                               COUNT(DISTINCT OD1.MEMBER_KEY) NET_ORDER_CUST_PRICE /*净订购客单价*/,
+                               SUM(OD1.EFFECTIVE_ORDER_AMOUNT) /
+                               COUNT(DISTINCT OD1.MEMBER_KEY) EFFECTIVE_ORDER_CUST_PRICE /*有效订购客单价*/,
+                               SUM(OD1.NET_ORDER_AMOUNT) /
+                               SUM(OD1.NET_ORDER_QTY) NET_ORDER_UNIT_PRICE /*净订购件单价*/,
+                               SUM(OD1.EFFECTIVE_ORDER_AMOUNT) /
+                               SUM(OD1.EFFECTIVE_ORDER_QTY) EFFECTIVE_ORDER_UNIT_PRICE /*有效订购件单价*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.TOTAL_PURCHASE_AMOUNT,
+                                          1,
+                                          0)) TOTAL_PURCHASE_AMOUNT /*总订购成本*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.NET_PURCHASE_AMOUNT,
+                                          1,
+                                          -ABS(OD1.NET_PURCHASE_AMOUNT))) NET_PURCHASE_AMOUNT /*净订购成本*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.EFFECTIVE_PURCHASE_AMOUNT,
+                                          1,
+                                          -ABS(OD1.EFFECTIVE_PURCHASE_AMOUNT))) EFFECTIVE_PURCHASE_AMOUNT /*有效订购成本*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          OD1.PROFIT_AMOUNT,
+                                          1,
+                                          -ABS(OD1.PROFIT_AMOUNT))) PROFIT_AMOUNT /*折扣金额*/,
+                               SUM(OD1.COUPONS_AMOUNT) COUPONS_AMOUNT /*优惠券金额*/,
+                               SUM(OD1.FREIGHT_AMOUNT) FREIGHT_AMOUNT /*运费*/,
+                               SUM(OD1.TOTAL_SALES_AMOUNT) /
+                               SUM(OD1.TOTAL_ORDER_QTY) PRODUCT_AVG_PRICE /*商品平均售价*/,
+                               0 REJECT_AMOUNT /*拒退金额*/
+                          FROM (SELECT OD.ORDER_KEY /*订单权责制*/,
+                                       OD.ORDER_H_KEY /*订单发生制*/,
+                                       OD.ORDER_DESC /*订购状态*/,
+                                       OD.GOODS_KEY /*商品*/,
+                                       OD.GOODS_COMMON_KEY /*商品短编码*/,
+                                       OD.SALES_SOURCE_SECOND_KEY /*销售二级组织key*/,
+                                       OD.TRAN_TYPE /*是否赠品标志*/,
+                                       OD.TRAN_DESC /*交易类型*/,
+                                       OD.MD_PERSON /*MD工号*/,
+                                       OD.POSTING_DATE_KEY /*过账日期key*/,
+                                       TO_CHAR(OD.LIVE_STATE) ||
+                                       TO_CHAR(OD.REPLAY_STATE) LIVE_OR_REPLAY /*直播重播*/,
+                                       OD.ORDER_STATE /*订单状态*/,
+                                       OD.CANCEL_STATE /*取消状态*/,
+                                       OD.MEMBER_KEY /*会员key*/,
+                                       OD.NUMS TOTAL_ORDER_QTY /*总订购数量*/,
+                                       OD.NUMS NET_ORDER_QTY /*净订购数量*/,
+                                       OD.NUMS EFFECTIVE_ORDER_QTY /*有效订购数量*/,
+                                       OD.ORDER_AMOUNT TOTAL_ORDER_AMOUNT /*总订单金额*/,
+                                       OD.ORDER_AMOUNT NET_ORDER_AMOUNT /*净订购金额*/,
+                                       OD.ORDER_AMOUNT EFFECTIVE_ORDER_AMOUNT /*有效订购金额*/,
+                                       OD.SALES_AMOUNT TOTAL_SALES_AMOUNT /*总售价金额*/,
+                                       OD.SALES_AMOUNT NET_SALES_AMOUNT /*净订购金额*/,
+                                       OD.SALES_AMOUNT EFFECTIVE_SALES_AMOUNT /*有效订购金额*/,
+                                       OD.UNIT_PRICE /*单个商品售价*/,
+                                       OD.COST_PRICE /*商品单件成本*/,
+                                       OD.FREIGHT_AMOUNT /*运费*/,
+                                       OD.COUPONS_PRICE COUPONS_AMOUNT /*优惠券金额*/,
+                                       OD.PURCHASE_AMOUNT TOTAL_PURCHASE_AMOUNT /*总订购成本*/,
+                                       OD.PURCHASE_AMOUNT NET_PURCHASE_AMOUNT /*净订购成本*/,
+                                       OD.PURCHASE_AMOUNT EFFECTIVE_PURCHASE_AMOUNT /*有效订购成本*/,
+                                       OD.PROFIT_AMOUNT /*折扣金额*/
+                                  FROM (
+                                        /*取消的订单，按过账日期POSTING_DATE_KEY记正向订单。
+                                        2017-06-14 yangjin*/
+                                        SELECT ODU1.ORDER_KEY /*订单权责制*/,
+                                                ODU1.ORDER_H_KEY /*订单发生制*/,
+                                                ODU1.ORDER_DESC /*订购状态*/,
+                                                ODU1.GOODS_KEY /*商品*/,
+                                                ODU1.GOODS_COMMON_KEY /*商品短编码*/,
+                                                ODU1.SALES_SOURCE_SECOND_KEY /*销售二级组织key*/,
+                                                ODU1.TRAN_TYPE /*是否赠品标志*/,
+                                                ODU1.TRAN_DESC /*交易类型*/,
+                                                ODU1.MD_PERSON /*MD工号*/,
+                                                ODU1.POSTING_DATE_KEY /*过账日期key*/,
+                                                ODU1.LIVE_STATE /*是否直播*/,
+                                                ODU1.REPLAY_STATE /*是否重播*/,
+                                                ODU1.ORDER_STATE /*订单状态*/,
+                                                CASE
+                                                  WHEN ODU1.CANCEL_STATE = 1 AND
+                                                       ODU1.POSTING_DATE_KEY <=
+                                                       ODU1.UPDATE_TIME THEN
+                                                   0
+                                                  ELSE
+                                                   ODU1.CANCEL_STATE
+                                                END CANCEL_STATE /*取消状态*/,
+                                                ODU1.MEMBER_KEY /*会员key*/,
+                                                ODU1.NUMS,
+                                                ODU1.ORDER_AMOUNT,
+                                                ODU1.SALES_AMOUNT,
+                                                ODU1.UNIT_PRICE /*单个商品售价*/,
+                                                ODU1.COST_PRICE /*商品单件成本*/,
+                                                ODU1.FREIGHT_AMOUNT /*运费*/,
+                                                ODU1.COUPONS_PRICE /*优惠券金额*/,
+                                                ODU1.PURCHASE_AMOUNT /*订购成本*/,
+                                                ODU1.PROFIT_AMOUNT /*折扣金额*/
+                                          FROM FACT_GOODS_SALES ODU1
+                                         WHERE
+                                        /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
+                                         EXISTS (SELECT 1
+                                            FROM FACT_EC_ORDER_2 FEO
+                                           WHERE ODU1.ORDER_KEY =
+                                                 FEO.CRM_ORDER_NO
+                                             AND FEO.ORDER_FROM = '76')
+                                        
+                                        UNION ALL
+                                        /*取消的订单，按更新日期UPDATE_TIME记逆向订单（虚拟记录）。
+                                        2017-06-14 yangjin*/
+                                        SELECT ODU2.ORDER_KEY /*订单权责制*/,
+                                                ODU2.ORDER_H_KEY /*订单发生制*/,
+                                                ODU2.ORDER_DESC /*订购状态*/,
+                                                ODU2.GOODS_KEY /*商品*/,
+                                                ODU2.GOODS_COMMON_KEY /*商品短编码*/,
+                                                ODU2.SALES_SOURCE_SECOND_KEY /*销售二级组织key*/,
+                                                ODU2.TRAN_TYPE /*是否赠品标志*/,
+                                                ODU2.TRAN_DESC /*交易类型*/,
+                                                ODU2.MD_PERSON /*MD工号*/,
+                                                ODU2.UPDATE_TIME POSTING_DATE_KEY /*过账日期key*/,
+                                                ODU2.LIVE_STATE /*是否直播*/,
+                                                ODU2.REPLAY_STATE /*是否重播*/,
+                                                ODU2.ORDER_STATE /*订单状态*/,
+                                                ODU2.CANCEL_STATE /*取消状态*/,
+                                                ODU2.MEMBER_KEY /*会员key*/,
+                                                ODU2.NUMS,
+                                                ODU2.ORDER_AMOUNT,
+                                                ODU2.SALES_AMOUNT,
+                                                ODU2.UNIT_PRICE /*单个商品售价*/,
+                                                ODU2.COST_PRICE /*商品单件成本*/,
+                                                ODU2.FREIGHT_AMOUNT /*运费*/,
+                                                ODU2.COUPONS_PRICE /*优惠券金额*/,
+                                                ODU2.PURCHASE_AMOUNT,
+                                                ODU2.PROFIT_AMOUNT /*折扣金额*/
+                                          FROM FACT_GOODS_SALES ODU2
+                                         WHERE ODU2.CANCEL_STATE = 1
+                                           AND ODU2.CANCEL_BEFORE_STATE = 1 /*发货前取消的订单才虚拟出记录*/
+                                           AND ODU2.POSTING_DATE_KEY <=
+                                               ODU2.UPDATE_TIME
+                                              /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
+                                           AND EXISTS
+                                         (SELECT 1
+                                                  FROM FACT_EC_ORDER_2 FEO
+                                                 WHERE ODU2.ORDER_KEY =
+                                                       FEO.CRM_ORDER_NO
+                                                   AND FEO.ORDER_FROM = '76')) OD
+                                 WHERE OD.POSTING_DATE_KEY =
+                                       IN_POSTING_DATE_KEY
+                                   AND OD.TRAN_TYPE = 0 /*只显示主品*/
+                                ) OD1
+                         GROUP BY OD1.GOODS_KEY,
+                                  OD1.GOODS_COMMON_KEY,
+                                  OD1.SALES_SOURCE_SECOND_KEY,
+                                  DECODE(OD1.TRAN_TYPE, 0, '主品', 1, '赠品'),
+                                  DECODE(OD1.CANCEL_STATE, 0, 'TAN', 1, 'REN'),
+                                  OD1.MD_PERSON,
+                                  OD1.POSTING_DATE_KEY,
+                                  DECODE(OD1.LIVE_OR_REPLAY,
+                                         '10',
+                                         '直播',
+                                         '01',
+                                         '重播',
+                                         '未分配'),
+                                  OD1.CANCEL_STATE) OD2
+                UNION ALL
+                --*************************************************************************************
+                --REVERSE
+                --*************************************************************************************
+                SELECT RD2.GOODS_KEY,
+                       RD2.GOODS_COMMON_KEY,
+                       RD2.SALES_SOURCE_SECOND_KEY /*销售二级组织key*/,
+                       '主品' ITEM_OR_GIFT /*主赠品*/,
+                       RD2.TRAN_TYPE /*交易类型*/,
+                       DECODE(RD2.TRAN_TYPE,
+                              'TAN',
+                              '主品',
+                              'REN',
+                              '主品退货') TRAN_TYPE_NAME /*交易类型说明*/,
+                       RD2.MD_PERSON /*MD员工号*/,
+                       RD2.POSTING_DATE_KEY /*过账日期*/,
+                       RD2.LIVE_OR_REPLAY /*直重播*/,
+                       RD2.TOTAL_ORDER_AMOUNT /*总订购金额*/,
+                       RD2.NET_ORDER_AMOUNT /*净订购金额*/,
+                       -RD2.REVERSE_ORDER_AMOUNT - RD2.REJECT_ORDER_AMOUNT +
+                       RD2.CANCEL_REVERSE_AMOUNT + RD2.CANCEL_REJECT_AMOUNT EFFECTIVE_ORDER_AMOUNT /*有效订购金额= -退货订购金额-拒收订购金额+退货取消订购金额+拒收取消订购金额*/,
+                       RD2.CANCEL_ORDER_AMOUNT /*取消订购金额*/,
+                       RD2.REVERSE_ORDER_AMOUNT /*退货订购金额*/,
+                       RD2.REJECT_ORDER_AMOUNT /*拒收订购金额*/,
+                       RD2.CANCEL_REVERSE_AMOUNT /*退货取消订购金额*/,
+                       RD2.CANCEL_REJECT_AMOUNT /*拒收取消订购金额*/,
+                       RD2.TOTAL_SALES_AMOUNT /*总售价金额*/,
+                       RD2.NET_SALES_AMOUNT /*净售价金额*/,
+                       -RD2.REVERSE_SALES_AMOUNT - RD2.REJECT_SALES_AMOUNT +
+                       RD2.CANCEL_REVERSE_SALES_AMOUNT +
+                       RD2.CANCEL_REJECT_SALES_AMOUNT EFFECTIVE_SALES_AMOUNT /*有效售价金额= -退货售价金额-拒收售价金额+退货取消售价金额+拒收取消售价金额*/,
+                       RD2.TOTAL_ORDER_MEMBER_COUNT /*总订购人数*/,
+                       RD2.NET_ORDER_MEMBER_COUNT /*净订购人数*/,
+                       -RD2.REVERSE_MEMBER_COUNT - RD2.REJECT_MEMBER_COUNT +
+                       RD2.CANCEL_REVERSE_MEMBER_COUNT +
+                       RD2.CANCEL_REJECT_MEMBER_COUNT EFFECTIVE_ORDER_MEMBER_COUNT /*有效订购人数=-退货订购人数-拒收订购人数+退货取消订购人数+拒收取消订购人数*/,
+                       RD2.CANCEL_ORDER_MEMBER_COUNT /*取消订购人数*/,
+                       RD2.REVERSE_MEMBER_COUNT /*退货订购人数*/,
+                       RD2.REJECT_MEMBER_COUNT /*拒收订购人数*/,
+                       RD2.CANCEL_REVERSE_MEMBER_COUNT /*退货取消订购人数*/,
+                       RD2.CANCEL_REJECT_MEMBER_COUNT /*拒收取消订购人数*/,
+                       RD2.TOTAL_ORDER_COUNT /*总订购单数*/,
+                       RD2.NET_ORDER_COUNT /*净订购单数*/,
+                       -RD2.REVERSE_COUNT - RD2.REJECT_COUNT +
+                       RD2.CANCEL_REVERSE_COUNT + RD2.CANCEL_REJECT_COUNT EFFECTIVE_ORDER_COUNT /*有效订购单数*/,
+                       RD2.CANCEL_ORDER_COUNT /*取消订购单数*/,
+                       RD2.REVERSE_COUNT /*退货订购单数*/,
+                       RD2.REJECT_COUNT /*拒收订购单数*/,
+                       RD2.CANCEL_REVERSE_COUNT /*退货取消订购单数*/,
+                       RD2.CANCEL_REJECT_COUNT /*拒收取消订购单数*/,
+                       RD2.GROSS_PROFIT_AMOUNT /*还原后总毛利额*/,
+                       RD2.NET_PROFIT_AMOUNT /*还原后净毛利额*/,
+                       (-RD2.REVERSE_SALES_AMOUNT - RD2.REJECT_SALES_AMOUNT +
+                       RD2.CANCEL_REVERSE_SALES_AMOUNT +
+                       RD2.CANCEL_REJECT_SALES_AMOUNT) -
+                       (-RD2.REVERSE_PURCHASE_AMOUNT -
+                       RD2.REJECT_PURCHASE_AMOUNT +
+                       RD2.CANCEL_REVERSE_PURCHASE_AMOUNT +
+                       RD2.CANCEL_REJECT_PURCHASE_AMOUNT) EFFECTIVE_PROFIT_AMOUNT /*还原后有效毛利额*/,
+                       RD2.GROSS_PROFIT_RATE /*还原后总毛利率*/,
+                       RD2.NET_PROFIT_RATE /*还原后净毛利率*/,
+                       DECODE(-RD2.REVERSE_ORDER_AMOUNT -
+                              RD2.REJECT_ORDER_AMOUNT +
+                              RD2.CANCEL_REVERSE_AMOUNT +
+                              RD2.CANCEL_REJECT_AMOUNT,
+                              0,
+                              0,
+                              ((-RD2.REVERSE_SALES_AMOUNT -
+                              RD2.REJECT_SALES_AMOUNT +
+                              RD2.CANCEL_REVERSE_SALES_AMOUNT +
+                              RD2.CANCEL_REJECT_SALES_AMOUNT) -
+                              (-RD2.REVERSE_PURCHASE_AMOUNT -
+                              RD2.REJECT_PURCHASE_AMOUNT +
+                              RD2.CANCEL_REVERSE_PURCHASE_AMOUNT +
+                              RD2.CANCEL_REJECT_PURCHASE_AMOUNT)) /
+                              (-RD2.REVERSE_ORDER_AMOUNT -
+                              RD2.REJECT_ORDER_AMOUNT +
+                              RD2.CANCEL_REVERSE_AMOUNT +
+                              RD2.CANCEL_REJECT_AMOUNT)) EFFECTIVE_PROFIT_RATE /*还原后有效毛利率*/,
+                       RD2.TOTAL_ORDER_QTY /*总订购数量*/,
+                       RD2.NET_ORDER_QTY /*净订购数量*/,
+                       -RD2.REVERSE_QTY - RD2.REJECT_QTY +
+                       RD2.CANCEL_REVERSE_QTY + RD2.CANCEL_REJECT_QTY EFFECTIVE_ORDER_QTY /*有效订购数量= -退货订购数量-拒收订购数量+退货取消订购数量+拒收取消订购数量*/,
+                       RD2.CANCEL_ORDER_QTY /*取消订购数量*/,
+                       RD2.REVERSE_QTY /*退货订购数量*/,
+                       RD2.REJECT_QTY /*拒收订购数量*/,
+                       RD2.CANCEL_REVERSE_QTY /*退货取消订购数量*/,
+                       RD2.CANCEL_REJECT_QTY /*拒收取消订购数量*/,
+                       RD2.NET_ORDER_CUST_PRICE /*净订购客单价*/,
+                       DECODE(-RD2.REVERSE_MEMBER_COUNT -
+                              RD2.REJECT_MEMBER_COUNT +
+                              RD2.CANCEL_REVERSE_MEMBER_COUNT +
+                              RD2.CANCEL_REJECT_MEMBER_COUNT,
+                              0,
+                              0,
+                              (-RD2.REVERSE_ORDER_AMOUNT -
+                              RD2.REJECT_ORDER_AMOUNT +
+                              RD2.CANCEL_REVERSE_AMOUNT +
+                              RD2.CANCEL_REJECT_AMOUNT) /
+                              (-RD2.REVERSE_MEMBER_COUNT -
+                              RD2.REJECT_MEMBER_COUNT +
+                              RD2.CANCEL_REVERSE_MEMBER_COUNT +
+                              RD2.CANCEL_REJECT_MEMBER_COUNT)) EFFECTIVE_ORDER_CUST_PRICE /*有效订购客单价*/,
+                       RD2.NET_ORDER_UNIT_PRICE /*净订购件单价*/,
+                       DECODE(-RD2.REVERSE_QTY - RD2.REJECT_QTY +
+                              RD2.CANCEL_REVERSE_QTY + RD2.CANCEL_REJECT_QTY,
+                              0,
+                              0,
+                              (-RD2.REVERSE_ORDER_AMOUNT -
+                              RD2.REJECT_ORDER_AMOUNT +
+                              RD2.CANCEL_REVERSE_AMOUNT +
+                              RD2.CANCEL_REJECT_AMOUNT) /
+                              (-RD2.REVERSE_QTY - RD2.REJECT_QTY +
+                              RD2.CANCEL_REVERSE_QTY + RD2.CANCEL_REJECT_QTY)) EFFECTIVE_ORDER_UNIT_PRICE /*有效订购件单价*/,
+                       0 TOTAL_PURCHASE_AMOUNT /*总订购成本*/,
+                       0 NET_PURCHASE_AMOUNT /*净订购成本*/,
+                       -RD2.REVERSE_PURCHASE_AMOUNT -
+                       RD2.REJECT_PURCHASE_AMOUNT +
+                       RD2.CANCEL_REVERSE_PURCHASE_AMOUNT +
+                       RD2.CANCEL_REJECT_PURCHASE_AMOUNT EFFECTIVE_PURCHASE_AMOUNT /*有效订购成本=-退货订购成本-拒收订购成本+退货取消订购成本+拒收取消订购成本*/,
+                       RD2.PROFIT_AMOUNT PROFIT_AMOUNT /*折扣金额*/,
+                       RD2.COUPONS_AMOUNT COUPONS_AMOUNT /*优惠券金额*/,
+                       RD2.FREIGHT_AMOUNT FREIGHT_AMOUNT /*运费*/,
+                       0 PRODUCT_AVG_PRICE /*商品平均售价*/,
+                       - (-RD2.REVERSE_ORDER_AMOUNT - RD2.REJECT_ORDER_AMOUNT +
+                         RD2.CANCEL_REVERSE_AMOUNT +
+                         RD2.CANCEL_REJECT_AMOUNT) REJECT_AMOUNT /*拒退金额*/
+                  FROM (SELECT RD1.GOODS_KEY,
+                               RD1.GOODS_COMMON_KEY,
+                               RD1.SALES_SOURCE_SECOND_KEY /*销售二级组织key*/,
+                               RD1.TRAN_DESC TRAN_TYPE /*交易类型*/,
+                               RD1.MD_PERSON /*MD员工号*/,
+                               RD1.POSTING_DATE_KEY /*过账日期*/,
+                               DECODE(RD1.LIVE_OR_REPLAY,
+                                      '10',
+                                      '直播',
+                                      '01',
+                                      '重播',
+                                      '未分配') LIVE_OR_REPLAY,
+                               0 TOTAL_ORDER_AMOUNT /*总订购金额*/,
+                               0 NET_ORDER_AMOUNT /*净订购金额*/,
+                               0 CANCEL_ORDER_AMOUNT /*取消订购金额*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          0,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 10,
+                                                 RD1.ORDER_AMOUNT,
+                                                 30,
+                                                 RD1.ORDER_AMOUNT,
+                                                 20,
+                                                 0),
+                                          0)) REVERSE_ORDER_AMOUNT /*退货订购金额*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          0,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 20,
+                                                 RD1.ORDER_AMOUNT,
+                                                 0),
+                                          0)) REJECT_ORDER_AMOUNT /*拒收订购金额*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          1,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 10,
+                                                 RD1.ORDER_AMOUNT,
+                                                 30,
+                                                 RD1.ORDER_AMOUNT,
+                                                 20,
+                                                 0),
+                                          0)) CANCEL_REVERSE_AMOUNT /*退货取消订购金额*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          1,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 20,
+                                                 RD1.ORDER_AMOUNT,
+                                                 0),
+                                          0)) CANCEL_REJECT_AMOUNT /*拒收取消订购金额*/,
+                               0 TOTAL_SALES_AMOUNT /*总售价金额*/,
+                               0 NET_SALES_AMOUNT /*净售价金额*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          0,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 10,
+                                                 RD1.SALES_AMOUNT,
+                                                 30,
+                                                 RD1.SALES_AMOUNT,
+                                                 20,
+                                                 0),
+                                          0)) REVERSE_SALES_AMOUNT /*退货售价金额*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          0,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 20,
+                                                 RD1.SALES_AMOUNT,
+                                                 0),
+                                          0)) REJECT_SALES_AMOUNT /*拒收售价金额*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          1,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 10,
+                                                 RD1.SALES_AMOUNT,
+                                                 30,
+                                                 RD1.SALES_AMOUNT,
+                                                 20,
+                                                 0),
+                                          0)) CANCEL_REVERSE_SALES_AMOUNT /*退货取消售价金额*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          1,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 20,
+                                                 RD1.SALES_AMOUNT,
+                                                 0),
+                                          0)) CANCEL_REJECT_SALES_AMOUNT /*拒收取消售价金额*/,
+                               0 TOTAL_ORDER_MEMBER_COUNT /*总订购人数*/,
+                               0 NET_ORDER_MEMBER_COUNT /*净订购人数*/,
+                               0 CANCEL_ORDER_MEMBER_COUNT /*取消订购人数*/,
+                               COUNT(DISTINCT DECODE(RD1.CANCEL_STATE,
+                                            0,
+                                            DECODE(RD1.CANCEL_REASON,
+                                                   10,
+                                                   RD1.MEMBER_KEY,
+                                                   30,
+                                                   RD1.MEMBER_KEY,
+                                                   NULL),
+                                            0)) REVERSE_MEMBER_COUNT /*退货订购人数*/,
+                               COUNT(DISTINCT DECODE(RD1.CANCEL_STATE,
+                                            0,
+                                            DECODE(RD1.CANCEL_REASON,
+                                                   20,
+                                                   RD1.MEMBER_KEY,
+                                                   NULL),
+                                            0)) REJECT_MEMBER_COUNT /*拒收订购人数*/,
+                               COUNT(DISTINCT DECODE(RD1.CANCEL_STATE,
+                                            1,
+                                            DECODE(RD1.CANCEL_REASON,
+                                                   10,
+                                                   RD1.MEMBER_KEY,
+                                                   30,
+                                                   RD1.MEMBER_KEY,
+                                                   NULL),
+                                            0)) CANCEL_REVERSE_MEMBER_COUNT /*退货取消订购人数*/,
+                               COUNT(DISTINCT DECODE(RD1.CANCEL_STATE,
+                                            1,
+                                            DECODE(RD1.CANCEL_REASON,
+                                                   20,
+                                                   RD1.MEMBER_KEY,
+                                                   NULL),
+                                            0)) CANCEL_REJECT_MEMBER_COUNT /*拒收取消订购人数*/,
+                               0 TOTAL_ORDER_COUNT /*总订购单数*/,
+                               0 NET_ORDER_COUNT /*净订购单数*/,
+                               0 CANCEL_ORDER_COUNT /*取消订购单数*/,
+                               COUNT(DISTINCT DECODE(RD1.CANCEL_STATE,
+                                            0,
+                                            DECODE(RD1.CANCEL_REASON,
+                                                   10,
+                                                   RD1.ORDER_H_KEY,
+                                                   30,
+                                                   RD1.ORDER_H_KEY,
+                                                   NULL),
+                                            0)) REVERSE_COUNT /*退货订购单数*/,
+                               COUNT(DISTINCT DECODE(RD1.CANCEL_STATE,
+                                            0,
+                                            DECODE(RD1.CANCEL_REASON,
+                                                   20,
+                                                   RD1.ORDER_H_KEY,
+                                                   NULL),
+                                            0)) REJECT_COUNT /*拒收订购单数*/,
+                               COUNT(DISTINCT DECODE(RD1.CANCEL_STATE,
+                                            1,
+                                            DECODE(RD1.CANCEL_REASON,
+                                                   10,
+                                                   RD1.ORDER_H_KEY,
+                                                   30,
+                                                   RD1.ORDER_H_KEY,
+                                                   NULL),
+                                            0)) CANCEL_REVERSE_COUNT /*退货取消订购单数*/,
+                               COUNT(DISTINCT DECODE(RD1.CANCEL_STATE,
+                                            1,
+                                            DECODE(RD1.CANCEL_REASON,
+                                                   20,
+                                                   RD1.ORDER_H_KEY,
+                                                   NULL),
+                                            0)) CANCEL_REJECT_COUNT /*拒收取消订购单数*/,
+                               0 GROSS_PROFIT_AMOUNT /*还原后总毛利额*/,
+                               0 NET_PROFIT_AMOUNT /*还原后净毛利额*/,
+                               0 GROSS_PROFIT_RATE /*还原后总毛利率*/,
+                               0 NET_PROFIT_RATE /*还原后净毛利率*/,
+                               0 TOTAL_ORDER_QTY /*总订购数量*/,
+                               0 NET_ORDER_QTY /*净订购数量*/,
+                               0 CANCEL_ORDER_QTY /*取消订购数量*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          0,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 10,
+                                                 RD1.NUMS,
+                                                 30,
+                                                 RD1.NUMS,
+                                                 20,
+                                                 0),
+                                          0)) REVERSE_QTY /*退货订购数量*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          0,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 20,
+                                                 RD1.NUMS,
+                                                 0),
+                                          0)) REJECT_QTY /*拒收订购数量*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          1,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 10,
+                                                 RD1.NUMS,
+                                                 30,
+                                                 RD1.NUMS,
+                                                 20,
+                                                 0),
+                                          0)) CANCEL_REVERSE_QTY /*退货取消订购数量*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          1,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 20,
+                                                 RD1.NUMS,
+                                                 0),
+                                          0)) CANCEL_REJECT_QTY /*拒收取消订购数量*/,
+                               0 NET_ORDER_CUST_PRICE /*净订购客单价*/,
+                               0 NET_ORDER_UNIT_PRICE /*净订购件单价*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          0,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 10,
+                                                 RD1.PURCHASE_AMOUNT,
+                                                 30,
+                                                 RD1.PURCHASE_AMOUNT,
+                                                 20,
+                                                 0),
+                                          0)) REVERSE_PURCHASE_AMOUNT /*退货订购成本*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          0,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 20,
+                                                 RD1.PURCHASE_AMOUNT,
+                                                 0),
+                                          0)) REJECT_PURCHASE_AMOUNT /*拒收订购成本*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          1,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 10,
+                                                 RD1.PURCHASE_AMOUNT,
+                                                 30,
+                                                 RD1.PURCHASE_AMOUNT,
+                                                 20,
+                                                 0),
+                                          0)) CANCEL_REVERSE_PURCHASE_AMOUNT /*退货取消订购成本*/,
+                               SUM(DECODE(RD1.CANCEL_STATE,
+                                          1,
+                                          DECODE(RD1.CANCEL_REASON,
+                                                 20,
+                                                 RD1.PURCHASE_AMOUNT,
+                                                 0),
+                                          0)) CANCEL_REJECT_PURCHASE_AMOUNT /*拒收取消订购成本*/,
+                               SUM(RD1.PROFIT_AMOUNT) PROFIT_AMOUNT /*折扣金额*/,
+                               SUM(RD1.COUPONS_AMOUNT) COUPONS_AMOUNT /*优惠券金额*/,
+                               SUM(RD1.FREIGHT_AMOUNT) FREIGHT_AMOUNT /*运费*/
+                          FROM (SELECT RD.ORDER_KEY /*订单权责制*/,
+                                       RD.ORDER_H_KEY /*订单发生制*/,
+                                       RD.CANCEL_REASON /*退货类型*/,
+                                       RD.CANCEL_STATE /*退货状态*/,
+                                       RD.GOODS_KEY /*商品*/,
+                                       RD.GOODS_COMMON_KEY /*商品短编码*/,
+                                       RD.SALES_SOURCE_SECOND_KEY /*销售二级组织key*/,
+                                       RD.TRAN_TYPE /*是否赠品标志*/,
+                                       RD.TRAN_DESC /*交易类型*/,
+                                       RD.MD_PERSON /*MD工号*/,
+                                       RD.POSTING_DATE_KEY /*过账日期key*/,
+                                       TO_CHAR(RD.LIVE_STATE) ||
+                                       TO_CHAR(RD.REPLAY_STATE) LIVE_OR_REPLAY /*直播重播*/,
+                                       RD.MEMBER_KEY /*会员key*/,
+                                       RD.ORDER_AMOUNT /*退货订购金额*/,
+                                       RD.NUMS /*总订购数量*/,
+                                       RD.SALES_AMOUNT /*总售价金额*/,
+                                       RD.UNIT_PRICE /*单个商品售价*/,
+                                       RD.COST_PRICE /*商品单件成本*/,
+                                       RD.FREIGHT_AMOUNT /*运费*/,
+                                       RD.COUPONS_AMOUNT /*优惠券金额*/,
+                                       RD.PURCHASE_AMOUNT /*总订购成本*/,
+                                       RD.PROFIT_AMOUNT /*折扣金额*/
+                                  FROM (
+                                        
+                                        /*取消的订单，按过账日期POSTING_DATE_KEY记正向订单。
+                                        2017-06-15 yangjin*/
+                                        SELECT RDU1.ORDER_KEY /*订单权责制*/,
+                                                RDU1.ORDER_H_KEY /*订单发生制*/,
+                                                RDU1.CANCEL_REASON /*退货类型*/,
+                                                CASE
+                                                  WHEN RDU1.CANCEL_STATE = 1 AND
+                                                       RDU1.POSTING_DATE_KEY <=
+                                                       RDU1.UPDATE_TIME THEN
+                                                   0
+                                                  ELSE
+                                                   RDU1.CANCEL_STATE
+                                                END CANCEL_STATE /*退货状态*/,
+                                                RDU1.GOODS_KEY /*商品*/,
+                                                RDU1.GOODS_COMMON_KEY /*商品短编码*/,
+                                                RDU1.SALES_SOURCE_SECOND_KEY /*销售二级组织key*/,
+                                                RDU1.TRAN_TYPE /*是否赠品标志*/,
+                                                RDU1.TRAN_DESC /*交易类型*/,
+                                                RDU1.MD_PERSON /*MD工号*/,
+                                                RDU1.POSTING_DATE_KEY /*过账日期key*/,
+                                                RDU1.LIVE_STATE /*是否直播*/,
+                                                RDU1.REPLAY_STATE /*是否重播*/,
+                                                RDU1.MEMBER_KEY /*会员key*/,
+                                                RDU1.ORDER_AMOUNT /*退货订购金额*/,
+                                                RDU1.NUMS /*总订购数量*/,
+                                                RDU1.SALES_AMOUNT /*总售价金额*/,
+                                                RDU1.UNIT_PRICE /*单个商品售价*/,
+                                                RDU1.COST_PRICE /*商品单件成本*/,
+                                                RDU1.FREIGHT_AMOUNT /*运费*/,
+                                                RDU1.COUPONS_PRICE COUPONS_AMOUNT /*优惠券金额*/,
+                                                RDU1.PURCHASE_AMOUNT /*总订购成本*/,
+                                                RDU1.PROFIT_AMOUNT /*折扣金额*/
+                                          FROM FACT_GOODS_SALES_REVERSE RDU1
+                                         WHERE RDU1.CANCEL_REASON IN
+                                               (10, 20, 30)
+                                           AND RDU1.TRAN_DESC = 'REN'
+                                              /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
+                                           AND EXISTS
+                                         (SELECT 1
+                                                  FROM FACT_EC_ORDER_2 FEO
+                                                 WHERE RDU1.ORDER_KEY =
+                                                       FEO.CRM_ORDER_NO
+                                                   AND FEO.ORDER_FROM = '76')
+                                        UNION ALL
+                                        /*取消的订单，按过账日期POSTING_DATE_KEY记逆向订单。
+                                        2017-06-15 yangjin*/
+                                        SELECT RDU2.ORDER_KEY /*订单权责制*/,
+                                                RDU2.ORDER_H_KEY /*订单发生制*/,
+                                                RDU2.CANCEL_REASON /*退货类型*/,
+                                                RDU2.CANCEL_STATE /*退货状态*/,
+                                                RDU2.GOODS_KEY /*商品*/,
+                                                RDU2.GOODS_COMMON_KEY /*商品短编码*/,
+                                                RDU2.SALES_SOURCE_SECOND_KEY /*销售二级组织key*/,
+                                                RDU2.TRAN_TYPE /*是否赠品标志*/,
+                                                RDU2.TRAN_DESC /*交易类型*/,
+                                                RDU2.MD_PERSON /*MD工号*/,
+                                                RDU2.UPDATE_TIME             POSTING_DATE_KEY /*过账日期key*/,
+                                                RDU2.LIVE_STATE /*是否直播*/,
+                                                RDU2.REPLAY_STATE /*是否重播*/,
+                                                RDU2.MEMBER_KEY /*会员key*/,
+                                                RDU2.ORDER_AMOUNT /*退货订购金额*/,
+                                                RDU2.NUMS /*总订购数量*/,
+                                                RDU2.SALES_AMOUNT /*总售价金额*/,
+                                                RDU2.UNIT_PRICE /*单个商品售价*/,
+                                                RDU2.COST_PRICE /*商品单件成本*/,
+                                                RDU2.FREIGHT_AMOUNT /*运费*/,
+                                                RDU2.COUPONS_PRICE           COUPONS_AMOUNT /*优惠券金额*/,
+                                                RDU2.PURCHASE_AMOUNT /*总订购成本*/,
+                                                RDU2.PROFIT_AMOUNT /*折扣金额*/
+                                          FROM FACT_GOODS_SALES_REVERSE RDU2
+                                         WHERE RDU2.CANCEL_REASON IN
+                                               (10, 20, 30)
+                                           AND RDU2.TRAN_DESC = 'REN'
+                                           AND RDU2.CANCEL_STATE = 1
+                                           AND RDU2.POSTING_DATE_KEY <=
+                                               RDU2.UPDATE_TIME
+                                              /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
+                                           AND EXISTS
+                                         (SELECT 1
+                                                  FROM FACT_EC_ORDER_2 FEO
+                                                 WHERE RDU2.ORDER_KEY =
+                                                       FEO.CRM_ORDER_NO
+                                                   AND FEO.ORDER_FROM = '76')) RD
+                                 WHERE RD.POSTING_DATE_KEY =
+                                       IN_POSTING_DATE_KEY
+                                   AND RD.CANCEL_REASON IN (10, 20, 30)
+                                   AND RD.TRAN_DESC = 'REN') RD1
+                         GROUP BY RD1.GOODS_KEY,
+                                  RD1.GOODS_COMMON_KEY,
+                                  RD1.SALES_SOURCE_SECOND_KEY,
+                                  RD1.TRAN_DESC,
+                                  RD1.MD_PERSON,
+                                  RD1.POSTING_DATE_KEY,
+                                  DECODE(RD1.LIVE_OR_REPLAY,
+                                         '10',
+                                         '直播',
+                                         '01',
+                                         '重播',
+                                         '未分配')) RD2) FO,
+               (SELECT DG.BRAND_NAME BRAND_NAME /*品牌*/,
+                       DG.MATDLT MATDLT /*物料大类*/,
+                       DG.MATZLT MATZLT /*物料中类*/,
+                       DG.MATXLT MATXLT /*物料小类*/,
+                       DG.ITEM_CODE /*商品*/,
+                       DG.GOODS_NAME GOODS_NAME /*商品名称*/,
+                       DECODE(DG.GROUP_ID, 2000, '自营', '非自营') OWN_ACCOUNT /*是否自营*/
+                  FROM DIM_GOOD DG
+                 WHERE DG.CURRENT_FLG = 'Y') DG,
+               (SELECT * FROM DIM_SALES_SOURCE) DS
+         WHERE FO.GOODS_COMMON_KEY = DG.ITEM_CODE(+)
+           AND FO.SALES_SOURCE_SECOND_KEY = DS.SALES_SOURCE_SECOND_KEY;
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+      /*更新报表的商品资料相关字段*/
+      UPDATE OPER_PRODUCT_DAILY_REPORT A
+         SET (A.OWN_ACCOUNT,
+              A.BRAND_NAME,
+              A.MATDLT,
+              A.MATZLT,
+              A.MATXLT,
+              A.ITEM_CODE,
+              A.GOODS_NAME) =
+             (SELECT DECODE(DG.GROUP_ID, 2000, '自营', '非自营') OWN_ACCOUNT /*是否自营*/,
+                     DG.BRAND_NAME BRAND_NAME /*品牌*/,
+                     DG.MATDLT MATDLT /*物料大类*/,
+                     DG.MATZLT MATZLT /*物料中类*/,
+                     DG.MATXLT MATXLT /*物料小类*/,
+                     DG.ITEM_CODE /*商品*/,
+                     DG.GOODS_NAME GOODS_NAME /*商品名称*/
+                FROM DIM_GOOD DG
+               WHERE DG.CURRENT_FLG = 'Y'
+                 AND DG.ITEM_CODE = A.GOODS_KEY)
+       WHERE A.ITEM_CODE IS NULL
+         AND EXISTS (SELECT 1
+                FROM DIM_GOOD B
+               WHERE A.GOODS_KEY = B.ITEM_CODE
+                 AND B.CURRENT_FLG = 'Y');
+      UPDATE_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+  
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:IN_POSTING_DATE_KEY:' ||
+                            TO_CHAR(IN_POSTING_DATE_KEY);
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+    
+  END OPER_PRODUCT_SCAN_DAILY_RPT;
 
   PROCEDURE OPER_PRODUCT_DAILY_PREVIEW(IN_POSTING_DATE_KEY IN NUMBER) IS
     S_ETL       W_ETL_LOG%ROWTYPE;
@@ -2583,6 +3715,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
            AND OH.ORDER_STATE >= 30
            AND OH.REFUND_STATE = 0
            AND OG.GOODS_TYPE = 3
+           AND OH.STORE_ID = 1 /*自营*/
            AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE
         UNION ALL
         /*商品级促销-等级减*/
@@ -2620,6 +3753,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
            AND OH.ORDER_STATE >= 30
            AND OH.REFUND_STATE = 0
            AND OG.PML_DISCOUNT <> 0
+           AND OH.STORE_ID = 1 /*自营*/
            AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE
         UNION ALL
         /*商品级促销-TV直播立减促销*/
@@ -2656,6 +3790,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
               /*有效订购条件*/
            AND OH.ORDER_STATE >= 30
            AND OH.REFUND_STATE = 0
+           AND OH.STORE_ID = 1 /*自营*/
            AND OG.TV_DISCOUNT_AMOUNT <> 0
            AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE;
       INSERT_ROWS := SQL%ROWCOUNT;
@@ -2752,6 +3887,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
               /*有效订购条件*/
            AND OH.ORDER_STATE >= 30
            AND OH.REFUND_STATE = 0
+           AND OH.STORE_ID = 1 /*自营*/
            AND OH.DISCOUNT_MANSONG_AMOUNT <> 0
            AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE
         UNION ALL
@@ -2781,6 +3917,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
         /*有效订购条件*/
          OH.ORDER_STATE >= 30
          AND OH.REFUND_STATE = 0
+         AND OH.STORE_ID = 1 /*自营*/
          AND OH.DISCOUNT_PAYMENTWAY_AMOUNT <> 0
          AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE
         UNION ALL
@@ -2810,6 +3947,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
         /*有效订购条件*/
          OH.ORDER_STATE >= 30
          AND OH.REFUND_STATE = 0
+         AND OH.STORE_ID = 1 /*自营*/
          AND OH.DISCOUNT_PAYMENTCHANEL_AMOUNT <> 0
          AND TRUNC(OH.ADD_TIME) = IN_POSTING_DATE;
       INSERT_ROWS := SQL%ROWCOUNT;
@@ -2918,7 +4056,9 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                             TRUNC(V.VOUCHER_END_DATE) VOUCHER_END_DATE,
                                             NVL(V.COUPON_TV_ID, 0) COUPON_TV_ID,
                                             V.VOUCHER_PRICE
-                                       FROM FACT_EC_VOUCHER V) A,
+                                       FROM FACT_EC_VOUCHER V
+                                     /*WHERE V.VOUCHER_END_DATE >= SYSDATE - 180*/
+                                     ) A,
                                     (SELECT C.VOUCHER_REF,
                                             C.VOUCHER_CODE,
                                             C.DCISSUE_SEQ,
@@ -2929,9 +4069,10 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                       WHERE O.ORDER_ID = C.ORDER_ID
                                         AND O.ORDER_STATE >= 30
                                         AND O.REFUND_STATE = 0
+                                        AND O.STORE_ID = 1 /*自营*/
                                         AND C.VOUCHER_CODE IS NOT NULL) B
-                              WHERE A.VOUCHER_T_ID = B.VOUCHER_REF(+)
-                                AND A.VOUCHER_CODE = B.VOUCHER_CODE(+)) D
+                              WHERE A.VOUCHER_T_ID = B.VOUCHER_REF
+                                AND A.VOUCHER_CODE = B.VOUCHER_CODE) D
                       GROUP BY D.VOUCHER_T_ID,
                                D.COUPON_TV_ID,
                                D.VOUCHER_TITLE,
@@ -3372,7 +4513,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
                   WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             AND*/
                   F.ZMATERIAL NOT LIKE '%F%'
                AND F.ZEAMC027 IS NOT NULL
                AND F.ZEAMC027 != 0) TA

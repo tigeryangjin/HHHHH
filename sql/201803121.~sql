@@ -1,0 +1,4 @@
+select *
+  from all_all_tables a
+ where a.owner = 'DW_USER'
+ ORDER BY A.table_name;
