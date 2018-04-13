@@ -639,3 +639,37 @@ SELECT * FROM log_monitor_task_group;
 Game.Activity.choumiandan
 */
 CALL log_monitor_add('happigo-application', 'Game.Activity.choumiandan');
+
+/*
+2018-03-23
+Wxcms.CommunityActivism.Admin
+*/
+CALL log_monitor_add('happigo-application', 'Wxcms.CommunityActivism.Admin');
+
+/*
+2018-03-30
+EC.Order.EvaluateGoods.Task
+*/
+CALL log_monitor_add('happigo-application', 'EC.Order.EvaluateGoods.Task');
+
+/*
+2018-04-03
+第三方公司回调处理消费者：Ec.Third.Party.Company.Callback.Task
+消费者触发网易严选库存同步：Ec.Stock.Sync.Yanxuan
+*/
+CALL log_monitor_add('happigo-application', 'Ec.Third.Party.Company.Callback.Task');
+CALL log_monitor_add('happigo-application', 'Ec.Stock.Sync.Yanxuan.Api');
+
+/*
+2018-04-10
+EC.WeixinSaveDataManagement.Task
+EC.WeixinPushManagement.Task
+*/
+CALL log_monitor_add('happigo-application', 'EC.WeixinSaveDataManagement.Task');
+CALL log_monitor_add('happigo-application', 'EC.WeixinPushManagement.Task');
+
+/*
+2018-04-13
+Ec.RegisterNotice.Task
+*/
+CALL log_monitor_add('happigo-application', 'Ec.RegisterNotice.Task');

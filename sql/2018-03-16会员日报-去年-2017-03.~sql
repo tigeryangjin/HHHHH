@@ -118,7 +118,7 @@ select i.date_key,
 truncate table oper_dau_order_201703;
 insert into oper_dau_order_201703
   (date_key,
-   is_new_user, 
+   is_new_user,
    is_scan,
    channel_name,
    dau,
@@ -195,16 +195,12 @@ insert into oper_dau_order_201703
                          e.member_key,
                          e.channel_name,
                          case
-                           when f.first_order_date_key = e.date_key then
-                            'new_user'
-                           when f.first_order_date_key is null then
+                           when f.first_order_date_key >= e.date_key then
                             'new_user'
                            when f.first_order_date_key < e.date_key and
-                                f.first_order_date_key <> 0 then
+                                f.first_order_date_key > 0 then
                             'old_user'
-                           when f.first_order_date_key = 0 then
-                            'new_user'
-                           else
+                           when nvl(f.first_order_date_key, 0) = 0 then
                             'new_user'
                          end is_new_user,
                          case

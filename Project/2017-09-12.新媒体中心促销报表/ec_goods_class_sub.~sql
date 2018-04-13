@@ -1,0 +1,19 @@
+CREATE TABLE `ec_goods_class_sub` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '子分类Id，主键',
+  `gc_id` int(11) NOT NULL COMMENT '商品分类Id',
+  `name` varchar(100) NOT NULL COMMENT '子分类名称',
+  `pic` varchar(200) NOT NULL COMMENT '子分类图片',
+  `description` varchar(500) DEFAULT NULL COMMENT '描述',
+  `sort` int(11) NOT NULL COMMENT '排序',
+  `status` tinyint(3) NOT NULL COMMENT '0：未启用。1：启用；默认为1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=230 DEFAULT CHARSET=utf8 COMMENT='商品子分类表';
+
+
+create table dim_ec_goods_class_sub (  id int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '子分类Id，主键',
+  `gc_id` int(11) NOT NULL COMMENT '商品分类Id',
+  `name` varchar(100) NOT NULL COMMENT '子分类名称',
+  `pic` varchar(200) NOT NULL COMMENT '子分类图片',
+  `description` varchar(500) DEFAULT NULL COMMENT '描述',
+  `sort` int(11) NOT NULL COMMENT '排序',
+  `status` tinyint(3) NOT NULL COMMENT '0：未启用。1：启用；默认为1',);

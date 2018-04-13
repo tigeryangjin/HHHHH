@@ -1,0 +1,186 @@
+--3月在过架的商品的整月 UV PV  订购人数 订购金额 订购单数 订购件数
+--1.
+select distinct a.item_code
+  from fact_daily_goodzaijia a
+ where a.store_id = 1
+   and a.create_date_key between 20180301 and 20180331;
+--2.pv,uv
+drop table fact_page_view_201803;
+create table fact_page_view_201803 as
+  select *
+    from fact_page_view a
+   where a.visit_date_key between 20180301 and 20180331
+        --and a.page_name in ('Good', 'good')
+     and a.page_value =
+         translate(a.page_value,
+                   '0' || translate(a.page_value, '#0123456789', '#'),
+                   '0');
+
+select a.page_value item_code, count(distinct a.member_key) uv, count(1) pv
+  from fact_page_view_201803 a
+ where exists (select 1
+          from (select distinct a.item_code
+                  from fact_daily_goodzaijia a
+                 where a.store_id = 1
+                   and a.create_date_key between 20180301 and 20180331) c
+         where to_number(a.page_value) = c.item_code)
+ group by a.page_value;
+
+--3.订购人数 订购金额 订购单数 订购件数
+select g.item_code,
+       sum(g.goods_num) order_qty,
+       sum(g.goods_pay_price) order_amount,
+       count(distinct g.cust_no) order_member_count,
+       count(g.order_id) order_id_count
+  from (select substr(e.erp_code, 1, 6) item_code,
+               e.goods_num,
+               e.goods_pay_price,
+               d.cust_no,
+               d.order_id
+          from fact_ec_order_2 d, fact_ec_order_goods e
+         where d.order_id = e.order_id
+           and d.add_time between date '2018-03-01' and date
+         '2018-03-31'
+           and d.order_state >= 20
+           and exists
+         (select 1
+                  from (select distinct a.item_code
+                          from fact_daily_goodzaijia a
+                         where a.store_id = 1
+                           and a.create_date_key between 20180301 and 20180331) f
+                 where substr(e.erp_code, 1, 6) = f.item_code)) g
+ group by g.item_code;
+
+--4.union
+
+select v.item_code 商品编码,
+       (select h.goods_name
+          from dim_ec_good h
+         where v.item_code = h.item_code) 商品名称,
+       (select '[' || h.matdl || ']' || h.matdlt
+          from dim_ec_good h
+         where v.item_code = h.item_code) 物料大类,
+       (select h.goods_price
+          from dim_ec_good h
+         where v.item_code = h.item_code) 商品价格,
+       v.pv,
+       v.uv,
+       nvl(o.order_qty, 0) 订购件数,
+       nvl(o.order_amount, 0) 订购金额,
+       nvl(o.order_member_count, 0) 订购人数,
+       nvl(o.order_id_count, 0) 订购单数
+  from (select a.page_value item_code,
+               count(distinct a.member_key) uv,
+               count(1) pv
+          from fact_page_view_201803 a
+         where exists
+         (select 1
+                  from (select distinct a.item_code
+                          from fact_daily_goodzaijia a
+                         where a.store_id = 1
+                           and a.create_date_key between 20180301 and 20180331) c
+                 where to_number(a.page_value) = c.item_code)
+         group by a.page_value) v,
+       (select g.item_code,
+               sum(g.goods_num) order_qty,
+               sum(g.goods_pay_price) order_amount,
+               count(distinct g.cust_no) order_member_count,
+               count(g.order_id) order_id_count
+          from (select substr(e.erp_code, 1, 6) item_code,
+                       e.goods_num,
+                       e.goods_pay_price,
+                       d.cust_no,
+                       d.order_id
+                  from fact_ec_order_2 d, fact_ec_order_goods e
+                 where d.order_id = e.order_id
+                   and d.add_time between date '2018-03-01' and date
+                 '2018-03-31'
+                   and d.order_state >= 20
+                   and exists
+                 (select 1
+                          from (select distinct a.item_code
+                                  from fact_daily_goodzaijia a
+                                 where a.store_id = 1
+                                   and a.create_date_key between 20180301 and
+                                       20180331) f
+                         where substr(e.erp_code, 1, 6) = f.item_code)) g
+         group by g.item_code) o
+ where v.item_code = o.item_code(+);
+
+--5.
+select ite.item_code 商品编码,
+       ite.goods_name 商品名称,
+       ite.mat 物料大类,
+       ite.goods_price 商品价格,
+       nvl(pv.uv, 0) UV,
+       nvl(pv.pv, 0) PV,
+       nvl(ord.order_qty, 0) 订购数量,
+       nvl(ord.order_amount, 0) 订购金额,
+       nvl(ord.order_member_count, 0) 订购人数,
+       nvl(ord.order_id_count, 0) 订购单数
+  from (select a.item_code,
+               a.goods_commonid,
+               a.goods_name,
+               '[' || a.matdl || ']' || a.matdlt mat,
+               a.goods_price
+          from dim_ec_good a
+         where exists
+         (select 1
+                  from (select distinct a.item_code
+                          from fact_daily_goodzaijia a
+                         where a.store_id = 1
+                           and a.create_date_key between 20180301 and 20180331) b
+                 where a.item_code = b.item_code)) ite,
+       (select c.page_value goods_commonid,
+               count(distinct c.member_key) uv,
+               count(1) pv
+          from fact_page_view_201803 c
+         where exists
+         (select 1
+                  from (select distinct d1.goods_commonid
+                          from fact_daily_goodzaijia d, dim_ec_good d1
+                         where d.item_code = d1.item_code
+                           and d.store_id = 1
+                           and d.create_date_key between 20180301 and 20180331) e
+                 where to_number(c.page_value) = e.goods_commonid)
+         group by c.page_value) pv,
+       (select j.item_code,
+               sum(j.goods_num) order_qty,
+               sum(j.goods_pay_price) order_amount,
+               count(distinct j.cust_no) order_member_count,
+               count(j.order_id) order_id_count
+          from (select substr(g.erp_code, 1, 6) item_code,
+                       g.goods_num,
+                       g.goods_pay_price,
+                       f.cust_no,
+                       f.order_id
+                  from fact_ec_order_2 f, fact_ec_order_goods g
+                 where f.order_id = g.order_id
+                   and f.add_time between date '2018-03-01' and date
+                 '2018-03-31'
+                   and f.order_state >= 20
+                   and exists
+                 (select 1
+                          from (select distinct h.item_code
+                                  from fact_daily_goodzaijia h
+                                 where h.store_id = 1
+                                   and h.create_date_key between 20180301 and
+                                       20180331) i
+                         where substr(g.erp_code, 1, 6) = i.item_code)) j
+         group by j.item_code) ord
+ where ite.goods_commonid = pv.goods_commonid(+)
+   and ite.item_code = ord.item_code(+);
+
+--tmp
+select * from dim_ec_good a;
+select a.item_code, count(1)
+  from dim_ec_good a
+ group by a.item_code
+having count(1) > 1;
+select * from fact_daily_goodzaijia where STORE_ID = 1;
+select * from factec_order;
+select * from dim_good a where a.item_code = 232786;
+SELECT *
+  FROM FACT_PAGE_VIEW A
+ WHERE A.VISIT_DATE_KEY BETWEEN 20180301 AND 20180331
+   AND A.PAGE_VALUE = '185186';

@@ -1,0 +1,37 @@
+CREATE TABLE `tp_community_group_fans_apply` (
+  `apply_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '索引主键',
+  `group_id` int(11) NOT NULL COMMENT '所属分组',
+  `nickname` varchar(50) DEFAULT NULL COMMENT '申请人名字',
+  `fans_img` varchar(200) DEFAULT NULL COMMENT '头像',
+  `fans_ip` varchar(15) DEFAULT NULL COMMENT 'ip',
+  `ec_cust_no` varchar(50) DEFAULT NULL,
+  `openid` varchar(200) DEFAULT NULL,
+  `vid` varchar(100) DEFAULT NULL,
+  `ec_member_id` int(11) DEFAULT NULL,
+  `ec_member_name` varchar(100) DEFAULT NULL,
+  `audit_status` int(2) DEFAULT '10' COMMENT '审核状态 10待审核 20 审核通过 30审核失败',
+  `audit_user` int(2) DEFAULT NULL COMMENT '审核人',
+  `audit_remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `audit_time` int(11) DEFAULT NULL COMMENT '审核时间',
+  `add_time` int(11) NOT NULL COMMENT '创建时间',
+  `token` varchar(30) NOT NULL,
+  PRIMARY KEY (`apply_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=284 DEFAULT CHARSET=utf8;
+
+create table tp_community_group_fans_a_tmp(
+  apply_id number(11) NOT NULL,
+  group_id number(11) NOT NULL,
+  nickname varchar(50) DEFAULT NULL,
+  fans_img varchar(200) DEFAULT NULL,
+  fans_ip varchar(15) DEFAULT NULL,
+  ec_cust_no varchar(50) DEFAULT NULL,
+  openid varchar(200) DEFAULT NULL,
+  vid varchar(100) DEFAULT NULL,
+  ec_member_id number(11) DEFAULT NULL,
+  ec_member_name varchar(100) DEFAULT NULL,
+  audit_status number(2) ,
+  audit_user number(2) DEFAULT NULL,
+  audit_remark varchar(500) DEFAULT NULL,
+  audit_time number(11) DEFAULT NULL,
+  add_time number(11) NOT NULL,
+  token varchar(30) NOT NULL)

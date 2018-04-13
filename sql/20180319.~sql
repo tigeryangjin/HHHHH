@@ -1,0 +1,6 @@
+select a.order_id, a.order_amount
+  from fact_ec_order_2 a
+ where a.add_time between date '2017-01-01' and date
+ '2017-12-31'
+   and a.order_amount >= 10
+   and a.order_state >= 20;

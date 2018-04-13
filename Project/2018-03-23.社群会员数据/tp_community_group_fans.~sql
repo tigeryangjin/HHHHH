@@ -1,0 +1,19 @@
+CREATE TABLE `tp_community_group_fans` (
+  `fans_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '索引主键',
+  `group_id` int(11) NOT NULL COMMENT '所属分组',
+  `nickname` varchar(50) DEFAULT NULL COMMENT '昵称',
+  `fans_img` varchar(200) DEFAULT NULL COMMENT '用户头像',
+  `fans_ip` varchar(15) DEFAULT NULL COMMENT 'ip',
+  `ec_cust_no` varchar(50) DEFAULT NULL COMMENT 'cust_no',
+  `openid` varchar(200) DEFAULT NULL,
+  `vid` varchar(100) DEFAULT NULL,
+  `ec_member_id` int(11) DEFAULT NULL COMMENT 'ec对应会员id',
+  `ec_member_name` varchar(100) DEFAULT NULL COMMENT 'ec对应名字',
+  `audit_user` int(2) DEFAULT NULL COMMENT '审核人',
+  `remark` varchar(200) DEFAULT NULL,
+  `is_valid` int(2) NOT NULL DEFAULT '0' COMMENT '是否有效 1为无效   默认为0',
+  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  `add_time` int(11) NOT NULL COMMENT '创建时间',
+  `token` varchar(30) NOT NULL,
+  PRIMARY KEY (`fans_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8

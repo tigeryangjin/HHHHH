@@ -1,0 +1,33 @@
+CREATE TABLE `tp_community_game_prize_setting` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `GameID` int(11) NOT NULL COMMENT '游戏编号',
+  `Probability` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '中奖概率，单位万分之一',
+  `PrizeName` varchar(100) NOT NULL COMMENT '奖品名称',
+  `RewardMessage` varchar(100) DEFAULT NULL COMMENT '中奖提示语',
+  `PrizeType` tinyint(4) NOT NULL COMMENT '0-再来一次;10-未中奖;20-优惠券;21-积分;30-实物奖品',
+  `PointsReward` int(11) NOT NULL DEFAULT '0' COMMENT '奖励的积分数',
+  `VoucherID` varchar(50) DEFAULT NULL COMMENT '优惠券ID',
+  `VoucherSend_Key` varchar(50) DEFAULT NULL COMMENT '优惠券Key',
+  `CreateTime` int(11) NOT NULL COMMENT '创建时间',
+  `PrizeNum` int(11) DEFAULT NULL COMMENT '奖品数量',
+  `imgurl` varchar(255) DEFAULT NULL COMMENT '图片地址',
+  `is_del` tinyint(1) DEFAULT '0',
+  `position` int(4) NOT NULL COMMENT '排序',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+create table tp_community_game_prize_stmp(
+  id int(11) not null auto_increment comment '自增ID',
+  gameid int(11) not null comment '游戏编号',
+  probability int(10) unsigned not null default '0' comment '中奖概率，单位万分之一',
+  prizename varchar(100) not null comment '奖品名称',
+  rewardmessage varchar(100) default null comment '中奖提示语',
+  prizetype tinyint(4) not null comment '0-再来一次;10-未中奖;20-优惠券;21-积分;30-实物奖品',
+  pointsreward int(11) not null default '0' comment '奖励的积分数',
+  voucherid varchar(50) default null comment '优惠券ID',
+  vouchersend_key varchar(50) default null comment '优惠券Key',
+  createtime int(11) not null comment '创建时间',
+  prizenum int(11) default null comment '奖品数量',
+  imgurl varchar(255) default null comment '图片地址',
+  is_del tinyint(1) default '0',
+  position int(4) not null comment '排序')

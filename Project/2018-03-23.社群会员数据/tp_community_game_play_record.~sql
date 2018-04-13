@@ -1,0 +1,128 @@
+--1.
+CREATE TABLE `tp_community_game_play_record` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `GameID` int(11) NOT NULL COMMENT '游戏编号',
+  `group_id` int(11) NOT NULL COMMENT '群号',
+  `openid` varchar(250) NOT NULL COMMENT 'openid',
+  `IP` varchar(255) NOT NULL,
+  `Member_Crmbp` varchar(20) NOT NULL COMMENT '会员ID',
+  `MemberDisplayName` varchar(50) NOT NULL COMMENT '会员显示名',
+  `PrizeID` int(11) NOT NULL COMMENT '奖品ID',
+  `PrizeName` varchar(100) NOT NULL DEFAULT '' COMMENT '奖品名称',
+  `PrizeType` tinyint(4) NOT NULL COMMENT '0-再来一次;10-未中奖;20-优惠券;21-积分;30-实物奖品',
+  `PointsReward` varchar(11) NOT NULL DEFAULT '0' COMMENT '奖励的积分数，0表示不赠送积分',
+  `VoucherCodeReward` varchar(50) DEFAULT NULL COMMENT '奖励的优惠券号，空表示不赠送券',
+  `Delivery_Name` varchar(50) DEFAULT NULL COMMENT '收货人姓名，仅用于实物奖品',
+  `Delivery_PhoneNumber` varchar(11) DEFAULT NULL COMMENT '收货人联系电话，仅用于实物奖品',
+  `Delivery_Address` varchar(255) DEFAULT NULL COMMENT '收货人详细地址，仅用于实物奖品',
+  `put_status` tinyint(1) DEFAULT NULL COMMENT '发放状态：-1失败，1成功，0待发放，默认空',
+  `audit_status` tinyint(1) DEFAULT NULL COMMENT '审核状态：-1不通过，1审核通过，0待审核，默认空',
+  `audit_admin` varchar(50) DEFAULT NULL COMMENT '审核人',
+  `audit_time` int(11) DEFAULT NULL COMMENT '审核时间',
+  `Remark` varchar(200) NOT NULL DEFAULT '' COMMENT '备注',
+  `CreateTime` int(11) NOT NULL COMMENT '中奖时间',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=10203 DEFAULT CHARSET=utf8;
+
+--2.
+create table tp_community_g_p_r_tmp(
+  id number(11) not null,
+  gameid number(11) not null,
+  group_id number(11) not null,
+  openid varchar2(250) not null,
+  ip varchar2(255) not null,
+  member_crmbp varchar2(20) not null,
+  memberdisplayname varchar2(50) not null,
+  prizeid number(11) not null,
+  prizename varchar2(100) not null,
+  prizetype number(4) not null,
+  pointsreward varchar2(11) not null,
+  vouchercodereward varchar2(50) default null,
+  delivery_name varchar2(50) default null,
+  delivery_phonenumber varchar2(11) default null,
+  delivery_address varchar2(255) default null,
+  put_status number(1) default null,
+  audit_status number(1) default null,
+  audit_admin varchar2(50) default null,
+  audit_time date,
+  remark varchar2(200) not null,
+  createtime date not null);
+
+--3.
+-- Create table
+create table TP_COMMUNITY_G_P_R
+(
+  id                   NUMBER(11) not null,
+  gameid               NUMBER(11),
+  group_id             NUMBER(11),
+  openid               VARCHAR2(250),
+  ip                   VARCHAR2(255),
+  member_crmbp         VARCHAR2(20),
+  memberdisplayname    VARCHAR2(50),
+  prizeid              NUMBER(11),
+  prizename            VARCHAR2(100),
+  prizetype            NUMBER(4),
+  pointsreward         VARCHAR2(11),
+  vouchercodereward    VARCHAR2(50),
+  delivery_name        VARCHAR2(50),
+  delivery_phonenumber VARCHAR2(11),
+  delivery_address     VARCHAR2(255),
+  put_status           NUMBER(1),
+  audit_status         NUMBER(1),
+  audit_admin          VARCHAR2(50),
+  audit_time           DATE,
+  remark               VARCHAR2(200),
+  createtime           DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+-- Add comments to the table 
+comment on table TP_COMMUNITY_G_P_R
+  is '抽奖记录表-中间表
+by yangjin
+2018-03-27';
+-- Add comments to the columns 
+comment on column TP_COMMUNITY_G_P_R.id
+  is '自增ID';
+comment on column TP_COMMUNITY_G_P_R.gameid
+  is '游戏编号';
+comment on column TP_COMMUNITY_G_P_R.group_id
+  is '群号';
+comment on column TP_COMMUNITY_G_P_R.openid
+  is 'openid';
+comment on column TP_COMMUNITY_G_P_R.ip
+  is 'ip';
+comment on column TP_COMMUNITY_G_P_R.member_crmbp
+  is '会员ID';
+comment on column TP_COMMUNITY_G_P_R.memberdisplayname
+  is '会员显示名';
+comment on column TP_COMMUNITY_G_P_R.prizeid
+  is '奖品ID';
+comment on column TP_COMMUNITY_G_P_R.prizename
+  is '奖品名称';
+comment on column TP_COMMUNITY_G_P_R.prizetype
+  is '0-再来一次;10-未中奖;20-优惠券;21-积分;30-实物奖品';
+comment on column TP_COMMUNITY_G_P_R.pointsreward
+  is '奖励的积分数，0表示不赠送积分';
+comment on column TP_COMMUNITY_G_P_R.vouchercodereward
+  is '奖励的优惠券号，空表示不赠送券';
+comment on column TP_COMMUNITY_G_P_R.delivery_name
+  is '收货人姓名，仅用于实物奖品';
+comment on column TP_COMMUNITY_G_P_R.delivery_phonenumber
+  is '收货人联系电话，仅用于实物奖品';
+comment on column TP_COMMUNITY_G_P_R.delivery_address
+  is '收货人详细地址，仅用于实物奖品';
+comment on column TP_COMMUNITY_G_P_R.put_status
+  is '发放状态：-1失败，1成功，0待发放，默认空';
+comment on column TP_COMMUNITY_G_P_R.audit_status
+  is '审核状态：-1不通过，1审核通过，0待审核，默认空';
+comment on column TP_COMMUNITY_G_P_R.audit_admin
+  is '审核人';
+comment on column TP_COMMUNITY_G_P_R.audit_time
+  is '审核时间';
+comment on column TP_COMMUNITY_G_P_R.remark
+  is '备注';
+comment on column TP_COMMUNITY_G_P_R.createtime
+  is '中奖时间';

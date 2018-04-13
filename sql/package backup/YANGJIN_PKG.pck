@@ -109,6 +109,16 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE OPER_DAU_ORDER_REPORT_PROC(IN_DATE_KEY IN NUMBER);
+  /*
+  功能名:       OPER_DAU_ORDER_REPORT_PROC
+  目的:         新老用户通路扫码日活订购日报
+  作者:         yangjin
+  创建时间：    2018/03/20
+  最后修改人：
+  最后更改日期：
+  */
+
   PROCEDURE OPER_NM_PROMOTION_ITEM_RPT(IN_POSTING_DATE_KEY IN NUMBER);
   /*
   功能名:       OPER_NM_PROMOTION_ITEM_RPT
@@ -149,7 +159,8 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG IS
   最后更改日期：
   */
 
-  PROCEDURE FACT_GOODS_SALES_FIX(IN_POSTING_DATE_KEY IN NUMBER);
+  PROCEDURE FACT_GOODS_SALES_FIX(IN_POSTING_DATE_KEY IN NUMBER,
+                                 IN_FIX_TYPE         IN VARCHAR2);
   /*
   功能名:       FACT_GOODS_SALES_FIX
   目的:         通过存储过程重新往FACT_GOODS_SALES,FACT_GOODS_SALES_REVERSE插入数据
@@ -318,8 +329,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   FUNCTION IP_INT_TO_STR(IN_IP_INT IN NUMBER) RETURN VARCHAR2 IS
     RESULT_IP_STR VARCHAR2(20);
   BEGIN
-    IF IN_IP_INT BETWEEN 0 AND 4294967295
-    THEN
+    IF IN_IP_INT BETWEEN 0 AND 4294967295 THEN
       RESULT_IP_STR := TO_CHAR(FLOOR(IN_IP_INT / (256 * 256 * 256))) || '.' ||
                        TO_CHAR(FLOOR((IN_IP_INT -
                                      FLOOR(IN_IP_INT / (256 * 256 * 256)) * 256 * 256 * 256) /
@@ -612,7 +622,10 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   END ALTER_TABLE_SHRINK_SPACE;
 
   PROCEDURE TABLE_OPTIMIZATION IS
+    S_ETL W_ETL_LOG%ROWTYPE;
   BEGIN
+    S_ETL.PROC_NAME  := 'YANGJIN_PKG.TABLE_OPTIMIZATION';
+    S_ETL.START_TIME := SYSDATE;
     /*
     每周六20:00开始执行
     */
@@ -638,6 +651,19 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_PRODUCT_DAILY_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_PRODUCT_PVUV_DAILY_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('PUSH_MSG_LOG');
+  
+    S_ETL.END_TIME     := SYSDATE;
+    S_ETL.ETL_STATUS   := 'SUCCESS';
+    S_ETL.ERR_MSG      := '无输入参数';
+    S_ETL.ETL_DURATION := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) * 86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
   END TABLE_OPTIMIZATION;
 
   PROCEDURE PROCESSMAKETHMSC_IA(STARTPOINT IN NUMBER) IS
@@ -661,8 +687,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -986,8 +1011,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -1071,7 +1095,9 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
          FREIGHT_AMOUNT,
          PRODUCT_AVG_PRICE,
          REJECT_AMOUNT,
-         LIVE_OR_REPLAY)
+         LIVE_OR_REPLAY,
+         W_INSERT_DT,
+         W_UPDATE_DT)
         SELECT OPER_PRODUCT_DAILY_REPORT_SEQ.NEXTVAL,
                FO.POSTING_DATE_KEY /*过账日期key*/,
                DS.SALES_SOURCE_NAME /*销售一级组织名称*/,
@@ -1085,7 +1111,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                DG.MATZLT /*物料中类*/,
                DG.MATXLT /*物料小类*/,
                FO.MD_PERSON /*MD工号*/,
-               DG.ITEM_CODE /*商品短编码*/,
+               FO.GOODS_COMMON_KEY /*商品短编码*/,
                FO.GOODS_KEY /*商品长编码*/,
                DG.GOODS_NAME /*商品名称*/,
                FO.TOTAL_ORDER_AMOUNT /*总订购金额*/,
@@ -1141,7 +1167,9 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                FO.FREIGHT_AMOUNT /*运费*/,
                FO.PRODUCT_AVG_PRICE /*商品平均售价*/,
                FO.REJECT_AMOUNT /*拒退金额*/,
-               FO.LIVE_OR_REPLAY /*直播重播*/
+               FO.LIVE_OR_REPLAY /*直播重播*/,
+               SYSDATE                               W_INSERT_DT,
+               SYSDATE                               W_UPDATE_DT
           FROM (SELECT OD2.GOODS_KEY /**/,
                        OD2.GOODS_COMMON_KEY /**/,
                        OD2.SALES_SOURCE_SECOND_KEY /*销售二级组织key*/,
@@ -2083,8 +2111,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -3179,8 +3206,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -3490,8 +3516,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -3604,6 +3629,231 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     
   END OPER_PRODUCT_PVUV_DAILY_RPT;
 
+  PROCEDURE OPER_DAU_ORDER_REPORT_PROC(IN_DATE_KEY IN NUMBER) IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-03-20
+    */
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.OPER_DAU_ORDER_REPORT_PROC'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'OPER_DAU_ORDER_REPORT'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0' THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*删除指定日期的数据*/
+      DELETE OPER_DAU_ORDER_REPORT T WHERE T.DATE_KEY = IN_DATE_KEY;
+      COMMIT;
+    
+      INSERT INTO OPER_DAU_ORDER_REPORT
+        (DATE_KEY,
+         IS_NEW_USER,
+         IS_SCAN,
+         CHANNEL_NAME,
+         DAU,
+         ORDER_MEMBER_COUNT,
+         ORDER_AMOUNT,
+         ORDER_QTY,
+         ORDER_COUNT,
+         W_INSERT_DT,
+         W_UPDATE_DT)
+        SELECT DIM.DATE_KEY,
+               DIM.IS_NEW_USER,
+               DIM.IS_SCAN,
+               DIM.CHANNEL_NAME,
+               NVL(DAU.DAU, 0) DAU,
+               NVL(ORD.ORDER_MEMBER_COUNT, 0) ORDER_MEMBER_COUNT,
+               NVL(ORD.ORDER_AMOUNT, 0) ORDER_AMOUNT,
+               NVL(ORD.ORDER_QTY, 0) ORDER_QTY,
+               NVL(ORD.ORDER_COUNT, 0) ORDER_COUNT,
+               SYSDATE W_INSERT_DT,
+               SYSDATE W_UPDATE_DT
+          FROM (SELECT M1.DATE_KEY,
+                       M2.IS_NEW_USER,
+                       M3.IS_SCAN,
+                       M4.CHANNEL_NAME
+                  FROM (SELECT IN_DATE_KEY DATE_KEY FROM DUAL) M1, --日期
+                       (SELECT 'NEW_USER' IS_NEW_USER
+                          FROM DUAL
+                        UNION
+                        SELECT 'OLD_USER' IS_NEW_USER
+                          FROM DUAL) M2, --新老用户
+                       (SELECT 'SCAN' IS_SCAN
+                          FROM DUAL
+                        UNION
+                        SELECT 'NON_SCAN' IS_SCAN
+                          FROM DUAL) M3, --是否扫码
+                       (SELECT '3G' CHANNEL_NAME
+                          FROM DUAL
+                        UNION
+                        SELECT '微信' CHANNEL_NAME
+                          FROM DUAL
+                        UNION
+                        SELECT 'APP' CHANNEL_NAME
+                          FROM DUAL
+                        UNION
+                        SELECT 'PC' CHANNEL_NAME
+                          FROM DUAL) M4 --通路
+                ) DIM,
+               --DAU
+               (SELECT D6.DATE_KEY,
+                       D6.IS_NEW_USER,
+                       D6.IS_SCAN,
+                       D6.CHANNEL_NAME,
+                       COUNT(DISTINCT D6.VID) DAU
+                  FROM (SELECT D3.DATE_KEY,
+                               D3.VID,
+                               D3.MEMBER_KEY,
+                               D3.CHANNEL_NAME,
+                               CASE
+                                 WHEN D4.FIRST_ORDER_DATE_KEY >= D3.DATE_KEY THEN
+                                  'NEW_USER'
+                                 WHEN D4.FIRST_ORDER_DATE_KEY BETWEEN 0 AND
+                                      D3.DATE_KEY THEN
+                                  'OLD_USER'
+                                 WHEN NVL(D4.FIRST_ORDER_DATE_KEY, 0) = 0 THEN
+                                  'NEW_USER'
+                               END IS_NEW_USER,
+                               CASE
+                                 WHEN D5.VID IS NULL THEN
+                                  'NON_SCAN'
+                                 ELSE
+                                  'SCAN'
+                               END IS_SCAN
+                          FROM (SELECT D1.VISIT_DATE_KEY DATE_KEY,
+                                       D1.VID,
+                                       D1.MEMBER_KEY,
+                                       CASE
+                                         WHEN D1.APPLICATION_KEY = 30 THEN
+                                          '3G'
+                                         WHEN D1.APPLICATION_KEY = 50 THEN
+                                          '微信'
+                                         WHEN D1.APPLICATION_KEY IN (10, 20) THEN
+                                          'APP'
+                                         WHEN D1.APPLICATION_KEY = 40 THEN
+                                          'PC'
+                                       END CHANNEL_NAME,
+                                       D1.APPLICATION_KEY
+                                  FROM FACT_PAGE_VIEW D1
+                                 WHERE D1.VISIT_DATE_KEY = IN_DATE_KEY) D3,
+                               DIM_MEMBER D4,
+                               (SELECT D2.SCAN_DATE_KEY, D2.VID
+                                  FROM DIM_VID_SCAN D2
+                                 WHERE D2.SCAN_DATE_KEY = IN_DATE_KEY) D5
+                         WHERE D3.MEMBER_KEY = D4.MEMBER_BP(+)
+                           AND D3.DATE_KEY = D5.SCAN_DATE_KEY(+)
+                           AND D3.VID = D5.VID(+)
+                           AND D3.CHANNEL_NAME IS NOT NULL) D6
+                 GROUP BY D6.DATE_KEY,
+                          D6.IS_NEW_USER,
+                          D6.IS_SCAN,
+                          D6.CHANNEL_NAME) DAU,
+               --ORD
+               (SELECT A4.DATE_KEY,
+                       A4.IS_NEW_USER,
+                       A4.IS_SCAN,
+                       A4.CHANNEL_NAME,
+                       COUNT(DISTINCT A4.MEMBER_KEY) ORDER_MEMBER_COUNT,
+                       SUM(A4.ORDER_AMOUNT) ORDER_AMOUNT,
+                       SUM(A4.GOODS_NUM) ORDER_QTY,
+                       COUNT(A4.ORDER_ID) ORDER_COUNT
+                  FROM (SELECT A2.ADD_TIME DATE_KEY,
+                               CASE
+                                 WHEN A2.ORDER_FROM = '76' THEN
+                                  'SCAN'
+                                 ELSE
+                                  'NON_SCAN'
+                               END IS_SCAN,
+                               CASE
+                                 WHEN A2.APP_NAME = 'KLGMPortal' THEN
+                                  '3G'
+                                 WHEN A2.APP_NAME = 'KLGWX' THEN
+                                  '微信'
+                                 WHEN A2.APP_NAME IN
+                                      ('KLGAndroid', 'KLGiPhone') THEN
+                                  'APP'
+                                 WHEN A2.APP_NAME = 'KLGPortal' THEN
+                                  'PC'
+                               END CHANNEL_NAME,
+                               CASE
+                                 WHEN NVL(A3.FIRST_ORDER_DATE_KEY, 0) = 0 THEN
+                                  'NEW_USER'
+                                 WHEN A3.FIRST_ORDER_DATE_KEY < A2.ADD_TIME THEN
+                                  'OLD_USER'
+                                 WHEN A3.FIRST_ORDER_DATE_KEY >= A2.ADD_TIME THEN
+                                  'NEW_USER'
+                               END IS_NEW_USER,
+                               A2.ORDER_ID,
+                               A2.VID,
+                               A2.MEMBER_KEY,
+                               A2.GOODS_NUM,
+                               A2.ORDER_AMOUNT
+                          FROM (SELECT A1.ORDER_ID,
+                                       A1.ADD_TIME,
+                                       A1.VID,
+                                       A1.ORDER_FROM,
+                                       A1.APP_NAME,
+                                       A1.MEMBER_KEY,
+                                       A1.ORDER_AMOUNT,
+                                       A1.GOODS_NUM
+                                  FROM FACTEC_ORDER A1
+                                 WHERE A1.ADD_TIME = IN_DATE_KEY
+                                   AND A1.ORDER_STATE >= 20) A2,
+                               DIM_MEMBER A3
+                         WHERE A2.MEMBER_KEY = A3.MEMBER_BP(+)) A4
+                 GROUP BY A4.DATE_KEY,
+                          A4.IS_NEW_USER,
+                          A4.IS_SCAN,
+                          A4.CHANNEL_NAME) ORD
+         WHERE DIM.DATE_KEY = DAU.DATE_KEY(+)
+           AND DIM.DATE_KEY = ORD.DATE_KEY(+)
+           AND DIM.IS_NEW_USER = DAU.IS_NEW_USER(+)
+           AND DIM.IS_NEW_USER = ORD.IS_NEW_USER(+)
+           AND DIM.IS_SCAN = DAU.IS_SCAN(+)
+           AND DIM.IS_SCAN = ORD.IS_SCAN(+)
+           AND DIM.CHANNEL_NAME = DAU.CHANNEL_NAME(+)
+           AND DIM.CHANNEL_NAME = ORD.CHANNEL_NAME(+)
+         ORDER BY DIM.DATE_KEY,
+                  DIM.IS_NEW_USER,
+                  DIM.IS_SCAN,
+                  DIM.CHANNEL_NAME;
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+  
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:IN_DATE_KEY:' || TO_CHAR(IN_DATE_KEY);
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+    
+  END OPER_DAU_ORDER_REPORT_PROC;
+
   PROCEDURE OPER_NM_PROMOTION_ITEM_RPT(IN_POSTING_DATE_KEY IN NUMBER) IS
     S_ETL           W_ETL_LOG%ROWTYPE;
     SP_NAME         S_PARAMETERS2.PNAME%TYPE;
@@ -3625,8 +3875,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -3837,8 +4086,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -3992,8 +4240,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -4168,8 +4415,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -4219,53 +4465,97 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     
   END OPER_MEMBER_NOT_IN_EC;
 
-  PROCEDURE FACT_GOODS_SALES_FIX(IN_POSTING_DATE_KEY IN NUMBER) IS
+  PROCEDURE FACT_GOODS_SALES_FIX(IN_POSTING_DATE_KEY IN NUMBER,
+                                 IN_FIX_TYPE         IN VARCHAR2) IS
     /*
     功能说明：通过存储过程重新从ODS_ORDER往FACT_GOODS_SALES,FACT_GOODS_SALES_REVERSE插入数据
     作者时间：yangjin  2017-07-28
+    IN_FIX_TYPE='ALL':全部修复
+    IN_FIX_TYPE='FACT':FACT_GOODS_SALES，FACT_GOODS_SALES_REVERSE
+    IN_FIX_TYPE='OPER':OPER表
     */
   BEGIN
-  
-    BEGIN
-      -- FACT_GOODS_SALES
-      CREATEORDERGOODS(IN_POSTING_DATE_KEY);
-    END;
-  
-    BEGIN
-      -- FACT_GOODS_SALES
-      PROCESSUPDATEORDER(IN_POSTING_DATE_KEY);
-    END;
-  
-    BEGIN
-      -- FACT_GOODS_SALES_REVERSE
-      CREATEFACTORDERGOODSREVERSE(IN_POSTING_DATE_KEY);
-    END;
-  
-    BEGIN
-      -- FACT_GOODS_SALES_REVERSE
-      PROCESSUPDATEORDERREVERSE(IN_POSTING_DATE_KEY);
-    END;
-  
-    BEGIN
-      -- OPER_PRODUCT_DAILY_REPORT
-      YANGJIN_PKG.OPER_PRODUCT_DAILY_RPT(IN_POSTING_DATE_KEY);
-    END;
-  
-    BEGIN
-      --YANGJIN_PKG.OPER_MEMBER_NOT_IN_EC
-      YANGJIN_PKG.OPER_MEMBER_NOT_IN_EC(IN_POSTING_DATE_KEY);
-    END;
-  
-    BEGIN
-      --MEMBER_LABEL_PKG.MEMBER_REPURCHASE
-      MEMBER_LABEL_PKG.MEMBER_REPURCHASE(IN_POSTING_DATE_KEY);
-    END;
-  
-    BEGIN
-      --MEMBER_LABEL_PKG.MEMBER_INJURED_PERIOD
-      MEMBER_LABEL_PKG.MEMBER_INJURED_PERIOD(IN_POSTING_DATE_KEY);
-    END;
-  
+    IF UPPER(IN_FIX_TYPE) = 'ALL' THEN
+      BEGIN
+        -- FACT_GOODS_SALES
+        CREATEORDERGOODS(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        -- FACT_GOODS_SALES
+        PROCESSUPDATEORDER(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        -- FACT_GOODS_SALES_REVERSE
+        CREATEFACTORDERGOODSREVERSE(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        -- FACT_GOODS_SALES_REVERSE
+        PROCESSUPDATEORDERREVERSE(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        -- OPER_PRODUCT_DAILY_REPORT
+        YANGJIN_PKG.OPER_PRODUCT_DAILY_RPT(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        --YANGJIN_PKG.OPER_MEMBER_NOT_IN_EC
+        YANGJIN_PKG.OPER_MEMBER_NOT_IN_EC(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        --MEMBER_LABEL_PKG.MEMBER_REPURCHASE
+        MEMBER_LABEL_PKG.MEMBER_REPURCHASE(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        --MEMBER_LABEL_PKG.MEMBER_INJURED_PERIOD
+        MEMBER_LABEL_PKG.MEMBER_INJURED_PERIOD(IN_POSTING_DATE_KEY);
+      END;
+    ELSIF UPPER(IN_FIX_TYPE) = 'FACT' THEN
+      BEGIN
+        -- FACT_GOODS_SALES
+        CREATEORDERGOODS(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        -- FACT_GOODS_SALES
+        PROCESSUPDATEORDER(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        -- FACT_GOODS_SALES_REVERSE
+        CREATEFACTORDERGOODSREVERSE(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        -- FACT_GOODS_SALES_REVERSE
+        PROCESSUPDATEORDERREVERSE(IN_POSTING_DATE_KEY);
+      END;
+    ELSIF UPPER(IN_FIX_TYPE) = 'OPER' THEN
+      BEGIN
+        -- OPER_PRODUCT_DAILY_REPORT
+        YANGJIN_PKG.OPER_PRODUCT_DAILY_RPT(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        --YANGJIN_PKG.OPER_MEMBER_NOT_IN_EC
+        YANGJIN_PKG.OPER_MEMBER_NOT_IN_EC(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        --MEMBER_LABEL_PKG.MEMBER_REPURCHASE
+        MEMBER_LABEL_PKG.MEMBER_REPURCHASE(IN_POSTING_DATE_KEY);
+      END;
+    
+      BEGIN
+        --MEMBER_LABEL_PKG.MEMBER_INJURED_PERIOD
+        MEMBER_LABEL_PKG.MEMBER_INJURED_PERIOD(IN_POSTING_DATE_KEY);
+      END;
+    END IF;
   END FACT_GOODS_SALES_FIX;
 
   PROCEDURE DIM_GOOD_FIX IS
@@ -4291,8 +4581,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -4513,7 +4802,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
                   WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           AND*/
                   F.ZMATERIAL NOT LIKE '%F%'
                AND F.ZEAMC027 IS NOT NULL
                AND F.ZEAMC027 != 0) TA
@@ -4650,8 +4939,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -4820,8 +5108,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -4950,8 +5237,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5046,8 +5332,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5110,8 +5395,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5126,8 +5410,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
         FROM DATA_ACQUISITION_WEEK_TOPN A
        WHERE A.PERIOD = I_DATE_KEY;
       /*如果已经插入则删除*/
-      IF EXISTS_ROWS >= 0
-      THEN
+      IF EXISTS_ROWS >= 0 THEN
         DELETE DATA_ACQUISITION_WEEK_TOPN A WHERE A.PERIOD = I_DATE_KEY;
         COMMIT;
       END IF;
@@ -5261,8 +5544,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5277,8 +5559,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
         FROM DATA_ACQUISITION_WEEK_NEW A
        WHERE A.PERIOD = I_DATE_KEY;
       /*如果已经插入则删除*/
-      IF EXISTS_ROWS >= 0
-      THEN
+      IF EXISTS_ROWS >= 0 THEN
         DELETE DATA_ACQUISITION_WEEK_NEW A WHERE A.PERIOD = I_DATE_KEY;
         COMMIT;
       END IF;
@@ -5421,8 +5702,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5432,8 +5712,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       /*每月一日执行*/
-      IF TO_NUMBER(TO_CHAR(TO_DATE(I_DATE_KEY, 'YYYYMMDD'), 'DD')) = 1
-      THEN
+      IF TO_NUMBER(TO_CHAR(TO_DATE(I_DATE_KEY, 'YYYYMMDD'), 'DD')) = 1 THEN
         /*日期初始化*/
         V_MONTH_LAST_DATE_KEY  := TO_CHAR(TRUNC(TO_DATE(I_DATE_KEY,
                                                         'YYYYMMDD'),
@@ -5452,8 +5731,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
           FROM DATA_ACQUISITION_MONTH_TOPN A
          WHERE A.YEAR_MONTH = V_YEAR_MONTH;
         /*如果已经插入则删除*/
-        IF EXISTS_ROWS >= 0
-        THEN
+        IF EXISTS_ROWS >= 0 THEN
           DELETE DATA_ACQUISITION_MONTH_TOPN A
            WHERE A.YEAR_MONTH = V_YEAR_MONTH;
           COMMIT;
@@ -5593,8 +5871,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5604,8 +5881,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       /*每月一日执行*/
-      IF TO_NUMBER(TO_CHAR(TO_DATE(I_DATE_KEY, 'YYYYMMDD'), 'DD')) = 1
-      THEN
+      IF TO_NUMBER(TO_CHAR(TO_DATE(I_DATE_KEY, 'YYYYMMDD'), 'DD')) = 1 THEN
         /*日期初始化*/
         /*上月最后一天*/
         V_MONTH_LAST_DATE_KEY := TO_CHAR(TRUNC(TO_DATE(I_DATE_KEY,
@@ -5635,8 +5911,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
           FROM DATA_ACQUISITION_MONTH_TOPN A
          WHERE A.YEAR_MONTH = V_YEAR_MONTH;
         /*如果已经插入则删除*/
-        IF EXISTS_ROWS >= 0
-        THEN
+        IF EXISTS_ROWS >= 0 THEN
           DELETE DATA_ACQUISITION_MONTH_TOPN A
            WHERE A.YEAR_MONTH = V_YEAR_MONTH;
           COMMIT;
@@ -5780,8 +6055,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5920,8 +6194,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5997,8 +6270,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -6082,8 +6354,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -6172,8 +6443,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
+      IF S_PARAMETER = '0' THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);

@@ -1,0 +1,22 @@
+CREATE TABLE `tp_community_group` (
+  `group_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '索引主键',
+  `group_no` varchar(11) NOT NULL COMMENT '群号 （随机字符串 8位小写字母）',
+  `group_name` varchar(50) NOT NULL COMMENT '组名',
+  `group_admin` varchar(50) DEFAULT NULL COMMENT '组管理人',
+  `add_time` int(11) DEFAULT NULL COMMENT '添加时间',
+  `token` varchar(30) NOT NULL,
+  `remark` varchar(255) DEFAULT NULL,
+  `create_time` int(11) NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`group_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+
+create table tp_community_group_tmp (
+  group_id number(11) NOT NULL ,
+  group_no varchar2(11) NOT NULL ,
+  group_name varchar2(50) NOT NULL ,
+  group_admin varchar2(50) DEFAULT NULL ,
+  add_time number(11) DEFAULT NULL ,
+  token varchar2(30) NOT NULL,
+  remark varchar2(255) DEFAULT NULL,
+  create_time number(11) NOT NULL );

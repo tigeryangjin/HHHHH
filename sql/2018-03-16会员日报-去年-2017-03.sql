@@ -195,16 +195,12 @@ insert into oper_dau_order_201703
                          e.member_key,
                          e.channel_name,
                          case
-                           when f.first_order_date_key = e.date_key then
+                           when f.first_order_date_key >= e.date_key then
                             'new_user'
-                           when f.first_order_date_key is null then
-                            'new_user'
-                           when f.first_order_date_key < e.date_key and
-                                f.first_order_date_key <> 0 then
+                           when f.first_order_date_key between 0 and
+                                e.date_key then
                             'old_user'
-                           when f.first_order_date_key = 0 then
-                            'new_user'
-                           when f.first_order_date_key > e.date_key then
+                           when nvl(f.first_order_date_key, 0) = 0 then
                             'new_user'
                          end is_new_user,
                          case
