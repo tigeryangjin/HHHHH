@@ -1,0 +1,25 @@
+--1.
+SELECT *
+  FROM ML.MEMBER_LABEL_LINK A
+ WHERE NOT EXISTS
+ (SELECT 1 FROM ML.MLL_ROW_ID_TMP B WHERE A.ROW_ID = B.ROW_ID);
+
+--2.
+SELECT ML.MEMBER_FILTER_PKG.SPLICE_SQL(B.FILTER_ID,
+                                       B.MEMBER_LABEL_ID_SET,
+                                       B.ITEM_CODE_SET,
+                                       B.BRAND_SET,
+                                       B.MATXL_SET),
+       B.*
+  FROM ML.MEMBER_FILTER_OPTION_HEAD B;
+
+--3.
+SELECT * FROM MEMBER_LABEL_LINK;
+
+--4.
+DECLARE
+  B_ROW NUMBER;
+  E_ROW NUMBER;
+BEGIN
+
+END;

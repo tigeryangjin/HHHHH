@@ -9,11 +9,6 @@ CREATE OR REPLACE PACKAGE MEMBER_FILTER_PKG IS
                       I_ITEM_CODE_SET    IN VARCHAR2,
                       I_BRAND_SET        IN VARCHAR2,
                       I_MATXL_SET        VARCHAR2) RETURN VARCHAR2;
-  FUNCTION SPLICE_SQL1(I_FILTER_ID        IN NUMBER,
-                       I_MEMBER_LABEL_SET IN VARCHAR2,
-                       I_ITEM_CODE_SET    IN VARCHAR2,
-                       I_BRAND_SET        IN VARCHAR2,
-                       I_MATXL_SET        VARCHAR2) RETURN VARCHAR2;
 
   PROCEDURE SYNC_MEMBER_LABEL_HEAD(IN_SYNC_DATE_KEY IN NUMBER);
   /*
@@ -25,7 +20,7 @@ CREATE OR REPLACE PACKAGE MEMBER_FILTER_PKG IS
   最后更改日期：
   */
 
-  PROCEDURE SYNC_MEMBER_LABEL_LINK(IN_SYNC_DATE_KEY IN NUMBER);
+  PROCEDURE SYNC_MEMBER_LABEL_LINK;
   /*
   功能名:       SYNC_MEMBER_LABEL_LINK
   目的:         MEMBER_LABEL_LINK同步
@@ -377,297 +372,6 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_FILTER_PKG IS
     END IF;
   END SPLICE_SQL;
 
-  FUNCTION SPLICE_SQL1(I_FILTER_ID        IN NUMBER,
-                       I_MEMBER_LABEL_SET IN VARCHAR2,
-                       I_ITEM_CODE_SET    IN VARCHAR2,
-                       I_BRAND_SET        IN VARCHAR2,
-                       I_MATXL_SET        VARCHAR2) RETURN VARCHAR2 IS
-    /*
-       目的:      拼接SQL语句
-       作者:      yangjin
-       创建时间:  2017/10/26
-    */
-    STR_INSERT       VARCHAR2(100);
-    STR_SELECT       VARCHAR2(150);
-    STR_FROM         VARCHAR2(3700);
-    STR_WHERE        VARCHAR2(50);
-    STR_SUB_SELECT   VARCHAR2(30);
-    STR_SUB_FROM     VARCHAR2(30);
-    STR_SUB_WHERE    VARCHAR2(3600);
-    STR_SUB_WHERE_S1 VARCHAR2(200);
-    STR_SUB_WHERE_S2 VARCHAR2(1800);
-    STR_SUB_WHERE_S3 VARCHAR2(200);
-    STR_SUB_WHERE_S4 VARCHAR2(1800);
-    STR_ALL_SQL      VARCHAR2(4000);
-    TRAN_SET         VARCHAR2(2000);
-    STR_AND          VARCHAR2(1800);
-    STR_AND_SUB      VARCHAR2(300);
-    STR_ITEM_WHERE   VARCHAR2(2000);
-    STR_BRAND_WHERE  VARCHAR2(2000);
-    STR_MATXL_WHERE  VARCHAR2(2000);
-    --CNT               NUMBER;
-    OP_AND_CNT        NUMBER;
-    OP_AND_NOT_IN_CNT NUMBER;
-  
-  BEGIN
-    /*共用SQL语句*/
-    STR_INSERT := 'INSERT INTO MEMBER_FILTER_RESULT (ROW_ID, FILTER_ID, MEMBER_BP, VID, OPENID, PUSHID) ';
-    STR_SELECT := 'SELECT MEMBER_FILTER_RESULT_SEQ.NEXTVAL ROW_ID,' ||
-                  I_FILTER_ID ||
-                  ' FILTER_ID,C.MEMBER_KEY MEMBER_BP,D.VID VID,D.OPEN_ID OPENID,D.PUSH_ID PUSHID ';
-    STR_WHERE  := 'WHERE C.MEMBER_KEY = D.MEMBER_KEY(+)';
-  
-    IF I_MEMBER_LABEL_SET IS NOT NULL
-    THEN
-      /*I_MEMBER_LABEL_SET不为空*/
-      /*字符串大写处理*/
-      TRAN_SET := UPPER(I_MEMBER_LABEL_SET);
-      /*判断%op_and出现的次数,填上序号*/
-      SELECT (LENGTH(TRAN_SET) - LENGTH(REPLACE(TRAN_SET, '%OP_AND '))) /
-             LENGTH('%OP_AND ')
-        INTO OP_AND_CNT
-        FROM DUAL;
-      FOR I IN 1 .. OP_AND_CNT LOOP
-        TRAN_SET := REGEXP_REPLACE(TRAN_SET,
-                                   '%OP_AND',
-                                   '%OPR_AND_' || I,
-                                   1,
-                                   1);
-      END LOOP;
-    
-      /*判断%op_and_not_in出现的次数,填上序号*/
-      SELECT (LENGTH(TRAN_SET) -
-             LENGTH(REPLACE(TRAN_SET, '%OP_AND_NOT_IN '))) /
-             LENGTH('%OP_AND_NOT_IN')
-        INTO OP_AND_NOT_IN_CNT
-        FROM DUAL;
-      FOR I IN 1 .. OP_AND_NOT_IN_CNT LOOP
-        TRAN_SET := REGEXP_REPLACE(TRAN_SET,
-                                   '%OP_AND_NOT_IN',
-                                   '%OPR_AND_NOT_IN_' || I,
-                                   1,
-                                   1);
-      END LOOP;
-    
-      /*开始拼接SQL语句*/
-      STR_SUB_SELECT   := 'SELECT DISTINCT A.MEMBER_KEY ';
-      STR_SUB_FROM     := 'FROM MEMBER_LABEL_LINK A ';
-      STR_SUB_WHERE    := 'WHERE ' || TRAN_SET;
-      STR_SUB_WHERE    := REPLACE(STR_SUB_WHERE,
-                                  '%COL_M_LABEL_ID',
-                                  'M_LABEL_ID');
-      STR_SUB_WHERE    := REPLACE(STR_SUB_WHERE, '%OP_OR', 'OR');
-      STR_SUB_WHERE_S1 := SUBSTR(STR_SUB_WHERE,
-                                 1,
-                                 INSTR(STR_SUB_WHERE, '%OPR_AND_1') - 1);
-      STR_SUB_WHERE_S2 := SUBSTR(STR_SUB_WHERE,
-                                 INSTR(STR_SUB_WHERE, '%OPR_AND_1'));
-      /*顺序替换%OPR_AND_*/
-      /*如果用户标签没有and操作符，则不用替换*/
-      IF OP_AND_CNT > 0
-      THEN
-        FOR J IN 1 .. OP_AND_CNT LOOP
-          STR_AND_SUB := SUBSTR(STR_SUB_WHERE_S2,
-                                INSTR(STR_SUB_WHERE_S2, '%OPR_AND_' || J),
-                                INSTR(STR_SUB_WHERE_S2,
-                                      ')',
-                                      INSTR(STR_SUB_WHERE_S2,
-                                            '%OPR_AND_' || J)) -
-                                INSTR(STR_SUB_WHERE_S2, '%OPR_AND_' || J) + 1);
-          STR_AND_SUB := REGEXP_REPLACE(STR_AND_SUB,
-                                        '%OPR_AND_' || J,
-                                        'AND EXISTS (SELECT 1 FROM MEMBER_LABEL_LINK A' || J ||
-                                        ' WHERE A' || J ||
-                                        '.MEMBER_KEY = A.MEMBER_KEY AND ',
-                                        1,
-                                        1);
-        
-          STR_AND_SUB := STR_AND_SUB || ') ';
-          STR_AND     := STR_AND || STR_AND_SUB;
-        END LOOP;
-      ELSE
-        /*如果用户标签没有and操作符，则不用替换*/
-        STR_AND := STR_SUB_WHERE_S2;
-      END IF;
-      STR_SUB_WHERE := STR_SUB_WHERE_S1 || STR_AND;
-    
-      /*顺序替换%OPR_AND_NOT_IN*/
-      /*如果用户标签没有and not in操作符，则不用替换*/
-      DBMS_OUTPUT.PUT_LINE('STR_SUB_WHERE:' || STR_SUB_WHERE);
-      STR_SUB_WHERE_S3 := SUBSTR(STR_SUB_WHERE,
-                                 1,
-                                 INSTR(STR_SUB_WHERE, '%OPR_AND_NOT_IN_1') - 1);
-      STR_SUB_WHERE_S4 := SUBSTR(STR_SUB_WHERE,
-                                 INSTR(STR_SUB_WHERE, '%OPR_AND_NOT_IN_1'));
-      IF OP_AND_NOT_IN_CNT > 0
-      THEN
-        FOR J IN 1 .. OP_AND_NOT_IN_CNT LOOP
-          STR_AND_SUB := SUBSTR(STR_SUB_WHERE_S4,
-                                INSTR(STR_SUB_WHERE_S4,
-                                      '%OPR_AND_NOT_IN_' || J),
-                                INSTR(STR_SUB_WHERE_S4,
-                                      ')',
-                                      INSTR(STR_SUB_WHERE_S4,
-                                            '%OPR_AND_NOT_IN_' || J)) -
-                                INSTR(STR_SUB_WHERE_S4,
-                                      '%OPR_AND_NOT_IN_' || J) + 1);
-          STR_AND_SUB := REGEXP_REPLACE(STR_AND_SUB,
-                                        '%OPR_AND_NOT_IN_' || J,
-                                        'AND NOT EXISTS (SELECT 1 FROM MEMBER_LABEL_LINK A' || J ||
-                                        ' WHERE A' || J ||
-                                        '.MEMBER_KEY = A.MEMBER_KEY AND ',
-                                        1,
-                                        1);
-          STR_AND     := STR_AND_SUB || ') ';
-        END LOOP;
-      ELSE
-        STR_AND := STR_SUB_WHERE_S4;
-      END IF;
-      STR_SUB_WHERE := STR_SUB_WHERE_S3 || STR_AND;
-    
-      /*ITEM_CODE*/
-      IF I_ITEM_CODE_SET IS NOT NULL
-      THEN
-        /*I_MEMBER_LABEL_SET不为空*/
-        /*I_ITEM_CODE_SET不为空*/
-        STR_ITEM_WHERE := UPPER(I_ITEM_CODE_SET);
-        STR_ITEM_WHERE := REPLACE(STR_ITEM_WHERE, '%OP_IN', 'IN');
-        STR_ITEM_WHERE := REPLACE(STR_ITEM_WHERE,
-                                  SUBSTR(STR_ITEM_WHERE,
-                                         1,
-                                         INSTR(STR_ITEM_WHERE,
-                                               '%COL_ITEM_CODE') +
-                                         LENGTH('%COL_ITEM_CODE') - 1),
-                                  'AND EXISTS (SELECT 1 FROM MEMBER_LIKE_ITEM_SYN I WHERE I.MEMBER_KEY = A.MEMBER_KEY AND I.ITEM_CODE');
-      ELSE
-        STR_ITEM_WHERE := '';
-      END IF;
-      /*BRAND*/
-      IF I_BRAND_SET IS NOT NULL
-      THEN
-        STR_BRAND_WHERE := '';
-      ELSE
-        STR_BRAND_WHERE := '';
-      END IF;
-    
-      /*MATXL*/
-      IF I_MATXL_SET IS NOT NULL
-      THEN
-        STR_MATXL_WHERE := UPPER(I_MATXL_SET);
-        STR_MATXL_WHERE := REPLACE(STR_MATXL_WHERE, '%OP_IN', 'IN');
-        STR_MATXL_WHERE := REPLACE(STR_MATXL_WHERE,
-                                   SUBSTR(STR_MATXL_WHERE,
-                                          1,
-                                          INSTR(STR_MATXL_WHERE, '%COL_MATXL') +
-                                          LENGTH('%COL_MATXL') - 1),
-                                   'AND EXISTS (SELECT 1 FROM MEMBER_LIKE_MATXL_SYN M WHERE M.MEMBER_KEY = A.MEMBER_KEY AND M.MATXL');
-      ELSE
-        STR_MATXL_WHERE := '';
-      END IF;
-      /*会员标签+商品+小类+品牌*/
-      STR_FROM := 'FROM (' || STR_SUB_SELECT || STR_SUB_FROM ||
-                  STR_SUB_WHERE || STR_ITEM_WHERE || STR_MATXL_WHERE ||
-                  STR_BRAND_WHERE || ') C,ML_MEMBER_MAPPING_SYN D ';
-    
-      STR_ALL_SQL := STR_INSERT || STR_SELECT || STR_FROM || STR_WHERE;
-      RETURN(STR_ALL_SQL);
-    ELSE
-      IF I_ITEM_CODE_SET IS NOT NULL
-      THEN
-        /*I_MEMBER_LABEL_SET为空*/
-        /*I_ITEM_CODE_SET不为空*/
-        STR_SUB_SELECT := 'SELECT DISTINCT A.MEMBER_KEY ';
-        STR_SUB_FROM   := 'FROM MEMBER_LIKE_ITEM_SYN A ';
-        STR_SUB_WHERE  := I_ITEM_CODE_SET;
-        STR_SUB_WHERE  := UPPER(STR_SUB_WHERE);
-        STR_SUB_WHERE  := REPLACE(STR_SUB_WHERE, '%OP_IN', 'IN');
-        STR_SUB_WHERE  := REPLACE(STR_SUB_WHERE,
-                                  SUBSTR(STR_SUB_WHERE,
-                                         1,
-                                         INSTR(STR_SUB_WHERE,
-                                               '%COL_ITEM_CODE') +
-                                         LENGTH('%COL_ITEM_CODE') - 1),
-                                  'WHERE A.ITEM_CODE ');
-        STR_SUB_WHERE  := REPLACE(STR_SUB_WHERE, ')', '') || ')';
-        /*BRAND*/
-        IF I_BRAND_SET IS NOT NULL
-        THEN
-          STR_BRAND_WHERE := '';
-        ELSE
-          STR_BRAND_WHERE := '';
-        END IF;
-      
-        /*MATXL*/
-        IF I_MATXL_SET IS NOT NULL
-        THEN
-          STR_MATXL_WHERE := UPPER(I_MATXL_SET);
-          STR_MATXL_WHERE := REPLACE(STR_MATXL_WHERE, '%OP_IN', 'IN');
-          STR_MATXL_WHERE := REPLACE(STR_MATXL_WHERE,
-                                     SUBSTR(STR_MATXL_WHERE,
-                                            1,
-                                            INSTR(STR_MATXL_WHERE,
-                                                  '%COL_MATXL') +
-                                            LENGTH('%COL_MATXL') - 1),
-                                     'AND EXISTS (SELECT 1 FROM MEMBER_LIKE_MATXL_SYN M WHERE M.MEMBER_KEY = A.MEMBER_KEY AND M.MATXL');
-        ELSE
-          STR_MATXL_WHERE := '';
-        END IF;
-      
-        /*商品+小类+品牌*/
-        STR_FROM    := 'FROM (' || STR_SUB_SELECT || STR_SUB_FROM ||
-                       STR_SUB_WHERE || STR_MATXL_WHERE || STR_BRAND_WHERE ||
-                       ') C,ML_MEMBER_MAPPING_SYN D ';
-        STR_ALL_SQL := STR_INSERT || STR_SELECT || STR_FROM || STR_WHERE;
-        RETURN(STR_ALL_SQL);
-      ELSE
-        IF I_MATXL_SET IS NOT NULL
-        THEN
-          /*I_MEMBER_LABEL_SET为空*/
-          /*I_ITEM_CODE_SET不为空*/
-          /*I_MATXL_SET不为空*/
-          STR_SUB_SELECT := 'SELECT DISTINCT A.MEMBER_KEY ';
-          STR_SUB_FROM   := 'FROM MEMBER_LIKE_MATXL_SYN A ';
-          STR_SUB_WHERE  := I_MATXL_SET;
-          STR_SUB_WHERE  := UPPER(STR_SUB_WHERE);
-          STR_SUB_WHERE  := REPLACE(STR_SUB_WHERE, '%OP_IN', 'IN');
-          STR_SUB_WHERE  := REPLACE(STR_SUB_WHERE,
-                                    SUBSTR(STR_SUB_WHERE,
-                                           1,
-                                           INSTR(STR_SUB_WHERE, '%COL_MATXL') +
-                                           LENGTH('%COL_MATXL') - 1),
-                                    'WHERE A.MATXL ');
-          STR_SUB_WHERE  := REPLACE(STR_SUB_WHERE, ')', '') || ')';
-          /*BRAND*/
-          IF I_BRAND_SET IS NOT NULL
-          THEN
-            STR_BRAND_WHERE := '';
-          ELSE
-            STR_BRAND_WHERE := '';
-          END IF;
-        
-          /*小类+品牌*/
-          STR_FROM    := 'FROM (' || STR_SUB_SELECT || STR_SUB_FROM ||
-                         STR_SUB_WHERE || STR_BRAND_WHERE ||
-                         ') C,ML_MEMBER_MAPPING_SYN D ';
-          STR_ALL_SQL := STR_INSERT || STR_SELECT || STR_FROM || STR_WHERE;
-          RETURN(STR_ALL_SQL);
-        ELSE
-          IF I_BRAND_SET IS NOT NULL
-          /*I_MEMBER_LABEL_SET为空*/
-          /*I_ITEM_CODE_SET不为空*/
-          /*I_MATXL_SET为空*/
-          /*I_BRAND_SET不为空*/
-          THEN
-            STR_ALL_SQL := '';
-          ELSE
-            STR_ALL_SQL := '';
-          END IF;
-          RETURN(STR_ALL_SQL);
-        END IF;
-      END IF;
-    END IF;
-  END SPLICE_SQL1;
-
   PROCEDURE SYNC_MEMBER_LABEL_HEAD(IN_SYNC_DATE_KEY IN NUMBER) IS
     S_ETL        W_ETL_LOG%ROWTYPE;
     SP_NAME      S_PARAMETERS2.PNAME%TYPE;
@@ -714,7 +418,7 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_FILTER_PKG IS
              A.CURRENT_FLAG,
              A.SORT_FIELD
         FROM MEMBER_LABEL_HEAD@DW27 A
-       WHERE TRUNC(A.LAST_UPDATE_DATE) = TRUNC(IN_SYNC_DATE);
+       WHERE TRUNC(A.LAST_UPDATE_DATE) >= TRUNC(IN_SYNC_DATE);
     COMMIT;
   
     /*分析临时表*/
@@ -789,14 +493,13 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_FILTER_PKG IS
       RETURN;
   END SYNC_MEMBER_LABEL_HEAD;
 
-  PROCEDURE SYNC_MEMBER_LABEL_LINK(IN_SYNC_DATE_KEY IN NUMBER) IS
-    S_ETL        W_ETL_LOG%ROWTYPE;
-    SP_NAME      S_PARAMETERS2.PNAME%TYPE;
-    S_PARAMETER  S_PARAMETERS1.PARAMETER_VALUE%TYPE;
-    INSERT_ROWS  NUMBER;
-    UPDATE_ROWS  NUMBER;
-    DELETE_ROWS  NUMBER;
-    IN_SYNC_DATE DATE;
+  PROCEDURE SYNC_MEMBER_LABEL_LINK IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    DELETE_ROWS NUMBER;
     /*
        目的:      同步27上的member_label_link
        作者:      yangjin
@@ -808,7 +511,6 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_FILTER_PKG IS
     S_ETL.PROC_NAME  := SP_NAME;
     S_ETL.START_TIME := SYSDATE;
     S_PARAMETER      := 0;
-    IN_SYNC_DATE     := TO_DATE(IN_SYNC_DATE_KEY, 'YYYYMMDD');
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
@@ -820,81 +522,9 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_FILTER_PKG IS
         RETURN;
       END IF;
     END;
-    /*同步MEMBER_LABEL_LINK数据*/
-    /*先插入临时表*/
-    EXECUTE IMMEDIATE 'TRUNCATE TABLE MEMBER_LABEL_LINK_TMP';
-    INSERT INTO MEMBER_LABEL_LINK_TMP
-      SELECT A.ROW_ID,
-             A.MEMBER_KEY,
-             A.M_LABEL_ID,
-             A.M_LABEL_TYPE_ID,
-             A.CREATE_DATE,
-             A.CREATE_USER_ID,
-             A.LAST_UPDATE_DATE,
-             A.LAST_UPDATE_USER_ID
-        FROM MEMBER_LABEL_LINK@DW27 A
-       WHERE A.ROW_ID IS NOT NULL
-         AND TRUNC(A.LAST_UPDATE_DATE) = TRUNC(IN_SYNC_DATE);
-    COMMIT;
   
-    /*分析临时表*/
-    DBMS_STATS.GATHER_TABLE_STATS('ML', 'MEMBER_LABEL_LINK_TMP');
-  
-    /*插入到正式表*/
-    MERGE /*+APPEND*/
-    INTO MEMBER_LABEL_LINK T
-    USING MEMBER_LABEL_LINK_TMP S
-    ON (T.ROW_ID = S.ROW_ID)
-    WHEN MATCHED THEN
-      UPDATE
-         SET T.MEMBER_KEY          = S.MEMBER_KEY,
-             T.M_LABEL_ID          = S.M_LABEL_ID,
-             T.M_LABEL_TYPE_ID     = S.M_LABEL_TYPE_ID,
-             T.CREATE_DATE         = S.CREATE_DATE,
-             T.CREATE_USER_ID      = S.CREATE_USER_ID,
-             T.LAST_UPDATE_DATE    = S.LAST_UPDATE_DATE,
-             T.LAST_UPDATE_USER_ID = S.LAST_UPDATE_USER_ID
-    WHEN NOT MATCHED THEN
-      INSERT
-        (T.ROW_ID,
-         T.MEMBER_KEY,
-         T.M_LABEL_ID,
-         T.M_LABEL_TYPE_ID,
-         T.CREATE_DATE,
-         T.CREATE_USER_ID,
-         T.LAST_UPDATE_DATE,
-         T.LAST_UPDATE_USER_ID)
-      VALUES
-        (S.ROW_ID,
-         S.MEMBER_KEY,
-         S.M_LABEL_ID,
-         S.M_LABEL_TYPE_ID,
-         S.CREATE_DATE,
-         S.CREATE_USER_ID,
-         S.LAST_UPDATE_DATE,
-         S.LAST_UPDATE_USER_ID);
-    INSERT_ROWS := SQL%ROWCOUNT;
-    COMMIT;
-  
-    /*同步删除记录*/
-    /*创建全量的row_id临时表*/
-    EXECUTE IMMEDIATE 'drop table MLL_ROW_ID_TMP';
-    EXECUTE IMMEDIATE 'create table MLL_ROW_ID_TMP as
-      SELECT A.ROW_ID
-        FROM MEMBER_LABEL_LINK@DW27 A
-       WHERE A.ROW_ID IS NOT NULL';
-  
-    EXECUTE IMMEDIATE 'alter table MLL_ROW_ID_TMP add constraint MLL_ROW_ID_TMP_uk unique(ROW_ID)';
-  
-    /*分析临时表*/
-    DBMS_STATS.GATHER_TABLE_STATS('ML', 'MLL_ROW_ID_TMP');
-  
-    /*删除记录*/
-    DELETE MEMBER_LABEL_LINK A
-     WHERE NOT EXISTS
-     (SELECT 1 FROM MLL_ROW_ID_TMP B WHERE A.ROW_ID = B.ROW_ID);
-    DELETE_ROWS := SQL%ROWCOUNT;
-    COMMIT;
+    /*刷新物化视图MEMBER_LABEL_LINK_MV*/
+    DBMS_MVIEW.REFRESH('MEMBER_LABEL_LINK_MV', METHOD => 'FAST');
   
     /*日志记录模块*/
     S_ETL.END_TIME       := SYSDATE;
@@ -902,8 +532,7 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_FILTER_PKG IS
     S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
     S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
     S_ETL.ETL_STATUS     := 'SUCCESS';
-    S_ETL.ERR_MSG        := '输入参数:IN_SYNC_DATE_KEY:' ||
-                            TO_CHAR(IN_SYNC_DATE_KEY);
+    S_ETL.ERR_MSG        := '无输入参数';
     S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
                                   86400);
     SP_SBI_W_ETL_LOG(S_ETL);
@@ -951,72 +580,9 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_FILTER_PKG IS
         RETURN;
       END IF;
     END;
-    /*同步MEMBER_LABEL_LINK的消息推送标签*/
-    /*先插入临时表*/
-    EXECUTE IMMEDIATE 'TRUNCATE TABLE MEMBER_LABEL_LINK_MSGPUSH_TMP';
-    INSERT INTO MEMBER_LABEL_LINK_MSGPUSH_TMP
-      SELECT A.ROW_ID,
-             A.MEMBER_KEY,
-             A.M_LABEL_ID,
-             A.M_LABEL_TYPE_ID,
-             A.CREATE_DATE,
-             A.CREATE_USER_ID,
-             A.LAST_UPDATE_DATE,
-             A.LAST_UPDATE_USER_ID
-        FROM MEMBER_LABEL_LINK@DW27 A
-       WHERE A.ROW_ID IS NOT NULL
-         AND A.M_LABEL_ID BETWEEN 399 AND 401;
-    COMMIT;
   
-    /*分析临时表*/
-    DBMS_STATS.GATHER_TABLE_STATS('ML', 'MEMBER_LABEL_LINK_MSGPUSH_TMP');
-  
-    /*插入到正式表*/
-    MERGE /*+APPEND*/
-    INTO MEMBER_LABEL_LINK T
-    USING MEMBER_LABEL_LINK_MSGPUSH_TMP S
-    ON (T.ROW_ID = S.ROW_ID)
-    WHEN MATCHED THEN
-      UPDATE
-         SET T.MEMBER_KEY          = S.MEMBER_KEY,
-             T.M_LABEL_ID          = S.M_LABEL_ID,
-             T.M_LABEL_TYPE_ID     = S.M_LABEL_TYPE_ID,
-             T.CREATE_DATE         = S.CREATE_DATE,
-             T.CREATE_USER_ID      = S.CREATE_USER_ID,
-             T.LAST_UPDATE_DATE    = S.LAST_UPDATE_DATE,
-             T.LAST_UPDATE_USER_ID = S.LAST_UPDATE_USER_ID
-    WHEN NOT MATCHED THEN
-      INSERT
-        (T.ROW_ID,
-         T.MEMBER_KEY,
-         T.M_LABEL_ID,
-         T.M_LABEL_TYPE_ID,
-         T.CREATE_DATE,
-         T.CREATE_USER_ID,
-         T.LAST_UPDATE_DATE,
-         T.LAST_UPDATE_USER_ID)
-      VALUES
-        (S.ROW_ID,
-         S.MEMBER_KEY,
-         S.M_LABEL_ID,
-         S.M_LABEL_TYPE_ID,
-         S.CREATE_DATE,
-         S.CREATE_USER_ID,
-         S.LAST_UPDATE_DATE,
-         S.LAST_UPDATE_USER_ID);
-    INSERT_ROWS := SQL%ROWCOUNT;
-    COMMIT;
-  
-    /*同步删除记录*/
-  
-    /*删除记录*/
-    DELETE MEMBER_LABEL_LINK A
-     WHERE A.M_LABEL_ID BETWEEN 399 AND 401
-       AND NOT EXISTS (SELECT 1
-              FROM MEMBER_LABEL_LINK_MSGPUSH_TMP B
-             WHERE A.ROW_ID = B.ROW_ID);
-    DELETE_ROWS := SQL%ROWCOUNT;
-    COMMIT;
+    /*刷新物化视图MEMBER_LABEL_LINK_MV*/
+    DBMS_MVIEW.REFRESH('MEMBER_LABEL_LINK_MV', METHOD => 'FAST');
   
     /*日志记录模块*/
     S_ETL.END_TIME       := SYSDATE;
@@ -1059,71 +625,75 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_FILTER_PKG IS
            A.MATXL_SET IS NOT NULL) /*如果会员标签、商品编码、品牌、小类编码都为空，则不执行*/
        AND A.STATUS = 0;
   
-    /*修改状态为正在执行*/
-    UPDATE MEMBER_FILTER_OPTION_HEAD A
-       SET A.STATUS = 1
-     WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
-    COMMIT;
-  
-    /*取出会员标签筛选条件*/
-    SELECT A.MEMBER_LABEL_ID_SET
-      INTO V_TABLE_HEAD.MEMBER_LABEL_ID_SET
-      FROM MEMBER_FILTER_OPTION_HEAD A
-     WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
-  
-    /*取出商品筛选条件*/
-    SELECT A.ITEM_CODE_SET
-      INTO V_TABLE_HEAD.ITEM_CODE_SET
-      FROM MEMBER_FILTER_OPTION_HEAD A
-     WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
-  
-    /*取出小类编码筛选条件*/
-    SELECT A.MATXL_SET
-      INTO V_TABLE_HEAD.MATXL_SET
-      FROM MEMBER_FILTER_OPTION_HEAD A
-     WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
-  
-    /*取出品牌筛选条件*/
-    SELECT A.BRAND_SET
-      INTO V_TABLE_HEAD.BRAND_SET
-      FROM MEMBER_FILTER_OPTION_HEAD A
-     WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
-  
-    /*转换成SQL语句*/
-    V_STR_SQL := MEMBER_FILTER_PKG.SPLICE_SQL(V_TABLE_HEAD.FILTER_ID,
-                                              V_TABLE_HEAD.MEMBER_LABEL_ID_SET,
-                                              V_TABLE_HEAD.ITEM_CODE_SET,
-                                              V_TABLE_HEAD.BRAND_SET,
-                                              V_TABLE_HEAD.MATXL_SET);
-  
-    /*执行SQL语句*/
-    DBMS_OUTPUT.PUT_LINE(V_STR_SQL);
-    EXECUTE IMMEDIATE V_STR_SQL;
-  
-    /*记录插入结果表的行数*/
-    SELECT NVL(COUNT(1), 0)
-      INTO V_TABLE_HEAD.RESULT_RECORDS
-      FROM MEMBER_FILTER_RESULT A
-     WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
-  
-    /*导出筛选结果的文本文件*/
-    MEMBER_OUTPUT_FILE(V_TABLE_HEAD.FILTER_ID,
-                       V_TABLE_HEAD.OUTPUT_FILE_PATH);
-  
-    /*记录执行完成时间*/
-    V_TABLE_HEAD.EXECUTION_END_TIME := SYSDATE;
-  
-    /*执行完成写入记录*/
-    UPDATE MEMBER_FILTER_OPTION_HEAD A
-       SET A.STATUS               = 2,
-           A.RESULT_MESSAGE       = 'SUCCESS',
-           A.EXECUTION_START_TIME = V_TABLE_HEAD.EXECUTION_START_TIME,
-           A.EXECUTION_END_TIME   = V_TABLE_HEAD.EXECUTION_END_TIME,
-           A.RESULT_RECORDS       = V_TABLE_HEAD.RESULT_RECORDS,
-           A.OUTPUT_FILE_PATH     = V_TABLE_HEAD.OUTPUT_FILE_PATH
-     WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID
-       AND A.STATUS = 1;
-    COMMIT;
+    /*获取到filter_id之后再执行后面的语句*/
+    IF V_TABLE_HEAD.FILTER_ID IS NOT NULL
+    THEN
+      /*修改状态为正在执行*/
+      UPDATE MEMBER_FILTER_OPTION_HEAD A
+         SET A.STATUS = 1
+       WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
+      COMMIT;
+    
+      /*取出会员标签筛选条件*/
+      SELECT A.MEMBER_LABEL_ID_SET
+        INTO V_TABLE_HEAD.MEMBER_LABEL_ID_SET
+        FROM MEMBER_FILTER_OPTION_HEAD A
+       WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
+    
+      /*取出商品筛选条件*/
+      SELECT A.ITEM_CODE_SET
+        INTO V_TABLE_HEAD.ITEM_CODE_SET
+        FROM MEMBER_FILTER_OPTION_HEAD A
+       WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
+    
+      /*取出小类编码筛选条件*/
+      SELECT A.MATXL_SET
+        INTO V_TABLE_HEAD.MATXL_SET
+        FROM MEMBER_FILTER_OPTION_HEAD A
+       WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
+    
+      /*取出品牌筛选条件*/
+      SELECT A.BRAND_SET
+        INTO V_TABLE_HEAD.BRAND_SET
+        FROM MEMBER_FILTER_OPTION_HEAD A
+       WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
+    
+      /*转换成SQL语句*/
+      V_STR_SQL := MEMBER_FILTER_PKG.SPLICE_SQL(V_TABLE_HEAD.FILTER_ID,
+                                                V_TABLE_HEAD.MEMBER_LABEL_ID_SET,
+                                                V_TABLE_HEAD.ITEM_CODE_SET,
+                                                V_TABLE_HEAD.BRAND_SET,
+                                                V_TABLE_HEAD.MATXL_SET);
+    
+      /*执行SQL语句*/
+      DBMS_OUTPUT.PUT_LINE(V_STR_SQL);
+      EXECUTE IMMEDIATE V_STR_SQL;
+    
+      /*记录插入结果表的行数*/
+      SELECT NVL(COUNT(DISTINCT A.MEMBER_BP), 0)
+        INTO V_TABLE_HEAD.RESULT_RECORDS
+        FROM MEMBER_FILTER_RESULT A
+       WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
+    
+      /*导出筛选结果的文本文件*/
+      MEMBER_OUTPUT_FILE(V_TABLE_HEAD.FILTER_ID,
+                         V_TABLE_HEAD.OUTPUT_FILE_PATH);
+    
+      /*记录执行完成时间*/
+      V_TABLE_HEAD.EXECUTION_END_TIME := SYSDATE;
+    
+      /*执行完成写入记录*/
+      UPDATE MEMBER_FILTER_OPTION_HEAD A
+         SET A.STATUS               = 2,
+             A.RESULT_MESSAGE       = 'SUCCESS',
+             A.EXECUTION_START_TIME = V_TABLE_HEAD.EXECUTION_START_TIME,
+             A.EXECUTION_END_TIME   = V_TABLE_HEAD.EXECUTION_END_TIME,
+             A.RESULT_RECORDS       = V_TABLE_HEAD.RESULT_RECORDS,
+             A.OUTPUT_FILE_PATH     = V_TABLE_HEAD.OUTPUT_FILE_PATH
+       WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID
+         AND A.STATUS = 1;
+      COMMIT;
+    END IF;
   
   EXCEPTION
     WHEN OTHERS THEN
@@ -1156,7 +726,7 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_FILTER_PKG IS
     V_FILE_NAME   VARCHAR2(50);
   BEGIN
     /*获取导出的行数*/
-    SELECT COUNT(1)
+    SELECT COUNT(DISTINCT A.MEMBER_BP)
       INTO T_HEAD.RESULT_RECORDS
       FROM MEMBER_FILTER_RESULT A
      WHERE A.FILTER_ID = I_FILTER_ID;
@@ -1176,24 +746,20 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_FILTER_PKG IS
     O_OUTPUT_FILE_PATH := '/Public/download';
     O_OUTPUT_FILE_PATH := O_OUTPUT_FILE_PATH || '/' || V_FILE_NAME;
     /*写入title*/
-    UTL_FILE.PUT_LINE(V_OUTPUT_FILE,
-                      'ROWNUM,FILTER_ID,MEMBER_BP,VID,OPENID,A.PUSHID');
+    UTL_FILE.PUT_LINE(V_OUTPUT_FILE, 'ROWNUM,FILTER_ID,MEMBER_BP');
   
     /*循环，获取需要导出的数据*/
-    FOR I IN (SELECT ROWNUM,
-                     A.FILTER_ID,
-                     A.MEMBER_BP,
-                     A.VID,
-                     A.OPENID,
-                     A.PUSHID
-                FROM MEMBER_FILTER_RESULT A
-               WHERE A.FILTER_ID = I_FILTER_ID) LOOP
+    FOR I IN (SELECT ROWNUM, B.FILTER_ID, B.MEMBER_BP
+                FROM (SELECT A.FILTER_ID, A.MEMBER_BP
+                        FROM MEMBER_FILTER_RESULT A
+                       WHERE A.FILTER_ID = I_FILTER_ID
+                       GROUP BY A.FILTER_ID, A.MEMBER_BP
+                       ORDER BY A.FILTER_ID, A.MEMBER_BP) B) LOOP
     
       /*行数据依次写入文件*/
       UTL_FILE.PUT_LINE(V_OUTPUT_FILE,
                         I.ROWNUM || ',' || I.FILTER_ID || ',' ||
-                        I.MEMBER_BP || ',' || I.VID || ',' || I.OPENID || ',' ||
-                        I.PUSHID);
+                        I.MEMBER_BP);
     END LOOP;
   
     /*关闭文件*/

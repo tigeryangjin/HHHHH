@@ -1548,7 +1548,8 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                  GROUP BY A.MEMBER_KEY) P
          WHERE NOT EXISTS (SELECT 1
                   FROM MEMBER_LABEL_LINK B
-                 WHERE B.M_LABEL_ID BETWEEN 42 AND 47
+                 WHERE B.M_LABEL_ID IN
+                       (42, 43, 44, 45, 46, 47, 48, 181, 182)
                    AND P.MEMBER_KEY = B.MEMBER_KEY);
       
         FOR I IN 1 .. VAR_ARRAY.COUNT LOOP
@@ -1634,8 +1635,10 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                AND NOT EXISTS
              (SELECT 1
                       FROM MEMBER_LABEL_LINK MLL
-                     WHERE MLL.M_LABEL_ID BETWEEN 42 AND 47
-                       AND ORD.MEMBER_KEY = MLL.MEMBER_KEY);
+                     WHERE MLL.M_LABEL_ID IN
+                           (42, 43, 44, 45, 46, 47, 48, 181, 182)
+                       AND ORD.MEMBER_KEY = MLL.MEMBER_KEY
+                       AND MLH.M_LABEL_ID = MLL.M_LABEL_ID);
           COMMIT;
           INSERT_ROWS := INSERT_ROWS + 1;
         END LOOP;
@@ -1645,7 +1648,8 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
       /*当会员首次订购后，更新未产生首单标志*/
       DECLARE
         TYPE TYPE_ARRAYS IS RECORD(
-          MEMBER_KEY NUMBER(20));
+          MEMBER_KEY  NUMBER(20),
+          CREATE_DATE NUMBER(20));
       
         TYPE TYPE_ARRAY IS TABLE OF TYPE_ARRAYS INDEX BY BINARY_INTEGER; --类似二维数组 
       
@@ -1655,14 +1659,16 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
         SELECT P.*
           BULK COLLECT
           INTO VAR_ARRAY
-          FROM (SELECT A.MEMBER_KEY
+          FROM (SELECT A.MEMBER_KEY,
+                       TO_CHAR(TRUNC(MIN(A.CREATE_DATE)), 'YYYYMMDD') CREATE_DATE
                   FROM MEMBER_LABEL_LINK A
                  WHERE A.M_LABEL_ID = 42
                  GROUP BY A.MEMBER_KEY) P
          WHERE EXISTS (SELECT 1
                   FROM FACT_GOODS_SALES B
                  WHERE B.ORDER_STATE = 1
-                   AND B.POSTING_DATE_KEY <= IN_POSTING_DATE_KEY
+                      /*订购日期大于未产生首单标签的日期*/
+                   AND B.POSTING_DATE_KEY >= CREATE_DATE
                    AND P.MEMBER_KEY = B.MEMBER_KEY);
         FOR I IN 1 .. VAR_ARRAY.COUNT LOOP
           /*更新[未产生首单]标签*/
@@ -1739,6 +1745,7 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
         END LOOP;
         UPDATE_ROWS := VAR_ARRAY.COUNT;
       END;
+    
     END;
   
     /*日志记录模块*/
@@ -2507,7 +2514,7 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                  ELSE
                                   0
                                END IS_INJURED_PERIOD
-                          FROM (SELECT RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.ORDER_KEY DESC) RANK1, /*RANK1=1为最新订单，判断此订单是否拒退*/
+                          FROM (SELECT RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.ORDER_KEY, B.ORDER_OBJ_ID DESC) RANK1, /*RANK1=1为最新订单，判断此订单是否拒退*/
                                        A.ORDER_OBJ_ID O_ORDER_OBJ_ID,
                                        A.ORDER_KEY O_ORDER_KEY,
                                        B.ORDER_OBJ_ID R_ORDER_OBJ_ID,
@@ -2517,11 +2524,19 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                        A.MEMBER_KEY,
                                        A.POSTING_DATE_KEY O_POSTING_DATE_KEY,
                                        B.POSTING_DATE_KEY R_POSTING_DATE_KEY
-                                  FROM (SELECT *
+                                  FROM (SELECT ORDER_OBJ_ID,
+                                               ORDER_KEY,
+                                               CANCEL_STATE,
+                                               MEMBER_KEY,
+                                               POSTING_DATE_KEY
                                           FROM FACT_ORDER
                                          WHERE POSTING_DATE_KEY =
                                                IN_POSTING_DATE_KEY) A,
-                                       (SELECT *
+                                       (SELECT ORDER_OBJ_ID,
+                                               ORDER_KEY,
+                                               CANCEL_STATE,
+                                               MEMBER_KEY,
+                                               POSTING_DATE_KEY
                                           FROM FACT_ORDER_REVERSE
                                          WHERE POSTING_DATE_KEY =
                                                IN_POSTING_DATE_KEY

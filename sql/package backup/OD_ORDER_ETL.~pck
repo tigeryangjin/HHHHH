@@ -44,6 +44,16 @@ CREATE OR REPLACE PACKAGE OD_ORDER_ETL IS
   最后更改日期：
   */
 
+  PROCEDURE FIX_ODS_ORDER(IN_DATE_KEY IN NUMBER);
+  /*
+  功能名:       FIX_ODS_ORDER
+  目的:         处理指定日期的数据修复
+  作者:         yangjin
+  创建时间：    2018/04/12
+  最后修改人：
+  最后更改日期：
+  */
+
 END OD_ORDER_ETL;
 /
 CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
@@ -67,7 +77,8 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -173,9 +184,17 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
                     'ZORDER02'
                    WHEN B.ORDER_GB IN ('HM41', 'HM42', 'HM45', 'HM46') THEN
                     'ZORDER03'
-                 END STSMA --状态参数文件
-            FROM ODSHAPPIGO.OD_ORDER A, ODSHAPPIGO.OD_ORDER_ITEM B
+                 END STSMA, --状态参数文件
+                 C.LIVE_YN ZEAMC010, --直播/重播
+                 C.B_DATE ZEAMC011, --单元开始日期
+                 C.E_DATE ZEAMC012, --单元结束日期
+                 C.B_TIME ZEAMC013, --单元开始时间
+                 C.E_TIME ZEAMC014 --单元结束时间
+            FROM ODSHAPPIGO.OD_ORDER             A,
+                 ODSHAPPIGO.OD_ORDER_ITEM        B,
+                 ODSHAPPIGO.ZTAM_BD_BR_FRAMESCHE C
            WHERE A.ORDER_NO = B.ORDER_NO
+             AND SUBSTR(B.PROG_ID, 1, 11) = C.PROG_ID(+)
              AND B.ORDER_GB = 'HM20'
              AND (B.ORDER_DATE >= TO_DATE(IN_DATE_KEY, 'YYYYMMDD') - 2 AND
                  B.ORDER_DATE < TO_DATE(IN_DATE_KEY, 'YYYYMMDD') OR
@@ -469,7 +488,12 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
                  WH_CODE ZTLEC001,
                  FREIGHT_AMT ZCONDK001,
                  NULL "0CRM_SOLDTO_0COUNTRY",
-                 NULL "0CRM_SOLDTO_0REGION"
+                 NULL "0CRM_SOLDTO_0REGION",
+                 ZEAMC010,
+                 ZEAMC011,
+                 ZEAMC012,
+                 ZEAMC013,
+                 ZEAMC014
             FROM ZHM_FORDER),
         ZECRD012 AS
          (SELECT GUID_H "0CRM_OHGUID",
@@ -600,12 +624,12 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
                  "0CRM_CRD_AT" CRM_CRD_AT,
                  "0CREA_TIME" CREA_TIME,
                  ZEAMC001 "/BIC/ZEAMC001",
-                 NULL "/BIC/ZEAMC010",
-                 NULL "/BIC/ZEAMC011",
-                 NULL "/BIC/ZEAMC012",
+                 ZEAMC010 "/BIC/ZEAMC010",
+                 ZEAMC011 "/BIC/ZEAMC011",
+                 ZEAMC012 "/BIC/ZEAMC012",
                  NULL "/BIC/ZEAMC037",
-                 NULL "/BIC/ZEAMC013",
-                 NULL "/BIC/ZEAMC014",
+                 ZEAMC013 "/BIC/ZEAMC013",
+                 ZEAMC014 "/BIC/ZEAMC014",
                  '00000000' "/BIC/ZTCMC021",
                  '000000' "/BIC/ZTCMC022",
                  ZPST_TIM "/BIC/ZTCMC027",
@@ -981,7 +1005,8 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -1264,7 +1289,8 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -1542,7 +1568,8 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -1798,6 +1825,22 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
       SP_SBI_W_ETL_LOG(S_ETL);
       RETURN;
   END INSERT_ODS_ORDER_CANCEL;
+
+  PROCEDURE FIX_ODS_ORDER(IN_DATE_KEY IN NUMBER) IS
+    /*
+    功能说明：
+    作者时间：yangjin  2018-04-09
+    */
+  BEGIN
+    INSERT_MODIFY_TP(IN_DATE_KEY);
+    COMMIT;
+    MERGE_SAP_BIC_AZTCRD00100;
+    COMMIT;
+    INSERT_ODS_ORDER(IN_DATE_KEY);
+    COMMIT;
+    INSERT_ODS_ORDER_CANCEL(IN_DATE_KEY);
+    COMMIT;
+  END FIX_ODS_ORDER;
 
 END OD_ORDER_ETL;
 /

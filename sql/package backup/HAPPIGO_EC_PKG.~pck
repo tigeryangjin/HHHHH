@@ -124,6 +124,16 @@ CREATE OR REPLACE PACKAGE HAPPIGO_EC_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE MERGE_EC_GOODS_MANUAL;
+  /*
+  功能名:       MERGE_EC_GOODS_MANUAL
+  目的:         
+  作者:         yangjin
+  创建时间：    2018/01/31
+  最后修改人：
+  最后更改日期：
+  */
+
 END HAPPIGO_EC_PKG;
 /
 CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
@@ -2365,6 +2375,108 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
       SP_SBI_W_ETL_LOG(S_ETL);
       RETURN;
   END MERGE_EC_GOODS_COMMON;
+
+  PROCEDURE MERGE_EC_GOODS_MANUAL IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-01-31
+    */
+  BEGIN
+    SP_NAME          := 'HAPPIGO_EC_PKG.MERGE_EC_GOODS_MANUAL'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'FACT_EC_GOODS_MANUAL'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE /*+APPEND*/
+      INTO FACT_EC_GOODS_MANUAL T
+      USING (SELECT A.MANUAL_ID,
+                    A.ITEM_CODE,
+                    A.COMMON_ID,
+                    A.ZMALAB,
+                    A.ZLABNAME,
+                    A.ZMALABTXT,
+                    A.CHECKED,
+                    A.ADD_TIME,
+                    A.SHOW_SORT,
+                    SYSDATE     W_INSERT_DT,
+                    SYSDATE     W_UPDATE_DT
+               FROM EC_GOODS_MANUAL_TMP A) S
+      ON (T.MANUAL_ID = S.MANUAL_ID)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.ITEM_CODE   = S.ITEM_CODE,
+               T.COMMON_ID   = S.COMMON_ID,
+               T.ZMALAB      = S.ZMALAB,
+               T.ZLABNAME    = S.ZLABNAME,
+               T.ZMALABTXT   = S.ZMALABTXT,
+               T.CHECKED     = S.CHECKED,
+               T.ADD_TIME    = S.ADD_TIME,
+               T.SHOW_SORT   = S.SHOW_SORT,
+               T.W_UPDATE_DT = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.MANUAL_ID,
+           T.ITEM_CODE,
+           T.COMMON_ID,
+           T.ZMALAB,
+           T.ZLABNAME,
+           T.ZMALABTXT,
+           T.CHECKED,
+           T.ADD_TIME,
+           T.SHOW_SORT,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.MANUAL_ID,
+           S.ITEM_CODE,
+           S.COMMON_ID,
+           S.ZMALAB,
+           S.ZLABNAME,
+           S.ZMALABTXT,
+           S.CHECKED,
+           S.ADD_TIME,
+           S.SHOW_SORT,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_EC_GOODS_MANUAL;
 
 END HAPPIGO_EC_PKG;
 /

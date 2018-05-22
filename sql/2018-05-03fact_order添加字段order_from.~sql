@@ -1,0 +1,66 @@
+--1.
+SELECT *
+  FROM FACT_ORDER A
+ WHERE A.POSTING_DATE_KEY = 20170310
+   AND A.ORDER_FROM = '76';
+
+--2.
+SELECT * FROM FACT_GOODS_SALES;
+
+--3.
+SELECT *
+  FROM W_ETL_LOG A
+ WHERE A.PROC_NAME = 'createordergoods'
+ ORDER BY A.START_TIME DESC;
+
+--4.history 2017.1.1~
+--4.1
+CREATE TABLE YANGJIN.ORDER_FROM_TMP AS
+  SELECT DISTINCT B.CRM_OBJ_ID, B.ZCRMD018 FROM ODSHAPPIGO.ODS_ORDER B;
+--4.2.fact_order
+
+--4.3.fact_goods_sales
+UPDATE FACT_GOODS_SALES A
+   SET A.ORDER_FROM =
+       (SELECT C.ZCRMD018
+          FROM YANGJIN.ORDER_FROM_TMP C
+         WHERE A.ORDER_KEY = C.CRM_OBJ_ID)
+ WHERE A.ORDER_FROM IS NULL
+   AND EXISTS (SELECT 1
+          FROM YANGJIN.ORDER_FROM_TMP D
+         WHERE A.ORDER_KEY = D.CRM_OBJ_ID)
+   AND A.POSTING_DATE_KEY = 20180301;
+COMMIT;
+
+--4.4
+begin
+  -- Call the procedure
+  yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+	yjtmp.order_from_update;
+end;
+/
+
+--tmp
+  SELECT (SELECT COUNT(1)
+            FROM YANGJIN.ORDER_FROM_TMP A
+           WHERE A.IS_UPDATE = 1) CNT,
+         (SELECT COUNT(1)
+            FROM YANGJIN.ORDER_FROM_TMP A
+           WHERE A.IS_UPDATE = 1) /
+         (SELECT COUNT(1)
+            FROM YANGJIN.ORDER_FROM_TMP A
+           WHERE A.ZCRMD018 IS NOT NULL) RATE
+    FROM DUAL;

@@ -134,6 +134,66 @@ CREATE OR REPLACE PACKAGE HAPPIGO_EC_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE MERGE_EC_GOODS_CLASS_SUB;
+  /*
+  功能名:       MERGE_EC_GOODS_CLASS_SUB
+  目的:         
+  作者:         yangjin
+  创建时间：    2018/03/23
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MERGE_G_ACTIVITY;
+  /*
+  功能名:       MERGE_G_ACTIVITY
+  目的:         
+  作者:         yangjin
+  创建时间：    2018/05/11
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MERGE_G_ACTIVITY_GOODS;
+  /*
+  功能名:       MERGE_G_ACTIVITY_GOODS
+  目的:         
+  作者:         yangjin
+  创建时间：    2018/05/11
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MERGE_G_ACTIVITY_GOODS_GROUP;
+  /*
+  功能名:       MERGE_G_ACTIVITY_GOODS_GROUP
+  目的:         
+  作者:         yangjin
+  创建时间：    2018/05/11
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MERGE_G_ACTIVITY_VOUCHER;
+  /*
+  功能名:       MERGE_G_ACTIVITY_VOUCHER
+  目的:         
+  作者:         yangjin
+  创建时间：    2018/05/11
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MERGE_GOODS_EVALUATE_ALIYUN;
+  /*
+  功能名:       MERGE_GOODS_EVALUATE_ALIYUN
+  目的:         
+  作者:         yangjin
+  创建时间：    2018/05/14
+  最后修改人：
+  最后更改日期：
+  */
+
 END HAPPIGO_EC_PKG;
 /
 CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
@@ -2477,6 +2537,676 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
       SP_SBI_W_ETL_LOG(S_ETL);
       RETURN;
   END MERGE_EC_GOODS_MANUAL;
+
+  PROCEDURE MERGE_EC_GOODS_CLASS_SUB IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-03-23
+    */
+  BEGIN
+    SP_NAME          := 'HAPPIGO_EC_PKG.MERGE_EC_GOODS_CLASS_SUB'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'DIM_EC_GOODS_CLASS_SUB'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE /*+APPEND*/
+      INTO DIM_EC_GOODS_CLASS_SUB T
+      USING (SELECT A.ID,
+                    A.GC_ID,
+                    A.NAME,
+                    A.PIC,
+                    A.DESCRIPTION,
+                    A.SORT,
+                    A.STATUS,
+                    SYSDATE       W_INSERT_DT,
+                    SYSDATE       W_UPDATE_DT
+               FROM EC_GOODS_CLASS_SUB_TMP A) S
+      ON (T.ID = S.ID)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.GC_ID       = S.GC_ID,
+               T.NAME        = S.NAME,
+               T.PIC         = S.PIC,
+               T.DESCRIPTION = S.DESCRIPTION,
+               T.SORT        = S.SORT,
+               T.STATUS      = S.STATUS,
+               T.W_UPDATE_DT = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ID,
+           T.GC_ID,
+           T.NAME,
+           T.PIC,
+           T.DESCRIPTION,
+           T.SORT,
+           T.STATUS,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.ID,
+           S.GC_ID,
+           S.NAME,
+           S.PIC,
+           S.DESCRIPTION,
+           S.SORT,
+           S.STATUS,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+    
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_EC_GOODS_CLASS_SUB;
+
+  PROCEDURE MERGE_G_ACTIVITY IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-03-23
+    */
+  BEGIN
+    SP_NAME          := 'HAPPIGO_EC_PKG.MERGE_G_ACTIVITY'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'G_ACTIVITY'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE /*+APPEND*/
+      INTO G_ACTIVITY T
+      USING (SELECT A.ID_COL,
+                    A.TITLE,
+                    A.SHARE_TITLE,
+                    A.SHARE_DESC,
+                    A.SHARE_IMG,
+                    A.ACTIVITY_NAME,
+                    A.TRACE_PAGE_NAME,
+                    A.CREATE_TIME,
+                    A.BEGIN_TIME,
+                    A.END_TIME,
+                    A.FROM_COL,
+                    A.ENABLE_COL,
+                    A.AUTHOR_ID,
+                    SYSDATE           W_INSERT_DT,
+                    SYSDATE           W_UPDATE_DT
+               FROM G_ACTIVITY_TMP A) S
+      ON (T.ID_COL = S.ID_COL)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.TITLE           = S.TITLE,
+               T.SHARE_TITLE     = S.SHARE_TITLE,
+               T.SHARE_DESC      = S.SHARE_DESC,
+               T.SHARE_IMG       = S.SHARE_IMG,
+               T.ACTIVITY_NAME   = S.ACTIVITY_NAME,
+               T.TRACE_PAGE_NAME = S.TRACE_PAGE_NAME,
+               T.CREATE_TIME     = S.CREATE_TIME,
+               T.BEGIN_TIME      = S.BEGIN_TIME,
+               T.END_TIME        = S.END_TIME,
+               T.FROM_COL        = S.FROM_COL,
+               T.ENABLE_COL      = S.ENABLE_COL,
+               T.AUTHOR_ID       = S.AUTHOR_ID,
+               T.W_UPDATE_DT     = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ID_COL,
+           T.TITLE,
+           T.SHARE_TITLE,
+           T.SHARE_DESC,
+           T.SHARE_IMG,
+           T.ACTIVITY_NAME,
+           T.TRACE_PAGE_NAME,
+           T.CREATE_TIME,
+           T.BEGIN_TIME,
+           T.END_TIME,
+           T.FROM_COL,
+           T.ENABLE_COL,
+           T.AUTHOR_ID,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.ID_COL,
+           S.TITLE,
+           S.SHARE_TITLE,
+           S.SHARE_DESC,
+           S.SHARE_IMG,
+           S.ACTIVITY_NAME,
+           S.TRACE_PAGE_NAME,
+           S.CREATE_TIME,
+           S.BEGIN_TIME,
+           S.END_TIME,
+           S.FROM_COL,
+           S.ENABLE_COL,
+           S.AUTHOR_ID,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+    
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_G_ACTIVITY;
+
+  PROCEDURE MERGE_G_ACTIVITY_GOODS IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-03-23
+    */
+  BEGIN
+    SP_NAME          := 'HAPPIGO_EC_PKG.MERGE_G_ACTIVITY_GOODS'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'G_ACTIVITY_GOODS'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE /*+APPEND*/
+      INTO G_ACTIVITY_GOODS T
+      USING (SELECT A.ID_COL,
+                    A.GROUP_ID,
+                    A.GOODS_NAME,
+                    A.GOODS_COMMONID,
+                    A.ITEM_CODE,
+                    A.GOODS_JINGLE,
+                    A.GOODS_JINGLE2,
+                    A.GOODS_REDUCTION,
+                    A.SUPERSCRIPT_IMAGE,
+                    A.GOODS_IMAGE,
+                    A.GOODS_PROMOTION_PRICE,
+                    A.GOODS_MARKETPRICE,
+                    A.GOODS_STORAGE,
+                    A.GOODS_STATE,
+                    A.GOODS_SALES,
+                    A.ENABLE_COL,
+                    A.CREATE_TIME,
+                    A.UPDATE_TIME,
+                    A.SORT_COL,
+                    A.SALES_SORT,
+                    A.SYNC_STATUS,
+                    A.SYNC_TIME,
+                    A.SYNC_ENABLE,
+                    SYSDATE                 W_INSERT_DT,
+                    SYSDATE                 W_UPDATE_DT
+               FROM G_ACTIVITY_GOODS_TMP A) S
+      ON (T.ID_COL = S.ID_COL)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.GROUP_ID              = S.GROUP_ID,
+               T.GOODS_NAME            = S.GOODS_NAME,
+               T.GOODS_COMMONID        = S.GOODS_COMMONID,
+               T.ITEM_CODE             = S.ITEM_CODE,
+               T.GOODS_JINGLE          = S.GOODS_JINGLE,
+               T.GOODS_JINGLE2         = S.GOODS_JINGLE2,
+               T.GOODS_REDUCTION       = S.GOODS_REDUCTION,
+               T.SUPERSCRIPT_IMAGE     = S.SUPERSCRIPT_IMAGE,
+               T.GOODS_IMAGE           = S.GOODS_IMAGE,
+               T.GOODS_PROMOTION_PRICE = S.GOODS_PROMOTION_PRICE,
+               T.GOODS_MARKETPRICE     = S.GOODS_MARKETPRICE,
+               T.GOODS_STORAGE         = S.GOODS_STORAGE,
+               T.GOODS_STATE           = S.GOODS_STATE,
+               T.GOODS_SALES           = S.GOODS_SALES,
+               T.ENABLE_COL            = S.ENABLE_COL,
+               T.CREATE_TIME           = S.CREATE_TIME,
+               T.UPDATE_TIME           = S.UPDATE_TIME,
+               T.SORT_COL              = S.SORT_COL,
+               T.SALES_SORT            = S.SALES_SORT,
+               T.SYNC_STATUS           = S.SYNC_STATUS,
+               T.SYNC_TIME             = S.SYNC_TIME,
+               T.SYNC_ENABLE           = S.SYNC_ENABLE,
+               T.W_UPDATE_DT           = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ID_COL,
+           T.GROUP_ID,
+           T.GOODS_NAME,
+           T.GOODS_COMMONID,
+           T.ITEM_CODE,
+           T.GOODS_JINGLE,
+           T.GOODS_JINGLE2,
+           T.GOODS_REDUCTION,
+           T.SUPERSCRIPT_IMAGE,
+           T.GOODS_IMAGE,
+           T.GOODS_PROMOTION_PRICE,
+           T.GOODS_MARKETPRICE,
+           T.GOODS_STORAGE,
+           T.GOODS_STATE,
+           T.GOODS_SALES,
+           T.ENABLE_COL,
+           T.CREATE_TIME,
+           T.UPDATE_TIME,
+           T.SORT_COL,
+           T.SALES_SORT,
+           T.SYNC_STATUS,
+           T.SYNC_TIME,
+           T.SYNC_ENABLE,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.ID_COL,
+           S.GROUP_ID,
+           S.GOODS_NAME,
+           S.GOODS_COMMONID,
+           S.ITEM_CODE,
+           S.GOODS_JINGLE,
+           S.GOODS_JINGLE2,
+           S.GOODS_REDUCTION,
+           S.SUPERSCRIPT_IMAGE,
+           S.GOODS_IMAGE,
+           S.GOODS_PROMOTION_PRICE,
+           S.GOODS_MARKETPRICE,
+           S.GOODS_STORAGE,
+           S.GOODS_STATE,
+           S.GOODS_SALES,
+           S.ENABLE_COL,
+           S.CREATE_TIME,
+           S.UPDATE_TIME,
+           S.SORT_COL,
+           S.SALES_SORT,
+           S.SYNC_STATUS,
+           S.SYNC_TIME,
+           S.SYNC_ENABLE,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+    
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_G_ACTIVITY_GOODS;
+
+  PROCEDURE MERGE_G_ACTIVITY_GOODS_GROUP IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-03-23
+    */
+  BEGIN
+    SP_NAME          := 'HAPPIGO_EC_PKG.MERGE_G_ACTIVITY_GOODS_GROUP'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'G_ACTIVITY_GOODS_GROUP'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE /*+APPEND*/
+      INTO G_ACTIVITY_GOODS_GROUP T
+      USING (SELECT A.ID_COL,
+                    A.ACTIVITY_ID,
+                    A.TITLE,
+                    A.CREATE_TIME,
+                    A.UPDATE_TIME,
+                    A.CUSTOMED_SUPERSCRIPT,
+                    A.IMAGE_SRC,
+                    A.METHOD,
+                    SYSDATE                W_INSERT_DT,
+                    SYSDATE                W_UPDATE_DT
+               FROM G_ACTIVITY_GOODS_GROUP_TMP A) S
+      ON (T.ID_COL = S.ID_COL)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.ACTIVITY_ID          = S.ACTIVITY_ID,
+               T.TITLE                = S.TITLE,
+               T.CREATE_TIME          = S.CREATE_TIME,
+               T.UPDATE_TIME          = S.UPDATE_TIME,
+               T.CUSTOMED_SUPERSCRIPT = S.CUSTOMED_SUPERSCRIPT,
+               T.IMAGE_SRC            = S.IMAGE_SRC,
+               T.METHOD               = S.METHOD,
+               T.W_UPDATE_DT          = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ID_COL,
+           T.ACTIVITY_ID,
+           T.TITLE,
+           T.CREATE_TIME,
+           T.UPDATE_TIME,
+           T.CUSTOMED_SUPERSCRIPT,
+           T.IMAGE_SRC,
+           T.METHOD,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.ID_COL,
+           S.ACTIVITY_ID,
+           S.TITLE,
+           S.CREATE_TIME,
+           S.UPDATE_TIME,
+           S.CUSTOMED_SUPERSCRIPT,
+           S.IMAGE_SRC,
+           S.METHOD,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+    
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_G_ACTIVITY_GOODS_GROUP;
+
+  PROCEDURE MERGE_G_ACTIVITY_VOUCHER IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-03-23
+    */
+  BEGIN
+    SP_NAME          := 'HAPPIGO_EC_PKG.MERGE_G_ACTIVITY_VOUCHER'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'G_ACTIVITY_VOUCHER'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE /*+APPEND*/
+      INTO G_ACTIVITY_VOUCHER T
+      USING (SELECT A.ID_COL,
+                    A.ACTIVITY_ID,
+                    A.VOUCHER_ID,
+                    A.VOUCHER_KEY,
+                    A.CREATE_TIME,
+                    A.UPDATE_TIME,
+                    SYSDATE       W_INSERT_DT,
+                    SYSDATE       W_UPDATE_DT
+               FROM G_ACTIVITY_VOUCHER_TMP A) S
+      ON (T.ID_COL = S.ID_COL)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.ACTIVITY_ID = S.ACTIVITY_ID,
+               T.VOUCHER_ID  = S.VOUCHER_ID,
+               T.VOUCHER_KEY = S.VOUCHER_KEY,
+               T.CREATE_TIME = S.CREATE_TIME,
+               T.UPDATE_TIME = S.UPDATE_TIME,
+               T.W_UPDATE_DT = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ID_COL,
+           T.ACTIVITY_ID,
+           T.VOUCHER_ID,
+           T.VOUCHER_KEY,
+           T.CREATE_TIME,
+           T.UPDATE_TIME,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.ID_COL,
+           S.ACTIVITY_ID,
+           S.VOUCHER_ID,
+           S.VOUCHER_KEY,
+           S.CREATE_TIME,
+           S.UPDATE_TIME,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+    
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_G_ACTIVITY_VOUCHER;
+
+  PROCEDURE MERGE_GOODS_EVALUATE_ALIYUN IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-03-23
+    */
+  BEGIN
+    SP_NAME          := 'HAPPIGO_EC_PKG.MERGE_GOODS_EVALUATE_ALIYUN'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'FACT_GOODS_EVALUATE_ALIYUN'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE /*+APPEND*/
+      INTO FACT_GOODS_EVALUATE_ALIYUN T
+      USING (SELECT A.ID_COL,
+                    A.GEVAL_ID,
+                    A.GEVAL_ORDERGOODSID,
+                    A.GEVAL_GOODSID,
+                    A.ASPECT_CATEGORY,
+                    A.ASPECT_TERM,
+                    A.ASPECT_INDEX,
+                    A.ASPECT_POLARITY,
+                    A.OPINION_TERM,
+                    A.CREATE_TIME,
+                    SYSDATE              W_INSERT_DT,
+                    SYSDATE              W_UPDATE_DT
+               FROM FACT_GOODS_EVALUATE_ALI_TMP A) S
+      ON (T.ID_COL = S.ID_COL)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.GEVAL_ID           = S.GEVAL_ID,
+               T.GEVAL_ORDERGOODSID = S.GEVAL_ORDERGOODSID,
+               T.GEVAL_GOODSID      = S.GEVAL_GOODSID,
+               T.ASPECT_CATEGORY    = S.ASPECT_CATEGORY,
+               T.ASPECT_TERM        = S.ASPECT_TERM,
+               T.ASPECT_INDEX       = S.ASPECT_INDEX,
+               T.ASPECT_POLARITY    = S.ASPECT_POLARITY,
+               T.OPINION_TERM       = S.OPINION_TERM,
+               T.CREATE_TIME        = S.CREATE_TIME,
+               T.W_UPDATE_DT        = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ID_COL,
+           T.GEVAL_ID,
+           T.GEVAL_ORDERGOODSID,
+           T.GEVAL_GOODSID,
+           T.ASPECT_CATEGORY,
+           T.ASPECT_TERM,
+           T.ASPECT_INDEX,
+           T.ASPECT_POLARITY,
+           T.OPINION_TERM,
+           T.CREATE_TIME,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.ID_COL,
+           S.GEVAL_ID,
+           S.GEVAL_ORDERGOODSID,
+           S.GEVAL_GOODSID,
+           S.ASPECT_CATEGORY,
+           S.ASPECT_TERM,
+           S.ASPECT_INDEX,
+           S.ASPECT_POLARITY,
+           S.OPINION_TERM,
+           S.CREATE_TIME,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+    
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_GOODS_EVALUATE_ALIYUN;
 
 END HAPPIGO_EC_PKG;
 /

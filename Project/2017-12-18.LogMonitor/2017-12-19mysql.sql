@@ -673,3 +673,15 @@ CALL log_monitor_add('happigo-application', 'EC.WeixinPushManagement.Task');
 Ec.RegisterNotice.Task
 */
 CALL log_monitor_add('happigo-application', 'Ec.RegisterNotice.Task');
+
+/*
+2018-05-07
+EC.Sign.Acesses.API
+*/
+CALL log_monitor_add('happigo-application', 'EC.Sign.Acesses.API');
+
+/*
+2018-05-14
+CommenTanalysis.Task
+*/
+CALL log_monitor_add('happigo-application', 'CommenTanalysis.Task');

@@ -159,6 +159,36 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE OPER_TRAFFIC_ANALYSIS_PROC(IN_DATE_KEY IN NUMBER);
+  /*
+  功能名:       OPER_TRAFFIC_ANALYSIS_PROC
+  目的:         流量分析报表
+  作者:         yangjin
+  创建时间：    2018/04/16
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE OPER_CLICK_ANALYSIS_PROC(IN_DATE_KEY IN NUMBER);
+  /*
+  功能名:       OPER_CLICK_ANALYSIS_PROC
+  目的:         点击分析报表
+  作者:         yangjin
+  创建时间：    2018/04/17
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE OPER_GOOD_LABEL_ANALYSIS_P(IN_DATE_KEY IN NUMBER);
+  /*
+  功能名:       OPER_GOOD_LABEL_ANALYSIS_P
+  目的:         商品标签分析报表
+  作者:         yangjin
+  创建时间：    2018/05/02
+  最后修改人：
+  最后更改日期：
+  */
+
   PROCEDURE FACT_GOODS_SALES_FIX(IN_POSTING_DATE_KEY IN NUMBER,
                                  IN_FIX_TYPE         IN VARCHAR2);
   /*
@@ -329,7 +359,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   FUNCTION IP_INT_TO_STR(IN_IP_INT IN NUMBER) RETURN VARCHAR2 IS
     RESULT_IP_STR VARCHAR2(20);
   BEGIN
-    IF IN_IP_INT BETWEEN 0 AND 4294967295 THEN
+    IF IN_IP_INT BETWEEN 0 AND 4294967295
+    THEN
       RESULT_IP_STR := TO_CHAR(FLOOR(IN_IP_INT / (256 * 256 * 256))) || '.' ||
                        TO_CHAR(FLOOR((IN_IP_INT -
                                      FLOOR(IN_IP_INT / (256 * 256 * 256)) * 256 * 256 * 256) /
@@ -645,6 +676,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_GOODS_MANUAL');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('KPI_ACTIVE_VID_BASE');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('MEMBER_LABEL_LINK');
+    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('MLOG$_MEMBER_LABEL_LINK');
+    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_GOOD_LABEL_ANALYSIS');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ITEM_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ORDER_REPORT');
     YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_VOUCHER_REPORT');
@@ -687,7 +720,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -1011,7 +1045,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -1478,13 +1513,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                 ODU1.PROFIT_AMOUNT /*折扣金额*/
                                           FROM FACT_GOODS_SALES ODU1
                                          WHERE
-                                        /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
-                                         NOT EXISTS
-                                         (SELECT 1
-                                            FROM FACT_EC_ORDER_2 FEO
-                                           WHERE ODU1.ORDER_KEY =
-                                                 FEO.CRM_ORDER_NO
-                                             AND FEO.ORDER_FROM = '76')
+                                        /*2018-05-03剔除扫码购销售，order_from<>'76'*/
+                                         ODU1.ORDER_FROM <> '76'
                                         
                                         UNION ALL
                                         /*取消的订单，按更新日期UPDATE_TIME记逆向订单（虚拟记录）。
@@ -1518,13 +1548,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                            AND ODU2.CANCEL_BEFORE_STATE = 1 /*发货前取消的订单才虚拟出记录*/
                                            AND ODU2.POSTING_DATE_KEY <=
                                                ODU2.UPDATE_TIME
-                                              /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
-                                           AND NOT EXISTS
-                                         (SELECT 1
-                                                  FROM FACT_EC_ORDER_2 FEO
-                                                 WHERE ODU2.ORDER_KEY =
-                                                       FEO.CRM_ORDER_NO
-                                                   AND FEO.ORDER_FROM = '76')) OD
+                                              /*2018-05-03剔除扫码购销售，order_from<>'76'*/
+                                           AND ODU2.ORDER_FROM <> '76') OD
                                  WHERE OD.POSTING_DATE_KEY =
                                        IN_POSTING_DATE_KEY
                                    AND OD.TRAN_TYPE = 0 /*只显示主品*/
@@ -1966,13 +1991,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                          WHERE RDU1.CANCEL_REASON IN
                                                (10, 20, 30)
                                            AND RDU1.TRAN_DESC = 'REN'
-                                              /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
-                                           AND NOT EXISTS
-                                         (SELECT 1
-                                                  FROM FACT_EC_ORDER_2 FEO
-                                                 WHERE RDU1.ORDER_KEY =
-                                                       FEO.CRM_ORDER_NO
-                                                   AND FEO.ORDER_FROM = '76')
+                                              /*2018-05-03剔除扫码购销售，order_from<>'76'*/
+                                           AND RDU1.ORDER_FROM <> '76'
                                         UNION ALL
                                         /*取消的订单，按过账日期POSTING_DATE_KEY记逆向订单。
                                         2017-06-15 yangjin*/
@@ -2006,13 +2026,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                            AND RDU2.CANCEL_STATE = 1
                                            AND RDU2.POSTING_DATE_KEY <=
                                                RDU2.UPDATE_TIME
-                                              /*2018-03-15剔除扫码购销售，FACT_EC_ORDER_2.order_from=76为扫码购销售*/
-                                           AND NOT EXISTS
-                                         (SELECT 1
-                                                  FROM FACT_EC_ORDER_2 FEO
-                                                 WHERE RDU2.ORDER_KEY =
-                                                       FEO.CRM_ORDER_NO
-                                                   AND FEO.ORDER_FROM = '76')) RD
+                                              /*2018-05-03剔除扫码购销售，order_from<>'76'*/
+                                           AND RDU2.ORDER_FROM <> '76') RD
                                  WHERE RD.POSTING_DATE_KEY =
                                        IN_POSTING_DATE_KEY
                                    AND RD.CANCEL_REASON IN (10, 20, 30)
@@ -2099,7 +2114,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     INSERT_ROWS NUMBER;
     UPDATE_ROWS NUMBER;
     /*
-    功能说明：新媒体中心数据日报
+    功能说明：新媒体中心数据日报-扫码购
     作者时间：yangjin  2016-06-13
     */
   BEGIN
@@ -2111,7 +2126,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -3206,7 +3222,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -3516,7 +3533,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -3647,7 +3665,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -3875,7 +3894,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -4086,7 +4106,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -4240,7 +4261,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -4415,7 +4437,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -4465,6 +4488,1123 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     
   END OPER_MEMBER_NOT_IN_EC;
 
+  PROCEDURE OPER_TRAFFIC_ANALYSIS_PROC(IN_DATE_KEY IN NUMBER) IS
+    /*
+    功能说明：
+    作者时间：yangjin  2018-04-16
+    */
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.OPER_TRAFFIC_ANALYSIS_PROC'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'OPER_TRAFFIC_ANALYSIS'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+    
+      DELETE OPER_TRAFFIC_ANALYSIS A WHERE A.DATE_KEY = IN_DATE_KEY;
+      COMMIT;
+    
+      INSERT INTO OPER_TRAFFIC_ANALYSIS
+        (DATE_KEY,
+         CHANNEL,
+         PAGE_NAME,
+         ALL_PV,
+         ALL_UV,
+         ALL_STAY_TIME,
+         ALL_BOUNCE_UV,
+         NEW_PV,
+         NEW_UV,
+         NEW_STAY_TIME,
+         NEW_BOUNCE_UV,
+         OLD_PV,
+         OLD_UV,
+         OLD_STAY_TIME,
+         OLD_BOUNCE_UV,
+         W_INSERT_DT,
+         W_UPDATE_DT)
+        WITH DIM AS
+         (SELECT DIM1.DATE_KEY, DIM2.CHANNEL, DIM3.PAGE_NAME
+            FROM (SELECT IN_DATE_KEY DATE_KEY FROM DUAL) DIM1,
+                 (SELECT 'APP' CHANNEL
+                    FROM DUAL
+                  UNION
+                  SELECT '小程序' CHANNEL
+                    FROM DUAL) DIM2,
+                 /*PAGE_NAME,如果要添加page_name可以在此处添加*/
+                 (SELECT 'Dau' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'Home' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'Home_TVLive' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'TV_home' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'Channel' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'Good' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'Search' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'Member' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'PayEnd' PAGE_NAME
+                    FROM DUAL) DIM3),
+        DP AS
+         (SELECT F.VISIT_DATE_KEY DATE_KEY,
+                 F.CHANNEL,
+                 'Dau' PAGE_NAME,
+                 COUNT(F.ALL_PAGE_VIEW_KEY) ALL_PV,
+                 COUNT(DISTINCT F.ALL_VID) ALL_UV,
+                 ROUND(AVG(F.ALL_PAGE_STAY_TIME)) ALL_STAY_TIME,
+                 COUNT(F.NEW_PAGE_VIEW_KEY) NEW_PV,
+                 COUNT(DISTINCT F.NEW_VID) NEW_UV,
+                 ROUND(AVG(F.NEW_PAGE_STAY_TIME)) NEW_STAY_TIME,
+                 COUNT(F.OLD_PAGE_VIEW_KEY) OLD_PV,
+                 COUNT(DISTINCT F.OLD_VID) OLD_UV,
+                 ROUND(AVG(F.OLD_PAGE_STAY_TIME)) OLD_STAY_TIME
+            FROM (SELECT E.VISIT_DATE_KEY,
+                         E.CHANNEL,
+                         E.PAGE_VIEW_KEY ALL_PAGE_VIEW_KEY,
+                         E.VID ALL_VID,
+                         E.PAGE_STAY_TIME ALL_PAGE_STAY_TIME,
+                         CASE
+                           WHEN IS_NEW = 1 THEN
+                            E.PAGE_VIEW_KEY
+                         END NEW_PAGE_VIEW_KEY,
+                         CASE
+                           WHEN IS_NEW = 0 THEN
+                            E.PAGE_VIEW_KEY
+                         END OLD_PAGE_VIEW_KEY,
+                         --
+                         CASE
+                           WHEN IS_NEW = 1 THEN
+                            E.VID
+                         END NEW_VID,
+                         CASE
+                           WHEN IS_NEW = 0 THEN
+                            E.VID
+                         END OLD_VID,
+                         --
+                         CASE
+                           WHEN IS_NEW = 1 THEN
+                            E.PAGE_STAY_TIME
+                         END NEW_PAGE_STAY_TIME,
+                         CASE
+                           WHEN IS_NEW = 0 THEN
+                            E.PAGE_STAY_TIME
+                         END OLD_PAGE_STAY_TIME
+                    FROM (SELECT D.VISIT_DATE_KEY,
+                                 CASE
+                                   WHEN D.APPLICATION_KEY IN (10, 20) THEN
+                                    'APP'
+                                   WHEN D.APPLICATION_KEY = 70 THEN
+                                    '小程序'
+                                 END CHANNEL,
+                                 D.PAGE_VIEW_KEY,
+                                 D.VID,
+                                 D.PAGE_STAYTIME PAGE_STAY_TIME,
+                                 CASE
+                                   WHEN TO_DATE(D.VISIT_DATE_KEY, 'yyyymmdd') >
+                                        D.FIRST_ORDER_DATE THEN
+                                    0
+                                   WHEN TO_DATE(D.VISIT_DATE_KEY, 'yyyymmdd') <=
+                                        D.FIRST_ORDER_DATE THEN
+                                    1
+                                 END IS_NEW /*是否新会员标志，1:新会员、0:老会员*/
+                            FROM (SELECT A.VISIT_DATE_KEY,
+                                         A.APPLICATION_KEY,
+                                         A.PAGE_VIEW_KEY,
+                                         A.VID,
+                                         A.PAGE_STAYTIME,
+                                         /*首单订购日期,如果没有写10天之后的日期*/
+                                         NVL(C.FIRST_ORDER_DATE,
+                                             TO_DATE(IN_DATE_KEY, 'YYYYMMDD') + 10) FIRST_ORDER_DATE
+                                    FROM FACT_PAGE_VIEW A,
+                                         (SELECT B.VID,
+                                                 TRUNC(MIN(B.ADD_TIME)) FIRST_ORDER_DATE
+                                            FROM FACT_EC_ORDER_2 B
+                                           GROUP BY B.VID) C
+                                   WHERE A.VID = C.VID(+)
+                                     AND A.VISIT_DATE_KEY = IN_DATE_KEY
+                                        /*APP、小程序*/
+                                     AND A.APPLICATION_KEY IN (10, 20, 70)) D) E) F
+           GROUP BY F.VISIT_DATE_KEY, F.CHANNEL
+          UNION ALL
+          SELECT F.VISIT_DATE_KEY DATE_KEY,
+                 F.CHANNEL,
+                 F.PAGE_NAME,
+                 COUNT(F.ALL_PAGE_VIEW_KEY) ALL_PV,
+                 COUNT(DISTINCT F.ALL_VID) ALL_UV,
+                 ROUND(AVG(F.ALL_PAGE_STAY_TIME)) ALL_STAY_TIME,
+                 COUNT(F.NEW_PAGE_VIEW_KEY) NEW_PV,
+                 COUNT(DISTINCT F.NEW_VID) NEW_UV,
+                 ROUND(AVG(F.NEW_PAGE_STAY_TIME)) NEW_STAY_TIME,
+                 COUNT(F.OLD_PAGE_VIEW_KEY) OLD_PV,
+                 COUNT(DISTINCT F.OLD_VID) OLD_UV,
+                 ROUND(AVG(F.OLD_PAGE_STAY_TIME)) OLD_STAY_TIME
+            FROM (SELECT E.VISIT_DATE_KEY,
+                         E.CHANNEL,
+                         E.PAGE_NAME,
+                         E.PAGE_VIEW_KEY ALL_PAGE_VIEW_KEY,
+                         E.VID ALL_VID,
+                         E.PAGE_STAY_TIME ALL_PAGE_STAY_TIME,
+                         CASE
+                           WHEN IS_NEW = 1 THEN
+                            E.PAGE_VIEW_KEY
+                         END NEW_PAGE_VIEW_KEY,
+                         CASE
+                           WHEN IS_NEW = 0 THEN
+                            E.PAGE_VIEW_KEY
+                         END OLD_PAGE_VIEW_KEY,
+                         --
+                         CASE
+                           WHEN IS_NEW = 1 THEN
+                            E.VID
+                         END NEW_VID,
+                         CASE
+                           WHEN IS_NEW = 0 THEN
+                            E.VID
+                         END OLD_VID,
+                         --
+                         CASE
+                           WHEN IS_NEW = 1 THEN
+                            E.PAGE_STAY_TIME
+                         END NEW_PAGE_STAY_TIME,
+                         CASE
+                           WHEN IS_NEW = 0 THEN
+                            E.PAGE_STAY_TIME
+                         END OLD_PAGE_STAY_TIME
+                    FROM (SELECT D.VISIT_DATE_KEY,
+                                 CASE
+                                   WHEN D.APPLICATION_KEY IN (10, 20) THEN
+                                    'APP'
+                                   WHEN D.APPLICATION_KEY = 70 THEN
+                                    '小程序'
+                                 END CHANNEL,
+                                 D.PAGE_VIEW_KEY,
+                                 D.VID,
+                                 D.PAGE_KEY,
+                                 D.PAGE_NAME,
+                                 D.PAGE_STAYTIME PAGE_STAY_TIME,
+                                 CASE
+                                   WHEN TO_DATE(D.VISIT_DATE_KEY, 'yyyymmdd') >
+                                        D.FIRST_ORDER_DATE THEN
+                                    0
+                                   WHEN TO_DATE(D.VISIT_DATE_KEY, 'yyyymmdd') <=
+                                        D.FIRST_ORDER_DATE THEN
+                                    1
+                                 END IS_NEW /*是否新会员标志，1:新会员、0:老会员*/
+                            FROM (SELECT A.VISIT_DATE_KEY,
+                                         A.APPLICATION_KEY,
+                                         A.PAGE_VIEW_KEY,
+                                         A.VID,
+                                         A.PAGE_KEY,
+                                         A.PAGE_NAME,
+                                         A.PAGE_STAYTIME,
+                                         /*首单订购日期,如果没有写10天之后的日期*/
+                                         NVL(C.FIRST_ORDER_DATE,
+                                             TO_DATE(IN_DATE_KEY, 'YYYYMMDD') + 10) FIRST_ORDER_DATE
+                                    FROM FACT_PAGE_VIEW A,
+                                         (SELECT B.VID VID,
+                                                 TRUNC(MIN(B.ADD_TIME)) FIRST_ORDER_DATE
+                                            FROM FACT_EC_ORDER_2 B
+                                           GROUP BY B.VID) C
+                                   WHERE A.VID = C.VID(+)
+                                     AND A.VISIT_DATE_KEY = IN_DATE_KEY
+                                     AND A.APPLICATION_KEY IN (10, 20, 70)
+                                        /*PAGE_NAME*/
+                                     AND EXISTS
+                                   (SELECT 1
+                                            FROM DIM
+                                           WHERE A.PAGE_NAME = DIM.PAGE_NAME)) D) E) F
+           GROUP BY F.VISIT_DATE_KEY, F.CHANNEL, F.PAGE_NAME),
+        BUV AS
+         (SELECT F3.START_DATE_KEY DATE_KEY,
+                 F3.CHANNEL,
+                 G3.PAGE_NAME,
+                 COUNT(F3.VID) ALL_BOUNCE_UV,
+                 COUNT(F3.NEW_VID) NEW_BOUNCE_UV,
+                 COUNT(F3.OLD_VID) OLD_BOUNCE_UV
+            FROM (SELECT E3.START_DATE_KEY,
+                         E3.CHANNEL,
+                         E3.LEFT_PAGE_KEY,
+                         E3.VID,
+                         CASE
+                           WHEN E3.IS_NEW = 1 THEN
+                            VID
+                         END NEW_VID,
+                         CASE
+                           WHEN E3.IS_NEW = 0 THEN
+                            VID
+                         END OLD_VID
+                    FROM (SELECT D3.START_DATE_KEY,
+                                 CASE
+                                   WHEN D3.APPLICATION_KEY IN (10, 20) THEN
+                                    'APP'
+                                   WHEN D3.APPLICATION_KEY = 70 THEN
+                                    '小程序'
+                                 END CHANNEL,
+                                 D3.VID,
+                                 D3.LEFT_PAGE_KEY,
+                                 CASE
+                                   WHEN TO_DATE(D3.START_DATE_KEY, 'yyyymmdd') >
+                                        D3.FIRST_ORDER_DATE THEN
+                                    0
+                                   WHEN TO_DATE(D3.START_DATE_KEY, 'yyyymmdd') <=
+                                        D3.FIRST_ORDER_DATE THEN
+                                    1
+                                 END IS_NEW /*是否新会员标志，1:新会员、0:老会员*/
+                            FROM (SELECT A3.START_DATE_KEY,
+                                         A3.VID,
+                                         A3.APPLICATION_KEY,
+                                         A3.LEFT_PAGE_KEY,
+                                         NVL(C3.FIRST_ORDER_DATE,
+                                             DATE '2000-01-01') FIRST_ORDER_DATE /*首单订购日期*/
+                                    FROM FACT_SESSION A3,
+                                         (SELECT B3.VID,
+                                                 TRUNC(MIN(B3.ADD_TIME)) FIRST_ORDER_DATE
+                                            FROM FACT_EC_ORDER_2 B3
+                                           GROUP BY B3.VID) C3
+                                   WHERE A3.VID = C3.VID(+)
+                                     AND A3.START_DATE_KEY = IN_DATE_KEY
+                                     AND A3.APPLICATION_KEY IN (10, 20, 70)) D3) E3) F3,
+                 DIM_PAGE G3
+           WHERE F3.LEFT_PAGE_KEY = G3.PAGE_KEY
+                /*PAGE_NAME*/
+             AND EXISTS
+           (SELECT 1 FROM DIM WHERE G3.PAGE_NAME = DIM.PAGE_NAME)
+          /*AND G3.PAGE_NAME IN ('Home',
+          'Home_TVLive',
+          'TV_home',
+          'Channel',
+          'Good',
+          'Search',
+          'Member',
+          'PayEnd')*/
+           GROUP BY F3.START_DATE_KEY, F3.CHANNEL, G3.PAGE_NAME)
+        
+        SELECT DIM.DATE_KEY,
+               DIM.CHANNEL,
+               DIM.PAGE_NAME,
+               NVL(DP.ALL_PV, 0) ALL_PV,
+               NVL(DP.ALL_UV, 0) ALL_UV,
+               NVL(DP.ALL_STAY_TIME, 0) ALL_STAY_TIME,
+               NVL(BUV.ALL_BOUNCE_UV, 0) ALL_BOUNCE_UV,
+               NVL(DP.NEW_PV, 0) NEW_PV,
+               NVL(DP.NEW_UV, 0) NEW_UV,
+               NVL(DP.NEW_STAY_TIME, 0) NEW_STAY_TIME,
+               NVL(BUV.NEW_BOUNCE_UV, 0) NEW_BOUNCE_UV,
+               NVL(DP.OLD_PV, 0) OLD_PV,
+               NVL(DP.OLD_UV, 0) OLD_UV,
+               NVL(DP.OLD_STAY_TIME, 0) OLD_STAY_TIME,
+               NVL(BUV.OLD_BOUNCE_UV, 0) OLD_BOUNCE_UV,
+               SYSDATE W_INSERT_DT,
+               SYSDATE W_UPDATE_DT
+          FROM DIM, DP, BUV
+         WHERE DIM.DATE_KEY = DP.DATE_KEY(+)
+           AND DIM.CHANNEL = DP.CHANNEL(+)
+           AND DIM.PAGE_NAME = DP.PAGE_NAME(+)
+           AND DIM.DATE_KEY = BUV.DATE_KEY(+)
+           AND DIM.CHANNEL = BUV.CHANNEL(+)
+           AND DIM.PAGE_NAME = BUV.PAGE_NAME(+);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:IN_DATE_KEY:' || TO_CHAR(IN_DATE_KEY);
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+    
+  END OPER_TRAFFIC_ANALYSIS_PROC;
+
+  PROCEDURE OPER_CLICK_ANALYSIS_PROC(IN_DATE_KEY IN NUMBER) IS
+    /*
+    功能说明：
+    作者时间：yangjin  2018-04-17
+    */
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.OPER_CLICK_ANALYSIS_PROC'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'OPER_CLICK_ANALYSIS'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+    
+      DELETE OPER_CLICK_ANALYSIS A WHERE A.DATE_KEY = IN_DATE_KEY;
+      COMMIT;
+    
+      --Summary
+      INSERT INTO OPER_CLICK_ANALYSIS
+        (DATE_KEY,
+         CHANNEL,
+         PAGE_NAME,
+         PAGE_VALUE,
+         ALL_PV,
+         ALL_UV,
+         NEW_PV,
+         NEW_UV,
+         OLD_PV,
+         OLD_UV,
+         W_INSERT_DT,
+         W_UPDATE_DT)
+        WITH DIM AS
+         (SELECT DIM1.DATE_KEY, DIM2.CHANNEL, DIM3.PAGE_NAME
+            FROM (SELECT IN_DATE_KEY DATE_KEY FROM DUAL) DIM1,
+                 (SELECT 'APP' CHANNEL
+                    FROM DUAL
+                  UNION
+                  SELECT '小程序' CHANNEL
+                    FROM DUAL) DIM2,
+                 /*PAGE_NAME*/
+                 (SELECT 'SL_B2C_Article' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_B2C_Bigad' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_B2C_Dt' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_B2C_Floorad' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_B2C_Floorgoods' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_B2C_Homegood' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_B2C_Homegoods' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_B2C_Homegoodslike' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_B2C_Search' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Suppliergood' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Supplier' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Specifications' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Shoppcaring' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_share' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Recommend' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Promotion' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Order' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Evaluate' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Customer' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Coupons' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Collection' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Brandgood' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_Brand' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_BigPic' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_Good_ASK' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_TV_Ygood' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_TV_TVplay' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_TV_TVlist2' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_TV_TVlist1' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_TV_Tvgoodremind' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_TV_Tvgoodbuy' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_TV_Tvgood' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_TV_Middlead' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_TV_brandAD' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_TV_Bigad' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_TV_Bgood' PAGE_NAME
+                    FROM DUAL
+                  UNION
+                  SELECT 'SL_TV_Hotgood' PAGE_NAME
+                    FROM DUAL) DIM3),
+        CLK AS
+         (SELECT F.VISIT_DATE_KEY DATE_KEY,
+                 F.CHANNEL,
+                 F.PAGE_NAME,
+                 COUNT(F.ALL_PAGE_VIEW_KEY) ALL_PV,
+                 COUNT(DISTINCT F.ALL_VID) ALL_UV,
+                 ROUND(AVG(F.ALL_PAGE_STAY_TIME)) ALL_STAY_TIME,
+                 COUNT(F.NEW_PAGE_VIEW_KEY) NEW_PV,
+                 COUNT(DISTINCT F.NEW_VID) NEW_UV,
+                 ROUND(AVG(F.NEW_PAGE_STAY_TIME)) NEW_STAY_TIME,
+                 COUNT(F.OLD_PAGE_VIEW_KEY) OLD_PV,
+                 COUNT(DISTINCT F.OLD_VID) OLD_UV,
+                 ROUND(AVG(F.OLD_PAGE_STAY_TIME)) OLD_STAY_TIME
+            FROM (SELECT E.VISIT_DATE_KEY,
+                         E.CHANNEL,
+                         E.PAGE_NAME,
+                         E.PAGE_VIEW_KEY ALL_PAGE_VIEW_KEY,
+                         E.VID ALL_VID,
+                         E.PAGE_STAY_TIME ALL_PAGE_STAY_TIME,
+                         CASE
+                           WHEN IS_NEW = 1 THEN
+                            E.PAGE_VIEW_KEY
+                         END NEW_PAGE_VIEW_KEY,
+                         CASE
+                           WHEN IS_NEW = 0 THEN
+                            E.PAGE_VIEW_KEY
+                         END OLD_PAGE_VIEW_KEY,
+                         --
+                         CASE
+                           WHEN IS_NEW = 1 THEN
+                            E.VID
+                         END NEW_VID,
+                         CASE
+                           WHEN IS_NEW = 0 THEN
+                            E.VID
+                         END OLD_VID,
+                         --
+                         CASE
+                           WHEN IS_NEW = 1 THEN
+                            E.PAGE_STAY_TIME
+                         END NEW_PAGE_STAY_TIME,
+                         CASE
+                           WHEN IS_NEW = 0 THEN
+                            E.PAGE_STAY_TIME
+                         END OLD_PAGE_STAY_TIME
+                    FROM (SELECT D.VISIT_DATE_KEY,
+                                 CASE
+                                   WHEN D.APPLICATION_KEY IN (10, 20) THEN
+                                    'APP'
+                                   WHEN D.APPLICATION_KEY = 70 THEN
+                                    '小程序'
+                                 END CHANNEL,
+                                 D.PAGE_VIEW_KEY,
+                                 D.VID,
+                                 D.PAGE_KEY,
+                                 D.PAGE_NAME,
+                                 D.PAGE_STAYTIME PAGE_STAY_TIME,
+                                 CASE
+                                   WHEN TO_DATE(D.VISIT_DATE_KEY, 'yyyymmdd') >
+                                        D.FIRST_ORDER_DATE THEN
+                                    0
+                                   WHEN TO_DATE(D.VISIT_DATE_KEY, 'yyyymmdd') <=
+                                        D.FIRST_ORDER_DATE THEN
+                                    1
+                                 END IS_NEW /*是否新会员标志，1:新会员、0:老会员*/
+                            FROM (SELECT A.VISIT_DATE_KEY,
+                                         A.APPLICATION_KEY,
+                                         A.PAGE_VIEW_KEY,
+                                         A.VID,
+                                         A.PAGE_KEY,
+                                         A.PAGE_NAME,
+                                         A.PAGE_STAYTIME,
+                                         /*首单订购日期,如果没有写10天之后的日期*/
+                                         NVL(C.FIRST_ORDER_DATE,
+                                             TO_DATE(IN_DATE_KEY, 'YYYYMMDD') + 10) FIRST_ORDER_DATE
+                                    FROM FACT_PAGE_VIEW_HIT A,
+                                         (SELECT B.VID,
+                                                 TRUNC(MIN(B.ADD_TIME)) FIRST_ORDER_DATE
+                                            FROM FACT_EC_ORDER_2 B
+                                           GROUP BY B.VID) C
+                                   WHERE A.VID = C.VID(+)
+                                     AND A.VISIT_DATE_KEY = IN_DATE_KEY
+                                     AND A.APPLICATION_KEY IN (10, 20, 70)
+                                     AND EXISTS
+                                   (SELECT 1
+                                            FROM DIM
+                                           WHERE DIM.PAGE_NAME = A.PAGE_NAME)) D) E) F
+           GROUP BY F.VISIT_DATE_KEY, F.CHANNEL, F.PAGE_NAME)
+        SELECT DIM.DATE_KEY,
+               DIM.CHANNEL,
+               DIM.PAGE_NAME,
+               'Summary' PAGE_VALUE,
+               NVL(CLK.ALL_PV, 0) ALL_PV,
+               NVL(CLK.ALL_UV, 0) ALL_UV,
+               NVL(CLK.NEW_PV, 0) NEW_PV,
+               NVL(CLK.NEW_UV, 0) NEW_UV,
+               NVL(CLK.OLD_PV, 0) OLD_PV,
+               NVL(CLK.OLD_UV, 0) OLD_UV,
+               SYSDATE W_INSERT_DT,
+               SYSDATE W_UPDATE_DT
+          FROM DIM, CLK
+         WHERE DIM.DATE_KEY = CLK.DATE_KEY(+)
+           AND DIM.CHANNEL = CLK.CHANNEL(+)
+           AND DIM.PAGE_NAME = CLK.PAGE_NAME(+);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+      --PAGE_VALUE
+      INSERT INTO OPER_CLICK_ANALYSIS
+        (DATE_KEY,
+         CHANNEL,
+         PAGE_NAME,
+         PAGE_VALUE,
+         ALL_PV,
+         ALL_UV,
+         NEW_PV,
+         NEW_UV,
+         OLD_PV,
+         OLD_UV,
+         W_INSERT_DT,
+         W_UPDATE_DT)
+        SELECT F.VISIT_DATE_KEY DATE_KEY,
+               F.CHANNEL,
+               F.PAGE_NAME,
+               F.PAGE_VALUE,
+               COUNT(F.ALL_PAGE_VIEW_KEY) ALL_PV,
+               COUNT(DISTINCT F.ALL_VID) ALL_UV,
+               COUNT(F.NEW_PAGE_VIEW_KEY) NEW_PV,
+               COUNT(DISTINCT F.NEW_VID) NEW_UV,
+               COUNT(F.OLD_PAGE_VIEW_KEY) OLD_PV,
+               COUNT(DISTINCT F.OLD_VID) OLD_UV,
+               SYSDATE W_INSERT_DT,
+               SYSDATE W_UPDATE_DT
+          FROM (SELECT E.VISIT_DATE_KEY,
+                       E.CHANNEL,
+                       E.PAGE_NAME,
+                       E.PAGE_VALUE,
+                       E.PAGE_VIEW_KEY ALL_PAGE_VIEW_KEY,
+                       E.VID ALL_VID,
+                       CASE
+                         WHEN IS_NEW = 1 THEN
+                          E.PAGE_VIEW_KEY
+                       END NEW_PAGE_VIEW_KEY,
+                       CASE
+                         WHEN IS_NEW = 0 THEN
+                          E.PAGE_VIEW_KEY
+                       END OLD_PAGE_VIEW_KEY,
+                       --
+                       CASE
+                         WHEN IS_NEW = 1 THEN
+                          E.VID
+                       END NEW_VID,
+                       CASE
+                         WHEN IS_NEW = 0 THEN
+                          E.VID
+                       END OLD_VID
+                  FROM (SELECT D.VISIT_DATE_KEY,
+                               CASE
+                                 WHEN D.APPLICATION_KEY IN (10, 20) THEN
+                                  'APP'
+                                 WHEN D.APPLICATION_KEY = 70 THEN
+                                  '小程序'
+                               END CHANNEL,
+                               D.PAGE_VIEW_KEY,
+                               D.VID,
+                               D.PAGE_KEY,
+                               D.PAGE_NAME,
+                               D.PAGE_VALUE,
+                               CASE
+                                 WHEN TO_DATE(D.VISIT_DATE_KEY, 'yyyymmdd') >
+                                      D.FIRST_ORDER_DATE THEN
+                                  0
+                                 WHEN TO_DATE(D.VISIT_DATE_KEY, 'yyyymmdd') <=
+                                      D.FIRST_ORDER_DATE THEN
+                                  1
+                               END IS_NEW /*是否新会员标志，1:新会员、0:老会员*/
+                          FROM (SELECT A.VISIT_DATE_KEY,
+                                       A.APPLICATION_KEY,
+                                       A.PAGE_VIEW_KEY,
+                                       A.VID,
+                                       A.PAGE_KEY,
+                                       A.PAGE_NAME,
+                                       A.PAGE_VALUE,
+                                       A.PAGE_STAYTIME,
+                                       /*首单订购日期,如果没有写10天之后的日期*/
+                                       NVL(C.FIRST_ORDER_DATE,
+                                           TO_DATE(IN_DATE_KEY, 'YYYYMMDD') + 10) FIRST_ORDER_DATE
+                                  FROM FACT_PAGE_VIEW_HIT A,
+                                       (SELECT B.VID,
+                                               TRUNC(MIN(B.ADD_TIME)) FIRST_ORDER_DATE
+                                          FROM FACT_EC_ORDER_2 B
+                                         GROUP BY B.VID) C
+                                 WHERE A.VID = C.VID(+)
+                                   AND A.VISIT_DATE_KEY = IN_DATE_KEY
+                                   AND A.APPLICATION_KEY IN (10, 20, 70)
+                                      /*PAGE_NAME*/
+                                   AND A.PAGE_NAME IN
+                                       ('SL_B2C_Bigicon', 'SL_B2C_ICON')) D) E) F
+         GROUP BY F.VISIT_DATE_KEY, F.CHANNEL, F.PAGE_NAME, F.PAGE_VALUE;
+      INSERT_ROWS := NVL(INSERT_ROWS, 0) + SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:IN_DATE_KEY:' || TO_CHAR(IN_DATE_KEY);
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+    
+  END OPER_CLICK_ANALYSIS_PROC;
+
+  PROCEDURE OPER_GOOD_LABEL_ANALYSIS_P(IN_DATE_KEY IN NUMBER) IS
+    /*
+    功能说明：
+    作者时间：yangjin  2018-05-02
+    */
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+  BEGIN
+    SP_NAME          := 'YANGJIN_PKG.OPER_GOOD_LABEL_ANALYSIS_P'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'OPER_GOOD_LABEL_ANALYSIS'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*删除当天的数据*/
+      DELETE OPER_GOOD_LABEL_ANALYSIS A WHERE A.DATE_KEY = IN_DATE_KEY;
+      COMMIT;
+    
+      /*插入报表*/
+      INSERT INTO OPER_GOOD_LABEL_ANALYSIS
+        (DATE_KEY,
+         CHANNEL_NAME,
+         IS_NEW_USER,
+         MEMBER_LEVEL,
+         ITEM_CODE,
+         PV,
+         UV,
+         CAR_COUNT,
+         ORDER_MEMBER_COUNT,
+         ORDER_QTY,
+         ORDER_AMOUNT,
+         RETURN_MEMBER_COUNT,
+         RETURN_QTY,
+         RETURN_AMOUNT,
+         W_INSERT_DT,
+         W_UPDATE_DT)
+        WITH DIM AS
+        /*维度*/
+         (SELECT D1.DATE_KEY,
+                 D2.CHANNEL_NAME,
+                 D3.IS_NEW_USER,
+                 D4.MEMBER_LEVEL,
+                 D5.ITEM_CODE
+            FROM (SELECT IN_DATE_KEY DATE_KEY FROM DUAL) D1,
+                 (SELECT 'APP' CHANNEL_NAME
+                    FROM DUAL
+                  UNION ALL
+                  SELECT '微信' CHANNEL_NAME
+                    FROM DUAL
+                  UNION ALL
+                  SELECT '3G' CHANNEL_NAME
+                    FROM DUAL
+                  UNION ALL
+                  SELECT 'PC' CHANNEL_NAME
+                    FROM DUAL) D2,
+                 (SELECT 'new_user' IS_NEW_USER
+                    FROM DUAL
+                  UNION ALL
+                  SELECT 'old_user' IS_NEW_USER
+                    FROM DUAL) D3,
+                 (SELECT 'HAPP_T0' MEMBER_LEVEL
+                    FROM DUAL
+                  UNION ALL
+                  SELECT 'HAPP_T1' MEMBER_LEVEL
+                    FROM DUAL
+                  UNION ALL
+                  SELECT 'HAPP_T2' MEMBER_LEVEL
+                    FROM DUAL
+                  UNION ALL
+                  SELECT 'HAPP_T3' MEMBER_LEVEL
+                    FROM DUAL
+                  UNION ALL
+                  SELECT 'HAPP_T4' MEMBER_LEVEL
+                    FROM DUAL
+                  UNION ALL
+                  SELECT 'HAPP_T5' MEMBER_LEVEL
+                    FROM DUAL
+                  UNION ALL
+                  SELECT 'HAPP_T6' MEMBER_LEVEL
+                    FROM DUAL
+                  UNION ALL
+                  SELECT 'unregistered' MEMBER_LEVEL
+                    FROM DUAL) D4,
+                 (SELECT ITEM_CODE FROM DIM_GOOD) D5),
+        VIS AS
+        /*浏览*/
+         (SELECT C.DATE_KEY,
+                 C.CHANNEL_NAME,
+                 C.IS_NEW_USER,
+                 C.MEMBER_LEVEL,
+                 C.ITEM_CODE,
+                 COUNT(1) PV,
+                 COUNT(DISTINCT C.VID) UV
+            FROM (SELECT A.PAGE_VIEW_KEY,
+                         A.VISIT_DATE_KEY DATE_KEY,
+                         A.VID,
+                         A.MEMBER_KEY,
+                         NVL(B.MEMBER_LEVEL, 'unregistered') MEMBER_LEVEL,
+                         NVL(B.FIRST_ORDER_DATE_KEY, 0) FIRST_ORDER_DATE_KEY,
+                         CASE
+                           WHEN NVL(B.FIRST_ORDER_DATE_KEY, 0) = 0 THEN
+                            'new_user'
+                           WHEN B.FIRST_ORDER_DATE_KEY < A.VISIT_DATE_KEY THEN
+                            'old_user'
+                           WHEN B.FIRST_ORDER_DATE_KEY >= A.VISIT_DATE_KEY THEN
+                            'new_user'
+                         END IS_NEW_USER,
+                         A.PAGE_VALUE ITEM_CODE,
+                         CASE
+                           WHEN A.APPLICATION_KEY IN (10, 20) THEN
+                            'APP'
+                           WHEN A.APPLICATION_KEY = 30 THEN
+                            '3G'
+                           WHEN A.APPLICATION_KEY = 40 THEN
+                            'PC'
+                           WHEN A.APPLICATION_KEY = 50 THEN
+                            '微信'
+                         END CHANNEL_NAME
+                    FROM FACT_PAGE_VIEW A, DIM_MEMBER B
+                   WHERE A.MEMBER_KEY = B.MEMBER_BP(+)
+                     AND A.VISIT_DATE_KEY = IN_DATE_KEY
+                     AND UPPER(A.PAGE_NAME) IN ('GOOD', 'Good_Desc')
+                     AND A.PAGE_VALUE =
+                         TRANSLATE(A.PAGE_VALUE,
+                                   '0' ||
+                                   TRANSLATE(A.PAGE_VALUE, '#0123456789', '#'),
+                                   '0')) C
+           GROUP BY C.DATE_KEY,
+                    C.CHANNEL_NAME,
+                    C.IS_NEW_USER,
+                    C.MEMBER_LEVEL,
+                    C.ITEM_CODE),
+        CAR AS
+        /*购物车*/
+         (SELECT C.DATE_KEY,
+                 C.CHANNEL_NAME,
+                 C.IS_NEW_USER,
+                 C.MEMBER_LEVEL,
+                 C.ITEM_CODE,
+                 COUNT(1) CAR_COUNT
+            FROM (SELECT A.CREATE_DATE_KEY DATE_KEY,
+                         CASE
+                           WHEN A.APPLICATION_KEY IN (10, 20) THEN
+                            'APP'
+                           WHEN A.APPLICATION_KEY = 30 THEN
+                            '3G'
+                           WHEN A.APPLICATION_KEY = 40 THEN
+                            'PC'
+                           WHEN A.APPLICATION_KEY = 50 THEN
+                            '微信'
+                         END CHANNEL_NAME,
+                         A.VID,
+                         A.MEMBER_KEY,
+                         NVL(B.MEMBER_LEVEL, 'unregistered') MEMBER_LEVEL,
+                         CASE
+                           WHEN NVL(B.FIRST_ORDER_DATE_KEY, 0) = 0 THEN
+                            'new_user'
+                           WHEN B.FIRST_ORDER_DATE_KEY < A.CREATE_DATE_KEY THEN
+                            'old_user'
+                           WHEN B.FIRST_ORDER_DATE_KEY >= A.CREATE_DATE_KEY THEN
+                            'new_user'
+                         END IS_NEW_USER,
+                         A.SCGID ITEM_CODE
+                    FROM FACT_SHOPPINGCAR A, DIM_MEMBER B
+                   WHERE A.MEMBER_KEY = B.MEMBER_BP(+)
+                     AND A.CREATE_DATE_KEY = IN_DATE_KEY) C
+           GROUP BY C.DATE_KEY,
+                    C.CHANNEL_NAME,
+                    C.IS_NEW_USER,
+                    C.MEMBER_LEVEL,
+                    C.ITEM_CODE),
+        ORD AS
+        /*订购*/
+         (SELECT G.POSTING_DATE_KEY DATE_KEY,
+                 G.CHANNEL_NAME,
+                 G.MEMBER_LEVEL,
+                 G.IS_NEW_USER,
+                 G.GOODS_COMMON_KEY ITEM_CODE,
+                 SUM(G.ORDER_MEMBER) ORDER_MEMBER_COUNT,
+                 SUM(G.ORDER_QTY) ORDER_QTY,
+                 SUM(G.ORDER_AMOUNT) ORDER_AMOUNT,
+                 SUM(G.RETURN_MEMBER) RETURN_MEMBER_COUNT,
+                 SUM(G.RETURN_QTY) RETURN_QTY,
+                 SUM(G.RETURN_AMOUNT) RETURN_AMOUNT
+            FROM (SELECT E.POSTING_DATE_KEY,
+                         /*通路*/
+                         CASE
+                           WHEN E.SALES_SOURCE_SECOND_KEY LIKE '10%' THEN
+                            'TV'
+                           WHEN E.SALES_SOURCE_SECOND_KEY IN (20015, 20017) THEN
+                            'APP'
+                           WHEN E.SALES_SOURCE_SECOND_KEY IN (20006, 20021) THEN
+                            '微信'
+                           WHEN E.SALES_SOURCE_SECOND_KEY IN (20007, 20022) THEN
+                            '3G'
+                           WHEN E.SALES_SOURCE_SECOND_KEY IN (20001, 20020) THEN
+                            'PC'
+                         END CHANNEL_NAME,
+                         E.MEMBER_KEY,
+                         /*会员等级*/
+                         NVL(F.MEMBER_LEVEL, 'unregistered') MEMBER_LEVEL,
+                         /*新老客*/
+                         CASE
+                           WHEN NVL(F.FIRST_ORDER_DATE_KEY, 0) = 0 THEN
+                            'new_user'
+                           WHEN F.FIRST_ORDER_DATE_KEY < E.POSTING_DATE_KEY THEN
+                            'old_user'
+                           WHEN F.FIRST_ORDER_DATE_KEY >= E.POSTING_DATE_KEY THEN
+                            'new_user'
+                         END IS_NEW_USER,
+                         E.GOODS_COMMON_KEY,
+                         CASE
+                           WHEN E.ORDER_QTY > 0 THEN
+                            1
+                           ELSE
+                            0
+                         END ORDER_MEMBER,
+                         E.ORDER_QTY,
+                         E.ORDER_AMOUNT,
+                         CASE
+                           WHEN E.RETURN_QTY > 0 THEN
+                            1
+                           ELSE
+                            0
+                         END RETURN_MEMBER,
+                         E.RETURN_QTY,
+                         E.RETURN_AMOUNT
+                    FROM (SELECT NVL(C.POSTING_DATE_KEY, D.POSTING_DATE_KEY) POSTING_DATE_KEY,
+                                 NVL(C.SALES_SOURCE_SECOND_KEY,
+                                     D.SALES_SOURCE_SECOND_KEY) SALES_SOURCE_SECOND_KEY,
+                                 NVL(C.MEMBER_KEY, D.MEMBER_KEY) MEMBER_KEY,
+                                 NVL(C.GOODS_COMMON_KEY, D.GOODS_COMMON_KEY) GOODS_COMMON_KEY,
+                                 NVL(C.ORDER_QTY, 0) ORDER_QTY,
+                                 NVL(C.ORDER_AMOUNT, 0) ORDER_AMOUNT,
+                                 NVL(D.RETURN_QTY, 0) RETURN_QTY,
+                                 NVL(D.RETURN_AMOUNT, 0) RETURN_AMOUNT
+                            FROM (SELECT A.POSTING_DATE_KEY,
+                                         A.SALES_SOURCE_SECOND_KEY,
+                                         A.MEMBER_KEY,
+                                         A.GOODS_COMMON_KEY,
+                                         SUM(A.NUMS) ORDER_QTY,
+                                         SUM(A.ORDER_AMOUNT) ORDER_AMOUNT
+                                    FROM FACT_GOODS_SALES A
+                                   WHERE A.POSTING_DATE_KEY = IN_DATE_KEY
+                                     AND A.CANCEL_BEFORE_STATE = 0 /*发货前取消*/
+                                     AND A.TRAN_TYPE = 0 /*正品*/
+                                     AND (A.SALES_SOURCE_KEY = 10 OR
+                                         A.SALES_SOURCE_SECOND_KEY IN
+                                         (20001,
+                                           20006,
+                                           20007,
+                                           20015,
+                                           20017,
+                                           20020,
+                                           20021,
+                                           20022)) /*渠道*/
+                                   GROUP BY A.POSTING_DATE_KEY,
+                                            A.SALES_SOURCE_SECOND_KEY,
+                                            A.MEMBER_KEY,
+                                            A.GOODS_COMMON_KEY) C /*订购*/
+                            FULL OUTER JOIN (SELECT B.POSTING_DATE_KEY,
+                                                   B.SALES_SOURCE_SECOND_KEY,
+                                                   B.MEMBER_KEY,
+                                                   B.GOODS_COMMON_KEY,
+                                                   SUM(B.NUMS) RETURN_QTY,
+                                                   SUM(B.ORDER_AMOUNT) RETURN_AMOUNT
+                                              FROM FACT_GOODS_SALES_REVERSE B
+                                             WHERE B.POSTING_DATE_KEY =
+                                                   IN_DATE_KEY
+                                               AND B.CANCEL_STATE = 0
+                                               AND B.TRAN_TYPE <> 1 /*正品*/
+                                               AND (B.SALES_SOURCE_KEY = 10 OR
+                                                   B.SALES_SOURCE_SECOND_KEY IN
+                                                   (20001,
+                                                     20006,
+                                                     20007,
+                                                     20015,
+                                                     20017,
+                                                     20020,
+                                                     20021,
+                                                     20022)) /*渠道*/
+                                             GROUP BY B.POSTING_DATE_KEY,
+                                                      B.SALES_SOURCE_SECOND_KEY,
+                                                      B.MEMBER_KEY,
+                                                      B.GOODS_COMMON_KEY) D /*拒退*/
+                              ON C.POSTING_DATE_KEY = D.POSTING_DATE_KEY
+                             AND C.SALES_SOURCE_SECOND_KEY =
+                                 D.SALES_SOURCE_SECOND_KEY
+                             AND C.MEMBER_KEY = D.MEMBER_KEY
+                             AND C.GOODS_COMMON_KEY = D.GOODS_COMMON_KEY) E,
+                         DIM_MEMBER F
+                   WHERE E.MEMBER_KEY = F.MEMBER_BP(+)) G
+           GROUP BY G.POSTING_DATE_KEY,
+                    G.CHANNEL_NAME,
+                    G.MEMBER_LEVEL,
+                    G.IS_NEW_USER,
+                    G.GOODS_COMMON_KEY)
+        SELECT DIM.DATE_KEY,
+               DIM.CHANNEL_NAME,
+               DIM.IS_NEW_USER,
+               DIM.MEMBER_LEVEL,
+               DIM.ITEM_CODE,
+               NVL(VIS.PV, 0) PV,
+               NVL(VIS.UV, 0) UV,
+               NVL(CAR.CAR_COUNT, 0) CAR_COUNT,
+               NVL(ORD.ORDER_MEMBER_COUNT, 0) ORDER_MEMBER_COUNT,
+               NVL(ORD.ORDER_QTY, 0) ORDER_QTY,
+               NVL(ORD.ORDER_AMOUNT, 0) ORDER_AMOUNT,
+               NVL(ORD.RETURN_MEMBER_COUNT, 0) RETURN_MEMBER_COUNT,
+               NVL(ORD.RETURN_QTY, 0) RETURN_QTY,
+               NVL(ORD.RETURN_AMOUNT, 0) RETURN_AMOUNT,
+               SYSDATE W_INSERT_DT,
+               SYSDATE W_UPDATE_DT
+          FROM DIM, VIS, CAR, ORD
+         WHERE DIM.DATE_KEY = VIS.DATE_KEY(+)
+           AND DIM.DATE_KEY = CAR.DATE_KEY(+)
+           AND DIM.DATE_KEY = ORD.DATE_KEY(+)
+           AND DIM.CHANNEL_NAME = VIS.CHANNEL_NAME(+)
+           AND DIM.CHANNEL_NAME = CAR.CHANNEL_NAME(+)
+           AND DIM.CHANNEL_NAME = ORD.CHANNEL_NAME(+)
+           AND DIM.IS_NEW_USER = VIS.IS_NEW_USER(+)
+           AND DIM.IS_NEW_USER = CAR.IS_NEW_USER(+)
+           AND DIM.IS_NEW_USER = ORD.IS_NEW_USER(+)
+           AND DIM.MEMBER_LEVEL = VIS.MEMBER_LEVEL(+)
+           AND DIM.MEMBER_LEVEL = CAR.MEMBER_LEVEL(+)
+           AND DIM.MEMBER_LEVEL = ORD.MEMBER_LEVEL(+)
+           AND DIM.ITEM_CODE = VIS.ITEM_CODE(+)
+           AND DIM.ITEM_CODE = CAR.ITEM_CODE(+)
+           AND DIM.ITEM_CODE = ORD.ITEM_CODE(+)
+           AND (VIS.PV IS NOT NULL OR CAR.CAR_COUNT IS NOT NULL OR
+               ORD.ORDER_QTY IS NOT NULL);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:IN_DATE_KEY:' || TO_CHAR(IN_DATE_KEY);
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+    
+  END OPER_GOOD_LABEL_ANALYSIS_P;
+
   PROCEDURE FACT_GOODS_SALES_FIX(IN_POSTING_DATE_KEY IN NUMBER,
                                  IN_FIX_TYPE         IN VARCHAR2) IS
     /*
@@ -4475,7 +5615,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     IN_FIX_TYPE='OPER':OPER表
     */
   BEGIN
-    IF UPPER(IN_FIX_TYPE) = 'ALL' THEN
+    IF UPPER(IN_FIX_TYPE) = 'ALL'
+    THEN
       BEGIN
         -- FACT_GOODS_SALES
         CREATEORDERGOODS(IN_POSTING_DATE_KEY);
@@ -4515,7 +5656,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
         --MEMBER_LABEL_PKG.MEMBER_INJURED_PERIOD
         MEMBER_LABEL_PKG.MEMBER_INJURED_PERIOD(IN_POSTING_DATE_KEY);
       END;
-    ELSIF UPPER(IN_FIX_TYPE) = 'FACT' THEN
+    ELSIF UPPER(IN_FIX_TYPE) = 'FACT'
+    THEN
       BEGIN
         -- FACT_GOODS_SALES
         CREATEORDERGOODS(IN_POSTING_DATE_KEY);
@@ -4535,7 +5677,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
         -- FACT_GOODS_SALES_REVERSE
         PROCESSUPDATEORDERREVERSE(IN_POSTING_DATE_KEY);
       END;
-    ELSIF UPPER(IN_FIX_TYPE) = 'OPER' THEN
+    ELSIF UPPER(IN_FIX_TYPE) = 'OPER'
+    THEN
       BEGIN
         -- OPER_PRODUCT_DAILY_REPORT
         YANGJIN_PKG.OPER_PRODUCT_DAILY_RPT(IN_POSTING_DATE_KEY);
@@ -4581,7 +5724,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -4802,7 +5946,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
                   WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          AND*/
                   F.ZMATERIAL NOT LIKE '%F%'
                AND F.ZEAMC027 IS NOT NULL
                AND F.ZEAMC027 != 0) TA
@@ -4939,7 +6083,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5108,7 +6253,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5237,7 +6383,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5332,7 +6479,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5395,7 +6543,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5410,7 +6559,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
         FROM DATA_ACQUISITION_WEEK_TOPN A
        WHERE A.PERIOD = I_DATE_KEY;
       /*如果已经插入则删除*/
-      IF EXISTS_ROWS >= 0 THEN
+      IF EXISTS_ROWS >= 0
+      THEN
         DELETE DATA_ACQUISITION_WEEK_TOPN A WHERE A.PERIOD = I_DATE_KEY;
         COMMIT;
       END IF;
@@ -5544,7 +6694,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5559,7 +6710,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
         FROM DATA_ACQUISITION_WEEK_NEW A
        WHERE A.PERIOD = I_DATE_KEY;
       /*如果已经插入则删除*/
-      IF EXISTS_ROWS >= 0 THEN
+      IF EXISTS_ROWS >= 0
+      THEN
         DELETE DATA_ACQUISITION_WEEK_NEW A WHERE A.PERIOD = I_DATE_KEY;
         COMMIT;
       END IF;
@@ -5702,7 +6854,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5712,7 +6865,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       /*每月一日执行*/
-      IF TO_NUMBER(TO_CHAR(TO_DATE(I_DATE_KEY, 'YYYYMMDD'), 'DD')) = 1 THEN
+      IF TO_NUMBER(TO_CHAR(TO_DATE(I_DATE_KEY, 'YYYYMMDD'), 'DD')) = 1
+      THEN
         /*日期初始化*/
         V_MONTH_LAST_DATE_KEY  := TO_CHAR(TRUNC(TO_DATE(I_DATE_KEY,
                                                         'YYYYMMDD'),
@@ -5731,7 +6885,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
           FROM DATA_ACQUISITION_MONTH_TOPN A
          WHERE A.YEAR_MONTH = V_YEAR_MONTH;
         /*如果已经插入则删除*/
-        IF EXISTS_ROWS >= 0 THEN
+        IF EXISTS_ROWS >= 0
+        THEN
           DELETE DATA_ACQUISITION_MONTH_TOPN A
            WHERE A.YEAR_MONTH = V_YEAR_MONTH;
           COMMIT;
@@ -5871,7 +7026,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -5881,7 +7037,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       /*每月一日执行*/
-      IF TO_NUMBER(TO_CHAR(TO_DATE(I_DATE_KEY, 'YYYYMMDD'), 'DD')) = 1 THEN
+      IF TO_NUMBER(TO_CHAR(TO_DATE(I_DATE_KEY, 'YYYYMMDD'), 'DD')) = 1
+      THEN
         /*日期初始化*/
         /*上月最后一天*/
         V_MONTH_LAST_DATE_KEY := TO_CHAR(TRUNC(TO_DATE(I_DATE_KEY,
@@ -5911,7 +7068,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
           FROM DATA_ACQUISITION_MONTH_TOPN A
          WHERE A.YEAR_MONTH = V_YEAR_MONTH;
         /*如果已经插入则删除*/
-        IF EXISTS_ROWS >= 0 THEN
+        IF EXISTS_ROWS >= 0
+        THEN
           DELETE DATA_ACQUISITION_MONTH_TOPN A
            WHERE A.YEAR_MONTH = V_YEAR_MONTH;
           COMMIT;
@@ -6055,7 +7213,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -6194,7 +7353,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -6270,7 +7430,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -6354,7 +7515,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -6443,7 +7605,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);

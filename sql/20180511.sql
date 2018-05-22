@@ -1,0 +1,29 @@
+SELECT B.MATDL,
+       B.MATDLT,
+       B.MATZL,
+       B.MATZLT,
+       B.MATXL,
+       B.MATXLT,
+       A.ZLABNAME,
+       COUNT(1) CNT
+  FROM FACT_EC_GOODS_MANUAL A, DIM_GOOD B
+ WHERE A.COMMON_ID = B.GOODS_COMMONID
+ GROUP BY B.MATDL,
+          B.MATDLT,
+          B.MATZL,
+          B.MATZLT,
+          B.MATXL,
+          B.MATXLT,
+          A.ZLABNAME
+ ORDER BY B.MATDL,
+          B.MATDLT,
+          B.MATZL,
+          B.MATZLT,
+          B.MATXL,
+          B.MATXLT,
+          A.ZLABNAME;
+
+SELECT A.ZLABNAME, COUNT(1) CNT
+  FROM FACT_EC_GOODS_MANUAL A
+ GROUP BY A.ZLABNAME
+ ORDER BY A.ZLABNAME;

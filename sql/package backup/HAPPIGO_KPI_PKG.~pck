@@ -262,7 +262,9 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
                         SYSDATE           W_INSERT_DT,
                         SYSDATE           W_UPDATE_DT
           FROM FACT_SESSION A
-         WHERE A.START_DATE_KEY = IN_DATE_KEY;
+         WHERE A.START_DATE_KEY = IN_DATE_KEY
+              /*ÌÞ³ýVIDÎª¿ÕµÄ¼ÇÂ¼*/
+           AND A.VID IS NOT NULL;
       INSERT_ROWS := SQL%ROWCOUNT;
       COMMIT;
     
@@ -626,7 +628,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
       MERGE /*+APPEND*/
       INTO KPI_ASMT_WX_NEW_REG T
       USING (SELECT SUBSTR(A.VISIT_DATE_KEY, 1, 6) MONTH_KEY,
-                    ROUND(AVG(A.UVCNT)) NEW_REG_COUNT,
+                    ROUND(AVG(NVL(A.MCNT, 0))) NEW_REG_COUNT,
                     SYSDATE W_INSERT_DT,
                     SYSDATE W_UPDATE_DT
                FROM FACT_DAILY_WX A
@@ -2024,6 +2026,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
       USING (SELECT M.MONTH_KEY,
                     NVL(A1.MAU, 0) APP_MAU,
                     NVL(A2.CVR, 0) APP_ORDER_CVR,
+                    NVL(A3.CVR, 0) APP_ITEM_CVR,
                     NVL(A4.DAU, 0) WX_DAU,
                     NVL(A5.NEW_REG_COUNT, 0) WX_NEW_REG_COUNT,
                     NVL(A6.CVR, 0) WX_NON_SCAN_CVR,
@@ -2045,6 +2048,9 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
                     SYSDATE W_UPDATE_DT
                FROM KPI_ASMT_APP_MAU A1,
                     KPI_ASMT_APP_NET_ORDER_CVR A2,
+                    (SELECT MONTH_KEY, ROUND(AVG(NVL(AVG_CVR, 0)), 4) CVR
+                       FROM KPI_ASMT_APP_ITEM_CVR
+                      GROUP BY MONTH_KEY) A3,
                     KPI_ASMT_WX_DAU A4,
                     KPI_ASMT_WX_NEW_REG A5,
                     KPI_ASMT_WX_NON_SCAN_CVR A6,
@@ -2059,6 +2065,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
                        FROM DUAL) M
               WHERE M.MONTH_KEY = A1.MONTH_KEY(+)
                 AND M.MONTH_KEY = A2.MONTH_KEY(+)
+                AND M.MONTH_KEY = A3.MONTH_KEY(+)
                 AND M.MONTH_KEY = A4.MONTH_KEY(+)
                 AND M.MONTH_KEY = A5.MONTH_KEY(+)
                 AND M.MONTH_KEY = A6.MONTH_KEY(+)
@@ -2073,6 +2080,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
         UPDATE
            SET T.APP_MAU                 = S.APP_MAU,
                T.APP_ORDER_CVR           = S.APP_ORDER_CVR,
+               T.APP_ITEM_CVR            = S.APP_ITEM_CVR,
                T.WX_DAU                  = S.WX_DAU,
                T.WX_NEW_REG_COUNT        = S.WX_NEW_REG_COUNT,
                T.WX_NON_SCAN_CVR         = S.WX_NON_SCAN_CVR,
@@ -2089,6 +2097,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
           (T.MONTH_KEY,
            T.APP_MAU,
            T.APP_ORDER_CVR,
+           T.APP_ITEM_CVR,
            T.WX_DAU,
            T.WX_NEW_REG_COUNT,
            T.WX_NON_SCAN_CVR,
@@ -2105,6 +2114,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
           (S.MONTH_KEY,
            S.APP_MAU,
            S.APP_ORDER_CVR,
+           S.APP_ITEM_CVR,
            S.WX_DAU,
            S.WX_NEW_REG_COUNT,
            S.WX_NON_SCAN_CVR,

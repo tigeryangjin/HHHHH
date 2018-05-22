@@ -262,7 +262,9 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
                         SYSDATE           W_INSERT_DT,
                         SYSDATE           W_UPDATE_DT
           FROM FACT_SESSION A
-         WHERE A.START_DATE_KEY = IN_DATE_KEY;
+         WHERE A.START_DATE_KEY = IN_DATE_KEY
+              /*剔除VID为空的记录*/
+           AND A.VID IS NOT NULL;
       INSERT_ROWS := SQL%ROWCOUNT;
       COMMIT;
     
@@ -1341,7 +1343,8 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
                             COUNT(DISTINCT B1.VID) NON_SCAN_VID_COUNT
                        FROM FACT_SESSION B1
                       WHERE B1.START_DATE_KEY = IN_DATE_KEY
-                        AND B1.APPLICATION_KEY = 50
+                           /*添加70快乐购小程序,20180503*/
+                        AND B1.APPLICATION_KEY IN (50, 70)
                         AND B1.VID NOT IN
                             (SELECT VID
                                FROM DIM_VID_SCAN

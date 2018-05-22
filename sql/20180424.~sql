@@ -1,0 +1,25 @@
+select e.date_key,
+       e.vid,
+       e.member_key,
+       f.first_order_date_key,
+       e.date_key,
+       case
+         when f.first_order_date_key = e.date_key then
+          'new_user'
+         else
+          'old_user'
+       end is_new_user,
+       case
+         when g.vid is null then
+          'non_scan'
+         else
+          'scan'
+       end is_scan
+  from yangjin.fact_page_view_2017 e,
+       dim_member f,
+       (select h.scan_date_key, h.vid
+          from dim_vid_scan h
+         where h.scan_date_key between 20170101 and 20171231) g
+ where e.member_key = f.member_bp
+   and e.date_key = g.scan_date_key(+)
+   and e.vid = g.vid(+)

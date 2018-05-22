@@ -4,6 +4,22 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG_TEST IS
   -- CREATED : 2017-05-31 10:41:42
   -- PURPOSE : YANGJIN PACKAGE
 
+  TYPE TYPE_GR_ROW IS RECORD /*RECORD自定义行类型*/
+  
+  (
+    TOPN          NUMBER, /*排名*/
+    MEMBER_NUMBER NUMBER, /*购买人数*/
+    ITEM_CODE     NUMBER(10), /*商品编码*/
+    GOODS_NAME    VARCHAR2(200), /*商品名称*/
+    MATDL         NUMBER(10), /*物料大类编码*/
+    MATDLT        VARCHAR2(100), /*物料大类名称*/
+    MATZL         NUMBER(10), /*物料中类编码*/
+    MATZLT        VARCHAR2(100), /*物料中类名称*/
+    MATXL         NUMBER(10), /*物料小类编码*/
+    MATXLT        VARCHAR2(100) /*物料小类名称*/);
+
+  TYPE TYPE_GR_TABLE IS TABLE OF TYPE_GR_ROW; /*自定义表类型*/
+
   FUNCTION GET_IP_CITY(IN_IP_INT IN NUMBER) RETURN VARCHAR2;
   /*返回ip归属城市*/
   FUNCTION MEMBER_REPURCHASE_CYCLE_DAYS(IN_MEMBER_KEY IN NUMBER)
@@ -18,14 +34,29 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG_TEST IS
   最后更改日期：
   */
 
-  
-
-  PROCEDURE LOG_TEST;
+  FUNCTION GET_GOODS_RECOMMEND(IN_MEMBER_BP IN NUMBER,
+                               IN_ITEM_CODE IN NUMBER)
+    RETURN GOODS_RECOMMEND_TABLE;
   /*
-  功能名:       DATA_ACQUISITION_ITEM_MIN_PER
-  目的:         统计 DATA_ACQUISITION_ITEM的最小PERIOD
+  函数名：      GET_GOODS_RECOMMEND
+  目的：        
+  创建时间：    2017/11/24
   作者:         yangjin
-  创建时间：    2017/10/30
+  创建时间：    2017/11/24
+  最后修改人：
+  最后更改日期：
+  */
+
+  FUNCTION GET_GOODS_RECOMMEND1(IN_MEMBER_BP IN NUMBER,
+                                IN_ITEM_CODE IN NUMBER)
+    RETURN GOODS_RECOMMEND_TABLE;
+  --RETURN YANGJIN_PKG_TEST.TYPE_GR_TABLE;
+/*
+  函数名：      GET_GOODS_RECOMMEND
+  目的：        
+  创建时间：    2017/11/24
+  作者:         yangjin
+  创建时间：    2017/11/24
   最后修改人：
   最后更改日期：
   */
@@ -72,94 +103,122 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG_TEST IS
     RETURN(RESULT_DAYS);
   END MEMBER_REPURCHASE_CYCLE_DAYS;
 
-  
-
-  PROCEDURE LOG_TEST IS
-    V_OUTPUT_FILE UTL_FILE.FILE_TYPE;
-    V_FILE_NAME   VARCHAR2(50);
-  
-    /*
-    功能说明：DATA_ACQUISITION_MONTH_TOPN月销售排行  
-    作者时间：yangjin  2017-10-30
-    */
-  
+  --*********************************************************************************************
+  FUNCTION GET_GOODS_RECOMMEND(IN_MEMBER_BP IN NUMBER,
+                               IN_ITEM_CODE IN NUMBER)
+    RETURN GOODS_RECOMMEND_TABLE IS
+    V_GOODS_RECOMMEND_TABLE GOODS_RECOMMEND_TABLE := GOODS_RECOMMEND_TABLE();
   BEGIN
-    --外层循环得到内层循环BETWEEN的最小值和最大值
-    FOR J IN (SELECT (LEVEL - 1) * 1000000 MINVAL, LEVEL * 1000000 MAXVAL
-                FROM DUAL
-              CONNECT BY LEVEL <=
-                         (SELECT COUNT(1) FROM ODSHAPPIGO.ODS_PAGEVIEW) /
-                         1000000 + 1) LOOP
-      /*统一文件名称*/
-      V_FILE_NAME := 'ods_pv_' || TO_CHAR(SYSDATE, 'YYYYMMDD_HH24MISS') ||
-                     '.log';
-      /*打开文件*/
-      V_OUTPUT_FILE := UTL_FILE.FOPEN('LOG_TEST', V_FILE_NAME, 'W', 32767);
-    
-      /*写入title*/
-      UTL_FILE.PUT_LINE(V_OUTPUT_FILE,
-                        'ID,VID,MID,V,T,HMSC,HMMD,HMPL,HMKW,HMCI,URL,QUERY,AGENT,IP,CREATEON,A,VER,P,ISPROCESSED');
-    
-      /*循环，获取需要导出的数据*/
-      FOR I IN (SELECT B.ID,
-                       B.VID,
-                       B.MID,
-                       B.V,
-                       B.T,
-                       B.HMSC,
-                       B.HMMD,
-                       B.HMPL,
-                       B.HMKW,
-                       B.HMCI,
-                       B.URL,
-                       B.QUERY,
-                       B.AGENT,
-                       B.IP,
-                       B.CREATEON,
-                       B.A,
-                       B.VER,
-                       B.P,
-                       B.ISPROCESSED
-                  FROM (SELECT A.ID,
-                               A.VID,
-                               A.MID,
-                               A.V,
-                               A.T,
-                               A.HMSC,
-                               A.HMMD,
-                               A.HMPL,
-                               A.HMKW,
-                               A.HMCI,
-                               A.URL,
-                               A.QUERY,
-                               A.AGENT,
-                               A.IP,
-                               A.CREATEON,
-                               A.A,
-                               A.VER,
-                               A.P,
-                               A.ISPROCESSED,
-                               ROW_NUMBER() OVER(ORDER BY A.ID) RN
-                          FROM ODSHAPPIGO.ODS_PAGEVIEW A) B
-                 WHERE B.RN BETWEEN J.MINVAL AND J.MAXVAL) LOOP
-      
-        /*行数据依次写入文件*/
-        UTL_FILE.PUT_LINE(V_OUTPUT_FILE,
-                          I.ID || ',' || I.VID || ',' || I.MID || ',' || I.V || ',' || I.T || ',' ||
-                          I.HMSC || ',' || I.HMMD || ',' || I.HMPL || ',' ||
-                          I.HMKW || ',' || I.HMCI || ',' || I.URL || ',' ||
-                          I.QUERY || ',' || I.AGENT || ',' || I.IP || ',' ||
-                          I.CREATEON || ',' || I.A || ',' || I.VER || ',' || I.P || ',' ||
-                          I.ISPROCESSED);
-      END LOOP;
-    
-      /*关闭文件*/
-      UTL_FILE.FCLOSE(V_OUTPUT_FILE);
+    FOR I IN (SELECT ROW_NUMBER() OVER(ORDER BY G.MEMBER_NUMBER DESC) TOPN,
+                     G.MEMBER_NUMBER,
+                     G.ITEM_CODE,
+                     H.GOODS_NAME,
+                     H.MATDL,
+                     H.MATDLT,
+                     H.MATZL,
+                     H.MATZLT,
+                     H.MATXL,
+                     H.MATXLT
+                FROM (SELECT F.ITEM_CODE, F.MEMBER_NUMBER
+                        FROM (SELECT B.ITEM_CODE,
+                                     COUNT(DISTINCT B.MEMBER_BP) MEMBER_NUMBER
+                                FROM GOODS_RECOMMEND_BASE B
+                               WHERE EXISTS
+                               (SELECT 1
+                                        FROM (SELECT A.MEMBER_BP
+                                                FROM GOODS_RECOMMEND_BASE A
+                                               WHERE A.ITEM_CODE = IN_ITEM_CODE) C
+                                       WHERE B.MEMBER_BP = C.MEMBER_BP) /*购买此商品的所有会员*/
+                                 AND NOT EXISTS
+                               (SELECT 1
+                                        FROM (SELECT E.ITEM_CODE
+                                                FROM GOODS_RECOMMEND_BASE E
+                                               WHERE E.MEMBER_BP = IN_MEMBER_BP) D
+                                       WHERE B.ITEM_CODE = D.ITEM_CODE) /*此会员已经购买过的商品*/
+                                 AND B.ITEM_CODE <> 0
+                                 AND B.ITEM_CODE <> IN_ITEM_CODE
+                                 AND B.ORDER_DATE >=
+                                     TO_CHAR(SYSDATE - 91, 'YYYYMMDD') /*日期范围最近90天*/
+                               GROUP BY B.ITEM_CODE) F
+                       WHERE ROWNUM <= 50
+                       ORDER BY F.MEMBER_NUMBER DESC) G,
+                     DIM_GOOD H
+               WHERE G.ITEM_CODE = H.ITEM_CODE
+                 AND H.CURRENT_FLG = 'Y') LOOP
+      V_GOODS_RECOMMEND_TABLE.EXTEND;
+      V_GOODS_RECOMMEND_TABLE(V_GOODS_RECOMMEND_TABLE.COUNT) := GOODS_RECOMMEND_ROW(I.TOPN,
+                                                                                    I.MEMBER_NUMBER,
+                                                                                    I.ITEM_CODE,
+                                                                                    I.GOODS_NAME,
+                                                                                    I.MATDL,
+                                                                                    I.MATDLT,
+                                                                                    I.MATZL,
+                                                                                    I.MATZLT,
+                                                                                    I.MATXL,
+                                                                                    I.MATXLT);
     END LOOP;
-  EXCEPTION
-    WHEN OTHERS THEN
-      DBMS_OUTPUT.PUT_LINE(SQLERRM);
-  END LOG_TEST;
+    RETURN V_GOODS_RECOMMEND_TABLE;
+  END GET_GOODS_RECOMMEND;
+
+  --*************************************************************************************************
+  FUNCTION GET_GOODS_RECOMMEND1(IN_MEMBER_BP IN NUMBER,
+                                IN_ITEM_CODE IN NUMBER)
+    RETURN GOODS_RECOMMEND_TABLE IS
+    --RETURN YANGJIN_PKG_TEST.TYPE_GR_TABLE IS
+    V_GR_TABLE GOODS_RECOMMEND_TABLE := GOODS_RECOMMEND_TABLE();
+    --V_GR_TABLE YANGJIN_PKG_TEST.TYPE_GR_TABLE := YANGJIN_PKG_TEST.TYPE_GR_TABLE();
+  BEGIN
+    FOR I IN (SELECT ROW_NUMBER() OVER(ORDER BY G.MEMBER_NUMBER DESC) TOPN,
+                     G.MEMBER_NUMBER,
+                     G.ITEM_CODE,
+                     H.GOODS_NAME,
+                     H.MATDL,
+                     H.MATDLT,
+                     H.MATZL,
+                     H.MATZLT,
+                     H.MATXL,
+                     H.MATXLT
+                FROM (SELECT F.ITEM_CODE, F.MEMBER_NUMBER
+                        FROM (SELECT B.ITEM_CODE,
+                                     COUNT(DISTINCT B.MEMBER_BP) MEMBER_NUMBER
+                                FROM GOODS_RECOMMEND_BASE B
+                               WHERE EXISTS
+                               (SELECT 1
+                                        FROM (SELECT A.MEMBER_BP
+                                                FROM GOODS_RECOMMEND_BASE A
+                                               WHERE A.ITEM_CODE = IN_ITEM_CODE) C
+                                       WHERE B.MEMBER_BP = C.MEMBER_BP) /*购买此商品的所有会员*/
+                                 AND NOT EXISTS
+                               (SELECT 1
+                                        FROM (SELECT E.ITEM_CODE
+                                                FROM GOODS_RECOMMEND_BASE E
+                                               WHERE E.MEMBER_BP = IN_MEMBER_BP) D
+                                       WHERE B.ITEM_CODE = D.ITEM_CODE) /*此会员已经购买过的商品*/
+                                 AND B.ITEM_CODE <> 0
+                                 AND B.ITEM_CODE <> IN_ITEM_CODE
+                                 AND B.ORDER_DATE >=
+                                     TO_CHAR(SYSDATE - 91, 'YYYYMMDD') /*日期范围最近90天*/
+                               GROUP BY B.ITEM_CODE) F
+                       WHERE ROWNUM <= 50
+                       ORDER BY F.MEMBER_NUMBER DESC) G,
+                     DIM_GOOD H
+               WHERE G.ITEM_CODE = H.ITEM_CODE
+                 AND H.CURRENT_FLG = 'Y') LOOP
+      V_GR_TABLE.EXTEND;
+      V_GR_TABLE(V_GR_TABLE.COUNT) := GOODS_RECOMMEND_ROW(I.TOPN,
+                                                          --V_GR_TABLE(V_GR_TABLE.COUNT) := YANGJIN_PKG_TEST.TYPE_GR_ROW(I.TOPN,
+                                                          I.MEMBER_NUMBER,
+                                                          I.ITEM_CODE,
+                                                          I.GOODS_NAME,
+                                                          I.MATDL,
+                                                          I.MATDLT,
+                                                          I.MATZL,
+                                                          I.MATZLT,
+                                                          I.MATXL,
+                                                          I.MATXLT);
+    END LOOP;
+    RETURN V_GR_TABLE;
+  END GET_GOODS_RECOMMEND1;
 
 END YANGJIN_PKG_TEST;
 /

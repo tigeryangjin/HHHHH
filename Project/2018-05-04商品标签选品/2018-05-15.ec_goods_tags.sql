@@ -1,0 +1,22 @@
+CREATE TABLE `ec_goods_tags` (
+  `goods_tag_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `item_code` int(11) NOT NULL COMMENT '商品编号',
+  `goods_commonid` int(11) NOT NULL COMMENT '平台货号',
+  `tag_id` int(11) NOT NULL COMMENT '标签ID',
+  `state` tinyint(3) NOT NULL DEFAULT '1' COMMENT '对应状态（1有效，0无效），默认有效',
+  `add_time` datetime DEFAULT NULL COMMENT '添加时间',
+  `edit_time` datetime DEFAULT NULL COMMENT '修改时间',
+  PRIMARY KEY (`goods_tag_id`),
+  KEY `index_item_code` (`item_code`),
+  KEY `index_goods_commonid` (`goods_commonid`),
+  KEY `index_tag_id` (`tag_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='商品标签对应表';
+
+CREATE TABLE EC_GOODS_TAGS_TMP
+(  goods_tag_id number(10),
+  item_code number(10),
+  goods_commonid number(10),
+  tag_id number(10),
+  state number(3),
+  add_time date ,
+  edit_time date);

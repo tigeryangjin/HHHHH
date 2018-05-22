@@ -1,6 +1,37 @@
 --*********************************************************************
 --1.daily check
 --*********************************************************************
+--1.0.1.27-dw_user
+SELECT *
+  FROM S_PARAMETERS2 A
+ WHERE UPPER(A.DEVELOPER) = 'YANGJIN'
+   AND NOT EXISTS
+ (SELECT 1
+          FROM W_ETL_LOG B
+         WHERE A.PNAME = B.PROC_NAME
+           AND TRUNC(B.START_TIME) >= TRUNC(SYSDATE) - 1);
+
+--1.0.2.27-odshappigo
+SELECT *
+  FROM ODSHAPPIGO.S_PARAMETERS2 A
+ WHERE UPPER(A.DEVELOPER) = 'YANGJIN'
+   AND NOT EXISTS
+ (SELECT 1
+          FROM ODSHAPPIGO.W_ETL_LOG B
+         WHERE A.PNAME = B.PROC_NAME
+           AND TRUNC(B.START_TIME) >= TRUNC(SYSDATE) - 1);
+
+--1.0.3.18-dw_user
+SELECT *
+  FROM S_PARAMETERS2@BITONEWBI A
+ WHERE UPPER(A.DEVELOPER) = 'YANGJIN'
+   AND NOT EXISTS
+ (SELECT 1
+          FROM W_ETL_LOG@BITONEWBI B
+         WHERE A.PNAME = B.PROC_NAME
+           AND TRUNC(B.START_TIME) >= TRUNC(SYSDATE) - 1);
+
+
 --1.1.W_ETL_LOG check
 --27.dw_user
 SELECT *
@@ -197,7 +228,7 @@ SELECT SUBSTR(T.PROC_NAME, 1, INSTR(T.PROC_NAME, '.') - 1) || '_' || RANK() OVER
        ('OPER_MEMBER_LIKE_PKG.OPER_ITEM_RECOMMEND_AR_PROC',
         'OPER_MEMBER_LIKE_PKG.OPER_ITEM_RECOMMEND_SR_PROC',
         'OPER_MEMBER_LIKE_PKG.OPER_ITEM_RECOMMEND_UNION_PROC')
-   AND TRUNC(T.START_TIME) = TRUNC(SYSDATE - 1);
+   AND TRUNC(T.START_TIME) >= TRUNC(SYSDATE - 1);
 
 --1.4.2line
 /*
@@ -448,230 +479,3 @@ SELECT *
                        'processupdateorderreverse')
  ORDER BY T.START_TIME DESC;
 
---5.
---¼ì²éODS_ORDERÊÇ·ñÖØ¸´
-SELECT /*+PARALLEL(16)*/
- A.CRM_OBJ_ID,
- A.CRM_NUMINT,
- A.ZEAMC008,
- A.CRM_OHGUID,
- A.CRM_ITMGUI,
- A.CRM_PRCTYP,
- A.ZCRMD023,
- A.CRM_ITMTYP,
- A.ZTCMC002,
- A.ZTCMC006,
- A.SALESORG,
- A.DISTR_CHAN,
- A.SALES_OFF,
- A.DIVISION,
- A.ZMATERIAL,
- A.ZEAMC027,
- A.ZLIFNR,
- A.CRM_ENDCST,
- A.ZTCMC016,
- A.AGE,
- A.ZTCMC020,
- A.CRM_SOLDTO,
- A.ZKUNNR_L1,
- A.ZKUNNR_L2,
- A.ZTHRC015,
- A.BP_EMPLO,
- A.ZTHRC016,
- A.ZTHRC017,
- A.ZESDC113,
- A.CRMPOSTDAT,
- A.ZPST_TIM,
- A.ZGZ_TIME,
- A.ZCRMD001,
- A.CRM_USSTAT,
- A.CRM_STSMA,
- A.CRM_CTD_BY,
- A.CRM_CRD_AT,
- A.CREA_TIME,
- A.ZEAMC001,
- A.ZEAMC010,
- A.ZEAMC011,
- A.ZEAMC012,
- A.ZEAMC037,
- A.ZEAMC013,
- A.ZEAMC014,
- A.ZTCMC021,
- A.ZTCMC022,
- A.ZTCMC027,
- A.ZTCMC026,
- A.ZTCMC030,
- A.ZTCMC007,
- A.ZTCMC008,
- A.ZTCMC009,
- A.ZTCMC023,
- A.ZTCMC024,
- A.ZTCMC025,
- A.ZCRMD015,
- A.ZCRMD016,
- A.ZCRMD017,
- A.ZCRMD018,
- A.ZCR_ON,
- A.ZOBJ_CC,
- A.ZDSXD,
- A.ZJSJF_YN,
- A.ZCRMD025,
- A.ZCRMD020,
- A.ZCRMD021,
- A.ZTCRMC01,
- A.ZTCRMC02,
- A.ZTCRMC03,
- A.ZTCRMC04,
- A.ZTCRMC05,
- A.NETVALORD,
- A.CRM_TAXAMO,
- A.GRSVALORD,
- A.ZAMK0011,
- A.ZAMK0010,
- A.ZCRMK006,
- A.ZCRMK007,
- A.ZCRMK009,
- A.CRM_SRVKB,
- A.ZCRMK003,
- A.ZCRMK004,
- A.ZCRMK005,
- A.ZYF_PAY,
- A.ZXY_PAY,
- A.ZNPT_ATM,
- A.CRM_NUMOFI,
- A.ZAMK0024,
- A.ZCRMK008,
- A.SALES_UNIT,
- A.CURRENCY,
- A.CRM_CURREN,
- A.ZCRMD031,
- A.ZEHRC012,
- A.ZCRMD048,
- A.ZCRMD086,
- A.ZCRMD019,
- A.ZTHRC027,
- A.ZTHRC026,
- A.ZTHRC025,
- A.ZTCRMC11,
- A.ZCRMD199,
- A.ZTLEC001,
- A.ZCONDK001,
- A.ZCRMD120,
- A.CHANGED_BY,
- A.ZMATER2,
- A.ZZTRANSF,
- A.ZTMSTAMP,
- COUNT(1)
-  FROM ODSHAPPIGO.ODS_ORDER A
- WHERE A.CRMPOSTDAT = TO_CHAR(TRUNC(SYSDATE - 1), 'YYYYMMDD')
- GROUP BY A.CRM_OBJ_ID,
-          A.CRM_NUMINT,
-          A.ZEAMC008,
-          A.CRM_OHGUID,
-          A.CRM_ITMGUI,
-          A.CRM_PRCTYP,
-          A.ZCRMD023,
-          A.CRM_ITMTYP,
-          A.ZTCMC002,
-          A.ZTCMC006,
-          A.SALESORG,
-          A.DISTR_CHAN,
-          A.SALES_OFF,
-          A.DIVISION,
-          A.ZMATERIAL,
-          A.ZEAMC027,
-          A.ZLIFNR,
-          A.CRM_ENDCST,
-          A.ZTCMC016,
-          A.AGE,
-          A.ZTCMC020,
-          A.CRM_SOLDTO,
-          A.ZKUNNR_L1,
-          A.ZKUNNR_L2,
-          A.ZTHRC015,
-          A.BP_EMPLO,
-          A.ZTHRC016,
-          A.ZTHRC017,
-          A.ZESDC113,
-          A.CRMPOSTDAT,
-          A.ZPST_TIM,
-          A.ZGZ_TIME,
-          A.ZCRMD001,
-          A.CRM_USSTAT,
-          A.CRM_STSMA,
-          A.CRM_CTD_BY,
-          A.CRM_CRD_AT,
-          A.CREA_TIME,
-          A.ZEAMC001,
-          A.ZEAMC010,
-          A.ZEAMC011,
-          A.ZEAMC012,
-          A.ZEAMC037,
-          A.ZEAMC013,
-          A.ZEAMC014,
-          A.ZTCMC021,
-          A.ZTCMC022,
-          A.ZTCMC027,
-          A.ZTCMC026,
-          A.ZTCMC030,
-          A.ZTCMC007,
-          A.ZTCMC008,
-          A.ZTCMC009,
-          A.ZTCMC023,
-          A.ZTCMC024,
-          A.ZTCMC025,
-          A.ZCRMD015,
-          A.ZCRMD016,
-          A.ZCRMD017,
-          A.ZCRMD018,
-          A.ZCR_ON,
-          A.ZOBJ_CC,
-          A.ZDSXD,
-          A.ZJSJF_YN,
-          A.ZCRMD025,
-          A.ZCRMD020,
-          A.ZCRMD021,
-          A.ZTCRMC01,
-          A.ZTCRMC02,
-          A.ZTCRMC03,
-          A.ZTCRMC04,
-          A.ZTCRMC05,
-          A.NETVALORD,
-          A.CRM_TAXAMO,
-          A.GRSVALORD,
-          A.ZAMK0011,
-          A.ZAMK0010,
-          A.ZCRMK006,
-          A.ZCRMK007,
-          A.ZCRMK009,
-          A.CRM_SRVKB,
-          A.ZCRMK003,
-          A.ZCRMK004,
-          A.ZCRMK005,
-          A.ZYF_PAY,
-          A.ZXY_PAY,
-          A.ZNPT_ATM,
-          A.CRM_NUMOFI,
-          A.ZAMK0024,
-          A.ZCRMK008,
-          A.SALES_UNIT,
-          A.CURRENCY,
-          A.CRM_CURREN,
-          A.ZCRMD031,
-          A.ZEHRC012,
-          A.ZCRMD048,
-          A.ZCRMD086,
-          A.ZCRMD019,
-          A.ZTHRC027,
-          A.ZTHRC026,
-          A.ZTHRC025,
-          A.ZTCRMC11,
-          A.ZCRMD199,
-          A.ZTLEC001,
-          A.ZCONDK001,
-          A.ZCRMD120,
-          A.CHANGED_BY,
-          A.ZMATER2,
-          A.ZZTRANSF,
-          A.ZTMSTAMP
-HAVING COUNT(1) > 1;

@@ -77,7 +77,8 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -183,9 +184,17 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
                     'ZORDER02'
                    WHEN B.ORDER_GB IN ('HM41', 'HM42', 'HM45', 'HM46') THEN
                     'ZORDER03'
-                 END STSMA --状态参数文件
-            FROM ODSHAPPIGO.OD_ORDER A, ODSHAPPIGO.OD_ORDER_ITEM B
+                 END STSMA, --状态参数文件
+                 C.LIVE_YN ZEAMC010, --直播/重播
+                 C.B_DATE ZEAMC011, --单元开始日期
+                 C.E_DATE ZEAMC012, --单元结束日期
+                 C.B_TIME ZEAMC013, --单元开始时间
+                 C.E_TIME ZEAMC014 --单元结束时间
+            FROM ODSHAPPIGO.OD_ORDER             A,
+                 ODSHAPPIGO.OD_ORDER_ITEM        B,
+                 ODSHAPPIGO.ZTAM_BD_BR_FRAMESCHE C
            WHERE A.ORDER_NO = B.ORDER_NO
+             AND SUBSTR(B.PROG_ID, 1, 11) = C.PROG_ID(+)
              AND B.ORDER_GB = 'HM20'
              AND (B.ORDER_DATE >= TO_DATE(IN_DATE_KEY, 'YYYYMMDD') - 2 AND
                  B.ORDER_DATE < TO_DATE(IN_DATE_KEY, 'YYYYMMDD') OR
@@ -479,7 +488,12 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
                  WH_CODE ZTLEC001,
                  FREIGHT_AMT ZCONDK001,
                  NULL "0CRM_SOLDTO_0COUNTRY",
-                 NULL "0CRM_SOLDTO_0REGION"
+                 NULL "0CRM_SOLDTO_0REGION",
+                 ZEAMC010,
+                 ZEAMC011,
+                 ZEAMC012,
+                 ZEAMC013,
+                 ZEAMC014
             FROM ZHM_FORDER),
         ZECRD012 AS
          (SELECT GUID_H "0CRM_OHGUID",
@@ -610,12 +624,12 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
                  "0CRM_CRD_AT" CRM_CRD_AT,
                  "0CREA_TIME" CREA_TIME,
                  ZEAMC001 "/BIC/ZEAMC001",
-                 NULL "/BIC/ZEAMC010",
-                 NULL "/BIC/ZEAMC011",
-                 NULL "/BIC/ZEAMC012",
+                 ZEAMC010 "/BIC/ZEAMC010",
+                 ZEAMC011 "/BIC/ZEAMC011",
+                 ZEAMC012 "/BIC/ZEAMC012",
                  NULL "/BIC/ZEAMC037",
-                 NULL "/BIC/ZEAMC013",
-                 NULL "/BIC/ZEAMC014",
+                 ZEAMC013 "/BIC/ZEAMC013",
+                 ZEAMC014 "/BIC/ZEAMC014",
                  '00000000' "/BIC/ZTCMC021",
                  '000000' "/BIC/ZTCMC022",
                  ZPST_TIM "/BIC/ZTCMC027",
@@ -991,7 +1005,8 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -1274,7 +1289,8 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -1512,6 +1528,26 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
          WHERE A.CRMPOSTDAT = IN_DATE_KEY;
       INSERT_ROWS := SQL%ROWCOUNT;
       COMMIT;
+    
+      /*退货的订单ZCRMD018()是空值，按照权责制订单编号写入值 by yangjin 2018-05-16*/
+      UPDATE ODSHAPPIGO.ODS_ORDER A
+         SET A.ZCRMD018 =
+             (SELECT ZCRMD018
+                FROM (SELECT C.ZTCRMC04, MIN(C.ZCRMD018) ZCRMD018
+                        FROM ODSHAPPIGO.ODS_ORDER C
+                       GROUP BY C.ZTCRMC04) B
+               WHERE A.ZTCRMC04 = B.ZTCRMC04)
+       WHERE A.ZCRMD018 IS NULL
+         AND A.CRMPOSTDAT = IN_DATE_KEY
+         AND EXISTS
+       (SELECT 1
+                FROM (SELECT E.ZTCRMC04, MIN(E.ZCRMD018) ZCRMD018
+                        FROM ODSHAPPIGO.ODS_ORDER E
+                       GROUP BY E.ZTCRMC04) D
+               WHERE A.ZTCRMC04 = D.ZTCRMC04);
+      UPDATE_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
     END;
     /*日志记录模块*/
     S_ETL.END_TIME       := SYSDATE;
@@ -1552,7 +1588,8 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
   
     BEGIN
       SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0' THEN
+      IF S_PARAMETER = '0'
+      THEN
         S_ETL.END_TIME := SYSDATE;
         S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
         SP_SBI_W_ETL_LOG(S_ETL);
@@ -1816,9 +1853,13 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
     */
   BEGIN
     INSERT_MODIFY_TP(IN_DATE_KEY);
+    COMMIT;
     MERGE_SAP_BIC_AZTCRD00100;
+    COMMIT;
     INSERT_ODS_ORDER(IN_DATE_KEY);
+    COMMIT;
     INSERT_ODS_ORDER_CANCEL(IN_DATE_KEY);
+    COMMIT;
   END FIX_ODS_ORDER;
 
 END OD_ORDER_ETL;
