@@ -2514,7 +2514,7 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                  ELSE
                                   0
                                END IS_INJURED_PERIOD
-                          FROM (SELECT RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.ORDER_KEY DESC) RANK1, /*RANK1=1为最新订单，判断此订单是否拒退*/
+                          FROM (SELECT RANK() OVER(PARTITION BY A.MEMBER_KEY ORDER BY A.ORDER_KEY, B.ORDER_OBJ_ID DESC) RANK1, /*RANK1=1为最新订单，判断此订单是否拒退*/
                                        A.ORDER_OBJ_ID O_ORDER_OBJ_ID,
                                        A.ORDER_KEY O_ORDER_KEY,
                                        B.ORDER_OBJ_ID R_ORDER_OBJ_ID,
@@ -2524,11 +2524,19 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                        A.MEMBER_KEY,
                                        A.POSTING_DATE_KEY O_POSTING_DATE_KEY,
                                        B.POSTING_DATE_KEY R_POSTING_DATE_KEY
-                                  FROM (SELECT *
+                                  FROM (SELECT ORDER_OBJ_ID,
+                                               ORDER_KEY,
+                                               CANCEL_STATE,
+                                               MEMBER_KEY,
+                                               POSTING_DATE_KEY
                                           FROM FACT_ORDER
                                          WHERE POSTING_DATE_KEY =
                                                IN_POSTING_DATE_KEY) A,
-                                       (SELECT *
+                                       (SELECT ORDER_OBJ_ID,
+                                               ORDER_KEY,
+                                               CANCEL_STATE,
+                                               MEMBER_KEY,
+                                               POSTING_DATE_KEY
                                           FROM FACT_ORDER_REVERSE
                                          WHERE POSTING_DATE_KEY =
                                                IN_POSTING_DATE_KEY

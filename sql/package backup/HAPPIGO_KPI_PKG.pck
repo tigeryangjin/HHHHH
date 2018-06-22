@@ -552,7 +552,8 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
       MERGE /*+APPEND*/
       INTO KPI_ASMT_WX_DAU T
       USING (SELECT SUBSTR(A.VISIT_DATE_KEY, 1, 6) MONTH_KEY,
-                    ROUND(AVG(A.UVCNT)) DAU,
+                    /*加上小程序uv 2018-06-11 by yangjin*/
+                    ROUND(AVG(NVL(A.UVCNT, 0) + NVL(A.LITEUVCNT, 0))) DAU,
                     SYSDATE W_INSERT_DT,
                     SYSDATE W_UPDATE_DT
                FROM FACT_DAILY_WX A
@@ -1913,11 +1914,14 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
       INTO KPI_ASMT_REPURCHASE_MEMBER T
       USING (SELECT D.MONTH_KEY,
                     D.REPURCHASE_MEMBER_COUNT,
+                    D.REPURCHASE_ORDER_AMOUNT,
                     E.LAST_MONTH_MEMBER_COUNT,
+                    F.CUR_MONTH_MEMBER_COUNT,
                     SYSDATE                   W_INSERT_DT,
                     SYSDATE                   W_UPDATE_DT
                FROM (SELECT SUBSTR(A.ADD_TIME, 1, 6) MONTH_KEY,
-                            COUNT(DISTINCT(A.MEMBER_KEY)) REPURCHASE_MEMBER_COUNT
+                            COUNT(DISTINCT(A.MEMBER_KEY)) REPURCHASE_MEMBER_COUNT,
+                            SUM(A.ORDER_AMOUNT) REPURCHASE_ORDER_AMOUNT
                        FROM FACTEC_ORDER A
                       WHERE A.ADD_TIME BETWEEN V_CUR_MONTH_FIRST_DAY_KEY AND
                             IN_DATE_KEY
@@ -1930,6 +1934,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
                                     V_LAST_MONTH_LAST_DAY_KEY
                                 AND B.ORDER_STATE > 10)
                       GROUP BY SUBSTR(A.ADD_TIME, 1, 6)) D,
+                    /*上月*/
                     (SELECT TO_CHAR(ADD_MONTHS(TO_DATE(SUBSTR(C.ADD_TIME,
                                                               1,
                                                               6),
@@ -1946,24 +1951,39 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_KPI_PKG IS
                                                                  6),
                                                           'YYYYMM'),
                                                   1),
-                                       'YYYYMM')) E
-              WHERE D.MONTH_KEY = E.MONTH_KEY) S
+                                       'YYYYMM')) E,
+                    /*当月*/
+                    (SELECT SUBSTR(C.ADD_TIME, 1, 6) MONTH_KEY,
+                            COUNT(DISTINCT(C.MEMBER_KEY)) CUR_MONTH_MEMBER_COUNT
+                       FROM FACTEC_ORDER C
+                      WHERE C.ADD_TIME BETWEEN V_CUR_MONTH_FIRST_DAY_KEY AND
+                            IN_DATE_KEY
+                        AND C.ORDER_STATE > 10
+                      GROUP BY SUBSTR(C.ADD_TIME, 1, 6)) F
+              WHERE D.MONTH_KEY = E.MONTH_KEY
+                AND D.MONTH_KEY = F.MONTH_KEY) S
       ON (T.MONTH_KEY = S.MONTH_KEY)
       WHEN MATCHED THEN
         UPDATE
            SET T.REPURCHASE_MEMBER_COUNT = S.REPURCHASE_MEMBER_COUNT,
+               T.REPURCHASE_ORDER_AMOUNT = S.REPURCHASE_ORDER_AMOUNT,
                T.LAST_MONTH_MEMBER_COUNT = S.LAST_MONTH_MEMBER_COUNT,
+               T.CUR_MONTH_MEMBER_COUNT  = S.CUR_MONTH_MEMBER_COUNT,
                T.W_UPDATE_DT             = S.W_UPDATE_DT
       WHEN NOT MATCHED THEN
         INSERT
           (T.MONTH_KEY,
            T.REPURCHASE_MEMBER_COUNT,
+           T.REPURCHASE_ORDER_AMOUNT,
+           T.CUR_MONTH_MEMBER_COUNT,
            T.LAST_MONTH_MEMBER_COUNT,
            T.W_INSERT_DT,
            T.W_UPDATE_DT)
         VALUES
           (S.MONTH_KEY,
            S.REPURCHASE_MEMBER_COUNT,
+           S.REPURCHASE_ORDER_AMOUNT,
+           S.CUR_MONTH_MEMBER_COUNT,
            S.LAST_MONTH_MEMBER_COUNT,
            S.W_INSERT_DT,
            S.W_UPDATE_DT);

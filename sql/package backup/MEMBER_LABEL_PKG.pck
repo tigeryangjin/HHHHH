@@ -1670,6 +1670,7 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                       /*订购日期大于未产生首单标签的日期*/
                    AND B.POSTING_DATE_KEY >= CREATE_DATE
                    AND P.MEMBER_KEY = B.MEMBER_KEY);
+      
         FOR I IN 1 .. VAR_ARRAY.COUNT LOOP
           /*更新[未产生首单]标签*/
           UPDATE MEMBER_LABEL_LINK A

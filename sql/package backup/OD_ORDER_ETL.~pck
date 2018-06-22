@@ -44,10 +44,20 @@ CREATE OR REPLACE PACKAGE OD_ORDER_ETL IS
   最后更改日期：
   */
 
-  PROCEDURE FIX_ODS_ORDER(IN_DATE_KEY IN NUMBER);
+  PROCEDURE FIX_ODS_ORDER(IN_DATE_KEY1 IN NUMBER);
   /*
   功能名:       FIX_ODS_ORDER
   目的:         处理指定日期的数据修复
+  作者:         yangjin
+  创建时间：    2018/04/12
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE FIX_INSERT_ODS_ORDER(IN_DATE_KEY IN NUMBER);
+  /*
+  功能名:       FIX_INSERT_ODS_ORDER
+  目的:         插入数据到ODS_ORDER，而不删除数据。
   作者:         yangjin
   创建时间：    2018/04/12
   最后修改人：
@@ -963,7 +973,9 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
                CHANGED_BY,
                "/BIC/ZMATER2",
                "/BIC/ZZTRANSF",
-               "/BIC/ZTMSTAMP"
+               "/BIC/ZTMSTAMP",
+               SYSDATE W_INSERT_DT,
+               SYSDATE W_UPDATE_DT
           FROM ZTCRD001;
       INSERT_ROWS := SQL%ROWCOUNT;
       COMMIT;
@@ -1016,10 +1028,123 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
   
     BEGIN
       MERGE INTO SAP_BIC_AZTCRD00100 T
-      USING (SELECT *
-               FROM SAP_BIC_AZTCRD00100_MODIFY_TP
-              WHERE CRMPOSTDAT >= '20130101'
-                 OR "/BIC/ZTCMC021" >= '20130101') P
+      USING (SELECT A.CRM_OBJ_ID,
+                    A.CRM_NUMINT,
+                    A.RECORDMODE,
+                    A."/BIC/ZEAMC008",
+                    A.CRM_OHGUID,
+                    A.CRM_ITMGUI,
+                    A.CRM_PRCTYP,
+                    A."/BIC/ZCRMD023",
+                    A.CRM_ITMTYP,
+                    A."/BIC/ZTCMC002",
+                    A."/BIC/ZTCMC006",
+                    A.SALESORG,
+                    A.DISTR_CHAN,
+                    A.SALES_OFF,
+                    A.DIVISION,
+                    A."/BIC/ZMATERIAL",
+                    A."/BIC/ZEAMC027",
+                    A."/BIC/ZLIFNR",
+                    A.CRM_ENDCST,
+                    A."/BIC/ZTCMC016",
+                    A.AGE,
+                    A."/BIC/ZTCMC020",
+                    A.CRM_SOLDTO,
+                    A."/BIC/ZKUNNR_L1",
+                    A."/BIC/ZKUNNR_L2",
+                    A."/BIC/ZTHRC015",
+                    A.BP_EMPLO,
+                    A."/BIC/ZTHRC016",
+                    A."/BIC/ZTHRC017",
+                    A."/BIC/ZESDC113",
+                    A.CRMPOSTDAT,
+                    A."/BIC/ZPST_TIM",
+                    A."/BIC/ZGZ_TIME",
+                    A."/BIC/ZCRMD001",
+                    A.CRM_USSTAT,
+                    A.CRM_STSMA,
+                    A.CRM_CTD_BY,
+                    A.CRM_CRD_AT,
+                    A.CREA_TIME,
+                    A."/BIC/ZEAMC001",
+                    A."/BIC/ZEAMC010",
+                    A."/BIC/ZEAMC011",
+                    A."/BIC/ZEAMC012",
+                    A."/BIC/ZEAMC037",
+                    A."/BIC/ZEAMC013",
+                    A."/BIC/ZEAMC014",
+                    A."/BIC/ZTCMC021",
+                    A."/BIC/ZTCMC022",
+                    A."/BIC/ZTCMC027",
+                    A."/BIC/ZTCMC026",
+                    A."/BIC/ZTCMC030",
+                    A."/BIC/ZTCMC007",
+                    A."/BIC/ZTCMC008",
+                    A."/BIC/ZTCMC009",
+                    A."/BIC/ZTCMC023",
+                    A."/BIC/ZTCMC024",
+                    A."/BIC/ZTCMC025",
+                    A."/BIC/ZCRMD015",
+                    A."/BIC/ZCRMD016",
+                    A."/BIC/ZCRMD017",
+                    A."/BIC/ZCRMD018",
+                    A."/BIC/ZCR_ON",
+                    A."/BIC/ZOBJ_CC",
+                    A."/BIC/ZDSXD",
+                    A."/BIC/ZJSJF_YN",
+                    A."/BIC/ZCRMD025",
+                    A."/BIC/ZCRMD020",
+                    A."/BIC/ZCRMD021",
+                    A."/BIC/ZTCRMC01",
+                    A."/BIC/ZTCRMC02",
+                    A."/BIC/ZTCRMC03",
+                    A."/BIC/ZTCRMC04",
+                    A."/BIC/ZTCRMC05",
+                    A.UNIT,
+                    A.NETVALORD,
+                    A.CRM_TAXAMO,
+                    A.GRSVALORD,
+                    A."/BIC/ZAMK0011",
+                    A."/BIC/ZAMK0010",
+                    A."/BIC/ZCRMK006",
+                    A."/BIC/ZCRMK007",
+                    A."/BIC/ZCRMK009",
+                    A.CRM_SRVKB,
+                    A."/BIC/ZCRMK003",
+                    A."/BIC/ZCRMK004",
+                    A."/BIC/ZCRMK005",
+                    A."/BIC/ZYF_PAY",
+                    A."/BIC/ZXY_PAY",
+                    A."/BIC/ZNPT_ATM",
+                    A.CRM_NUMOFI,
+                    A."/BIC/ZAMK0024",
+                    A."/BIC/ZCRMK008",
+                    A.SALES_UNIT,
+                    A.CURRENCY,
+                    A.CRM_CURREN,
+                    A."/BIC/ZCRMD031",
+                    A."/BIC/ZEHRC012",
+                    A."/BIC/ZCRMD048",
+                    A."/BIC/ZCRMD086",
+                    A."/BIC/ZCRMD019",
+                    A."/BIC/ZTHRC027",
+                    A."/BIC/ZTHRC026",
+                    A."/BIC/ZTHRC025",
+                    A."/BIC/ZTCRMC11",
+                    A."/BIC/ZCRMD199",
+                    A."/BIC/ZTLEC001",
+                    A."/BIC/ZCONDK001",
+                    A."/BIC/ZCRMD120",
+                    A.CHANGED_BY,
+                    A."/BIC/ZMATER2",
+                    A."/BIC/ZZTRANSF",
+                    A."/BIC/ZTMSTAMP",
+                    SYSDATE            W_INSERT_DT,
+                    SYSDATE            W_UPDATE_DT
+               FROM SAP_BIC_AZTCRD00100_MODIFY_TP A
+              WHERE A.CRMPOSTDAT >= '20130101'
+                 OR A."/BIC/ZTCMC021" >= '20130101') P
       ON (T.CRM_OBJ_ID = P.CRM_OBJ_ID AND T.CRM_NUMINT = P.CRM_NUMINT)
       WHEN MATCHED THEN
         UPDATE
@@ -1132,7 +1257,8 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
                T.CHANGED_BY       = P.CHANGED_BY,
                T."/BIC/ZMATER2"   = P."/BIC/ZMATER2",
                T."/BIC/ZZTRANSF"  = P."/BIC/ZZTRANSF",
-               T."/BIC/ZTMSTAMP"  = P."/BIC/ZTMSTAMP"
+               T."/BIC/ZTMSTAMP"  = P."/BIC/ZTMSTAMP",
+               T.W_UPDATE_DT      = P.W_UPDATE_DT
       WHEN NOT MATCHED THEN
         INSERT
         VALUES
@@ -1247,7 +1373,9 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
            P.CHANGED_BY,
            P."/BIC/ZMATER2",
            P."/BIC/ZZTRANSF",
-           P."/BIC/ZTMSTAMP");
+           P."/BIC/ZTMSTAMP",
+           P.W_INSERT_DT,
+           P.W_UPDATE_DT);
       INSERT_ROWS := SQL%ROWCOUNT;
       COMMIT;
     END;
@@ -1299,7 +1427,10 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
     END;
   
     BEGIN
-      DELETE ODSHAPPIGO.ODS_ORDER A WHERE A.CRMPOSTDAT = IN_DATE_KEY;
+      /*日期条件由CRMPOSDAT改为:CRMPOSDAT+ZTMSTAMP by yangjin 2018-06-21*/
+      DELETE ODSHAPPIGO.ODS_ORDER A
+       WHERE A.CRMPOSTDAT = IN_DATE_KEY
+          OR SUBSTR(A.ZTMSTAMP, 1, 8) = IN_DATE_KEY;
       DELETE_ROWS := SQL%ROWCOUNT;
       COMMIT;
     
@@ -1413,7 +1544,9 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
          CHANGED_BY,
          ZMATER2,
          ZZTRANSF,
-         ZTMSTAMP)
+         ZTMSTAMP,
+         W_INSERT_DT,
+         W_UPDATE_DT)
         SELECT A.CRM_OBJ_ID,
                A.CRM_NUMINT,
                A.ZEAMC008,
@@ -1523,11 +1656,41 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
                A.CHANGED_BY,
                A.ZMATER2,
                A.ZZTRANSF,
-               A.ZTMSTAMP
+               A.ZTMSTAMP,
+               A.W_INSERT_DT,
+               A.W_UPDATE_DT
           FROM ODSHAPPIGO.V_ODS_ORDER A
-         WHERE A.CRMPOSTDAT = IN_DATE_KEY;
+         WHERE NOT EXISTS (SELECT 1
+                  FROM ODSHAPPIGO.ODS_ORDER B
+                 WHERE A.CRM_ITMGUI = B.CRM_ITMGUI) /*2018-06-20如果已经插入的数据则不重复插入*/
+           AND (A.CRMPOSTDAT = IN_DATE_KEY OR
+               SUBSTR(A.ZTMSTAMP, 1, 8) = IN_DATE_KEY);
       INSERT_ROWS := SQL%ROWCOUNT;
       COMMIT;
+    
+      /*退货的订单ZCRMD018()是空值，按照权责制订单编号写入值 by yangjin 2018-05-16*/
+      UPDATE ODSHAPPIGO.ODS_ORDER A
+         SET A.ZCRMD018 =
+             (SELECT ZCRMD018
+                FROM (SELECT C.ZTCRMC04, MIN(C.ZCRMD018) ZCRMD018
+                        FROM ODSHAPPIGO.ODS_ORDER C
+                       WHERE C.ZCRMD018 IS NOT NULL
+                       GROUP BY C.ZTCRMC04) B
+               WHERE A.ZTCRMC04 = B.ZTCRMC04)
+       WHERE A.ZCRMD018 IS NULL
+            /*AND (A.CRMPOSTDAT = IN_DATE_KEY OR
+            SUBSTR(A.ZTMSTAMP, 1, 8) = IN_DATE_KEY OR
+            A.ZTCRMC01 = IN_DATE_KEY)*/
+         AND EXISTS
+       (SELECT 1
+                FROM (SELECT E.ZTCRMC04, MIN(E.ZCRMD018) ZCRMD018
+                        FROM ODSHAPPIGO.ODS_ORDER E
+                       WHERE E.ZCRMD018 IS NOT NULL
+                       GROUP BY E.ZTCRMC04) D
+               WHERE A.ZTCRMC04 = D.ZTCRMC04);
+      UPDATE_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
     END;
     /*日志记录模块*/
     S_ETL.END_TIME       := SYSDATE;
@@ -1692,7 +1855,9 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
          ZCRMD120,
          ZMATER2,
          ZZTRANSF,
-         ZCONDK001)
+         ZCONDK001,
+         W_INSERT_DT,
+         W_UPDATE_DT)
         SELECT A.CRM_OBJ_ID,
                A.CRM_NUMINT,
                A.RECORDMODE,
@@ -1801,7 +1966,9 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
                A.ZCRMD120,
                A.ZMATER2,
                A.ZZTRANSF,
-               A.ZCONDK001
+               A.ZCONDK001,
+               A.W_INSERT_DT,
+               A.W_UPDATE_DT
           FROM ODSHAPPIGO.V_ODS_ORDER_CANCEL A
          WHERE A.CRMPOSTDAT = IN_DATE_KEY;
       INSERT_ROWS := SQL%ROWCOUNT;
@@ -1826,21 +1993,263 @@ CREATE OR REPLACE PACKAGE BODY OD_ORDER_ETL IS
       RETURN;
   END INSERT_ODS_ORDER_CANCEL;
 
-  PROCEDURE FIX_ODS_ORDER(IN_DATE_KEY IN NUMBER) IS
+  PROCEDURE FIX_ODS_ORDER(IN_DATE_KEY1 IN NUMBER) IS
+    IN_DATE_KEY2 NUMBER;
     /*
     功能说明：
     作者时间：yangjin  2018-04-09
     */
   BEGIN
-    INSERT_MODIFY_TP(IN_DATE_KEY);
+    IN_DATE_KEY2 := TO_CHAR(TO_DATE(IN_DATE_KEY1, 'YYYYMMDD') + 1,
+                            'YYYYMMDD');
+    INSERT_MODIFY_TP(IN_DATE_KEY2);
     COMMIT;
     MERGE_SAP_BIC_AZTCRD00100;
     COMMIT;
-    INSERT_ODS_ORDER(IN_DATE_KEY);
+    INSERT_ODS_ORDER(IN_DATE_KEY1);
     COMMIT;
-    INSERT_ODS_ORDER_CANCEL(IN_DATE_KEY);
+    INSERT_ODS_ORDER_CANCEL(IN_DATE_KEY1);
     COMMIT;
   END FIX_ODS_ORDER;
+
+  PROCEDURE FIX_INSERT_ODS_ORDER(IN_DATE_KEY IN NUMBER) IS
+    /*
+    功能说明：
+    作者时间：yangjin  2018-04-09
+    */
+  BEGIN
+    INSERT INTO ODSHAPPIGO.ODS_ORDER
+      (CRM_OBJ_ID,
+       CRM_NUMINT,
+       ZEAMC008,
+       CRM_OHGUID,
+       CRM_ITMGUI,
+       CRM_PRCTYP,
+       ZCRMD023,
+       CRM_ITMTYP,
+       ZTCMC002,
+       ZTCMC006,
+       SALESORG,
+       DISTR_CHAN,
+       SALES_OFF,
+       DIVISION,
+       ZMATERIAL,
+       ZEAMC027,
+       ZLIFNR,
+       CRM_ENDCST,
+       ZTCMC016,
+       AGE,
+       ZTCMC020,
+       CRM_SOLDTO,
+       ZKUNNR_L1,
+       ZKUNNR_L2,
+       ZTHRC015,
+       BP_EMPLO,
+       ZTHRC016,
+       ZTHRC017,
+       ZESDC113,
+       CRMPOSTDAT,
+       ZPST_TIM,
+       ZGZ_TIME,
+       ZCRMD001,
+       CRM_USSTAT,
+       CRM_STSMA,
+       CRM_CTD_BY,
+       CRM_CRD_AT,
+       CREA_TIME,
+       ZEAMC001,
+       ZEAMC010,
+       ZEAMC011,
+       ZEAMC012,
+       ZEAMC037,
+       ZEAMC013,
+       ZEAMC014,
+       ZTCMC021,
+       ZTCMC022,
+       ZTCMC027,
+       ZTCMC026,
+       ZTCMC030,
+       ZTCMC007,
+       ZTCMC008,
+       ZTCMC009,
+       ZTCMC023,
+       ZTCMC024,
+       ZTCMC025,
+       ZCRMD015,
+       ZCRMD016,
+       ZCRMD017,
+       ZCRMD018,
+       ZCR_ON,
+       ZOBJ_CC,
+       ZDSXD,
+       ZJSJF_YN,
+       ZCRMD025,
+       ZCRMD020,
+       ZCRMD021,
+       ZTCRMC01,
+       ZTCRMC02,
+       ZTCRMC03,
+       ZTCRMC04,
+       ZTCRMC05,
+       NETVALORD,
+       CRM_TAXAMO,
+       GRSVALORD,
+       ZAMK0011,
+       ZAMK0010,
+       ZCRMK006,
+       ZCRMK007,
+       ZCRMK009,
+       CRM_SRVKB,
+       ZCRMK003,
+       ZCRMK004,
+       ZCRMK005,
+       ZYF_PAY,
+       ZXY_PAY,
+       ZNPT_ATM,
+       CRM_NUMOFI,
+       ZAMK0024,
+       ZCRMK008,
+       SALES_UNIT,
+       CURRENCY,
+       CRM_CURREN,
+       ZCRMD031,
+       ZEHRC012,
+       ZCRMD048,
+       ZCRMD086,
+       ZCRMD019,
+       ZTHRC027,
+       ZTHRC026,
+       ZTHRC025,
+       ZTCRMC11,
+       ZCRMD199,
+       ZTLEC001,
+       ZCONDK001,
+       ZCRMD120,
+       CHANGED_BY,
+       ZMATER2,
+       ZZTRANSF,
+       ZTMSTAMP,
+       W_INSERT_DT,
+       W_UPDATE_DT)
+      SELECT A.CRM_OBJ_ID,
+             A.CRM_NUMINT,
+             A.ZEAMC008,
+             A.CRM_OHGUID,
+             A.CRM_ITMGUI,
+             A.CRM_PRCTYP,
+             A.ZCRMD023,
+             A.CRM_ITMTYP,
+             A.ZTCMC002,
+             A.ZTCMC006,
+             A.SALESORG,
+             A.DISTR_CHAN,
+             A.SALES_OFF,
+             A.DIVISION,
+             A.ZMATERIAL,
+             A.ZEAMC027,
+             A.ZLIFNR,
+             A.CRM_ENDCST,
+             A.ZTCMC016,
+             A.AGE,
+             A.ZTCMC020,
+             A.CRM_SOLDTO,
+             A.ZKUNNR_L1,
+             A.ZKUNNR_L2,
+             A.ZTHRC015,
+             A.BP_EMPLO,
+             A.ZTHRC016,
+             A.ZTHRC017,
+             A.ZESDC113,
+             A.CRMPOSTDAT,
+             A.ZPST_TIM,
+             A.ZGZ_TIME,
+             A.ZCRMD001,
+             A.CRM_USSTAT,
+             A.CRM_STSMA,
+             A.CRM_CTD_BY,
+             A.CRM_CRD_AT,
+             A.CREA_TIME,
+             A.ZEAMC001,
+             A.ZEAMC010,
+             A.ZEAMC011,
+             A.ZEAMC012,
+             A.ZEAMC037,
+             A.ZEAMC013,
+             A.ZEAMC014,
+             A.ZTCMC021,
+             A.ZTCMC022,
+             A.ZTCMC027,
+             A.ZTCMC026,
+             A.ZTCMC030,
+             A.ZTCMC007,
+             A.ZTCMC008,
+             A.ZTCMC009,
+             A.ZTCMC023,
+             A.ZTCMC024,
+             A.ZTCMC025,
+             A.ZCRMD015,
+             A.ZCRMD016,
+             A.ZCRMD017,
+             A.ZCRMD018,
+             A.ZCR_ON,
+             A.ZOBJ_CC,
+             A.ZDSXD,
+             A.ZJSJF_YN,
+             A.ZCRMD025,
+             A.ZCRMD020,
+             A.ZCRMD021,
+             A.ZTCRMC01,
+             A.ZTCRMC02,
+             A.ZTCRMC03,
+             A.ZTCRMC04,
+             A.ZTCRMC05,
+             A.NETVALORD,
+             A.CRM_TAXAMO,
+             A.GRSVALORD,
+             A.ZAMK0011,
+             A.ZAMK0010,
+             A.ZCRMK006,
+             A.ZCRMK007,
+             A.ZCRMK009,
+             A.CRM_SRVKB,
+             A.ZCRMK003,
+             A.ZCRMK004,
+             A.ZCRMK005,
+             A.ZYF_PAY,
+             A.ZXY_PAY,
+             A.ZNPT_ATM,
+             A.CRM_NUMOFI,
+             A.ZAMK0024,
+             A.ZCRMK008,
+             A.SALES_UNIT,
+             A.CURRENCY,
+             A.CRM_CURREN,
+             A.ZCRMD031,
+             A.ZEHRC012,
+             A.ZCRMD048,
+             A.ZCRMD086,
+             A.ZCRMD019,
+             A.ZTHRC027,
+             A.ZTHRC026,
+             A.ZTHRC025,
+             A.ZTCRMC11,
+             A.ZCRMD199,
+             A.ZTLEC001,
+             A.ZCONDK001,
+             A.ZCRMD120,
+             A.CHANGED_BY,
+             A.ZMATER2,
+             A.ZZTRANSF,
+             A.ZTMSTAMP,
+             A.W_INSERT_DT,
+             A.W_UPDATE_DT
+        FROM ODSHAPPIGO.V_ODS_ORDER A
+       WHERE A.CRMPOSTDAT = IN_DATE_KEY
+         AND NOT EXISTS (SELECT 1
+                FROM ODSHAPPIGO.ODS_ORDER B
+               WHERE A.CRM_ITMGUI = B.CRM_ITMGUI);
+    COMMIT;
+  END FIX_INSERT_ODS_ORDER;
 
 END OD_ORDER_ETL;
 /

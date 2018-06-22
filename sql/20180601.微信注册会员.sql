@@ -1,0 +1,31 @@
+--1、微信注册会员皇冠三级以上，近三个月未下单的用户数据。（用于唤醒）
+SELECT B.MEMBER_BP
+  FROM DIM_MEMBER B
+ WHERE B.MEMBER_LEVEL IN ('HAPP_T3', 'HAPP_T4', 'HAPP_T5', 'HAPP_T6') /*皇冠三级以上*/
+      /*微信注册会员*/
+   AND EXISTS (SELECT 1
+          FROM FACT_ECMEMBER A
+         WHERE A.REGISTER_APPNAME = 'KLGWX'
+           AND A.MEMBER_CRMBP = B.MEMBER_BP)
+      /*近三个月未下单*/
+   AND NOT EXISTS
+ (SELECT 1
+          FROM FACT_EC_ORDER_2 C
+         WHERE B.MEMBER_BP = C.CUST_NO
+           AND C.ORDER_STATE >= 20
+           AND C.ADD_TIME BETWEEN SYSDATE - 91 AND SYSDATE - 1)
+ ORDER BY B.MEMBER_BP;
+
+--2、微信注册会员，从未有效下单（电商渠道）的用户数据。（用于唤醒）
+SELECT B.MEMBER_BP
+  FROM DIM_MEMBER B
+ WHERE EXISTS (SELECT 1
+          FROM FACT_ECMEMBER A
+         WHERE A.REGISTER_APPNAME = 'KLGWX'
+           AND A.MEMBER_CRMBP = B.MEMBER_BP) /*微信注册会员*/
+      /*从未有效下单（电商渠道）*/
+   AND NOT EXISTS (SELECT 1
+          FROM FACT_EC_ORDER_2 C
+         WHERE B.MEMBER_BP = C.CUST_NO
+           AND C.ORDER_STATE >= 20)
+ ORDER BY B.MEMBER_BP;

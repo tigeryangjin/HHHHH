@@ -1,0 +1,307 @@
+CREATE OR REPLACE PACKAGE GOODS_FILTER_PKG_TEST IS
+
+  -- AUTHOR  : YANGJIN
+  -- CREATED : 2018-05-04 青年节快乐！！！
+  -- PURPOSE : GOODS_FILTER_PKG
+
+  PROCEDURE SYNC_GOODS_LABEL_HEAD(IN_SYNC_DATE_KEY IN NUMBER);
+  /*
+  功能名:       SYNC_GOODS_LABEL_HEAD
+  目的:         GOODS_LABEL_HEAD同步
+  作者:         yangjin
+  创建时间：    2018/05/04
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE SYNC_GOODS_LABEL_LINK;
+  /*
+  功能名:       SYNC_GOODS_LABEL_LINK
+  目的:         GOODS_LABEL_LINK同步
+  作者:         yangjin
+  创建时间：    2018/05/04
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE GOODS_RESULT_TO_TABLE;
+  /*
+  功能名:       GOODS_RESULT_TO_TABLE
+  目的:         会员筛选写入结果表
+  作者:         yangjin
+  创建时间：    2018/05/24
+  最后修改人：
+  最后更改日期：
+  */
+
+END GOODS_FILTER_PKG_TEST;
+/
+CREATE OR REPLACE PACKAGE BODY GOODS_FILTER_PKG_TEST IS
+
+  PROCEDURE SYNC_GOODS_LABEL_HEAD(IN_SYNC_DATE_KEY IN NUMBER) IS
+    S_ETL        W_ETL_LOG%ROWTYPE;
+    SP_NAME      S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER  S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS  NUMBER;
+    UPDATE_ROWS  NUMBER;
+    IN_SYNC_DATE DATE;
+    /*
+       目的:      同步27上的member_label_head
+       作者:      yangjin
+       创建时间:  2017/10/10
+    */
+  BEGIN
+    SP_NAME          := 'GOODS_FILTER_PKG.SYNC_GOODS_LABEL_HEAD'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'GOODS_LABEL_HEAD'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+    IN_SYNC_DATE     := TO_DATE(IN_SYNC_DATE_KEY, 'YYYYMMDD');
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+    /*同步MEMBER_LABEL_HEAD*/
+    /*先插入到临时表*/
+    EXECUTE IMMEDIATE 'TRUNCATE TABLE GOODS_LABEL_HEAD_TMP';
+    INSERT INTO GOODS_LABEL_HEAD_TMP
+      (G_LABEL_ID,
+       G_LABEL_NAME,
+       G_LABEL_DESC,
+       G_LABEL_TYPE_ID,
+       IS_LEAF_NODE,
+       CREATE_DATE,
+       CREATE_USER_ID,
+       LAST_UPDATE_DATE,
+       LAST_UPDATE_USER_ID,
+       CURRENT_FLAG,
+       G_LABEL_FATHER_ID)
+      SELECT A.G_LABEL_ID,
+             A.G_LABEL_NAME,
+             A.G_LABEL_DESC,
+             A.G_LABEL_TYPE_ID,
+             A.IS_LEAF_NODE,
+             A.CREATE_DATE,
+             A.CREATE_USER_ID,
+             A.LAST_UPDATE_DATE,
+             A.LAST_UPDATE_USER_ID,
+             A.CURRENT_FLAG,
+             A.G_LABEL_FATHER_ID
+        FROM GOODS_LABEL_HEAD@DW27 A
+       WHERE TRUNC(A.LAST_UPDATE_DATE) >= TRUNC(IN_SYNC_DATE);
+    COMMIT;
+  
+    /*分析临时表*/
+    DBMS_STATS.GATHER_TABLE_STATS('ML', 'GOODS_LABEL_HEAD_TMP');
+  
+    /*插入到正式表*/
+    MERGE /*+APPEND*/
+    INTO GOODS_LABEL_HEAD T
+    USING GOODS_LABEL_HEAD_TMP S
+    ON (T.G_LABEL_ID = S.G_LABEL_ID)
+    WHEN MATCHED THEN
+      UPDATE
+         SET T.G_LABEL_NAME        = S.G_LABEL_NAME,
+             T.G_LABEL_DESC        = S.G_LABEL_DESC,
+             T.G_LABEL_TYPE_ID     = S.G_LABEL_TYPE_ID,
+             T.IS_LEAF_NODE        = S.IS_LEAF_NODE,
+             T.CREATE_DATE         = S.CREATE_DATE,
+             T.CREATE_USER_ID      = S.CREATE_USER_ID,
+             T.LAST_UPDATE_DATE    = S.LAST_UPDATE_DATE,
+             T.LAST_UPDATE_USER_ID = S.LAST_UPDATE_USER_ID,
+             T.CURRENT_FLAG        = S.CURRENT_FLAG,
+             T.G_LABEL_FATHER_ID   = S.G_LABEL_FATHER_ID
+    WHEN NOT MATCHED THEN
+      INSERT
+        (T.G_LABEL_ID,
+         T.G_LABEL_NAME,
+         T.G_LABEL_DESC,
+         T.G_LABEL_TYPE_ID,
+         T.IS_LEAF_NODE,
+         T.CREATE_DATE,
+         T.CREATE_USER_ID,
+         T.LAST_UPDATE_DATE,
+         T.LAST_UPDATE_USER_ID,
+         T.CURRENT_FLAG,
+         T.G_LABEL_FATHER_ID)
+      VALUES
+        (S.G_LABEL_ID,
+         S.G_LABEL_NAME,
+         S.G_LABEL_DESC,
+         S.G_LABEL_TYPE_ID,
+         S.IS_LEAF_NODE,
+         S.CREATE_DATE,
+         S.CREATE_USER_ID,
+         S.LAST_UPDATE_DATE,
+         S.LAST_UPDATE_USER_ID,
+         S.CURRENT_FLAG,
+         S.G_LABEL_FATHER_ID);
+    INSERT_ROWS := SQL%ROWCOUNT;
+    COMMIT;
+  
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数:IN_SYNC_DATE_KEY:' ||
+                            TO_CHAR(IN_SYNC_DATE_KEY);
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END SYNC_GOODS_LABEL_HEAD;
+
+  PROCEDURE SYNC_GOODS_LABEL_LINK IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    DELETE_ROWS NUMBER;
+    /*
+       目的:      同步27上的member_label_link
+       作者:      yangjin
+       创建时间:  2017/10/10
+    */
+  BEGIN
+    SP_NAME          := 'GOODS_FILTER_PKG.SYNC_GOODS_LABEL_LINK'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'GOODS_LABEL_LINK'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    /*刷新物化视图MEMBER_LABEL_LINK_MV*/
+    DBMS_MVIEW.REFRESH('GOODS_LABEL_LINK_MV', METHOD => 'FAST');
+  
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END SYNC_GOODS_LABEL_LINK;
+
+  PROCEDURE GOODS_RESULT_TO_TABLE IS
+    V_TABLE_HEAD GOODS_FILTER_OPTION_HEAD%ROWTYPE;
+    V_STR_SQL    VARCHAR2(4000);
+  
+    /*
+       目的:      执行商品筛选操作
+       作者:      yangjin
+       创建时间:  2017/10/24
+    */
+  BEGIN
+    /*记录执行开始时间*/
+    V_TABLE_HEAD.EXECUTION_START_TIME := SYSDATE;
+  
+    /*获取可运行的最小FILTER_ID*/
+    SELECT MIN(A.FILTER_ID)
+      INTO V_TABLE_HEAD.FILTER_ID
+      FROM MEMBER_FILTER_OPTION_HEAD A
+     WHERE (A.MEMBER_LABEL_ID_SET IS NOT NULL OR
+           A.ITEM_CODE_SET IS NOT NULL OR A.BRAND_SET IS NOT NULL OR
+           A.MATXL_SET IS NOT NULL) /*如果会员标签、商品编码、品牌、小类编码都为空，则不执行*/
+       AND A.STATUS = 0;
+  
+    /*获取到filter_id之后再执行后面的语句*/
+    IF V_TABLE_HEAD.FILTER_ID IS NOT NULL
+    THEN
+      /*修改状态为正在执行*/
+      UPDATE MEMBER_FILTER_OPTION_HEAD A
+         SET A.STATUS = 1
+       WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
+      COMMIT;
+    
+      /*取出商品筛选条件*/
+      SELECT A.GOODS_LABEL_ID_SET
+        INTO V_TABLE_HEAD.GOODS_LABEL_ID_SET
+        FROM GOODS_FILTER_OPTION_HEAD A
+       WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
+    
+      /*      \*转换成SQL语句*\
+      V_STR_SQL := GOODS_FILTER_PKG.SPLICE_SQL(V_TABLE_HEAD.FILTER_ID,
+                                                V_TABLE_HEAD.GOODS_LABEL_ID_SET);*/
+    
+      /*执行SQL语句*/
+      DBMS_OUTPUT.PUT_LINE(V_STR_SQL);
+      EXECUTE IMMEDIATE V_STR_SQL;
+    
+      /*记录插入结果表的行数*/
+      SELECT NVL(COUNT(DISTINCT A.MEMBER_BP), 0)
+        INTO V_TABLE_HEAD.RESULT_RECORDS
+        FROM MEMBER_FILTER_RESULT A
+       WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID;
+    
+      /*      \*导出筛选结果的文本文件*\
+      MEMBER_OUTPUT_FILE(V_TABLE_HEAD.FILTER_ID,
+                         V_TABLE_HEAD.OUTPUT_FILE_PATH);*/
+    
+      /*记录执行完成时间*/
+      V_TABLE_HEAD.EXECUTION_END_TIME := SYSDATE;
+    
+      /*执行完成写入记录*/
+      UPDATE GOODS_FILTER_OPTION_HEAD A
+         SET A.STATUS               = 2,
+             A.RESULT_MESSAGE       = 'SUCCESS',
+             A.EXECUTION_START_TIME = V_TABLE_HEAD.EXECUTION_START_TIME,
+             A.EXECUTION_END_TIME   = V_TABLE_HEAD.EXECUTION_END_TIME,
+             A.RESULT_RECORDS       = V_TABLE_HEAD.RESULT_RECORDS,
+             A.OUTPUT_FILE_PATH     = V_TABLE_HEAD.OUTPUT_FILE_PATH
+       WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID
+         AND A.STATUS = 1;
+      COMMIT;
+    END IF;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      V_TABLE_HEAD.RESULT_MESSAGE := SQLERRM;
+      UPDATE GOODS_FILTER_OPTION_HEAD A
+         SET A.STATUS               = 9,
+             A.RESULT_MESSAGE       = V_TABLE_HEAD.RESULT_MESSAGE,
+             A.EXECUTION_START_TIME = V_TABLE_HEAD.EXECUTION_START_TIME,
+             A.EXECUTION_END_TIME   = V_TABLE_HEAD.EXECUTION_END_TIME,
+             A.RESULT_RECORDS       = V_TABLE_HEAD.RESULT_RECORDS,
+             A.OUTPUT_FILE_PATH     = V_TABLE_HEAD.OUTPUT_FILE_PATH
+       WHERE A.FILTER_ID = V_TABLE_HEAD.FILTER_ID
+         AND A.STATUS = 1;
+      COMMIT;
+  END GOODS_RESULT_TO_TABLE;
+
+END GOODS_FILTER_PKG_TEST;
+/

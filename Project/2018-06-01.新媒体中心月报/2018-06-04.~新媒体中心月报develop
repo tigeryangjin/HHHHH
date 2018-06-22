@@ -1,0 +1,459 @@
+--1.活跃会员池
+--1.1.会员池（二个月）
+select '201804' month_key, count(distinct(MEMBER_KEY))
+  from fact_session
+ where START_DATE_KEY between 20180301 and 20180431;
+
+--1.2.新增会员（第二个月）
+select '201804' month_key, count(1)
+  from fact_ecmember
+ where MEMBER_TIME between 20180401 and 20180431;
+
+--1.3.流失会员（前一个月访问，二个月没有访问）
+select '201804' month_key, count(distinct(MEMBER_KEY))
+  from fact_session
+ where START_DATE_KEY between 20180201 and 20180231
+   and MEMBER_KEY not in
+       (select distinct (MEMBER_KEY)
+          from fact_session
+         where START_DATE_KEY between 20180301 and 20180431);
+
+--1.4.唤醒会员（第二个月有访问，三个月之前有访问，前一个月和第一个月没有访问）
+select '201804' month_key, count(distinct(MEMBER_KEY))
+  from fact_session
+ where START_DATE_KEY between 20180401 and 20180431
+   and member_key in
+       (select MEMBER_CRMBP from fact_ecmember where MEMBER_TIME <= 20180131)
+   and member_key not in
+       (select distinct (MEMBER_KEY)
+          from fact_session
+         where START_DATE_KEY between 20180201 and 20180331);
+
+--1.5.合并
+CREATE TABLE OPER_ACTIVE_MEMBER_REPORT AS
+  SELECT M.MONTH_KEY,
+         NVL(A1.MEMBER_POOL, 0) MEMBER_POOL,
+         NVL(A2.NEW_MEMBER, 0) NEW_MEMBER,
+         NVL(A3.LOST_MEMBER, 0) LOST_MEMBER,
+         NVL(A4.WAKE_MEMBER, 0) WAKE_MEMBER,
+         SYSDATE W_INSERT_DT,
+         SYSDATE W_UPDATE_DT
+    FROM (SELECT '201804' MONTH_KEY FROM DUAL) M,
+         (SELECT '201804' MONTH_KEY, COUNT(DISTINCT(MEMBER_KEY)) MEMBER_POOL
+            FROM FACT_SESSION
+           WHERE START_DATE_KEY BETWEEN 20180301 AND 20180431) A1,
+         (SELECT '201804' MONTH_KEY, COUNT(1) NEW_MEMBER
+            FROM FACT_ECMEMBER
+           WHERE MEMBER_TIME BETWEEN 20180401 AND 20180431) A2,
+         (SELECT '201804' MONTH_KEY, COUNT(DISTINCT(MEMBER_KEY)) LOST_MEMBER
+            FROM FACT_SESSION
+           WHERE START_DATE_KEY BETWEEN 20180201 AND 20180231
+             AND MEMBER_KEY NOT IN
+                 (SELECT DISTINCT (MEMBER_KEY)
+                    FROM FACT_SESSION
+                   WHERE START_DATE_KEY BETWEEN 20180301 AND 20180431)) A3,
+         (SELECT '201804' MONTH_KEY, COUNT(DISTINCT(MEMBER_KEY)) WAKE_MEMBER
+            FROM FACT_SESSION
+           WHERE START_DATE_KEY BETWEEN 20180401 AND 20180431
+             AND MEMBER_KEY IN
+                 (SELECT MEMBER_CRMBP
+                    FROM FACT_ECMEMBER
+                   WHERE MEMBER_TIME <= 20180131)
+             AND MEMBER_KEY NOT IN
+                 (SELECT DISTINCT (MEMBER_KEY)
+                    FROM FACT_SESSION
+                   WHERE START_DATE_KEY BETWEEN 20180201 AND 20180331)) A4
+   WHERE M.MONTH_KEY = A1.MONTH_KEY(+)
+     AND M.MONTH_KEY = A2.MONTH_KEY(+)
+     AND M.MONTH_KEY = A3.MONTH_KEY(+)
+     AND M.MONTH_KEY = A4.MONTH_KEY(+);
+
+--1.6.
+MERGE /*+APPEND*/
+INTO OPER_ACTIVE_MEMBER_REPORT T
+USING (SELECT M.MONTH_KEY,
+              NVL(A1.MEMBER_POOL, 0) MEMBER_POOL,
+              NVL(A2.NEW_MEMBER, 0) NEW_MEMBER,
+              NVL(A3.LOST_MEMBER, 0) LOST_MEMBER,
+              NVL(A4.WAKE_MEMBER, 0) WAKE_MEMBER,
+              SYSDATE W_INSERT_DT,
+              SYSDATE W_UPDATE_DT
+         FROM (SELECT '201804' MONTH_KEY FROM DUAL) M,
+              (SELECT '201804' MONTH_KEY,
+                      COUNT(DISTINCT(MEMBER_KEY)) MEMBER_POOL
+                 FROM FACT_SESSION
+                WHERE START_DATE_KEY BETWEEN 20180301 AND 20180431) A1,
+              (SELECT '201804' MONTH_KEY, COUNT(1) NEW_MEMBER
+                 FROM FACT_ECMEMBER
+                WHERE MEMBER_TIME BETWEEN 20180401 AND 20180431) A2,
+              (SELECT '201804' MONTH_KEY,
+                      COUNT(DISTINCT(MEMBER_KEY)) LOST_MEMBER
+                 FROM FACT_SESSION
+                WHERE START_DATE_KEY BETWEEN 20180201 AND 20180231
+                  AND MEMBER_KEY NOT IN
+                      (SELECT DISTINCT (MEMBER_KEY)
+                         FROM FACT_SESSION
+                        WHERE START_DATE_KEY BETWEEN 20180301 AND 20180431)) A3,
+              (SELECT '201804' MONTH_KEY,
+                      COUNT(DISTINCT(MEMBER_KEY)) WAKE_MEMBER
+                 FROM FACT_SESSION
+                WHERE START_DATE_KEY BETWEEN 20180401 AND 20180431
+                  AND MEMBER_KEY IN
+                      (SELECT MEMBER_CRMBP
+                         FROM FACT_ECMEMBER
+                        WHERE MEMBER_TIME <= 20180131)
+                  AND MEMBER_KEY NOT IN
+                      (SELECT DISTINCT (MEMBER_KEY)
+                         FROM FACT_SESSION
+                        WHERE START_DATE_KEY BETWEEN 20180201 AND 20180331)) A4
+        WHERE M.MONTH_KEY = A1.MONTH_KEY(+)
+          AND M.MONTH_KEY = A2.MONTH_KEY(+)
+          AND M.MONTH_KEY = A3.MONTH_KEY(+)
+          AND M.MONTH_KEY = A4.MONTH_KEY(+)) S
+ON (T.MONTH_KEY = S.MONTH_KEY)
+WHEN MATCHED THEN
+  UPDATE
+     SET T.MEMBER_POOL = S.MEMBER_POOL,
+         T.NEW_MEMBER  = S.NEW_MEMBER,
+         T.LOST_MEMBER = S.LOST_MEMBER,
+         T.WAKE_MEMBER = S.WAKE_MEMBER,
+         T.W_UPDATE_DT = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.MONTH_KEY,
+     T.MEMBER_POOL,
+     T.NEW_MEMBER,
+     T.LOST_MEMBER,
+     T.WAKE_MEMBER,
+     T.W_INSERT_DT,
+     T.W_UPDATE_DT)
+  VALUES
+    (S.MONTH_KEY,
+     S.MEMBER_POOL,
+     S.NEW_MEMBER,
+     S.LOST_MEMBER,
+     S.WAKE_MEMBER,
+     S.W_INSERT_DT,
+     S.W_UPDATE_DT);
+
+--1.7.
+SELECT TO_CHAR(LAST_DAY(ADD_MONTHS(TO_DATE(&IN_DATE_KEY, 'YYYYMMDD'), -2)),
+               'YYYYMMDD'),
+       TO_CHAR(LAST_DAY(ADD_MONTHS(TO_DATE(&IN_DATE_KEY, 'YYYYMMDD'), -2)),
+               'YYYYMMDD')
+  FROM DUAL;
+
+SELECT * FROM OPER_ACTIVE_MEMBER_REPORT;
+
+/*
+  MONTH_KEY MEMBER_POOL NEW_MEMBER  LOST_MEMBER WAKE_MEMBER W_INSERT_DT       W_UPDATE_DT
+1 201804    252308      34542       58810       22402       2018/6/4 10:20:47 2018/6/4 10:39:08
+
+*/
+
+SELECT * FROM S_PARAMETERS2 FOR UPDATE;
+
+SELECT *
+  FROM W_ETL_LOG A
+ WHERE A.PROC_NAME = 'YJ_REPORT.OPER_ACTIVE_MEMBER_REPORT'
+ ORDER BY A.START_TIME DESC;
+
+--2.会员池目标拆解
+--整体
+select count(distinct member_key) ORDER_ALL_MEMBER_COUNT, '整体'
+  from factec_order
+ where substr(add_time, 1, 6) = 201805
+   and order_state > 10
+   and STORE_ID = 1
+   and order_from != 76
+union
+--纳新
+select count(distinct member_key) ORDER_NEW_MEMBER_COUNT, '纳新'
+  from factec_order
+ where substr(add_time, 1, 6) = 201805
+   and order_state > 10
+   and STORE_ID = 1
+   and order_from != 76
+   and member_key in
+       (select MEMBER_CRMBP
+          from fact_ecmember
+         where substr(MEMBER_TIME, 1, 6) = 201805)
+   and order_state > 10
+union
+--唤醒
+select count(distinct member_key) ORDER_WAKE_MEMBER_COUNT, '唤醒'
+  from factec_order
+ where substr(add_time, 1, 6) = 201805
+   and order_state > 10
+   and STORE_ID = 1
+   and order_from != 76
+   and member_key not in
+       (select MEMBER_CRMBP
+          from fact_ecmember
+         where substr(MEMBER_TIME, 1, 6) = 201805)
+   and member_key not in (select distinct member_key
+                            from factec_order
+                           where substr(add_time, 1, 6) in (201803, 201804)
+                             and order_state > 10)
+union
+--留存
+select count(distinct member_key) ORDER_KEEP_MEMBER_COUNT, '留存'
+  from factec_order
+ where substr(add_time, 1, 6) = 201805
+   and order_state > 10
+   and STORE_ID = 1
+   and order_from != 76
+   and member_key not in
+       (select MEMBER_CRMBP
+          from fact_ecmember
+         where substr(MEMBER_TIME, 1, 6) = 201805)
+   and member_key in (select distinct member_key
+                        from factec_order
+                       where substr(add_time, 1, 6) in (201803, 201804)
+                         and order_state > 10);
+
+--3.纳新来源
+--3.1.原语句
+select MEMBER_BP as ssid,
+       (case
+         when M_LABEL_DESC = '推广' then
+          '推广流量'
+         when M_LABEL_DESC = '扫码' then
+          '内部流量'
+         when M_LABEL_DESC = '自然' and REGISTER_RESOURCE = 'TV' then
+          '内部流量'
+         ELSE
+          '自然流量'
+       end) as sname,
+       1
+  from (select MEMBER_BP, M_LABEL_DESC, REGISTER_RESOURCE
+          from (select MEMBER_KEY
+                  from fact_session
+                 where START_DATE_KEY between 20180301 and 20180331
+                 group by MEMBER_KEY) a
+          left join (select MEMBER_KEY, max(M_LABEL_DESC) M_LABEL_DESC
+                      from member_label_link_v
+                     where M_LABEL_DESC in ('扫码', '自然', '推广')
+                     group by MEMBER_KEY) b
+            on a.member_key = b.MEMBER_KEY
+          left join (select MEMBER_BP, REGISTER_RESOURCE from dim_member) c
+            on a.member_key = c.member_bp)
+ group by MEMBER_BP,
+          (case
+            when M_LABEL_DESC = '推广' then
+             '推广流量'
+            when M_LABEL_DESC = '扫码' then
+             '内部流量'
+            when M_LABEL_DESC = '自然' and REGISTER_RESOURCE = 'TV' then
+             '内部流量'
+            ELSE
+             '自然流量'
+          end);
+
+--3.2.
+MERGE /*+APPEND*/
+INTO OPER_MEMBER_SOURCE_REPORT T
+USING (SELECT A2.REG_MONTH_KEY MONTH_KEY,
+              A2.SNAME,
+              COUNT(A2.MEMBER_KEY) REG_MEMBER_COUNT,
+              SUM(A2.IS_ORDER) ORDER_MEMBER_COUNT,
+              SUM(A2.ORDER_AMOUNT) ORDER_AMOUNT,
+              SYSDATE W_INSERT_DT,
+              SYSDATE W_UPDATE_DT
+         FROM (SELECT SUBSTR(A1.REG_DATE, 1, 6) REG_MONTH_KEY,
+                      A1.MEMBER_KEY,
+                      CASE
+                        WHEN A1.M_LABEL_DESC = '推广' THEN
+                         '推广流量'
+                        WHEN A1.M_LABEL_DESC = '扫码' THEN
+                         '内部流量'
+                        WHEN A1.M_LABEL_DESC = '自然' AND
+                             A1.REGISTER_RESOURCE = 'TV' THEN
+                         '内部流量'
+                        ELSE
+                         '自然流量'
+                      END SNAME,
+                      CASE
+                        WHEN A1.ORDER_AMOUNT > 0 THEN
+                         1
+                        ELSE
+                         0
+                      END IS_ORDER,
+                      A1.ORDER_AMOUNT
+                 FROM (SELECT A.MEMBER_KEY,
+                              NVL(B.M_LABEL_DESC, '自然') M_LABEL_DESC,
+                              NVL(C.REGISTER_RESOURCE, 'unknown') REGISTER_RESOURCE,
+                              NVL(D.MEMBER_TIME, '20170101') REG_DATE,
+                              NVL(E.ORDER_AMOUNT, 0) ORDER_AMOUNT
+                         FROM (SELECT MEMBER_KEY
+                                 FROM FACT_SESSION
+                                WHERE START_DATE_KEY BETWEEN 20180501 AND
+                                      20180531
+                                  AND MEMBER_KEY <> 0
+                                GROUP BY MEMBER_KEY) A,
+                              (SELECT MEMBER_KEY,
+                                      MAX(M_LABEL_DESC) M_LABEL_DESC
+                                 FROM MEMBER_LABEL_LINK_V
+                                WHERE M_LABEL_ID IN (143, 144, 145)
+                                GROUP BY MEMBER_KEY) B,
+                              (SELECT MEMBER_BP, REGISTER_RESOURCE
+                                 FROM DIM_MEMBER) C,
+                              (SELECT MEMBER_CRMBP,
+                                      MAX(MEMBER_TIME) MEMBER_TIME
+                                 FROM FACT_ECMEMBER
+                                GROUP BY MEMBER_CRMBP) D,
+                              (SELECT MEMBER_KEY,
+                                      SUM(ORDER_AMOUNT) ORDER_AMOUNT
+                                 FROM FACTEC_ORDER A
+                                WHERE ADD_TIME BETWEEN 20180501 AND 20180531
+                                  AND ORDER_STATE >= 10
+                                GROUP BY A.MEMBER_KEY) E
+                        WHERE A.MEMBER_KEY = B.MEMBER_KEY(+)
+                          AND A.MEMBER_KEY = C.MEMBER_BP(+)
+                          AND A.MEMBER_KEY = D.MEMBER_CRMBP(+)
+                          AND A.MEMBER_KEY = E.MEMBER_KEY(+)) A1
+                WHERE A1.REG_DATE BETWEEN 20180501 AND 20180531) A2
+        GROUP BY A2.REG_MONTH_KEY, A2.SNAME) S
+ON (T.MONTH_KEY = S.MONTH_KEY AND T.SNAME = S.SNAME)
+WHEN MATCHED THEN
+  UPDATE
+     SET T.REG_MEMBER_COUNT   = S.REG_MEMBER_COUNT,
+         T.ORDER_MEMBER_COUNT = S.ORDER_MEMBER_COUNT,
+         T.ORDER_AMOUNT       = S.ORDER_AMOUNT,
+         T.W_UPDATE_DT        = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.MONTH_KEY,
+     T.SNAME,
+     T.REG_MEMBER_COUNT,
+     T.ORDER_MEMBER_COUNT,
+     T.ORDER_AMOUNT,
+     T.W_INSERT_DT,
+     T.W_UPDATE_DT)
+  VALUES
+    (S.MONTH_KEY,
+     S.SNAME,
+     S.REG_MEMBER_COUNT,
+     S.ORDER_MEMBER_COUNT,
+     S.ORDER_AMOUNT,
+     S.W_INSERT_DT,
+     S.W_UPDATE_DT);
+
+SELECT * FROM OPER_MEMBER_SOURCE_REPORT;
+
+SELECT A.MEMBER_KEY, SUM(A.ORDER_AMOUNT) ORDER_AMOUNT
+  FROM factec_order A
+ WHERE A.ADD_TIME BETWEEN 20180301 AND 20180331
+   AND A.ORDER_STATE >= 10
+ GROUP BY A.MEMBER_KEY;
+
+SELECT A.MEMBER_CRMBP, COUNT(1)
+  FROM FACT_ECMEMBER A
+ GROUP BY A.MEMBER_CRMBP
+HAVING COUNT(1) > 1;
+
+SELECT * FROM FACT_ECMEMBER A WHERE A.MEMBER_CRMBP = 1618028284;
+
+--4.老会员次月重购
+SELECT * FROM KPI_ASMT_REPURCHASE_MEMBER;
+
+--5.订购频次
+--5.1
+MERGE /*+APPEND*/
+INTO OPER_MEMBER_REPURCHASE_REPORT T
+USING (SELECT C.MONTH_KEY,
+              C.ORDER_COUNT,
+              COUNT(C.CUST_NO) MEMBER_COUNT,
+              SUM(C.ORDER_AMOUNT) ORDER_AMOUNT,
+              SYSDATE W_INSERT_DT,
+              SYSDATE W_UPDATE_DT
+         FROM (SELECT B.MONTH_KEY,
+                      B.CUST_NO,
+                      COUNT(B.ORDER_ID) ORDER_COUNT,
+                      SUM(B.ORDER_AMOUNT) ORDER_AMOUNT
+                 FROM (SELECT TO_CHAR(A.ADD_TIME, 'YYYYMM') MONTH_KEY,
+                              A.CUST_NO,
+                              A.ORDER_ID,
+                              A.ORDER_AMOUNT
+                         FROM FACT_EC_ORDER_2 A
+                        WHERE TRUNC(A.ADD_TIME) BETWEEN DATE
+                        '2018-05-01'
+                          AND DATE '2018-05-31'
+                          AND A.ORDER_STATE >= 20) B
+                GROUP BY B.MONTH_KEY, B.CUST_NO) C
+        GROUP BY C.MONTH_KEY, C.ORDER_COUNT
+        ORDER BY C.MONTH_KEY, C.ORDER_COUNT) S
+ON (T.MONTH_KEY = S.MONTH_KEY AND T.ORDER_COUNT = S.ORDER_COUNT)
+WHEN MATCHED THEN
+  UPDATE
+     SET T.MEMBER_COUNT = S.MEMBER_COUNT,
+         T.ORDER_AMOUNT = S.ORDER_AMOUNT,
+         T.W_UPDATE_DT  = S.W_UPDATE_DT
+WHEN NOT MATCHED THEN
+  INSERT
+    (T.MONTH_KEY,
+     T.ORDER_COUNT,
+     T.MEMBER_COUNT,
+     T.ORDER_AMOUNT,
+     T.W_INSERT_DT,
+     T.W_UPDATE_DT)
+  VALUES
+    (S.MONTH_KEY,
+     S.ORDER_COUNT,
+     S.MEMBER_COUNT,
+     S.ORDER_AMOUNT,
+     S.W_INSERT_DT,
+     S.W_UPDATE_DT);
+
+--5.2
+CREATE OR REPLACE VIEW OPER_MEMBER_REPURCHASE_RPT_V AS
+  SELECT B.MONTH_KEY,
+         B.ORDER_COUNT_LEVEL,
+         SUM(B.MEMBER_COUNT) MEMBER_COUNT,
+         ROUND(SUM(B.ORDER_AMOUNT) / SUM(B.MEMBER_COUNT), 2) PER_CUST_AMOUNT
+    FROM (SELECT A.MONTH_KEY,
+                 CASE
+                   WHEN A.ORDER_COUNT = 1 THEN
+                    '1'
+                   WHEN A.ORDER_COUNT = 2 THEN
+                    '2'
+                   WHEN A.ORDER_COUNT = 3 THEN
+                    '3'
+                   WHEN A.ORDER_COUNT = 4 THEN
+                    '4'
+                   WHEN A.ORDER_COUNT BETWEEN 5 AND 9 THEN
+                    '5-9'
+                   WHEN A.ORDER_COUNT >= 10 THEN
+                    'MORE_10'
+                 END ORDER_COUNT_LEVEL,
+                 A.MEMBER_COUNT,
+                 A.ORDER_AMOUNT,
+                 A.W_INSERT_DT,
+                 A.W_UPDATE_DT
+            FROM OPER_MEMBER_REPURCHASE_RPT A) B
+   GROUP BY B.MONTH_KEY, B.ORDER_COUNT_LEVEL
+   ORDER BY B.MONTH_KEY, B.ORDER_COUNT_LEVEL;
+
+--5.3
+SELECT * FROM OPER_MEMBER_REPURCHASE_RPT_V;
+
+--5.4
+CALL YJ_REPORT.OPER_MEMBER_REPUR_REPORT_P(20180203);
+CALL YJ_REPORT.OPER_MEMBER_REPUR_REPORT_P(20180303);
+CALL YJ_REPORT.OPER_MEMBER_REPUR_REPORT_P(20180403);
+CALL YJ_REPORT.OPER_MEMBER_REPUR_REPORT_P(20180503);
+CALL YJ_REPORT.OPER_MEMBER_REPUR_REPORT_P(20180603);
+
+SELECT * FROM S_PARAMETERS2 FOR UPDATE;
+
+--6.
+/*
+OPER_ACTIVE_MEMBER_REPORT(活跃会员池，会员池目标拆解)
+OPER_MEMBER_SOURCE_REPORT(纳新来源)
+KPI_ASMT_REPURCHASE_MEMBER(老会员次月重构)
+OPER_MEMBER_REPURCHASE_RPT_V(订购频次)
+*/
+SELECT * FROM OPER_ACTIVE_MEMBER_REPORT;
+SELECT * FROM OPER_MEMBER_SOURCE_REPORT;
+SELECT * FROM KPI_ASMT_REPURCHASE_MEMBER;
+SELECT * FROM OPER_MEMBER_REPURCHASE_RPT_V;

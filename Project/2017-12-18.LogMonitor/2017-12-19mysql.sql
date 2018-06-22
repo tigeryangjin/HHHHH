@@ -368,7 +368,7 @@ VALUES ('happigo-restapi', 'resource', 'ec.voucher.list');
 INSERT INTO log_monitor_projectname (logstore, col_name, col_value)
 VALUES ('happigo-restapi', 'resource', 'ec.wx.access');
 
-#resource+method插入log_monitor_task
+# resource +method插入log_monitor_task
 INSERT log_monitor_task (task_name, project, logstore, task_state, time_units)
   SELECT
     concat(a.col_value, '_', b.METHOD) task_name,
@@ -627,12 +627,14 @@ INSERT INTO log_monitor_task_group (groupName, task_id) VALUES ('快乐问答', 
 CALL log_monitor_add('happigo-restapi', '1.0/ha.activity.user.role_POST');
 CALL log_monitor_add('happigo-restapi', '1.0/ha.user.revivecard_POST');
 
-SELECT * FROM log_monitor_task;
+SELECT *
+FROM log_monitor_task;
 
-INSERT log_monitor_task_group(groupName, task_id, group_id) VALUES ('快乐问答',1175,1);
-INSERT log_monitor_task_group(groupName, task_id, group_id) VALUES ('快乐问答',1176,1);
+INSERT log_monitor_task_group (groupName, task_id, group_id) VALUES ('快乐问答', 1175, 1);
+INSERT log_monitor_task_group (groupName, task_id, group_id) VALUES ('快乐问答', 1176, 1);
 
-SELECT * FROM log_monitor_task_group;
+SELECT *
+FROM log_monitor_task_group;
 
 /*
 2018-03-14
@@ -685,3 +687,59 @@ CALL log_monitor_add('happigo-application', 'EC.Sign.Acesses.API');
 CommenTanalysis.Task
 */
 CALL log_monitor_add('happigo-application', 'CommenTanalysis.Task');
+
+/*
+2018-05-14
+CommenTanalysis.Task
+*/
+CALL log_monitor_add('happigo-application', 'Ec.Goods.Image.Upload');
+
+/*
+2018-06-07
+Ec.Voucher.mangolive.sycn.Task
+*/
+CALL log_monitor_add('happigo-application', 'Ec.Voucher.mangolive.sycn.Task');
+
+
+/*
+2018-06-14
+//服务器时间戳
+bargain.api.v1.ServerTime.index
+//大眼睛
+bargain.api.v1.ActiveBanner.index
+//活动列表
+bargain.api.v1.ActiveList.index
+//砍价成功滚动消息和已成功砍价总人数
+bargain.api.v1.ActiveNotice.index
+//商品详情
+bargain.api.v1.ActiveGoodsInfo.read
+//活动详情
+bargain.api.v1.ActiveBargainInfo.read
+//活动（商品）推荐
+bargain.api.v1.ActiveRecommend.read
+//创建任务
+bargain.api.v1.TaskAdd.save
+//我的任务列表
+bargain.api.v1.TaskList.index
+//任务详情
+bargain.api.v1.TaskInfo.read
+//参加任务（帮别人砍）
+bargain.api.v1.TaskHelp.save
+//参与任务用户列表【好友砍价榜单】
+bargain.api.v1.TaskFriend.index
+//付款
+bargain.api.v1.TaskPayment.save
+*/
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.ServerTime.index');
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.ActiveBanner.index');
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.ActiveList.index');
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.ActiveNotice.index');
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.ActiveGoodsInfo.read');
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.ActiveBargainInfo.read');
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.ActiveRecommend.read');
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.TaskAdd.save');
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.TaskList.index');
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.TaskInfo.read');
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.TaskHelp.save');
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.TaskFriend.index');
+CALL log_monitor_add('happigo-application', 'bargain.api.v1.TaskPayment.save');

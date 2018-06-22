@@ -30,19 +30,6 @@ CREATE OR REPLACE PACKAGE MEMBER_FILTER_PKG IS
   最后更改日期：
   */
 
-  PROCEDURE SYNC_MEMBER_LABEL_LINK_MSGPUSH;
-  /*
-  功能名:       SYNC_MEMBER_LABEL_LINK_MSGPUSH
-  目的:         MEMBER_LABEL_LINK表中下面三个标签同步
-                WX_IN_7DAYS  微信推送(7天内),399
-                SMS_IN_7DAYS 短息推送(7天内),400
-                APP_IN_7DAYS APP推送(7天内),401                                            
-  作者:         yangjin
-  创建时间：    2017/11/29
-  最后修改人：
-  最后更改日期：
-  */
-
   PROCEDURE MEMBER_RESULT_TO_TABLE;
   /*
   功能名:       MEMBER_RESULT_TO_TABLE
@@ -523,6 +510,24 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_FILTER_PKG IS
       END IF;
     END;
   
+    /*INSERT_ROWS*/
+    SELECT COUNT(1)
+      INTO INSERT_ROWS
+      FROM MLOG$_MEMBER_LABEL_LINK@DW27
+     WHERE DMLTYPE$$ = 'I';
+  
+    /*UPDATE_ROWS*/
+    SELECT COUNT(1)
+      INTO UPDATE_ROWS
+      FROM MLOG$_MEMBER_LABEL_LINK@DW27
+     WHERE DMLTYPE$$ = 'U';
+  
+    /*DELETE_ROWS*/
+    SELECT COUNT(1)
+      INTO DELETE_ROWS
+      FROM MLOG$_MEMBER_LABEL_LINK@DW27
+     WHERE DMLTYPE$$ = 'D';
+  
     /*刷新物化视图MEMBER_LABEL_LINK_MV*/
     DBMS_MVIEW.REFRESH('MEMBER_LABEL_LINK_MV', METHOD => 'FAST');
   
@@ -544,64 +549,6 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_FILTER_PKG IS
       SP_SBI_W_ETL_LOG(S_ETL);
       RETURN;
   END SYNC_MEMBER_LABEL_LINK;
-
-  PROCEDURE SYNC_MEMBER_LABEL_LINK_MSGPUSH IS
-    S_ETL       W_ETL_LOG%ROWTYPE;
-    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
-    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
-    INSERT_ROWS NUMBER;
-    UPDATE_ROWS NUMBER;
-    DELETE_ROWS NUMBER;
-    /*
-    功能名:       SYNC_MEMBER_LABEL_LINK_MSGPUSH
-    目的:         MEMBER_LABEL_LINK表中下面三个标签同步
-                  WX_IN_7DAYS  微信推送(7天内),399
-                  SMS_IN_7DAYS 短息推送(7天内),400
-                  APP_IN_7DAYS APP推送(7天内),401                                            
-    作者:         yangjin
-    创建时间：    2017/11/29
-    最后修改人：
-    最后更改日期：
-    */
-  BEGIN
-    SP_NAME          := 'MEMBER_FILTER_PKG.SYNC_MEMBER_LABEL_LINK_MSGPUSH'; --需要手工填入所写PROCEDURE的名称
-    S_ETL.TABLE_NAME := 'MEMBER_LABEL_LINK'; --此处需要手工录入该PROCEDURE操作的表格
-    S_ETL.PROC_NAME  := SP_NAME;
-    S_ETL.START_TIME := SYSDATE;
-    S_PARAMETER      := 0;
-  
-    BEGIN
-      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
-      IF S_PARAMETER = '0'
-      THEN
-        S_ETL.END_TIME := SYSDATE;
-        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
-        SP_SBI_W_ETL_LOG(S_ETL);
-        RETURN;
-      END IF;
-    END;
-  
-    /*刷新物化视图MEMBER_LABEL_LINK_MV*/
-    DBMS_MVIEW.REFRESH('MEMBER_LABEL_LINK_MV', METHOD => 'FAST');
-  
-    /*日志记录模块*/
-    S_ETL.END_TIME       := SYSDATE;
-    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
-    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
-    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
-    S_ETL.ETL_STATUS     := 'SUCCESS';
-    S_ETL.ERR_MSG        := '无输入参数';
-    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
-                                  86400);
-    SP_SBI_W_ETL_LOG(S_ETL);
-  EXCEPTION
-    WHEN OTHERS THEN
-      S_ETL.END_TIME   := SYSDATE;
-      S_ETL.ETL_STATUS := 'FAILURE';
-      S_ETL.ERR_MSG    := SQLERRM;
-      SP_SBI_W_ETL_LOG(S_ETL);
-      RETURN;
-  END SYNC_MEMBER_LABEL_LINK_MSGPUSH;
 
   PROCEDURE MEMBER_RESULT_TO_TABLE IS
     V_TABLE_HEAD MEMBER_FILTER_OPTION_HEAD%ROWTYPE;

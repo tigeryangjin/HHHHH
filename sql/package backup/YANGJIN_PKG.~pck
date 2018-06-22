@@ -1403,11 +1403,11 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                           OD1.EFFECTIVE_ORDER_QTY,
                                           1,
                                           -ABS(OD1.EFFECTIVE_ORDER_QTY))) EFFECTIVE_ORDER_QTY /*有效订购数量*/,
-                               DECODE(OD1.CANCEL_STATE,
-                                      0,
-                                      0,
-                                      1,
-                                      COUNT(DISTINCT OD1.TOTAL_ORDER_QTY)) CANCEL_ORDER_QTY /*取消订购数量*/,
+                               SUM(DECODE(OD1.CANCEL_STATE,
+                                          0,
+                                          0,
+                                          1,
+                                          ABS(OD1.TOTAL_ORDER_QTY))) CANCEL_ORDER_QTY /*取消订购数量*/,
                                0 REVERSE_QTY /*退货订购数量*/,
                                0 REJECT_QTY /*拒收订购数量*/,
                                0 CANCEL_REVERSE_QTY /*退货取消订购数量*/,
@@ -1992,7 +1992,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                (10, 20, 30)
                                            AND RDU1.TRAN_DESC = 'REN'
                                               /*2018-05-03剔除扫码购销售，order_from<>'76'*/
-                                           AND RDU1.ORDER_FROM <> '76'
+                                           AND NVL(RDU1.ORDER_FROM, 0) <> '76'
                                         UNION ALL
                                         /*取消的订单，按过账日期POSTING_DATE_KEY记逆向订单。
                                         2017-06-15 yangjin*/
@@ -2027,7 +2027,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                            AND RDU2.POSTING_DATE_KEY <=
                                                RDU2.UPDATE_TIME
                                               /*2018-05-03剔除扫码购销售，order_from<>'76'*/
-                                           AND RDU2.ORDER_FROM <> '76') RD
+                                           AND NVL(RDU2.ORDER_FROM, 0) <> '76') RD
                                  WHERE RD.POSTING_DATE_KEY =
                                        IN_POSTING_DATE_KEY
                                    AND RD.CANCEL_REASON IN (10, 20, 30)
@@ -2114,7 +2114,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
     INSERT_ROWS NUMBER;
     UPDATE_ROWS NUMBER;
     /*
-    功能说明：新媒体中心数据日报
+    功能说明：新媒体中心数据日报-扫码购
     作者时间：yangjin  2016-06-13
     */
   BEGIN
@@ -5946,7 +5946,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
                   WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          AND*/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              AND
+                 */
                   F.ZMATERIAL NOT LIKE '%F%'
                AND F.ZEAMC027 IS NOT NULL
                AND F.ZEAMC027 != 0) TA
@@ -5972,6 +5973,29 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                  AND A.CURRENT_FLG = 'Y');
       UPDATE_ROWS := SQL%ROWCOUNT;
       COMMIT;
+    
+      /*填充GOODS_COMMONID等资料*/
+      DECLARE
+        TYPE TYPE_RECORD IS RECORD(
+          DATE_KEY VARCHAR2(8));
+      
+        TYPE TYPE_TABLE IS TABLE OF TYPE_RECORD INDEX BY BINARY_INTEGER; --类似二维数组 
+      
+        VAR_ARRAY TYPE_TABLE;
+      BEGIN
+        SELECT TO_CHAR(A.CREATE_TIME, 'YYYYMMDD') CREATE_TIME
+          BULK COLLECT
+          INTO VAR_ARRAY
+          FROM DIM_GOOD A
+         WHERE A.GOODS_COMMONID IS NULL
+         GROUP BY TO_CHAR(A.CREATE_TIME, 'YYYYMMDD')
+         ORDER BY COUNT(1) DESC;
+      
+        FOR I IN 1 .. VAR_ARRAY.COUNT LOOP
+          PROCESSGOODUNION(VAR_ARRAY(I).DATE_KEY);
+          COMMIT;
+        END LOOP;
+      END;
     
       /*从DIM_EC_GOOD插入DIM_GOOD不存在的商品*/
       /*INSERT INTO DIM_GOOD
