@@ -1,0 +1,94 @@
+
+
+--1  新人零门槛30元鼓励券  新人30元零门槛可使用
+
+select MEMBER_KEY from  oper_member where  REGISTER_RECORD_DATE_KEY=20160627 and REGISTER_STATE=0
+
+--2  订购奖励券1-减30元  限满199减30使用
+ 
+select MEMBER_KEY from oper_member where  FIFTEEN_RECORD_DATE_KEY=20160627    and FIFTEEN_STATE=0
+--3  订购奖励券2-减30元  限满199减30使用
+
+select MEMBER_KEY from oper_member where  THIRTY_RECORD_DATE_KEY=20160627    and THIRTY_STATE=0
+--8  老会员奖励券1-减30元  限满199减30使用
+
+select MEMBER_KEY from oper_member where  D850_RECORD_DATE_KEY=20160627and THIRTY_STATE=0
+and 
+  (reverse_record_date_key <20160627 or reverse_record_date_key is null)   --6  感恩券1-减40元  限满199减40使用
+and 
+  (no60_record_date_key    <20160627 or no60_record_date_key is null)   --7  感恩券2-减40元  限满199减40使用
+and  
+  (three199_record_date_key <20160627 or three199_record_date_key is null)    --5  老会员30零门槛券  老会员30元零门槛可使用
+and 
+  (ten199_record_date_key <20160627   or ten199_record_date_key is null) --4  老会员100零门槛券  老会员100元零门槛可使用
+  
+
+  
+  
+  
+--9  老会员奖励券2-减30元  限满199减30使用
+select MEMBER_KEY from oper_member where  four_record_date_key=20160627and THIRTY_STATE=0
+
+and
+  (D850_RECORD_DATE_KEY    <20160627 or D850_RECORD_DATE_KEY is null)    --8  老会员奖励券1-减30元  限满199减30使用
+and 
+  (reverse_record_date_key <20160627 or reverse_record_date_key is null)   --6  感恩券1-减40元  限满199减40使用
+and 
+  (no60_record_date_key    <20160627 or no60_record_date_key is null)   --7  感恩券2-减40元  限满199减40使用
+and  
+  (three199_record_date_key <20160627 or three199_record_date_key is null)    --5  老会员30零门槛券  老会员30元零门槛可使用
+and 
+  (ten199_record_date_key <20160627   or ten199_record_date_key is null) --4  老会员100零门槛券  老会员100元零门槛可使用
+
+ 
+  
+
+--10  老会员奖励券3-减80元  限满499减80使用
+select MEMBER_KEY from oper_member where  d2600_record_date_key=20160627
+and THIRTY_STATE=0
+and
+  (D850_RECORD_DATE_KEY    <20160627 or D850_RECORD_DATE_KEY is null)    --8  老会员奖励券1-减30元  限满199减30使用
+and 
+  (reverse_record_date_key <20160627 or reverse_record_date_key is null)   --6  感恩券1-减40元  限满199减40使用
+and 
+  (no60_record_date_key    <20160627 or no60_record_date_key is null)   --7  感恩券2-减40元  限满199减40使用
+and  
+  (three199_record_date_key <20160627 or three199_record_date_key is null)    --5  老会员30零门槛券  老会员30元零门槛可使用
+and 
+  (ten199_record_date_key <20160627   or ten199_record_date_key is null) --4  老会员100零门槛券  老会员100元零门槛可使用
+and 
+  ( FOUR_RECORD_DATE_KEY < 20160627  or  FOUR_RECORD_DATE_KEY is null)     --9  老会员奖励券2-减30元  限满199减30使用
+  
+
+--6  感恩券1-减40元  限满199减40使用
+select  MEMBER_KEY from oper_member where   reverse_record_date_key=20160627and THIRTY_STATE=0
+
+
+and  
+  (three199_record_date_key <20160627 or three199_record_date_key is null)   --5  老会员30零门槛券  老会员30元零门槛可使用
+and 
+  (ten199_record_date_key <20160627  or ten199_record_date_key is null)   --4  老会员100零门槛券  老会员100元零门槛可使用
+
+   
+
+--7  感恩券2-减40元  限满199减40使用
+select  MEMBER_KEY from oper_member where  no60_record_date_key=20160627 and THIRTY_STATE=0
+
+
+and 
+  (reverse_record_date_key <20160627   or reverse_record_date_key is null)  --6  感恩券1-减40元  限满199减40使用
+and  
+  (three199_record_date_key <20160627 or three199_record_date_key is null)    --5  老会员30零门槛券  老会员30元零门槛可使用
+and 
+  (ten199_record_date_key <20160627 or ten199_record_date_key is null)   --4  老会员100零门槛券  老会员100元零门槛可使用
+
+
+--5  老会员30零门槛券  老会员30元零门槛可使用
+select MEMBER_KEY from oper_member where   three199_record_date_key=20160627and THIRTY_STATE=0
+and (ten199_record_date_key <20160627  or ten199_record_date_key is null)  --4  老会员100零门槛券  老会员100元零门槛可使用
+
+
+--4  老会员100零门槛券  老会员100元零门槛可使用
+select   MEMBER_KEY from oper_member where   ten199_record_date_key=20160627and THIRTY_STATE=0  and TEN199_ORDER_TIME=20160620
+
+

@@ -1,0 +1,49 @@
+
+ ------微刊专题
+ select PV 点击次数,UV 点击人数,ZRS 总订购人数,ZJE 总订购件数,YXRS 有效订购人数,YXDS 有效订购单数,YXJE 有效订购金额,YXJS 有效订购件数 from (
+ select count(1) PV,count(distinct vid) UV from  fact_page_view where visit_date_key between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+ and url like '%wkzt%') a left join 
+ (
+ (select count(distinct vid) ZRS,sum(order_amount) ZJE from factec_order  where add_time  between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+ and  vid in (select distinct vid from  fact_page_view where visit_date_key between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+ and url like '%wkzt%' ))) b  on 1=1
+ left join 
+  (select count(distinct vid) YXRS,count(1) YXDS,sum(order_amount) YXJE,sum(GOODS_NUM) YXJS from factec_order  where add_time  between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+ and  vid in (select distinct vid from  fact_page_view where visit_date_key between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+ and url like '%wkzt%' ) and order_state>10) c on 1=1;
+ 
+ 
+ ----微刊商品
+  select PV 点击次数,UV 点击人数,ZRS 总订购人数,ZJE 总订购件数,YXRS 有效订购人数,YXDS 有效订购单数,YXJE 有效订购金额,YXJS 有效订购件数 from (
+ select count(1) PV,count(distinct vid) UV from  fact_page_view where visit_date_key between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+ and url like '%wksp%') a left join 
+ (
+ (select count(distinct vid) ZRS,sum(order_amount) ZJE from factec_order  where add_time  between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+ and ORDER_IP in (select distinct ip from  fact_page_view where visit_date_key between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+ and url like '%wksp%' ) and APP_NAME='KLGWX')) b  on 1=1
+ left join 
+  (select count(distinct vid) YXRS,count(1) YXDS,sum(order_amount) YXJE,sum(GOODS_NUM) YXJS   from factec_order  where add_time  between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+ and  ORDER_IP in (select distinct ip from  fact_page_view where visit_date_key between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+ and url like '%wksp%' ) and order_state>10 and APP_NAME='KLGWX') c on 1=1;
+ 
+
+-----推送数据
+select  count(distinct vid) 打开人数,sum(PV) 打开次数,count(distinct vid2) 总订购人数,sum(zd)  总订购单数,
+sum(zj) 总订购金额,count(distinct vid3) 有效订购人数,sum(yxd) 有效订购单数,sum(yxj) 有效订购金额 from (
+select * from (
+ select VID ,VISIT_DATE_KEY,count(1) PV  from  fact_page_view where visit_date_key between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+ and url like '%?fo=YYTX' group by  VID,VISIT_DATE_KEY ) a left join (
+ select VID vid2,add_time,count(1) as ZD,sum(order_amount) AS ZJ from fact_ec_order where add_time between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+ group by VID,add_time
+ ) b on a.vid=b.vid2 and a.VISIT_DATE_KEY=b.add_time
+  left join
+ (
+ select VID  vid3,add_time,count(1) as YXD,sum(order_amount) AS YXJ from fact_ec_order where add_time between to_char(sysdate-4,'yyyymmdd') and to_char(sysdate,'yyyymmdd')
+and order_state>10
+ group by VID,add_time
+ ) c  on  a.vid=c.vid3 and a.VISIT_DATE_KEY=c.add_time
+ ) 
+ 
+ 
+ 
+

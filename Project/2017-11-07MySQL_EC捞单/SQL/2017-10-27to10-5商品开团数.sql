@@ -13,7 +13,7 @@ FROM (SELECT
                               count(1) cnt
                             FROM ec_group_purchase_task a
                             WHERE
-                              a.add_time >= UNIX_TIMESTAMP('2018-05-01') AND a.add_time < UNIX_TIMESTAMP('2018-05-16')
+                              a.add_time >= UNIX_TIMESTAMP('2018-09-08') AND a.add_time < UNIX_TIMESTAMP('2018-09-15')
                             GROUP BY a.goods_commonid) c
 WHERE b.goods_commonid = c.goods_commonid
 ORDER BY c.cnt DESC;
@@ -33,7 +33,7 @@ FROM (SELECT
                               count(1) cnt
                             FROM ec_group_purchase_task a
                             WHERE
-                              a.add_time >= UNIX_TIMESTAMP('2018-05-01') AND a.add_time < UNIX_TIMESTAMP('2018-05-16')
+                              a.add_time >= UNIX_TIMESTAMP('2018-09-08') AND a.add_time < UNIX_TIMESTAMP('2018-09-15')
                               AND a.task_state IN (10)
                             GROUP BY a.goods_commonid) c
 WHERE b.goods_commonid = c.goods_commonid
@@ -80,13 +80,13 @@ ORDER BY d.cdate, f.item_code;
 SELECT count(1) 开团数
 FROM ec_group_purchase_task
 WHERE
-  add_time >= UNIX_TIMESTAMP('2018-05-01') AND add_time < UNIX_TIMESTAMP('2018-05-16');
+  add_time >= UNIX_TIMESTAMP('2018-06-01') AND add_time < UNIX_TIMESTAMP('2018-09-30');
 
 #成团数
 SELECT count(1) 成团数
 FROM ec_group_purchase_task
 WHERE
-  add_time >= UNIX_TIMESTAMP('2018-05-01') AND add_time < UNIX_TIMESTAMP('2018-05-16')
+  add_time >= UNIX_TIMESTAMP('2018-06-01') AND add_time < UNIX_TIMESTAMP('2018-09-30')
   AND task_state IN (10);
 
 #参与人数

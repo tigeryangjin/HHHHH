@@ -1640,9 +1640,8 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                        AND ORD.MEMBER_KEY = MLL.MEMBER_KEY
                        AND MLH.M_LABEL_ID = MLL.M_LABEL_ID);
           COMMIT;
-          INSERT_ROWS := INSERT_ROWS + 1;
         END LOOP;
-      
+        INSERT_ROWS := VAR_ARRAY.COUNT;
       END;
     
       /*当会员首次订购后，更新未产生首单标志*/
@@ -1664,12 +1663,14 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                   FROM MEMBER_LABEL_LINK A
                  WHERE A.M_LABEL_ID = 42
                  GROUP BY A.MEMBER_KEY) P
-         WHERE EXISTS (SELECT 1
+         WHERE EXISTS (SELECT /*+INDEX(B GS_POSTING_KEY)*/
+                 1
                   FROM FACT_GOODS_SALES B
                  WHERE B.ORDER_STATE = 1
-                      /*订购日期大于未产生首单标签的日期*/
-                   AND B.POSTING_DATE_KEY >= CREATE_DATE
+                      /*订购日期大于未产生首单标签的日期,此条件导致速度太慢*/
+                      --AND B.POSTING_DATE_KEY >= CREATE_DATE
                    AND P.MEMBER_KEY = B.MEMBER_KEY);
+      
         FOR I IN 1 .. VAR_ARRAY.COUNT LOOP
           /*更新[未产生首单]标签*/
           UPDATE MEMBER_LABEL_LINK A
@@ -2773,9 +2774,8 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                                              A.MEMBER_KEY,
                                                              1 CNT
                                                FROM FACT_PAGE_VIEW A
-                                              WHERE A.VISIT_DATE_KEY >=
-                                                    TO_CHAR(TRUNC(IN_POSTING_DATE - 65),
-                                                            'YYYYMMDD') /*统计最近65天的访问记录*/
+                                              WHERE A.VISIT_DATE >=
+                                                    IN_POSTING_DATE - 65 /*统计最近65天的访问记录*/
                                                 AND A.MEMBER_KEY <> 0) B
                                       GROUP BY B.MEMBER_KEY) C,
                                     (SELECT E.MEMBER_BP MEMBER_KEY,
@@ -2941,9 +2941,8 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                                FROM FACT_PAGE_VIEW A
                                               WHERE A.APPLICATION_KEY IN
                                                     (10, 20) /*APP*/
-                                                AND A.VISIT_DATE_KEY >=
-                                                    TO_CHAR(TRUNC(IN_POSTING_DATE - 65),
-                                                            'YYYYMMDD') /*统计最近65天的访问记录*/
+                                                AND A.VISIT_DATE >=
+                                                    IN_POSTING_DATE - 65 /*统计最近65天的访问记录*/
                                                 AND A.MEMBER_KEY <> 0) B
                                       GROUP BY B.MEMBER_KEY) C,
                                     (SELECT E.MEMBER_BP MEMBER_KEY,
@@ -3109,9 +3108,8 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                                              1 CNT
                                                FROM FACT_PAGE_VIEW A
                                               WHERE A.APPLICATION_KEY = 50 /*微信*/
-                                                AND A.VISIT_DATE_KEY >=
-                                                    TO_CHAR(TRUNC(IN_POSTING_DATE - 65),
-                                                            'YYYYMMDD') /*统计最近65天的访问记录*/
+                                                AND A.VISIT_DATE >=
+                                                    IN_POSTING_DATE - 65 /*统计最近65天的访问记录*/
                                                 AND A.MEMBER_KEY <> 0) B
                                       GROUP BY B.MEMBER_KEY) C,
                                     (SELECT E.MEMBER_BP MEMBER_KEY,

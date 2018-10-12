@@ -1,0 +1,40 @@
+select  count(1)/count(distinct(a.order_key)),order_date_key from fact_goods_sales a where
+ a.order_date_key between 20160901 and 20161016 and TRAN_TYPE=0
+and a.SALES_SOURCE_KEY=20  and ORDER_STATE=1  group by order_date_key
+
+select * from fact_goods_sales a where
+ a.order_date_key between 20160920 and 20161016
+and a.SALES_SOURCE_KEY=20  and ORDER_STATE=1 
+
+
+select count(distinct(VID)),count(1),CREATE_DATE_KEY from  fact_shoppingcar  where CREATE_DATE_KEY  between 20160901 and 20161016
+and SCGQ>=1 group by CREATE_DATE_KEY
+
+
+SELECT  count(distinct(VID)),count(1),VISIT_DATE_KEY FROM FACT_PAGE_VIEW  S WHERE  S.VISIT_DATE_KEY  between 20160901 and 20161016 
+AND S.PAGE_NAME='ShoppingCart'
+and HMSC in ('as','klg','yyb','hw','oppo','xm','vivo','t360','bd','meizu','wdj','ppzs')
+ group by VISIT_DATE_KEY 
+ 
+ --÷±≈‰ÀÕ’º±»
+ select  count(1),ORDER_DATE_KEY from  
+ 
+ (select ORDER_KEY,count(1) as shangpin ,avg(ORDER_DATE_KEY) as ORDER_DATE_KEY
+ ,sum(IS_SHIPPING_SELF) as peishong  from(
+ 
+ SELECT ORDER_KEY,GOODS_COMMON_KEY,ORDER_DATE_KEY,ITEM_CODE,IS_SHIPPING_SELF FROM (
+ 
+ select ORDER_KEY,GOODS_COMMON_KEY,ORDER_DATE_KEY,ITEM_CODE,IS_SHIPPING_SELF from 
+( select ORDER_KEY,GOODS_COMMON_KEY,order_date_key from fact_goods_sales a where
+ a.order_date_key between 20160901 and 20161016
+and a.SALES_SOURCE_KEY=20  and ORDER_STATE=1 
+and TRAN_TYPE=0) a left join dim_ec_good b  on a.GOODS_COMMON_KEY=b.ITEM_CODE) WHERE IS_SHIPPING_SELF IS NOT NULL )
+group  by  ORDER_KEY
+
+)where  peishong=0
+--and peishong!=0 
+ and peishong is not null  
+group by ORDER_DATE_KEY
+
+
+ 

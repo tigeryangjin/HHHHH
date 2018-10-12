@@ -1,0 +1,33 @@
+---会员池  
+select  count(distinct(MEMBER_KEY))from fact_session  where
+ START_DATE_KEY between 20180301 and 20180431  
+ and  APPLICATION_KEY IN(50,70) ;
+
+
+---新增会员
+
+select count(1)from  fact_ecmember  where MEMBER_TIME between 20180401 and 20180431 ;
+
+---流失会员
+
+
+select count(distinct(MEMBER_KEY)) from fact_session where  
+START_DATE_KEY   between 20180201 and 20180231  
+and  MEMBER_KEY  not in (
+select distinct(MEMBER_KEY) from  fact_session where  
+START_DATE_KEY   between 20180301 and 20180431  
+) 
+;
+
+---唤醒会员
+
+select  count(distinct(MEMBER_KEY)) from fact_session where  
+START_DATE_KEY   between 20180401 and 20180431   
+and member_key in
+
+(select MEMBER_CRMBP from fact_ecmember where MEMBER_TIME<=20180131  ) 
+and member_key not in 
+(select distinct(MEMBER_KEY) from  fact_session where  
+START_DATE_KEY   between  20180201 and 20180331   
+);
+

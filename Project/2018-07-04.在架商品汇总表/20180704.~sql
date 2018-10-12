@@ -1,0 +1,23 @@
+-- fact_goods_sales
+createordergoods
+processupdateorder
+-- fact_goods_sales_reverse
+createfactordergoodsreverse
+processupdateorderreverse
+
+--ktr
+createfactordergoods.ktr
+processorder.ktr
+processupdateorder.ktr
+processupdateorderreverse.ktr
+processrejectreturn.ktr
+createfactordergoodsreverse.ktr
+
+--kjb
+createfactordergoods_dayly.kjb
+createfactordergoods.kjb
+processorder.kjb
+processrejectreturn.kjb
+createfactordergoodsreverse.kjb
+
+--sh

@@ -1,0 +1,425 @@
+VISIT_DATE_KEY	时间
+APPLICATION_KEY	通道
+HMMD	渠道名称
+HMPL	是否推广
+XLFLAG	是否是新用户
+MCNT	激活人数
+VCNT	访客人数（日活）
+SCNT	启动次数
+AVGLIFE_TIME	平均访问时长
+ORDERRS	总订购人数
+ORDERCS	总订购次数
+ORDERAMOUNT	总订购金额
+ORDERCGRS	净订购人数
+ORDERCGCS	净订购次数
+ORDERCGAMOUNT	净订购金额
+NVCNT	访问会员数
+
+
+时间
+通道
+渠道名称
+是否推广
+是否是新用户
+激活人数
+日活
+启动次数
+平均访问时长
+总订购人数
+总订购次数
+总订购金额
+净订购人数
+净订购次数
+净订购金额
+访问会员数
+
+
+OLEDB CONNECT TO [Provider=OraOLEDB.Oracle.1;Persist Security Info=True;User ID=bi_report;Data Source=bihappigo;Extended Properties=""] (XPassword is XdfPCUFMQDcSWTdNQZMCTbAS);
+
+
+
+APP分析模块数据表结构（1）:
+LOAD
+时间,
+通道,
+渠道名称,
+是否推广,
+是否是新用户,
+激活人数,
+日活,
+启动次数,
+平均访问时长,
+总订购人数,
+总订购次数,
+总订购金额,
+净订购人数,
+净订购次数,
+净订购金额,
+访问会员数
+;
+SQL
+select 
+VISIT_DATE_KEY  时间,
+APPLICATION_KEY  通道,
+NVCNT  访问会员数,
+HMMD  渠道名称,
+HMPL  是否推广 ,
+XLFLAG  是否是新用户,
+MCNT  激活人数 ,
+SCNT  启动次数,
+ORDERRS  总订购人数,
+ORDERCS  总订购次数,
+ORDERAMOUNT  总订购金额,
+ORDERCGRS  净订购人数,
+ORDERCGCS  净订购次数,
+ORDERCGAMOUNT  净订购金额,
+AVGLIFE_TIME  平均访问时长,
+VCNT  日活,
+NVCNT 访问会员数 from FACT_HMSC_MARKET;
+
+STORE APP分析模块数据表结构（1） INTO ..\3_数据源\31_QVD\APP分析模块数据表结构（1）.QVD; 
+
+
+
+2016年以来 所有的每天产生的净订购单数   每天的日活  每天的
+
+
+TV扫码下载   http://m.happigo.com/Tvdownload.html
+TV扫码订购   http://m.happigo.com/Tvlist.html
+
+时间
+通道
+渠道
+商品编号
+商品名称
+商品类目
+商品单价
+访问商品UV
+访问商品PV
+商品净订购件数
+商品净订购金额
+
+
+VISIT_DATE_KEY	时间
+APPLICATION_KEY	通道
+HMMD	渠道
+ITEM_CODE	商品编号
+ITEM_NAME	商品名称
+MATDLT	商品类目
+GOODS_PRICE	商品单价
+UV	访问商品UV
+PV	访问商品PV
+JS	商品净订购件数
+JE	商品净订购金额
+
+
+
+时间
+通道
+渠道名称
+次日留存率
+花费金额
+曝光次数
+点击次数
+
+
+
+CREATE_DATE_KEY	时间
+APPLICATION_KEY	通道
+HMMD	渠道名称
+LCRATE	次日留存率
+PAYMOUNT	花费金额
+HITCNT	曝光次数
+VIEWCNT	点击次数
+
+
+
+SET ThousandSep=',';
+SET DecimalSep='.';
+SET MoneyThousandSep=',';
+SET MoneyDecimalSep='.';
+SET MoneyFormat='￥#,##0.00;￥-#,##0.00';
+SET TimeFormat='h:mm:ss';
+SET DateFormat='YYYY/M/D';
+SET TimestampFormat='YYYY/M/D h:mm:ss[.fff]';
+SET MonthNames='1;2;3;4;5;6;7;8;9;10;11;12';
+SET DayNames='周一;周二;周三;周四;周五;周六;周日';
+
+
+
+OLEDB CONNECT TO [Provider=OraOLEDB.Oracle.1;Persist Security Info=True;User ID=bi_report;Data Source=bihappigo;Extended Properties=""] (XPassword is SROGDUFMQDcSWTdNQZMCTbIK);
+
+
+LET vYear = Year(Today());
+LET vLastYear = $(vYear) - 1;
+LET vAdj = ($(vYear) - 2004 - 1) * 12; // n months from 1/1/2004
+
+
+
+
+Set VCurrY		= "=Year(Max(选择日期))"						;  //**本年
+Set VCurrM		= "=num(Month(Max(选择日期)),'00')"				;  //**本月
+Set VCurrD		= "=num(Day(Max(选择日期)),'00')"				;  //**本日
+Set VCurrDate	= "=Max(选择日期)"								;  //**最大日期
+Set VLastY		= "=VCurrY-1"								;  //上年
+Set VLastM		= "=Num(IF(VCurrM='01','12',VCurrM-1),'00')";  //上月
+Set VCYCM		= "=VCurrY&VCurrM"							;  //本年本月
+Set VLYCM		= "=VLastY&VCurrM"							;  //去年同期
+Set VLYCMCD		= "=VLastY&VCurrM&VCurrD"							;  //去年同月同日
+Set VCYLM		= "=if(VCurrM='1',VLastY,VCurrY)&VLastM"						;  //本年上期
+
+Set Vedate      ="=Date(Max(选择日期)-15,'YYYYMMDD')"         ; //今年结束日期
+Set VeY		    = "=Year(Max(选择日期-15))"						;  //**本年
+Set VLeY		= "=VeY-1"								;  //上年
+Set VeM	    	= "=num(Month(Max(选择日期-15)),'00')"				;  //**本月
+Set VeD		    = "=num(Day(Max(选择日期-15)),'00')"				;  //**本日
+Set Veedate     = "=VLeY&VeM&VeD"							;  //去年同月同日
+
+//==年月减6
+Set VbestM		= "=Num(IF(VCurrM='05','12',
+                        IF(VCurrM='04','11',
+                        IF(VCurrM='03','10',
+                        IF(VCurrM='02','09',
+                        IF(VCurrM='01','08',VCurrM-5))))),'00')";  //前6个月
+                        
+Set VCYBM		= "=if(VCurrM<'6',VLastY,VCurrY)&VbestM"						;  //本年上期
+
+Set VBYBM       = "=if(VCurrM<'6',VLastY,VCurrY)-1&VbestM"						;  
+
+
+
+//商品表:
+//LOAD 专题编号, 
+//     //专题名称, 
+//     DATE(专题统计时间,'YYYYMMDD') AS  专题时间,
+//     专题统计时间,
+//     专题对应商品编号, 
+//     专题商品, 
+//     商品单价, 
+//     专题商品浏览PV, 
+//     专题商品浏览UV, 
+//     商品订单数, 
+//     商品订购数量, 
+//     商品订单金额, 
+//     物料大类, 
+//     商品品牌, 
+//     是否自营
+//FROM
+//[..\3_数据源\31_QVD\商品表.QVD]
+//(qvd);
+//
+//专题表:
+//LOAD 专题编号, 
+//     专题名称, 
+//     专题开始时间, 
+//     专题结束时间, 
+//     DATE(专题统计时间,'YYYYMMDD') AS  专题时间,
+//     专题统计时间 AS 专题统计时间1,
+//     在架商品数, 
+//     动销商品数, 
+//     专题PV, 
+//     专题UV, 
+//     专题平均浏览数, 
+//     专题平均浏览时长, 
+//     专题订单数, 
+//     专题订购人数, 
+//     专题转化率, 
+//     专题订购件数, 
+//     专题订购金额
+//FROM
+//[..\3_数据源\31_QVD\专题表.QVD]
+//(qvd);
+
+
+商品表:
+LOAD 专题编号, 
+     //专题名称, 
+     专题统计时间,
+     DATE(专题统计时间,'YYYYMMDD') AS  专题时间, 
+     专题对应商品编号, 
+     专题商品, 
+     商品单价, 
+     专题商品浏览PV, 
+     专题商品浏览UV, 
+     商品订单数, 
+     商品订购数量, 
+     商品订单金额, 
+     物料大类, 
+     商品品牌, 
+     是否自营,
+     if(商品订购数量>0,1,0) AS 商品是否动销,
+     if(专题商品浏览UV>0,1,0) AS 商品是否浏览
+//     专题开始时间, 
+//     专题结束时间, 
+//     在架商品数, 
+//     动销商品数, 
+//     专题PV, 
+//     专题UV, 
+//     专题平均浏览数, 
+//     专题平均浏览时长, 
+//     专题订单数, 
+//     专题订购人数, 
+//     专题转化率, 
+//     专题订购件数, 
+//     专题订购金额
+FROM
+[..\3_数据源\31_QVD\运营模块专题报表.QVD]
+(qvd);
+
+
+专题表:
+LOAD DISTINCT 
+     专题编号, 
+     专题名称, 
+     DATE(专题统计时间,'YYYYMMDD') AS  专题时间,
+//     专题对应商品编号, 
+//     专题商品, 
+//     商品单价, 
+//     专题商品浏览PV, 
+//     专题商品浏览UV, 
+//     商品订单数, 
+//     商品订购数量, 
+//     商品订单金额, 
+//     物料大类, 
+//     商品品牌, 
+//     是否自营
+     专题开始时间, 
+     专题结束时间, 
+     在架商品数, 
+     动销商品数, 
+     专题PV, 
+     专题UV, 
+     专题平均浏览数, 
+     专题平均浏览时长, 
+     专题订单数, 
+     专题订购人数, 
+     专题转化率, 
+     专题订购件数, 
+     专题订购金额
+FROM
+[..\3_数据源\31_QVD\运营模块专题报表.QVD]
+(qvd);
+
+
+
+专题表1:
+LOAD DISTINCT 
+     专题编号 AS 专题编号1, 
+     专题名称 AS 专题名称1, 
+     DATE(专题统计时间,'YYYYMMDD') AS  专题时间,
+//     专题对应商品编号, 
+//     专题商品, 
+//     商品单价, 
+//     专题商品浏览PV, 
+//     专题商品浏览UV, 
+//     商品订单数, 
+//     商品订购数量, 
+//     商品订单金额, 
+//     物料大类, 
+//     商品品牌, 
+//     是否自营
+     专题开始时间 AS 专题开始时间1, 
+     专题结束时间 AS 专题结束时间1, 
+     在架商品数 AS 在架商品数1, 
+     动销商品数 AS 动销商品数1, 
+     专题PV AS 专题PV1, 
+     专题UV AS 专题UV1, 
+     专题平均浏览数 AS 专题平均浏览数1, 
+     专题平均浏览时长 AS 专题平均浏览时长1, 
+     专题订单数 AS 专题订单数1, 
+     专题订购人数 AS 专题订购人数1, 
+     专题转化率 AS 专题转化率1, 
+     专题订购件数 AS 专题订购件数1, 
+     专题订购金额 AS 专题订购金额1
+FROM
+[..\3_数据源\31_QVD\运营模块专题报表.QVD]
+(qvd);
+
+
+商品表1:
+LOAD          
+     DATE(专题统计时间,'YYYYMMDD') AS  专题时间, 
+     专题商品 AS 专题商品2, 
+     专题商品浏览UV AS 专题商品浏览UV2, 
+     专题商品浏览PV AS 专题商品浏览PV2,
+     商品订购数量 AS 商品订购数量2, 
+     商品订单金额 AS 商品订单金额2, 
+     物料大类 AS 物料大类2, 
+     商品品牌 AS 商品品牌2,
+     if(商品订购数量>0,1,0) AS 商品动销确定
+FROM
+[..\3_数据源\31_QVD\运营模块专题报表.QVD]
+(qvd);
+
+商品表2:
+LOAD          
+     专题时间, 
+     专题商品2,  
+     物料大类2, 
+     商品品牌2,
+     SUM(专题商品浏览UV2) AS 专题商品浏览UV3,
+     SUM(专题商品浏览PV2) AS 专题商品浏览PV3, 
+     SUM(商品订购数量2) AS 商品订购数量3, 
+     SUM(商品订单金额2) AS 商品订单金额3
+resident 商品表1
+Group by 
+     专题时间, 
+     专题商品2,  
+     物料大类2, 
+     商品品牌2;
+drop table 商品表1;
+
+
+日期选择表:
+LOAD
+Distinct
+专题时间 as 选择日期,
+date(专题时间,'YYYYMM') as 选择年月,
+year(专题时间) as 年,
+month(专题时间) as 月,
+day(专题时间) as 日
+Resident 商品表;
+
+LOAD * INLINE [
+    _metricsNo, 指标
+    1, PV
+    2, 订购件数
+    3, 订购金额
+    4, 件单价
+    5, 置入商品数
+    6, 浏览商品数
+    7, 动销商品数
+    8, 动销率
+];
+日期
+时段
+分布码名称
+扫码人数
+扫码次数
+
+日期	DAY_KEY
+时段	HOUR_KEY
+分布码名称	SCAN_CODE_NAME
+扫码人数	UV_TOTAL
+扫码次数	PV_TOTAL
+
+
+日期
+分布码名称
+预估激活人数
+预计下单人数（净订购）
+预计下单件数（净订购）
+预计下单金额（净订购）
+
+
+DAY_KEY	日期
+SCAN_CODE_NAME	分布码名称
+DEVICE_TOTAL	预估激活人数
+ORDER_PE_NUMS	预计下单人数（净订购）
+ORDER_NUMS	预计下单件数（净订购）
+ORDER_AMOUNT	预计下单金额（净订购）
+
+
+
+
+

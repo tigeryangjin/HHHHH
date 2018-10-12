@@ -1,0 +1,36 @@
+  ---------  7.0.0  求用户黏度
+    SELECT SUM(exp(CHI)),page_name,SUM(exp(3))  FROM (
+       SELECT COUNT(1) AS CHI,page_name,VID FROM (
+         select  ssd.page_name,ssd.visit_date_key,VID from fact_page_view  ssd
+      where ssd.visit_date_key  between 20170201 and 20170207
+      and ssd.application_key  in(10,20) and VER_NAME in ('7.0.0','7.0.2','7.0.4')
+      and hmsc in('as','hw','klg','t360','oppo','wdj','xm')
+         group by ssd.page_name,ssd.visit_date_key,VID)
+   
+       GROUP BY page_name,VID)  GROUP BY page_name
+       
+      ------------ 7.0.0版本板块状态
+    
+     select  count(1),count(distinct(vid)),ssd.page_name,ssd.visit_date_key from fact_page_view  ssd
+      where ssd.visit_date_key   between 20170201 and 20170207
+      and ssd.application_key  in(10,20) and VER_NAME in ('7.0.0','7.0.2','7.0.4') 
+      and hmsc in('as','hw','klg','t360','oppo','wdj','xm')
+  
+    group by ssd.page_name,ssd.visit_date_key
+    
+    
+    ----7.0.0
+    select sum(ORDER_AMOUNT),POSTING_DATE_KEY from fact_order where POSTING_DATE_KEY>20170112 and SALES_SOURCE_KEY=10 and ORDER_STATE=1
+    group by POSTING_DATE_KEY
+    
+    ---- 
+    select count(1) from (
+    select b.VID,VIDSCORE from (
+    select distinct(VID) vid from fact_session where START_DATE_KEY=20170209 and APPLICATION_KEY in(10,20)
+    ) a
+    left join abpage_vidscore b on a.vid=b.vid) where  VIDSCORE<0
+    
+    
+    select * from fact_page_view where visit_date_key=20170210  and page_name='KFZT'
+    and  page_value='xlhklhb'  and APPLICATION_KEY>20 url is not null like '%hare%'
+    

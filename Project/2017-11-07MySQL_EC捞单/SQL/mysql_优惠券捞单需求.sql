@@ -2,7 +2,7 @@
 SELECT
   voucher_ref                 AS '券号',
   voucher_name                AS '券名称',
-  voucher_price               AS '券名称',
+  voucher_price               AS '券金额',
   cust_no                     AS '顾客编号',
   member_level                AS '会员等级',
   CONCAT('`', order_sn)       AS '订单编号',
@@ -12,17 +12,17 @@ SELECT
   FROM_UNIXTIME(add_time)     AS '下单时间'
 FROM happigo_ec.ec_order a, happigo_ec.ec_order_common b
 WHERE a.order_id = b.order_id
-      AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2018-01-15 10:00:00') AND
-      add_time <= UNIX_TIMESTAMP('2018-01-17 10:00')
+      AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2018-10-01 00:00:00') AND
+      add_time <= UNIX_TIMESTAMP('2018-10-08 08:00:00')
       AND b.voucher_ref IN
-          ('5029', '5030', '5031', '5032')
+          ('5907', '5908', '5909', '5910', '5911', '5912', '5913', '5914', '5915', '5916', '5917')
 ORDER BY voucher_ref, a.order_id;
 
 /*优惠券商品级捞单SQL*/
 SELECT
   voucher_ref                 AS '券号',
   voucher_name                AS '券名称',
-  voucher_price               AS '券名称',
+  voucher_price               AS '券金额',
   cust_no                     AS '顾客编号',
   member_level                AS '会员等级',
   CONCAT('`', order_sn)       AS '订单编号',
@@ -35,10 +35,10 @@ SELECT
   goods_num                   AS '商品数量'
 FROM happigo_ec.ec_order a, happigo_ec.ec_order_common b, happigo_ec.ec_order_goods c
 WHERE a.order_id = b.order_id AND b.order_id = c.order_id AND a.order_id = c.order_id
-      AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2018-01-15 10:00:00') AND
-      add_time <= UNIX_TIMESTAMP('2018-01-17 10:00')
+      AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2018-10-01 00:00:00') AND
+      add_time < UNIX_TIMESTAMP('2018-10-08 08:00:00')
       AND b.voucher_ref IN
-          ('5029', '5030', '5031', '5032')
+          ('5907', '5908', '5909', '5910', '5911', '5912', '5913', '5914', '5915', '5916', '5917')
 ORDER BY voucher_ref, a.order_id;
 
 /*满减数据捞单*/

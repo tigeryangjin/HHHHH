@@ -1,0 +1,89 @@
+/*
+一年内在新媒体订过奶粉的用户
+*/
+--订购
+SELECT F.MEMBER_BP
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP,
+               COUNT(DISTINCT A.ORDER_ID) ORDER_CNT
+          FROM FACT_EC_ORDER_2 A, FACT_EC_ORDER_GOODS B
+         WHERE A.ORDER_ID = B.ORDER_ID
+           AND A.ADD_TIME BETWEEN DATE '2018-05-01' AND DATE
+         '2018-08-31'
+           AND A.ORDER_STATE >= 20
+           AND A.CUST_NO <> 0
+           AND EXISTS
+         (SELECT 1
+                  FROM (SELECT D.GOODS_COMMONID
+                          FROM DIM_EC_GOOD D, DIM_GOOD_CLASS E
+                         WHERE D.MATDL = E.MATDL
+                           AND E.MATZL = 5109) C
+                 WHERE B.GOODS_COMMONID = C.GOODS_COMMONID)
+         GROUP BY A.CUST_NO) F
+ ORDER BY F.MEMBER_BP;
+
+/*
+3-6月在新媒体订过服饰类商品但7、8月未订过服饰类商品用户
+*/
+SELECT F.MEMBER_BP
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP,
+               COUNT(DISTINCT A.ORDER_ID) ORDER_CNT
+          FROM FACT_EC_ORDER_2 A, FACT_EC_ORDER_GOODS B
+         WHERE A.ORDER_ID = B.ORDER_ID
+           AND A.ADD_TIME BETWEEN DATE '2018-03-01' AND DATE
+         '2018-06-30'
+           AND A.ORDER_STATE >= 20
+           AND A.CUST_NO <> 0
+           AND EXISTS
+         (SELECT 1
+                  FROM (SELECT D.GOODS_COMMONID
+                          FROM DIM_EC_GOOD D, DIM_GOOD_CLASS E
+                         WHERE D.MATDL = E.MATDL
+                           AND E.MATDL IN (11, 18)) C
+                 WHERE B.GOODS_COMMONID = C.GOODS_COMMONID)
+         GROUP BY A.CUST_NO) F
+ WHERE NOT EXISTS
+ (SELECT 1
+          FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP,
+                       COUNT(DISTINCT A.ORDER_ID) ORDER_CNT
+                  FROM FACT_EC_ORDER_2 A, FACT_EC_ORDER_GOODS B
+                 WHERE A.ORDER_ID = B.ORDER_ID
+                   AND A.ADD_TIME BETWEEN DATE '2018-07-01' AND DATE
+                 '2018-08-31'
+                   AND A.ORDER_STATE >= 20
+                   AND A.CUST_NO <> 0
+                   AND EXISTS
+                 (SELECT 1
+                          FROM (SELECT D.GOODS_COMMONID
+                                  FROM DIM_EC_GOOD D, DIM_GOOD_CLASS E
+                                 WHERE D.MATDL = E.MATDL
+                                   AND E.MATDL IN (11, 18)) C
+                         WHERE B.GOODS_COMMONID = C.GOODS_COMMONID)
+                 GROUP BY A.CUST_NO) G
+         WHERE F.MEMBER_BP = G.MEMBER_BP)
+ ORDER BY F.MEMBER_BP;
+
+--tmp
+
+SELECT TO_NUMBER(A.MEMBER_KEY) MEMBER_BP
+  FROM YANGJIN.FACT_PAGE_VIEW_2018_678 A
+ WHERE EXISTS (SELECT 1
+          FROM DIM_EC_GOOD D, DIM_GOOD_CLASS E
+         WHERE D.MATDL = E.MATDL
+           AND E.MATZL = 540302)
+ WHERE A.GOODS_COMMONID = C.GOODS_COMMONID;
+
+SELECT TO_NUMBER(A.MEMBER_KEY) MEMBER_BP
+  FROM YANGJIN.FACT_PAGE_VIEW_2018_678 A
+ WHERE EXISTS (SELECT 1
+          FROM (SELECT D.GOODS_COMMONID
+                  FROM DIM_EC_GOOD D, DIM_GOOD_CLASS E
+                 WHERE D.MATDL = E.MATDL
+                   AND E.MATZL = 3103) B
+         WHERE A.PAGE_VALUE = B.GOODS_COMMONID);
+
+SELECT * FROM DIM_GOOD_CLASS A WHERE A.MATDLT LIKE '%服%';
+SELECT * FROM DIM_GOOD_CLASS A WHERE A.MATZLT LIKE '%服%';
+SELECT * FROM DIM_GOOD_CLASS A WHERE A.MATXLT LIKE '%服%';
+SELECT * FROM DIM_GOOD_CLASS A WHERE A.Matklt LIKE '%服%';
+
+SELECT * FROM DIM_GOOD_CLASS A ORDER BY A.MATDL, A.MATZL, A.MATXL, A.MATKL;

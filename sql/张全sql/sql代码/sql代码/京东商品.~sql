@@ -1,0 +1,21 @@
+
+select M_LABEL_DESC,M_LABEL_ID,count(1)   from  MEMBER_LABEL_LINK_V where  MEMBER_Key in (
+select distinct(MEMBER_KEY) from fact_goods_sales where GOODS_COMMON_KEY in(
+select ITEM_CODE from dim_good where  GROUP_ID=2100) and order_state=1)
+group by M_LABEL_DESC,M_LABEL_ID
+
+
+---- 59ÈË
+select count(distinct(MEMBER_KEY)) from factec_order where order_id in  (
+select min(order_id) from fact_ec_order   where add_time between 20160101 and 20171001 and order_state>10
+ group by  CUST_NO) and ORDER_ID in (select ORDER_ID from factec_order_goods where ITEM_CODE in(
+select ITEM_CODE from dim_good where  GROUP_ID=2100))
+
+----- 921
+
+select count(distinct(MEMBER_KEY)) from factec_order where
+ ---order_id in  (select min(order_id) from fact_ec_order   where add_time between 20160101 and 20171001 and order_state>10 group by  CUST_NO) and 
+ ORDER_ID in (select ORDER_ID from factec_order_goods where ITEM_CODE in(select ITEM_CODE from dim_good where  GROUP_ID=2100))
+
+
+

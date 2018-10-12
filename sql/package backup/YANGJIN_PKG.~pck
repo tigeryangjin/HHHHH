@@ -39,26 +39,6 @@ CREATE OR REPLACE PACKAGE YANGJIN_PKG IS
   最后更改日期：
   */
 
-  PROCEDURE ALTER_TABLE_SHRINK_SPACE(IN_TABLE_NAME IN VARCHAR2);
-  /*
-  功能名:       ALTER_TABLE_SHRINK_SPACE
-  目的:         收缩表的高水位线
-  作者:         yangjin
-  创建时间：    2017/07/26
-  最后修改人：
-  最后更改日期：
-  */
-
-  PROCEDURE TABLE_OPTIMIZATION;
-  /*
-  功能名:       TABLE_OPTIMIZATION
-  目的:         数据库表优化
-  作者:         yangjin
-  创建时间：    2017/09/27
-  最后修改人：
-  最后更改日期：
-  */
-
   PROCEDURE PROCESSMAKETHMSC_IA(STARTPOINT IN NUMBER);
   /*
   功能名:       PROCESSMAKETHMSC_IA
@@ -640,65 +620,6 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
       DBMS_OUTPUT.PUT_LINE(SQLERRM);
   END LOG_TEST;
 
-  PROCEDURE ALTER_TABLE_SHRINK_SPACE(IN_TABLE_NAME IN VARCHAR2) IS
-  BEGIN
-  
-    EXECUTE IMMEDIATE 'ALTER TABLE ' || TO_CHAR(IN_TABLE_NAME) ||
-                      ' ENABLE ROW MOVEMENT';
-    EXECUTE IMMEDIATE 'ALTER TABLE ' || TO_CHAR(IN_TABLE_NAME) ||
-                      ' SHRINK SPACE';
-    EXECUTE IMMEDIATE 'ALTER TABLE ' || TO_CHAR(IN_TABLE_NAME) ||
-                      ' DISABLE ROW MOVEMENT';
-    DBMS_STATS.GATHER_TABLE_STATS('DW_USER', TO_CHAR(IN_TABLE_NAME));
-  END ALTER_TABLE_SHRINK_SPACE;
-
-  PROCEDURE TABLE_OPTIMIZATION IS
-    S_ETL W_ETL_LOG%ROWTYPE;
-  BEGIN
-    S_ETL.PROC_NAME  := 'YANGJIN_PKG.TABLE_OPTIMIZATION';
-    S_ETL.START_TIME := SYSDATE;
-    /*
-    每周六20:00开始执行
-    */
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('DATA_ACQUISITION_ITEM_BASE');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('DATA_ACQUISITION_ITEM_CURRENT');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('DATA_ACQUISITION_MONTH_NEW');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_ORDER_2');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_ORDER_COMMON');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_ORDER_GOODS');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_P_MANSONG');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_P_MANSONG_GOODS');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_P_XIANSHI');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_P_XIANSHI_GOODS');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_VOUCHER');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_VOUCHER_BATCH');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_GOODS_COMMON');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('FACT_EC_GOODS_MANUAL');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('KPI_ACTIVE_VID_BASE');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('MEMBER_LABEL_LINK');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('MLOG$_MEMBER_LABEL_LINK');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_GOOD_LABEL_ANALYSIS');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ITEM_REPORT');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_PROMOTION_ORDER_REPORT');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_NM_VOUCHER_REPORT');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_PRODUCT_DAILY_REPORT');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('OPER_PRODUCT_PVUV_DAILY_REPORT');
-    YANGJIN_PKG.ALTER_TABLE_SHRINK_SPACE('PUSH_MSG_LOG');
-  
-    S_ETL.END_TIME     := SYSDATE;
-    S_ETL.ETL_STATUS   := 'SUCCESS';
-    S_ETL.ERR_MSG      := '无输入参数';
-    S_ETL.ETL_DURATION := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) * 86400);
-    SP_SBI_W_ETL_LOG(S_ETL);
-  EXCEPTION
-    WHEN OTHERS THEN
-      S_ETL.END_TIME   := SYSDATE;
-      S_ETL.ETL_STATUS := 'FAILURE';
-      S_ETL.ERR_MSG    := SQLERRM;
-      SP_SBI_W_ETL_LOG(S_ETL);
-      RETURN;
-  END TABLE_OPTIMIZATION;
-
   PROCEDURE PROCESSMAKETHMSC_IA(STARTPOINT IN NUMBER) IS
     S_ETL       W_ETL_LOG%ROWTYPE;
     SP_NAME     S_PARAMETERS2.PNAME%TYPE;
@@ -786,7 +707,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  WHERE C.HMSC = A.HMSC) AS HMPL,
                                CASE
                                  WHEN EXISTS
-                                  (SELECT *
+                                  (SELECT 1
                                          FROM FACT_VISITOR_REGISTER D
                                         WHERE D.CREATE_DATE_KEY BETWEEN
                                               TO_NUMBER(TO_CHAR(ADD_MONTHS(TO_DATE(TO_CHAR(STARTPOINT),
@@ -1717,6 +1638,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                  RD1.ORDER_AMOUNT,
                                                  30,
                                                  RD1.ORDER_AMOUNT,
+                                                 40,
+                                                 RD1.ORDER_AMOUNT,
                                                  20,
                                                  0),
                                           0)) REVERSE_ORDER_AMOUNT /*退货订购金额*/,
@@ -1733,6 +1656,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                  10,
                                                  RD1.ORDER_AMOUNT,
                                                  30,
+                                                 RD1.ORDER_AMOUNT,
+                                                 40,
                                                  RD1.ORDER_AMOUNT,
                                                  20,
                                                  0),
@@ -1753,6 +1678,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                  RD1.SALES_AMOUNT,
                                                  30,
                                                  RD1.SALES_AMOUNT,
+                                                 40,
+                                                 RD1.SALES_AMOUNT,
                                                  20,
                                                  0),
                                           0)) REVERSE_SALES_AMOUNT /*退货售价金额*/,
@@ -1769,6 +1696,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                  10,
                                                  RD1.SALES_AMOUNT,
                                                  30,
+                                                 RD1.SALES_AMOUNT,
+                                                 40,
                                                  RD1.SALES_AMOUNT,
                                                  20,
                                                  0),
@@ -1790,6 +1719,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                    RD1.MEMBER_KEY,
                                                    30,
                                                    RD1.MEMBER_KEY,
+                                                   40,
+                                                   RD1.MEMBER_KEY,
                                                    NULL),
                                             0)) REVERSE_MEMBER_COUNT /*退货订购人数*/,
                                COUNT(DISTINCT DECODE(RD1.CANCEL_STATE,
@@ -1805,6 +1736,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                    10,
                                                    RD1.MEMBER_KEY,
                                                    30,
+                                                   RD1.MEMBER_KEY,
+                                                   40,
                                                    RD1.MEMBER_KEY,
                                                    NULL),
                                             0)) CANCEL_REVERSE_MEMBER_COUNT /*退货取消订购人数*/,
@@ -1825,6 +1758,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                    RD1.ORDER_H_KEY,
                                                    30,
                                                    RD1.ORDER_H_KEY,
+                                                   40,
+                                                   RD1.ORDER_H_KEY,
                                                    NULL),
                                             0)) REVERSE_COUNT /*退货订购单数*/,
                                COUNT(DISTINCT DECODE(RD1.CANCEL_STATE,
@@ -1840,6 +1775,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                    10,
                                                    RD1.ORDER_H_KEY,
                                                    30,
+                                                   RD1.ORDER_H_KEY,
+                                                   40,
                                                    RD1.ORDER_H_KEY,
                                                    NULL),
                                             0)) CANCEL_REVERSE_COUNT /*退货取消订购单数*/,
@@ -1864,6 +1801,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                  RD1.NUMS,
                                                  30,
                                                  RD1.NUMS,
+                                                 40,
+                                                 RD1.NUMS,
                                                  20,
                                                  0),
                                           0)) REVERSE_QTY /*退货订购数量*/,
@@ -1880,6 +1819,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                  10,
                                                  RD1.NUMS,
                                                  30,
+                                                 RD1.NUMS,
+                                                 40,
                                                  RD1.NUMS,
                                                  20,
                                                  0),
@@ -1900,6 +1841,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                  RD1.PURCHASE_AMOUNT,
                                                  30,
                                                  RD1.PURCHASE_AMOUNT,
+                                                 40,
+                                                 RD1.PURCHASE_AMOUNT,
                                                  20,
                                                  0),
                                           0)) REVERSE_PURCHASE_AMOUNT /*退货订购成本*/,
@@ -1916,6 +1859,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                  10,
                                                  RD1.PURCHASE_AMOUNT,
                                                  30,
+                                                 RD1.PURCHASE_AMOUNT,
+                                                 40,
                                                  RD1.PURCHASE_AMOUNT,
                                                  20,
                                                  0),
@@ -1989,7 +1934,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                 RDU1.PROFIT_AMOUNT /*折扣金额*/
                                           FROM FACT_GOODS_SALES_REVERSE RDU1
                                          WHERE RDU1.CANCEL_REASON IN
-                                               (10, 20, 30)
+                                               (10, 20, 30, 40)
                                            AND RDU1.TRAN_DESC = 'REN'
                                               /*2018-05-03剔除扫码购销售，order_from<>'76'*/
                                            AND NVL(RDU1.ORDER_FROM, 0) <> '76'
@@ -2021,7 +1966,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                                 RDU2.PROFIT_AMOUNT /*折扣金额*/
                                           FROM FACT_GOODS_SALES_REVERSE RDU2
                                          WHERE RDU2.CANCEL_REASON IN
-                                               (10, 20, 30)
+                                               (10, 20, 30, 40)
                                            AND RDU2.TRAN_DESC = 'REN'
                                            AND RDU2.CANCEL_STATE = 1
                                            AND RDU2.POSTING_DATE_KEY <=
@@ -2030,7 +1975,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                            AND NVL(RDU2.ORDER_FROM, 0) <> '76') RD
                                  WHERE RD.POSTING_DATE_KEY =
                                        IN_POSTING_DATE_KEY
-                                   AND RD.CANCEL_REASON IN (10, 20, 30)
+                                   AND RD.CANCEL_REASON IN (10, 20, 30, 40)
                                    AND RD.TRAN_DESC = 'REN') RD1
                          GROUP BY RD1.GOODS_KEY,
                                   RD1.GOODS_COMMON_KEY,
@@ -3422,7 +3367,8 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                B.ITEM_CODE, /*商品编码*/
                B.GOODS_NAME GOOD_NAME, /*商品名称*/
                B.GOODS_PRICE GOOD_S_PRICE, /*商品价格*/
-               (SELECT NVL(MAX(D.COST_PRICE), 0)
+               (SELECT /*+INDEX(D GS_POSTING_KEY)*/
+                 NVL(MAX(D.COST_PRICE), 0)
                   FROM FACT_GOODS_SALES D
                  WHERE D.POSTING_DATE_KEY = IN_POSTING_DATE_KEY
                    AND B.ITEM_CODE = D.GOODS_COMMON_KEY) GOOD_C_PRICE, /*商品进价*/
@@ -5338,13 +5284,13 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                  (SELECT ITEM_CODE FROM DIM_GOOD) D5),
         VIS AS
         /*浏览*/
-         (SELECT C.DATE_KEY,
-                 C.CHANNEL_NAME,
-                 C.IS_NEW_USER,
-                 C.MEMBER_LEVEL,
-                 C.ITEM_CODE,
+         (SELECT D.DATE_KEY,
+                 D.CHANNEL_NAME,
+                 D.IS_NEW_USER,
+                 D.MEMBER_LEVEL,
+                 D.ITEM_CODE,
                  COUNT(1) PV,
-                 COUNT(DISTINCT C.VID) UV
+                 COUNT(DISTINCT D.VID) UV
             FROM (SELECT A.PAGE_VIEW_KEY,
                          A.VISIT_DATE_KEY DATE_KEY,
                          A.VID,
@@ -5359,7 +5305,7 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                            WHEN B.FIRST_ORDER_DATE_KEY >= A.VISIT_DATE_KEY THEN
                             'new_user'
                          END IS_NEW_USER,
-                         A.PAGE_VALUE ITEM_CODE,
+                         C.ITEM_CODE ITEM_CODE,
                          CASE
                            WHEN A.APPLICATION_KEY IN (10, 20) THEN
                             'APP'
@@ -5370,27 +5316,28 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                            WHEN A.APPLICATION_KEY = 50 THEN
                             '微信'
                          END CHANNEL_NAME
-                    FROM FACT_PAGE_VIEW A, DIM_MEMBER B
+                    FROM FACT_PAGE_VIEW A, DIM_MEMBER B, DIM_EC_GOOD C
                    WHERE A.MEMBER_KEY = B.MEMBER_BP(+)
+                     AND A.PAGE_VALUE = C.GOODS_COMMONID(+)
                      AND A.VISIT_DATE_KEY = IN_DATE_KEY
                      AND UPPER(A.PAGE_NAME) IN ('GOOD', 'Good_Desc')
                      AND A.PAGE_VALUE =
                          TRANSLATE(A.PAGE_VALUE,
                                    '0' ||
                                    TRANSLATE(A.PAGE_VALUE, '#0123456789', '#'),
-                                   '0')) C
-           GROUP BY C.DATE_KEY,
-                    C.CHANNEL_NAME,
-                    C.IS_NEW_USER,
-                    C.MEMBER_LEVEL,
-                    C.ITEM_CODE),
+                                   '0')) D
+           GROUP BY D.DATE_KEY,
+                    D.CHANNEL_NAME,
+                    D.IS_NEW_USER,
+                    D.MEMBER_LEVEL,
+                    D.ITEM_CODE),
         CAR AS
         /*购物车*/
-         (SELECT C.DATE_KEY,
-                 C.CHANNEL_NAME,
-                 C.IS_NEW_USER,
-                 C.MEMBER_LEVEL,
-                 C.ITEM_CODE,
+         (SELECT D.DATE_KEY,
+                 D.CHANNEL_NAME,
+                 D.IS_NEW_USER,
+                 D.MEMBER_LEVEL,
+                 D.ITEM_CODE,
                  COUNT(1) CAR_COUNT
             FROM (SELECT A.CREATE_DATE_KEY DATE_KEY,
                          CASE
@@ -5414,15 +5361,16 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                            WHEN B.FIRST_ORDER_DATE_KEY >= A.CREATE_DATE_KEY THEN
                             'new_user'
                          END IS_NEW_USER,
-                         A.SCGID ITEM_CODE
-                    FROM FACT_SHOPPINGCAR A, DIM_MEMBER B
+                         C.ITEM_CODE ITEM_CODE
+                    FROM FACT_SHOPPINGCAR A, DIM_MEMBER B, DIM_EC_GOOD C
                    WHERE A.MEMBER_KEY = B.MEMBER_BP(+)
-                     AND A.CREATE_DATE_KEY = IN_DATE_KEY) C
-           GROUP BY C.DATE_KEY,
-                    C.CHANNEL_NAME,
-                    C.IS_NEW_USER,
-                    C.MEMBER_LEVEL,
-                    C.ITEM_CODE),
+                     AND A.SCGID = C.GOODS_COMMONID(+)
+                     AND A.CREATE_DATE_KEY = IN_DATE_KEY) D
+           GROUP BY D.DATE_KEY,
+                    D.CHANNEL_NAME,
+                    D.IS_NEW_USER,
+                    D.MEMBER_LEVEL,
+                    D.ITEM_CODE),
         ORD AS
         /*订购*/
          (SELECT G.POSTING_DATE_KEY DATE_KEY,
@@ -5945,12 +5893,11 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                  SYSDATE COL15,
                                  SYSDATE COL16
                    FROM ODS_ZMATERIAL F
-                  WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              AND
-                 */
+                  WHERE /*F.CREATEDON = IN_POSTING_DATE_KEY AND*/
                   F.ZMATERIAL NOT LIKE '%F%'
-               AND F.ZEAMC027 IS NOT NULL
-               AND F.ZEAMC027 != 0) TA
+                 --AND F.ZEAMC027 IS NOT NULL
+                 --AND F.ZEAMC027 != 0
+               AND F.CREATEDON != 0) TA
          WHERE NOT EXISTS
          (SELECT 1 FROM DIM_GOOD TB WHERE TA.COL1 = TB.ITEM_CODE);
       INSERT_ROWS := SQL%ROWCOUNT;
@@ -6314,19 +6261,20 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                B.ACQ_PRICE,
                B.ACQ_SALES,
                B.SALES_AMT
-          FROM (SELECT A.PERIOD,
-                       A.MATDLT,
-                       A.MATZLT,
-                       A.MATXLT,
-                       A.ACQ_ITEM_CODE,
-                       A.ACQ_NAME,
-                       A.ACQ_URL,
-                       A.ACQ_PIC,
-                       A.ACQ_SHOP_NAME,
-                       A.ACQ_PRICE,
-                       A.ACQ_SALES,
-                       A.SALES_AMT,
-                       ROW_NUMBER() OVER(PARTITION BY A.PERIOD, A.ACQ_ITEM_CODE ORDER BY A.DATA_SOURCE, A.PERIOD, A.ACQ_CATEGORY_NAME, A.MATDLT, A.MATZLT, A.MATXLT, A.ACQ_ITEM_CODE, A.ACQ_NAME, A.ACQ_URL, A.ACQ_PIC, A.ACQ_SHOP_NAME, A.ACQ_PRICE, A.ACQ_SALES, A.SALES_AMT, A.INSERT_DATE, A.VALID_FLAG) RN
+          FROM (SELECT /*+INDEX(A DATA_ACQUISITION_ITEM_I1)*/
+                 A.PERIOD,
+                 A.MATDLT,
+                 A.MATZLT,
+                 A.MATXLT,
+                 A.ACQ_ITEM_CODE,
+                 A.ACQ_NAME,
+                 A.ACQ_URL,
+                 A.ACQ_PIC,
+                 A.ACQ_SHOP_NAME,
+                 A.ACQ_PRICE,
+                 A.ACQ_SALES,
+                 A.SALES_AMT,
+                 ROW_NUMBER() OVER(PARTITION BY A.PERIOD, A.ACQ_ITEM_CODE ORDER BY A.DATA_SOURCE, A.PERIOD, A.ACQ_CATEGORY_NAME, A.MATDLT, A.MATZLT, A.MATXLT, A.ACQ_ITEM_CODE, A.ACQ_NAME, A.ACQ_URL, A.ACQ_PIC, A.ACQ_SHOP_NAME, A.ACQ_PRICE, A.ACQ_SALES, A.SALES_AMT, A.INSERT_DATE, A.VALID_FLAG) RN
                   FROM DATA_ACQUISITION_ITEM A
                  WHERE A.PERIOD = I_DATE_KEY
                    AND A.ACQ_ITEM_CODE IS NOT NULL
@@ -6642,18 +6590,19 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                B.ACQ_PRICE,
                                SUM(B.CURRENT_ACQ_SALES) SALES_QTY,
                                SUM(B.CURRENT_SALES_AMT) SALES_AMT
-                          FROM (SELECT A.PERIOD, /*日期*/
-                                       A.MATDLT, /*大类名称*/
-                                       A.MATZLT, /*中类名称*/
-                                       A.MATXLT, /*小类名称*/
-                                       A.ACQ_ITEM_CODE, /*商品编码*/
-                                       A.ACQ_NAME, /*商品名称*/
-                                       A.ACQ_URL, /*商品URL地址*/
-                                       A.ACQ_PIC, /*商品图片地址*/
-                                       A.ACQ_SHOP_NAME, /*商铺名称*/
-                                       A.ACQ_PRICE, /*商品售价*/
-                                       A.CURRENT_ACQ_SALES, /*销售数量*/
-                                       A.CURRENT_SALES_AMT /*销售金额*/
+                          FROM (SELECT /*+INDEX(A DATA_ACQUISITION_CUR_I1)*/
+                                 A.PERIOD, /*日期*/
+                                 A.MATDLT, /*大类名称*/
+                                 A.MATZLT, /*中类名称*/
+                                 A.MATXLT, /*小类名称*/
+                                 A.ACQ_ITEM_CODE, /*商品编码*/
+                                 A.ACQ_NAME, /*商品名称*/
+                                 A.ACQ_URL, /*商品URL地址*/
+                                 A.ACQ_PIC, /*商品图片地址*/
+                                 A.ACQ_SHOP_NAME, /*商铺名称*/
+                                 A.ACQ_PRICE, /*商品售价*/
+                                 A.CURRENT_ACQ_SALES, /*销售数量*/
+                                 A.CURRENT_SALES_AMT /*销售金额*/
                                   FROM DATA_ACQUISITION_ITEM_CURRENT A
                                  WHERE A.PERIOD = I_DATE_KEY
                                       /*剔除销售数量或者销售金额<=0*/
@@ -6793,18 +6742,19 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
                                B.ACQ_PRICE,
                                SUM(B.CURRENT_ACQ_SALES) SALES_QTY,
                                SUM(B.CURRENT_SALES_AMT) SALES_AMT
-                          FROM (SELECT A.PERIOD, /*日期*/
-                                       A.MATDLT, /*大类名称*/
-                                       A.MATZLT, /*中类名称*/
-                                       A.MATXLT, /*小类名称*/
-                                       A.ACQ_ITEM_CODE, /*商品编码*/
-                                       A.ACQ_NAME, /*商品名称*/
-                                       A.ACQ_URL, /*商品URL地址*/
-                                       A.ACQ_PIC, /*商品图片地址*/
-                                       A.ACQ_SHOP_NAME, /*店铺名称*/
-                                       A.ACQ_PRICE, /*商品售价*/
-                                       A.CURRENT_ACQ_SALES, /*销售数量*/
-                                       A.CURRENT_SALES_AMT /*销售金额*/
+                          FROM (SELECT /*+INDEX(A DATA_ACQUISITION_CUR_I1)*/
+                                 A.PERIOD, /*日期*/
+                                 A.MATDLT, /*大类名称*/
+                                 A.MATZLT, /*中类名称*/
+                                 A.MATXLT, /*小类名称*/
+                                 A.ACQ_ITEM_CODE, /*商品编码*/
+                                 A.ACQ_NAME, /*商品名称*/
+                                 A.ACQ_URL, /*商品URL地址*/
+                                 A.ACQ_PIC, /*商品图片地址*/
+                                 A.ACQ_SHOP_NAME, /*店铺名称*/
+                                 A.ACQ_PRICE, /*商品售价*/
+                                 A.CURRENT_ACQ_SALES, /*销售数量*/
+                                 A.CURRENT_SALES_AMT /*销售金额*/
                                   FROM DATA_ACQUISITION_ITEM_CURRENT A
                                  WHERE A.PERIOD = I_DATE_KEY
                                       /*剔除销售数量或者销售金额<=0*/
@@ -7649,11 +7599,12 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
         (USER_ID, ITEM_ID, ACTIVE_TYPE, ACTIVE_DATE)
       /*active_type=0*/
         SELECT DISTINCT TO_CHAR(A1.MEMBER_KEY) USER_ID,
-                        TO_CHAR(A1.PAGE_VALUE) AS ITEM_ID,
+                        TO_CHAR(A11.ITEM_CODE) AS ITEM_ID,
                         0 ACTIVE_TYPE,
                         TO_CHAR(A1.VISIT_DATE_KEY) ACTIVE_DATE
-          FROM FACT_PAGE_VIEW A1
-         WHERE A1.PAGE_KEY IN
+          FROM FACT_PAGE_VIEW A1, DIM_EC_GOOD A11
+         WHERE A1.PAGE_VALUE = A11.GOODS_COMMONID
+           AND A1.PAGE_KEY IN
                (1924, 2303, 2841, 2842, 11586, 24146, 38629, 40899, 40903)
            AND REGEXP_LIKE(A1.PAGE_VALUE, '^[1-9]\d{5}$')
            AND A1.VISIT_DATE_KEY = IN_POSTING_DATE_KEY
@@ -7673,20 +7624,22 @@ CREATE OR REPLACE PACKAGE BODY YANGJIN_PKG IS
         SELECT (SELECT TO_CHAR(MAX(B3.MEMBER_CRMBP))
                   FROM FACT_ECMEMBER B3
                  WHERE A3.MEMBER_ID = B3.MEMBER_ID) USER_ID,
-               TO_CHAR(A3.FAV_ID) ITEM_ID,
+               TO_CHAR(A31.ITEM_CODE) ITEM_ID,
                2 ACTIVE_TYPE,
                TO_CHAR(A3.FAV_TIME) ACTIVE_DATE
-          FROM FACT_FAVORITES A3
-         WHERE A3.FAV_TYPE = 'goods'
+          FROM FACT_FAVORITES A3, DIM_EC_GOOD A31
+         WHERE A3.FAV_ID = A31.GOODS_COMMONID
+           AND A3.FAV_TYPE = 'goods'
            AND A3.FAV_TIME = IN_POSTING_DATE_KEY
         UNION ALL
         /*active_type=3*/
         SELECT TO_CHAR(A4.MEMBER_KEY) USER_ID,
-               TO_CHAR(A4.SCGID) ITEM_ID,
+               TO_CHAR(A41.ITEM_CODE) ITEM_ID,
                3 ACTIVE_TYPE,
                TO_CHAR(A4.CREATE_DATE_KEY) ACTIVE_DATE
-          FROM FACT_SHOPPINGCAR A4
-         WHERE A4.PAGE_KEY IN (297, 11586)
+          FROM FACT_SHOPPINGCAR A4, DIM_EC_GOOD A41
+         WHERE A4.SCGID = A41.GOODS_COMMONID
+           AND A4.PAGE_KEY IN (297, 11586)
            AND A4.CREATE_DATE_KEY = IN_POSTING_DATE_KEY
            AND A4.MEMBER_KEY <> 0;
       INSERT_ROWS := SQL%ROWCOUNT;

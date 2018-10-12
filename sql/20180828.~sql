@@ -1,0 +1,7 @@
+select event,blocking_session,sql_id,count(*) from dba_hist_active_sess_history ash
+    where sample_time>=to_timestamp('2018-08-27 22:25:00','yyyy-mm-dd hh24:mi:ss')
+   and sample_time<=to_timestamp('2018-08-28 09:35:00','yyyy-mm-dd hh24:mi:ss')
+   and event='cursor: pin S wait on X'
+    group by event,blocking_session,sql_id;
+		
+select * from dba_hist_active_sess_history;

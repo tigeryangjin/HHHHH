@@ -1,0 +1,317 @@
+-----0到5单的注册
+select count(distinct MEMBER_CRMBP),count(distinct MEMBER_KEY1)
+,count(distinct MEMBER_KEY2)
+,count(distinct MEMBER_KEY3)
+,count(distinct MEMBER_KEY4)
+,count(distinct MEMBER_KEY5),M_LABEL_DESC from (
+select * from 
+(select MEMBER_CRMBP,M_LABEL_DESC from (select MEMBER_CRMBP,REGISTER_APPNAME from fact_ecmember where MEMBER_TIME<=20170101    ) a left join
+ (select MEMBER_KEY,M_LABEL_DESC from MEMBER_LABEL_LINK_V where  
+ M_LABEL_ID in (select M_LABEL_ID from MEMBER_LABEL_HEAD where M_LABEL_FATHER_ID=235)) b on a.member_crmbp=b.MEMBER_KEY)
+s left join
+(select MEMBER_KEY as MEMBER_KEY1,b.ADD_TIME as ADD_TIME1,APP_NAME as APP_NAME1,ORDER_FROM as ORDER_FROM1,PROMOTION_DESC as PROMOTION_DESC1
+,GOODS_AMOUNT as GOODS_AMOUNT1,PAY_AMOUNT as PAY_AMOUNT1,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT1,VOUCHER_PRICE as VOUCHER_PRICE1,ORDER_AMOUNT  as ORDER_AMOUNT1 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=1  and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101) )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) ss
+on s.MEMBER_CRMBP=ss.MEMBER_KEY1
+left join
+(select MEMBER_KEY as MEMBER_KEY2,b.ADD_TIME as ADD_TIME2,APP_NAME as APP_NAME2,ORDER_FROM as ORDER_FROM2,PROMOTION_DESC as PROMOTION_DESC2
+,GOODS_AMOUNT as GOODS_AMOUNT2,PAY_AMOUNT as PAY_AMOUNT2,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT2,VOUCHER_PRICE as VOUCHER_PRICE2,ORDER_AMOUNT as ORDER_AMOUNT2
+  from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=2 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) sss
+on s.MEMBER_CRMBP=sss.MEMBER_KEY2 
+left join
+(select MEMBER_KEY as MEMBER_KEY3,b.ADD_TIME as ADD_TIME3,APP_NAME as APP_NAME3,ORDER_FROM as ORDER_FROM3,PROMOTION_DESC as PROMOTION_DESC3
+,GOODS_AMOUNT as GOODS_AMOUNT3,PAY_AMOUNT as PAY_AMOUNT3,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT3,VOUCHER_PRICE as VOUCHER_PRICE3,ORDER_AMOUNT as ORDER_AMOUNT3 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=3 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) ssss
+on s.MEMBER_CRMBP=ssss.MEMBER_KEY3
+left join
+(select MEMBER_KEY as MEMBER_KEY4,b.ADD_TIME as ADD_TIME4,APP_NAME as APP_NAME4,ORDER_FROM as ORDER_FROM4,PROMOTION_DESC as PROMOTION_DESC4
+,GOODS_AMOUNT as GOODS_AMOUNT4,PAY_AMOUNT as PAY_AMOUNT4,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT4,VOUCHER_PRICE as VOUCHER_PRICE4,ORDER_AMOUNT as ORDER_AMOUNT4
+from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=4 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) sssss
+on s.MEMBER_CRMBP=sssss.MEMBER_KEY4 
+left join
+(select MEMBER_KEY as MEMBER_KEY5,b.ADD_TIME as ADD_TIME5,APP_NAME as APP_NAME5,ORDER_FROM as ORDER_FROM5,PROMOTION_DESC as PROMOTION_DESC5
+,GOODS_AMOUNT as GOODS_AMOUNT5,PAY_AMOUNT as PAY_AMOUNT5,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT5,VOUCHER_PRICE as VOUCHER_PRICE5,ORDER_AMOUNT as ORDER_AMOUNT5 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=5 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) ssssss
+on s.MEMBER_CRMBP=ssssss.MEMBER_KEY5) group by M_LABEL_DESC
+
+
+----老客客单
+
+select count(distinct MEMBER_CRMBP),sum(ORDER_AMOUNT1)/count(distinct MEMBER_KEY1)
+,sum(ORDER_AMOUNT2)/count(distinct MEMBER_KEY2)
+,sum(ORDER_AMOUNT3)/count(distinct MEMBER_KEY3)
+,sum(ORDER_AMOUNT4)/count(distinct MEMBER_KEY4)
+,sum(ORDER_AMOUNT5)/count(distinct MEMBER_KEY5),M_LABEL_DESC from (
+select * from 
+(select MEMBER_CRMBP,M_LABEL_DESC from (select MEMBER_CRMBP,REGISTER_APPNAME from fact_ecmember where MEMBER_TIME<20170101    ) a left join
+ (select MEMBER_KEY,M_LABEL_DESC from MEMBER_LABEL_LINK_V where  
+ M_LABEL_ID in (select M_LABEL_ID from MEMBER_LABEL_HEAD where M_LABEL_FATHER_ID=235)) b on a.member_crmbp=b.MEMBER_KEY)
+s left join
+(select MEMBER_KEY as MEMBER_KEY1,b.ADD_TIME as ADD_TIME1,APP_NAME as APP_NAME1,ORDER_FROM as ORDER_FROM1,PROMOTION_DESC as PROMOTION_DESC1
+,GOODS_AMOUNT as GOODS_AMOUNT1,PAY_AMOUNT as PAY_AMOUNT1,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT1,VOUCHER_PRICE as VOUCHER_PRICE1,ORDER_AMOUNT  as ORDER_AMOUNT1 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=1  and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101) )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) ss
+on s.MEMBER_CRMBP=ss.MEMBER_KEY1
+left join
+(select MEMBER_KEY as MEMBER_KEY2,b.ADD_TIME as ADD_TIME2,APP_NAME as APP_NAME2,ORDER_FROM as ORDER_FROM2,PROMOTION_DESC as PROMOTION_DESC2
+,GOODS_AMOUNT as GOODS_AMOUNT2,PAY_AMOUNT as PAY_AMOUNT2,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT2,VOUCHER_PRICE as VOUCHER_PRICE2,ORDER_AMOUNT as ORDER_AMOUNT2
+  from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=2 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) sss
+on s.MEMBER_CRMBP=sss.MEMBER_KEY2 
+left join
+(select MEMBER_KEY as MEMBER_KEY3,b.ADD_TIME as ADD_TIME3,APP_NAME as APP_NAME3,ORDER_FROM as ORDER_FROM3,PROMOTION_DESC as PROMOTION_DESC3
+,GOODS_AMOUNT as GOODS_AMOUNT3,PAY_AMOUNT as PAY_AMOUNT3,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT3,VOUCHER_PRICE as VOUCHER_PRICE3,ORDER_AMOUNT as ORDER_AMOUNT3 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=3 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) ssss
+on s.MEMBER_CRMBP=ssss.MEMBER_KEY3
+left join
+(select MEMBER_KEY as MEMBER_KEY4,b.ADD_TIME as ADD_TIME4,APP_NAME as APP_NAME4,ORDER_FROM as ORDER_FROM4,PROMOTION_DESC as PROMOTION_DESC4
+,GOODS_AMOUNT as GOODS_AMOUNT4,PAY_AMOUNT as PAY_AMOUNT4,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT4,VOUCHER_PRICE as VOUCHER_PRICE4,ORDER_AMOUNT as ORDER_AMOUNT4
+from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=4 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) sssss
+on s.MEMBER_CRMBP=sssss.MEMBER_KEY4 
+left join
+(select MEMBER_KEY as MEMBER_KEY5,b.ADD_TIME as ADD_TIME5,APP_NAME as APP_NAME5,ORDER_FROM as ORDER_FROM5,PROMOTION_DESC as PROMOTION_DESC5
+,GOODS_AMOUNT as GOODS_AMOUNT5,PAY_AMOUNT as PAY_AMOUNT5,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT5,VOUCHER_PRICE as VOUCHER_PRICE5,ORDER_AMOUNT as ORDER_AMOUNT5 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=5 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) ssssss
+on s.MEMBER_CRMBP=ssssss.MEMBER_KEY5) group by M_LABEL_DESC
+
+
+---老客优惠幅度
+
+select count(distinct MEMBER_CRMBP),sum(GOODS_AMOUNT1-ORDER_AMOUNT1)/(sum(ORDER_AMOUNT1)+1)
+,sum(GOODS_AMOUNT2-ORDER_AMOUNT2)/(sum(ORDER_AMOUNT2)+1)
+,sum(GOODS_AMOUNT3-ORDER_AMOUNT3)/(sum(ORDER_AMOUNT3)+1)
+,sum(GOODS_AMOUNT4-ORDER_AMOUNT4)/(sum(ORDER_AMOUNT4)+1)
+,sum(GOODS_AMOUNT5-ORDER_AMOUNT5)/(sum(ORDER_AMOUNT5)+1),M_LABEL_DESC from (
+select * from 
+(select MEMBER_CRMBP,M_LABEL_DESC from (select MEMBER_CRMBP,REGISTER_APPNAME from fact_ecmember where MEMBER_TIME<20170101    ) a left join
+ (select MEMBER_KEY,M_LABEL_DESC from MEMBER_LABEL_LINK_V where  
+ M_LABEL_ID in (select M_LABEL_ID from MEMBER_LABEL_HEAD where M_LABEL_FATHER_ID=235)) b on a.member_crmbp=b.MEMBER_KEY)
+s left join
+(select MEMBER_KEY as MEMBER_KEY1,b.ADD_TIME as ADD_TIME1,APP_NAME as APP_NAME1,ORDER_FROM as ORDER_FROM1,PROMOTION_DESC as PROMOTION_DESC1
+,GOODS_AMOUNT as GOODS_AMOUNT1,PAY_AMOUNT as PAY_AMOUNT1,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT1,VOUCHER_PRICE as VOUCHER_PRICE1,ORDER_AMOUNT  as ORDER_AMOUNT1 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=1  and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101) )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) ss
+on s.MEMBER_CRMBP=ss.MEMBER_KEY1
+left join
+(select MEMBER_KEY as MEMBER_KEY2,b.ADD_TIME as ADD_TIME2,APP_NAME as APP_NAME2,ORDER_FROM as ORDER_FROM2,PROMOTION_DESC as PROMOTION_DESC2
+,GOODS_AMOUNT as GOODS_AMOUNT2,PAY_AMOUNT as PAY_AMOUNT2,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT2,VOUCHER_PRICE as VOUCHER_PRICE2,ORDER_AMOUNT as ORDER_AMOUNT2
+  from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=2 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) sss
+on s.MEMBER_CRMBP=sss.MEMBER_KEY2 
+left join
+(select MEMBER_KEY as MEMBER_KEY3,b.ADD_TIME as ADD_TIME3,APP_NAME as APP_NAME3,ORDER_FROM as ORDER_FROM3,PROMOTION_DESC as PROMOTION_DESC3
+,GOODS_AMOUNT as GOODS_AMOUNT3,PAY_AMOUNT as PAY_AMOUNT3,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT3,VOUCHER_PRICE as VOUCHER_PRICE3,ORDER_AMOUNT as ORDER_AMOUNT3 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=3 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) ssss
+on s.MEMBER_CRMBP=ssss.MEMBER_KEY3
+left join
+(select MEMBER_KEY as MEMBER_KEY4,b.ADD_TIME as ADD_TIME4,APP_NAME as APP_NAME4,ORDER_FROM as ORDER_FROM4,PROMOTION_DESC as PROMOTION_DESC4
+,GOODS_AMOUNT as GOODS_AMOUNT4,PAY_AMOUNT as PAY_AMOUNT4,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT4,VOUCHER_PRICE as VOUCHER_PRICE4,ORDER_AMOUNT as ORDER_AMOUNT4
+from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=4 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) sssss
+on s.MEMBER_CRMBP=sssss.MEMBER_KEY4 
+left join
+(select MEMBER_KEY as MEMBER_KEY5,b.ADD_TIME as ADD_TIME5,APP_NAME as APP_NAME5,ORDER_FROM as ORDER_FROM5,PROMOTION_DESC as PROMOTION_DESC5
+,GOODS_AMOUNT as GOODS_AMOUNT5,PAY_AMOUNT as PAY_AMOUNT5,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT5,VOUCHER_PRICE as VOUCHER_PRICE5,ORDER_AMOUNT as ORDER_AMOUNT5 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=5 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) ssssss
+on s.MEMBER_CRMBP=ssssss.MEMBER_KEY5) group by M_LABEL_DESC
+
+
+
+------订购周期
+
+
+select count(distinct MEMBER_CRMBP),avg(to_date(ADD_TIME2)-to_date(ADD_TIME1))
+,avg(to_date(ADD_TIME3)-to_date(ADD_TIME2))
+,avg(to_date(ADD_TIME4)-to_date(ADD_TIME3))
+,avg(to_date(ADD_TIME5)-to_date(ADD_TIME4))
+,M_LABEL_DESC from (
+select * from 
+(select MEMBER_CRMBP,M_LABEL_DESC from (select MEMBER_CRMBP,REGISTER_APPNAME from fact_ecmember where MEMBER_TIME<20170101    ) a left join
+ (select MEMBER_KEY,M_LABEL_DESC from MEMBER_LABEL_LINK_V where  
+ M_LABEL_ID in (select M_LABEL_ID from MEMBER_LABEL_HEAD where M_LABEL_FATHER_ID=235)) b on a.member_crmbp=b.MEMBER_KEY)
+s left join
+(select MEMBER_KEY as MEMBER_KEY1,b.ADD_TIME as ADD_TIME1,APP_NAME as APP_NAME1,ORDER_FROM as ORDER_FROM1,PROMOTION_DESC as PROMOTION_DESC1
+,GOODS_AMOUNT as GOODS_AMOUNT1,PAY_AMOUNT as PAY_AMOUNT1,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT1,VOUCHER_PRICE as VOUCHER_PRICE1,ORDER_AMOUNT  as ORDER_AMOUNT1 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=1  and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101) )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) ss
+on s.MEMBER_CRMBP=ss.MEMBER_KEY1
+left join
+(select MEMBER_KEY as MEMBER_KEY2,b.ADD_TIME as ADD_TIME2,APP_NAME as APP_NAME2,ORDER_FROM as ORDER_FROM2,PROMOTION_DESC as PROMOTION_DESC2
+,GOODS_AMOUNT as GOODS_AMOUNT2,PAY_AMOUNT as PAY_AMOUNT2,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT2,VOUCHER_PRICE as VOUCHER_PRICE2,ORDER_AMOUNT as ORDER_AMOUNT2
+  from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=2 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) sss
+on s.MEMBER_CRMBP=sss.MEMBER_KEY2 
+left join
+(select MEMBER_KEY as MEMBER_KEY3,b.ADD_TIME as ADD_TIME3,APP_NAME as APP_NAME3,ORDER_FROM as ORDER_FROM3,PROMOTION_DESC as PROMOTION_DESC3
+,GOODS_AMOUNT as GOODS_AMOUNT3,PAY_AMOUNT as PAY_AMOUNT3,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT3,VOUCHER_PRICE as VOUCHER_PRICE3,ORDER_AMOUNT as ORDER_AMOUNT3 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=3 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) ssss
+on s.MEMBER_CRMBP=ssss.MEMBER_KEY3
+left join
+(select MEMBER_KEY as MEMBER_KEY4,b.ADD_TIME as ADD_TIME4,APP_NAME as APP_NAME4,ORDER_FROM as ORDER_FROM4,PROMOTION_DESC as PROMOTION_DESC4
+,GOODS_AMOUNT as GOODS_AMOUNT4,PAY_AMOUNT as PAY_AMOUNT4,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT4,VOUCHER_PRICE as VOUCHER_PRICE4,ORDER_AMOUNT as ORDER_AMOUNT4
+from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=4 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) sssss
+on s.MEMBER_CRMBP=sssss.MEMBER_KEY4 
+left join
+(select MEMBER_KEY as MEMBER_KEY5,b.ADD_TIME as ADD_TIME5,APP_NAME as APP_NAME5,ORDER_FROM as ORDER_FROM5,PROMOTION_DESC as PROMOTION_DESC5
+,GOODS_AMOUNT as GOODS_AMOUNT5,PAY_AMOUNT as PAY_AMOUNT5,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT5,VOUCHER_PRICE as VOUCHER_PRICE5,ORDER_AMOUNT as ORDER_AMOUNT5 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=5 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID) ssssss
+on s.MEMBER_CRMBP=ssssss.MEMBER_KEY5) group by M_LABEL_DESC
+
+
+-------  毛利额
+select count(distinct MEMBER_CRMBP),avg(ORDER_AMOUNT1-PURCHASE_PRICE1),avg(GOODS_AMOUNT1)
+,avg(ORDER_AMOUNT2-PURCHASE_PRICE2),avg(GOODS_AMOUNT2)
+,avg(ORDER_AMOUNT3-PURCHASE_PRICE3),avg(GOODS_AMOUNT3)
+,avg(ORDER_AMOUNT4-PURCHASE_PRICE4),avg(GOODS_AMOUNT4)
+,avg(ORDER_AMOUNT5-PURCHASE_PRICE5),avg(GOODS_AMOUNT5)
+,M_LABEL_DESC from (
+select * from 
+(select MEMBER_CRMBP,M_LABEL_DESC from (select MEMBER_CRMBP,REGISTER_APPNAME from fact_ecmember where MEMBER_TIME<20170101    ) a left join
+ (select MEMBER_KEY,M_LABEL_DESC from MEMBER_LABEL_LINK_V where  
+ M_LABEL_ID in (select M_LABEL_ID from MEMBER_LABEL_HEAD where M_LABEL_FATHER_ID=235)) b on a.member_crmbp=b.MEMBER_KEY)
+s left join
+(select b.MEMBER_KEY as MEMBER_KEY1,b.ADD_TIME as ADD_TIME1,APP_NAME as APP_NAME1,ORDER_FROM as ORDER_FROM1,PROMOTION_DESC as PROMOTION_DESC1
+,GOODS_AMOUNT as GOODS_AMOUNT1,c.PAY_AMOUNT as PAY_AMOUNT1,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT1,VOUCHER_PRICE as VOUCHER_PRICE1,c.ORDER_AMOUNT as ORDER_AMOUNT1,PURCHASE_PRICE as PURCHASE_PRICE1
+ from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=1 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID
+left join   fact_order c on b.CRM_ORDER_NO=c.ORDER_OBJ_ID) ss
+on s.MEMBER_CRMBP=ss.MEMBER_KEY1
+left join
+(select b.MEMBER_KEY as MEMBER_KEY2,b.ADD_TIME as ADD_TIME2,APP_NAME as APP_NAME2,ORDER_FROM as ORDER_FROM2,PROMOTION_DESC as PROMOTION_DESC2
+,GOODS_AMOUNT as GOODS_AMOUNT2,c.PAY_AMOUNT as PAY_AMOUNT2,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT2,VOUCHER_PRICE as VOUCHER_PRICE2,c.ORDER_AMOUNT as ORDER_AMOUNT2,PURCHASE_PRICE as PURCHASE_PRICE2 
+from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=2 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID
+left join   fact_order c on b.CRM_ORDER_NO=c.ORDER_OBJ_ID) sss
+on s.MEMBER_CRMBP=sss.MEMBER_KEY2 
+left join
+(select b.MEMBER_KEY as MEMBER_KEY3,b.ADD_TIME as ADD_TIME3,APP_NAME as APP_NAME3,ORDER_FROM as ORDER_FROM3,PROMOTION_DESC as PROMOTION_DESC3
+,GOODS_AMOUNT as GOODS_AMOUNT3,c.PAY_AMOUNT as PAY_AMOUNT3,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT3,VOUCHER_PRICE as VOUCHER_PRICE3,c.ORDER_AMOUNT as ORDER_AMOUNT3,PURCHASE_PRICE as PURCHASE_PRICE3 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=3 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID
+left join   fact_order c on b.CRM_ORDER_NO=c.ORDER_OBJ_ID) ssss
+on s.MEMBER_CRMBP=ssss.MEMBER_KEY3
+left join
+(select b.MEMBER_KEY as MEMBER_KEY4,b.ADD_TIME as ADD_TIME4,APP_NAME as APP_NAME4,ORDER_FROM as ORDER_FROM4,PROMOTION_DESC as PROMOTION_DESC4
+,GOODS_AMOUNT as GOODS_AMOUNT4,c.PAY_AMOUNT as PAY_AMOUNT4,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT4,VOUCHER_PRICE as VOUCHER_PRICE4,c.ORDER_AMOUNT as ORDER_AMOUNT4,PURCHASE_PRICE as PURCHASE_PRICE4 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=4 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID
+left join   fact_order c on b.CRM_ORDER_NO=c.ORDER_OBJ_ID) sssss
+on s.MEMBER_CRMBP=sssss.MEMBER_KEY4 
+left join
+(select b.MEMBER_KEY as MEMBER_KEY5,b.ADD_TIME as ADD_TIME5,APP_NAME as APP_NAME5,ORDER_FROM as ORDER_FROM5,PROMOTION_DESC as PROMOTION_DESC5
+,GOODS_AMOUNT as GOODS_AMOUNT5,c.PAY_AMOUNT as PAY_AMOUNT5,INTEGRALS_AMOUNT as INTEGRALS_AMOUNT5,VOUCHER_PRICE as VOUCHER_PRICE5,c.ORDER_AMOUNT as ORDER_AMOUNT5,PURCHASE_PRICE as PURCHASE_PRICE5 from (
+select to_number(MEMBER_BP),ADD_TIME,ORDER_ID,SALES_SOURCE_SECOND_DESC,PROMOTION_DESC from oper_ec_member_track_rank
+where RANK1=5 and  to_number(MEMBER_BP)   in (select MEMBER_BP from dim_member where FIRSTW_ORDER_DATE_KEY<20170101)  )a left join factec_order b on a.ORDER_ID=b.ORDER_ID
+left join   fact_order c on b.CRM_ORDER_NO=c.ORDER_OBJ_ID) ssssss
+on s.MEMBER_CRMBP=ssssss.MEMBER_KEY5) group by M_LABEL_DESC
+
+
+------
+
+select 
+
+((select sum(order_amount) from factec_order  where ADD_TIME between 20170101 and 20171131 and order_state>10
+
+and APP_NAME='KLGWX')-(select sum(order_amount) from factec_order  where ADD_TIME between 20160101 and 20161131 and order_state>10
+
+and APP_NAME='KLGWX'))/(select sum(order_amount) from factec_order  where ADD_TIME between 20160101 and 20161131 and order_state>10
+
+and APP_NAME='KLGWX') from dual    4.8%
+
+
+
+((select count(distinct member_key) from factec_order  where ADD_TIME between 20170101 and 20171131 and order_state>10
+
+and APP_NAME='KLGWX')-(select count(distinct member_key) from factec_order  where ADD_TIME between 20160101 and 20161131 and order_state>10
+
+and APP_NAME='KLGWX'))/(select count(distinct member_key) from factec_order  where ADD_TIME between 20160101 and 20161131 and order_state>10
+
+and APP_NAME='KLGWX') from dual  
+
+
+ 604758  867408 43.4%
+
+select ((select count(1) from fact_visitor_register where APPLICATION_KEY=50 and CREATE_DATE_KEY between 20170101 and 20171131)-
+(select count(1) from fact_visitor_register where APPLICATION_KEY=50 and CREATE_DATE_KEY between 20160101 and 20161131
+))/(select count(1) from fact_visitor_register where APPLICATION_KEY=50 and CREATE_DATE_KEY between 20160101 and 20161131
+) from dual
+
+179447  153403   17%
+select ((
+(select count(1) from fact_ecmember where REGISTER_APPNAME='KLGWX'  and  MEMBER_TIME  between 20170101 and 20171131
+) -(select count(1) from fact_ecmember where REGISTER_APPNAME='KLGWX'  and  MEMBER_TIME  between 20160101 and 20161131
+))/(select count(1) from fact_ecmember where REGISTER_APPNAME='KLGWX'  and  MEMBER_TIME  between 20160101 and 20161131
+)) from dual
+
+
+select count(1) from fact_visitor_register where APPLICATION_KEY=50 and CREATE_DATE_KEY between 20170101 and 20171131
+
+----
+
+select sum(ORDER_AMOUNT),count(distinct member_key),sum(GOODS_NUM),count(1) from  factec_order where  ADD_TIME=20171212 and order_state>10
+and member_key in( select distinct MEMBER_KEY  from factec_order where  ADD_TIME<20171212 and (order_state>10  or (order_state=0 and CANCEL_BEFORE_STATE=0)));
+
+select sum(ORDER_AMOUNT),count(distinct member_key),sum(GOODS_NUM),count(1) from  factec_order where  ADD_TIME=20171212 and (order_state>10  or (order_state=0 and CANCEL_BEFORE_STATE=0)
+);
+----
+select count(distinct vid) from fact_session where  START_DATE_KEY=20171212 ;
+select count(distinct vid) from fact_session where  START_DATE_KEY=20171212 and MEMBER_KEY 
+in( select distinct MEMBER_KEY  from factec_order where  ADD_TIME<20171212 and order_state>10);
+
+----
+select sum(ORDER_AMOUNT),count(distinct member_key),sum(GOODS_NUM),count(1)  from  factec_order where 
+ ADD_TIME=20161212 and (order_state>10  or (order_state=0 and CANCEL_BEFORE_STATE=0))
+and member_key in( select distinct MEMBER_KEY  from factec_order where  ADD_TIME<20161212 and order_state>10);
+
+select sum(ORDER_AMOUNT),count(distinct member_key),sum(GOODS_NUM),count(1) from  factec_order where
+  ADD_TIME=20161212 and (order_state>10  or (order_state=0 and CANCEL_BEFORE_STATE=0))
+;
+----
+select count(distinct vid) from fact_session where  START_DATE_KEY=20161212 ;
+select count(distinct vid) from fact_session where  START_DATE_KEY=20161212 and MEMBER_KEY 
+in( select distinct MEMBER_KEY  from factec_order where  ADD_TIME<20161212 and order_state>10);
+
+
+
+
+------
+select * from(
+select DATA1,ITEM_CODE,GOODS_PRICE,sum(NUM2) from(
+select DATA1,ITEM_CODE,GOODS_PRICE,num2 from (
+select ITEM_CODE,DATA1,GOODS_PRICE from (
+select ITEM_CODE,GOODS_NAME,IS_TV,to_char(GOODS_ADDTIME,'yyyymmdd') DATA1,GOODS_PRICE  from fact_daily_goodzaijia
+ where  CREATE_DATE_KEY between  20170101 and 20171201   and STORE_ID=1 and 
+ to_char(GOODS_ADDTIME,'yyyymmdd')>20170100 
+ group by ITEM_CODE,GOODS_NAME,IS_TV,to_char(GOODS_ADDTIME,'yyyymmdd'),GOODS_PRICE)  where IS_TV='非电商提报组'
+ and GOODS_PRICE between 100 and 1000
+ GROUP BY ITEM_CODE,DATA1,GOODS_PRICE
+) a
+left join (
+SELECT GOODS_COMMON_KEY,sum(NUMS) num2,ORDER_DATE FROM FACT_GOODS_SALES WHERE ORDER_DATE_KEY between  20170101 and 20171201 AND ORDER_STATE=1
+group by ORDER_DATE,GOODS_COMMON_KEY)b  on  a.ITEM_CODE=b.GOODS_COMMON_KEY
+and   ORDER_DATE between  to_date(a.DATA1)  and   to_date(a.DATA1)+30)
+group by ITEM_CODE,GOODS_PRICE,DATA1)  c left join dim_good cc   on c.ITEM_CODE=cc.item_code
+

@@ -1,0 +1,21 @@
+select cnt from ods_order
+select CRMPOSTDAT,count(1) as cnt from "ZHG_BI"."ZV_ORDER" 
+group by CRMPOSTDAT 
+select distinct(REGISTER_DATE) from dw_user.fact_member_register
+
+
+select  ADD_TIME,count(1) as cnt from dw_user.fact_ec_order
+group by ADD_TIME 
+
+select * from dw_user.fact_ec_order where ADD_TIME='20150524'
+select to_char(Ê±¼ä´Á×Ö¶Î, ¡¯yyyy-MM-dd hh:mm:ss')
+
+select  ADD_TIME,count£¨ (case when (payment_code='offline' or ORDER_STATE in (20,30,40,50)) then cust_no end )£© as cnt from dw_user.fact_ec_order
+group by ADD_TIME 
+
+select distinct(ADD_TIME) from dw_user.fact_ec_order
+
+
+select * from
+
+ 

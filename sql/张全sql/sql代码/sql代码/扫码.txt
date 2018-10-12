@@ -1,0 +1,95 @@
+select count(b.ip),
+          count(case
+                  when exists (select *
+                          from fact_ec_order h
+                         where h.order_ip = b.ip
+                           and mod(get_ip_number(h.order_ip), 2) = 0
+                           and h.add_time>b.visit_date_key
+                           ) then
+                   1
+                end),
+          count(case
+                  when exists (select *
+                          from fact_ec_order h
+                         where h.order_ip = b.ip
+                           and mod(get_ip_number(h.order_ip), 2) != 0
+                           and h.add_time>b.visit_date_key
+                           ) then
+                   1
+                end)
+   
+     from (select distinct g.ip, g.ip_int, g.visit_date_key
+             from fact_page_view g
+            where g.visit_date_key  between 20160409 and 20160410
+             and g.url like '%http://m.happigo.com/Tvlist.html%'
+              ) b
+    
+
+
+----扫码订购预判
+select x1.visit_date_key,x1.pv,x1.uv,y1.cgrs,y1.cgds,y1.cgje  from
+(select visit_date_key,count(id) as pv,count(distinct ip) as uv
+from  fact_page_view
+ where visit_date_key=20160414
+ and page_name in ('ScanGoods','ScanTvlist')
+ and page_value='fromWX'
+group by visit_date_key) x1,
+(select t.add_time,
+count(distinct(case when (t.payment_code='offline' or t.ORDER_STATE in (20,30,40,50)) then t.cust_no end )) as cgrs,
+count(distinct(case when (t.payment_code='offline' or t.ORDER_STATE in (20,30,40,50)) then t.order_sn end )) as cgds,
+sum(case when (t.payment_code='offline' or t.ORDER_STATE in (20,30,40,50)) then t.order_amount end) as cgje
+ from  fact_ec_order t
+ where t.add_time=20160414 and t.app_name='KLGWX'
+and  exists (select * from fact_page_view t1 where t1.visit_date_key=20160414
+ and t1.page_name  in ('ScanGoods','ScanTvlist')
+ and t1.page_value='fromWX'
+ and t1.ip=t.order_ip
+
+ ) group by t.add_time) y1
+ where x1.visit_date_key=y1.add_time
+
+
+----扫码用户判断
+
+select x1.visit_date_key as "统计日期 ",
+x1.uv as "TV扫码进入的用户数",
+x2.ordercnt "订购顾客数",
+x2.xmtcnt "订购新媒体新顾客数",
+x2.ptcnt "订购快乐购新顾客数"
+from
+(select l1.visit_date_key,count(distinct vid) as uv from  fact_page_view l1
+where l1.visit_date_key=20160406 and l1.page_name in ('ScanGoods','ScanTvlist','Tvdownload')
+and l1.page_value='fromWX'
+group by l1.visit_date_key) x1,
+(select l2.add_time, count(distinct l2.cust_no) as ordercnt,
+count(distinct (case when  exists (select * from fact_ecmember l3 where l3.register_appname='KLGWX' and l3.member_crmbp=l2.cust_no and
+l3.member_time=20160406) then l2.cust_no end)) as xmtcnt,
+count(distinct (case when  exists (select * from fact_ecmember l3 where l3.register_appname='KLGWX' and l3.member_crmbp=l2.cust_no and
+l3.member_time=20160406
+and exists (select * from fact_member_register l4 where l4.application_key=50 and l4.member_key=l3.member_crmbp and l4.register_date_key=20160406)
+) then l2.cust_no end)) as ptcnt
+from  fact_ec_order l2 where l2.add_time=20160406 and l2.app_name='KLGWX'
+group by l2.add_time
+) x2
+where x1.visit_date_key=x2.add_time
+
+
+
+-------扫码地区判断
+
+
+select
+ t8.zdzjc_1,t8.zdzjc_2,t8.zdzjc_3,t8.zsort,
+ count(distinct(case when (t.payment_code='offline' or t.ORDER_STATE in (20,30,40,50)) then t.cust_no end )) as cgrs,
+ count(distinct(case when (t.payment_code='offline' or t.ORDER_STATE in (20,30,40,50)) then t.order_sn end )) as cgds,
+ sum(case when (t.payment_code='offline' or t.ORDER_STATE in (20,30,40,50)) then t.order_amount end) as cgje
+ from  fact_ec_order t, FACT_ORDERADD t8
+ where t.add_time=20160408 and t.app_name='KLGWX'
+and  exists (select * from fact_page_view t1 where t1.visit_date_key=20160408
+ and t1.page_name='Tvdownload'
+ and t1.page_value='fromWX'
+ and t1.ip=t.order_ip
+ )
+and t.order_id=t8.order_id
+--and t.order_sn=t8.order_sn
+group by t8.zdzjc_1,t8.zdzjc_2,t8.zdzjc_3,t8.zsort

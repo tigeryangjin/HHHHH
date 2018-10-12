@@ -1,0 +1,31 @@
+--tmp
+TRUNCATE TABLE YANGJIN.MEMBER_TMP;
+SELECT * FROM YANGJIN.MEMBER_TMP FOR UPDATE;
+
+--1.访问回应率
+SELECT COUNT(1) FROM YANGJIN.MEMBER_TMP;
+
+SELECT COUNT(DISTINCT A.MEMBER_KEY)
+  FROM FACT_PAGE_VIEW A
+ WHERE A.VISIT_DATE_KEY = 20180718
+   AND EXISTS
+ (SELECT 1 FROM YANGJIN.MEMBER_TMP B WHERE A.MEMBER_KEY = B.MEMBER_KEY);
+ 
+--2.订购回应率
+SELECT COUNT(B.MEMBER_KEY) MEMBER_COUNT, SUM(B.ORDER_AMOUNT) ORDER_AMOUNT
+  FROM (SELECT A.MEMBER_KEY,
+               COUNT(A.ORDER_OBJ_ID) ORDER_COUNT,
+               SUM(A.ORDER_AMOUNT) ORDER_AMOUNT
+          FROM (SELECT T.POSTING_DATE_KEY,
+                       T.ORDER_OBJ_ID,
+                       T.MEMBER_KEY,
+                       T.ORDER_AMOUNT
+                  FROM FACT_ORDER T
+                 WHERE T.POSTING_DATE_KEY = 20180418 /*过账日期*/
+                   AND T.SALES_SOURCE_KEY = 20 /*新媒体通路*/
+                   AND T.ORDER_STATE = 1
+                   AND EXISTS
+                 (SELECT 1
+                          FROM yangjin.member_tmp C
+                         WHERE T.MEMBER_KEY = C.MEMBER_KEY)) A
+         GROUP BY A.MEMBER_KEY) B;

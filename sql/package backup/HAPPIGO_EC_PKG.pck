@@ -114,6 +114,16 @@ CREATE OR REPLACE PACKAGE HAPPIGO_EC_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE MERGE_EC_GOODS;
+  /*
+  功能名:       MERGE_EC_GOODS
+  目的:         
+  作者:         yangjin
+  创建时间：    2018/07/04
+  最后修改人：
+  最后更改日期：
+  */
+
   PROCEDURE MERGE_EC_GOODS_COMMON;
   /*
   功能名:       MERGE_EC_GOODS_COMMON
@@ -140,6 +150,26 @@ CREATE OR REPLACE PACKAGE HAPPIGO_EC_PKG IS
   目的:         
   作者:         yangjin
   创建时间：    2018/03/23
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MERGE_EC_TAGS;
+  /*
+  功能名:       MERGE_EC_TAGS
+  目的:         
+  作者:         yangjin
+  创建时间：    2018/05/15
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MERGE_EC_GOODS_TAGS;
+  /*
+  功能名:       MERGE_EC_GOODS_TAGS
+  目的:         
+  作者:         yangjin
+  创建时间：    2018/05/15
   最后修改人：
   最后更改日期：
   */
@@ -190,6 +220,16 @@ CREATE OR REPLACE PACKAGE HAPPIGO_EC_PKG IS
   目的:         
   作者:         yangjin
   创建时间：    2018/05/14
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MERGE_FACT_GOODS_EVALUATE;
+  /*
+  功能名:       MERGE_FACT_GOODS_EVALUATE
+  目的:         
+  作者:         yangjin
+  创建时间：    2018/07/24
   最后修改人：
   最后更改日期：
   */
@@ -248,8 +288,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_EC_ORDER_2 T
+      MERGE INTO FACT_EC_ORDER_2 T
       USING (SELECT A.ORDER_ID,
                     A.ORDER_SN,
                     A.PAY_SN,
@@ -565,8 +604,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_EC_ORDER_GOODS T
+      MERGE INTO FACT_EC_ORDER_GOODS T
       USING (SELECT A.REC_ID,
                     A.ORDER_ID,
                     A.GOODS_ID,
@@ -779,8 +817,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_EC_ORDER_COMMON T
+      MERGE INTO FACT_EC_ORDER_COMMON T
       USING (SELECT A.ORDER_ID,
                     A.STORE_ID,
                     A.SHIPPING_TIME,
@@ -957,8 +994,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_EC_P_XIANSHI T
+      MERGE INTO FACT_EC_P_XIANSHI T
       USING (SELECT A.XIANSHI_ID,
                     A.CRM_POLICY_ID,
                     A.XIANSHI_TYPE,
@@ -1107,8 +1143,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_EC_P_XIANSHI_GOODS T
+      MERGE INTO FACT_EC_P_XIANSHI_GOODS T
       USING (SELECT A.XIANSHI_GOODS_ID,
                     A.XIANSHI_TYPE,
                     A.XIANSHI_ID,
@@ -1265,8 +1300,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_EC_P_MANSONG T
+      MERGE INTO FACT_EC_P_MANSONG T
       USING (SELECT A.MANSONG_ID,
                     A.MANSONG_NAME,
                     A.QUOTA_ID,
@@ -1435,8 +1469,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_EC_P_MANSONG_GOODS T
+      MERGE INTO FACT_EC_P_MANSONG_GOODS T
       USING (SELECT A.ID,
                     A.MANSONG_ID,
                     A.GOODS_ID,
@@ -1545,8 +1578,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_EC_VOUCHER T
+      MERGE INTO FACT_EC_VOUCHER T
       USING (SELECT A.VOUCHER_ID,
                     A.VOUCHER_CODE,
                     A.VOUCHER_T_ID,
@@ -1699,8 +1731,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_EC_VOUCHER_BATCH T
+      MERGE INTO FACT_EC_VOUCHER_BATCH T
       USING (SELECT A.ID,
                     A.VOUCHER_ID,
                     A.MEMBER_ID,
@@ -1809,8 +1840,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_EC_VOUCHER_PRICE T
+      MERGE INTO FACT_EC_VOUCHER_PRICE T
       USING (SELECT A.VOUCHER_PRICE_ID,
                     A.VOUCHER_PRICE_DESCRIBE,
                     A.VOUCHER_PRICE,
@@ -1862,6 +1892,482 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
       RETURN;
   END MERGE_EC_VOUCHER_PRICE;
 
+  PROCEDURE MERGE_EC_GOODS IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-01-11
+    */
+  BEGIN
+    SP_NAME          := 'HAPPIGO_EC_PKG.MERGE_EC_GOODS'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'FACT_EC_GOODS_COMMON'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE INTO FACT_EC_GOODS T
+      USING (SELECT A.GOODS_ID,
+                    A.ITEM_CODE,
+                    A.ERP_CODE,
+                    A.GOODS_COMMONID,
+                    A.GOODS_NAME,
+                    A.GOODS_JINGLE,
+                    A.GOODS_JINGLE2,
+                    A.STORE_ID,
+                    A.STORE_NAME,
+                    A.GC_ID,
+                    A.GC_ID_1,
+                    A.GC_ID_2,
+                    A.GC_ID_3,
+                    A.BRAND_ID,
+                    A.GOODS_PRICE,
+                    A.GOODS_PROMOTION_PRICE,
+                    A.GOODS_PROMOTION_TYPE,
+                    A.GOODS_PROMOTION_ID,
+                    A.GOODS_PROMOTION_PRICE_APP,
+                    A.GOODS_PROMOTION_TYPE_APP,
+                    A.GOODS_PROMOTION_ID_APP,
+                    A.GOODS_PROMOTION_PRICE_WX,
+                    A.GOODS_PROMOTION_TYPE_WX,
+                    A.GOODS_PROMOTION_ID_WX,
+                    A.GOODS_PROMOTION_PRICE_3G,
+                    A.GOODS_PROMOTION_TYPE_3G,
+                    A.GOODS_PROMOTION_ID_3G,
+                    A.GOODS_MARKETPRICE,
+                    A.GOODS_SERIAL,
+                    A.GOODS_STORAGE_ALARM,
+                    A.GOODS_CLICK,
+                    A.GOODS_SALENUM,
+                    A.GOODS_COLLECT,
+                    A.GOODS_SPEC,
+                    A.GOODS_STORAGE,
+                    A.GOODS_IMAGE,
+                    A.GOODS_VIDEOURL,
+                    A.GOODS_STATE,
+                    A.GOODS_VERIFY,
+                    A.GOODS_ADDTIME,
+                    A.GOODS_EDITTIME,
+                    A.AREAID_1,
+                    A.AREAID_2,
+                    A.COLOR_ID,
+                    A.TRANSPORT_ID,
+                    A.GOODS_FREIGHT,
+                    A.GOODS_VAT,
+                    A.GOODS_COMMEND,
+                    A.GOODS_STCIDS,
+                    A.EVALUATION_GOOD_STAR,
+                    A.EVALUATION_COUNT,
+                    A.IS_VIRTUAL,
+                    A.VIRTUAL_INDATE,
+                    A.VIRTUAL_LIMIT,
+                    A.VIRTUAL_INVALID_REFUND,
+                    A.IS_FCODE,
+                    A.IS_APPOINT,
+                    A.IS_PRESELL,
+                    A.HAVE_GIFT,
+                    A.IS_OWN_SHOP,
+                    A.IS_TV,
+                    A.IS_ADD_CART,
+                    A.RETENTION_TIME,
+                    A.SUPPLIER_ID,
+                    A.SUPPLIER_NAME,
+                    A.IS_LIVE_PROMOTION,
+                    A.IS_ALLOW_OFFLINE,
+                    A.IS_ALLOW_POINT,
+                    A.IS_ALLOW_VOUCHER,
+                    A.IS_ALLOW_PAYPROMOTION,
+                    A.PAYPROMOTION_AMOUNT,
+                    A.IS_ALLOW_BANKPROMOTION,
+                    A.IS_VALUABLES,
+                    A.IS_BIG,
+                    A.GIVE_POINTS,
+                    A.SYNC_RULE_ID,
+                    A.SYNC_LAST_TIME,
+                    A.SYNC_FAIL_TIME,
+                    A.SYNC_ERROR_LOG,
+                    A.SYNC_STATUS,
+                    A.IS_SHIPPING_SELF,
+                    A.IS_NEW_MEMBER_GIFT,
+                    A.IS_ALLOW_RETURN,
+                    A.IS_APPRECIATION,
+                    A.GOODS_WEIGHT,
+                    A.IS_RESERVED,
+                    A.SUPERSCRIPT_ID,
+                    A.EXTRA_POINT,
+                    A.IS_RESERVATION_DELIVERY,
+                    A.EXTRA_GIFT,
+                    A.ZTLHRP,
+                    A.IS_GROUP_PURCHASE,
+                    A.COMMISSION_RULE,
+                    A.COMMISSION_RATE,
+                    A.RATEBY,
+                    A.DELAY_DAYS,
+                    SYSDATE                     W_INSERT_DT,
+                    SYSDATE                     W_UPDATE_DT
+               FROM EC_GOODS_TMP A) S
+      ON (T.GOODS_ID = S.GOODS_ID)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.ITEM_CODE                 = S.ITEM_CODE,
+               T.ERP_CODE                  = S.ERP_CODE,
+               T.GOODS_COMMONID            = S.GOODS_COMMONID,
+               T.GOODS_NAME                = S.GOODS_NAME,
+               T.GOODS_JINGLE              = S.GOODS_JINGLE,
+               T.GOODS_JINGLE2             = S.GOODS_JINGLE2,
+               T.STORE_ID                  = S.STORE_ID,
+               T.STORE_NAME                = S.STORE_NAME,
+               T.GC_ID                     = S.GC_ID,
+               T.GC_ID_1                   = S.GC_ID_1,
+               T.GC_ID_2                   = S.GC_ID_2,
+               T.GC_ID_3                   = S.GC_ID_3,
+               T.BRAND_ID                  = S.BRAND_ID,
+               T.GOODS_PRICE               = S.GOODS_PRICE,
+               T.GOODS_PROMOTION_PRICE     = S.GOODS_PROMOTION_PRICE,
+               T.GOODS_PROMOTION_TYPE      = S.GOODS_PROMOTION_TYPE,
+               T.GOODS_PROMOTION_ID        = S.GOODS_PROMOTION_ID,
+               T.GOODS_PROMOTION_PRICE_APP = S.GOODS_PROMOTION_PRICE_APP,
+               T.GOODS_PROMOTION_TYPE_APP  = S.GOODS_PROMOTION_TYPE_APP,
+               T.GOODS_PROMOTION_ID_APP    = S.GOODS_PROMOTION_ID_APP,
+               T.GOODS_PROMOTION_PRICE_WX  = S.GOODS_PROMOTION_PRICE_WX,
+               T.GOODS_PROMOTION_TYPE_WX   = S.GOODS_PROMOTION_TYPE_WX,
+               T.GOODS_PROMOTION_ID_WX     = S.GOODS_PROMOTION_ID_WX,
+               T.GOODS_PROMOTION_PRICE_3G  = S.GOODS_PROMOTION_PRICE_3G,
+               T.GOODS_PROMOTION_TYPE_3G   = S.GOODS_PROMOTION_TYPE_3G,
+               T.GOODS_PROMOTION_ID_3G     = S.GOODS_PROMOTION_ID_3G,
+               T.GOODS_MARKETPRICE         = S.GOODS_MARKETPRICE,
+               T.GOODS_SERIAL              = S.GOODS_SERIAL,
+               T.GOODS_STORAGE_ALARM       = S.GOODS_STORAGE_ALARM,
+               T.GOODS_CLICK               = S.GOODS_CLICK,
+               T.GOODS_SALENUM             = S.GOODS_SALENUM,
+               T.GOODS_COLLECT             = S.GOODS_COLLECT,
+               T.GOODS_SPEC                = S.GOODS_SPEC,
+               T.GOODS_STORAGE             = S.GOODS_STORAGE,
+               T.GOODS_IMAGE               = S.GOODS_IMAGE,
+               T.GOODS_VIDEOURL            = S.GOODS_VIDEOURL,
+               T.GOODS_STATE               = S.GOODS_STATE,
+               T.GOODS_VERIFY              = S.GOODS_VERIFY,
+               T.GOODS_ADDTIME             = S.GOODS_ADDTIME,
+               T.GOODS_EDITTIME            = S.GOODS_EDITTIME,
+               T.AREAID_1                  = S.AREAID_1,
+               T.AREAID_2                  = S.AREAID_2,
+               T.COLOR_ID                  = S.COLOR_ID,
+               T.TRANSPORT_ID              = S.TRANSPORT_ID,
+               T.GOODS_FREIGHT             = S.GOODS_FREIGHT,
+               T.GOODS_VAT                 = S.GOODS_VAT,
+               T.GOODS_COMMEND             = S.GOODS_COMMEND,
+               T.GOODS_STCIDS              = S.GOODS_STCIDS,
+               T.EVALUATION_GOOD_STAR      = S.EVALUATION_GOOD_STAR,
+               T.EVALUATION_COUNT          = S.EVALUATION_COUNT,
+               T.IS_VIRTUAL                = S.IS_VIRTUAL,
+               T.VIRTUAL_INDATE            = S.VIRTUAL_INDATE,
+               T.VIRTUAL_LIMIT             = S.VIRTUAL_LIMIT,
+               T.VIRTUAL_INVALID_REFUND    = S.VIRTUAL_INVALID_REFUND,
+               T.IS_FCODE                  = S.IS_FCODE,
+               T.IS_APPOINT                = S.IS_APPOINT,
+               T.IS_PRESELL                = S.IS_PRESELL,
+               T.HAVE_GIFT                 = S.HAVE_GIFT,
+               T.IS_OWN_SHOP               = S.IS_OWN_SHOP,
+               T.IS_TV                     = S.IS_TV,
+               T.IS_ADD_CART               = S.IS_ADD_CART,
+               T.RETENTION_TIME            = S.RETENTION_TIME,
+               T.SUPPLIER_ID               = S.SUPPLIER_ID,
+               T.SUPPLIER_NAME             = S.SUPPLIER_NAME,
+               T.IS_LIVE_PROMOTION         = S.IS_LIVE_PROMOTION,
+               T.IS_ALLOW_OFFLINE          = S.IS_ALLOW_OFFLINE,
+               T.IS_ALLOW_POINT            = S.IS_ALLOW_POINT,
+               T.IS_ALLOW_VOUCHER          = S.IS_ALLOW_VOUCHER,
+               T.IS_ALLOW_PAYPROMOTION     = S.IS_ALLOW_PAYPROMOTION,
+               T.PAYPROMOTION_AMOUNT       = S.PAYPROMOTION_AMOUNT,
+               T.IS_ALLOW_BANKPROMOTION    = S.IS_ALLOW_BANKPROMOTION,
+               T.IS_VALUABLES              = S.IS_VALUABLES,
+               T.IS_BIG                    = S.IS_BIG,
+               T.GIVE_POINTS               = S.GIVE_POINTS,
+               T.SYNC_RULE_ID              = S.SYNC_RULE_ID,
+               T.SYNC_LAST_TIME            = S.SYNC_LAST_TIME,
+               T.SYNC_FAIL_TIME            = S.SYNC_FAIL_TIME,
+               T.SYNC_ERROR_LOG            = S.SYNC_ERROR_LOG,
+               T.SYNC_STATUS               = S.SYNC_STATUS,
+               T.IS_SHIPPING_SELF          = S.IS_SHIPPING_SELF,
+               T.IS_NEW_MEMBER_GIFT        = S.IS_NEW_MEMBER_GIFT,
+               T.IS_ALLOW_RETURN           = S.IS_ALLOW_RETURN,
+               T.IS_APPRECIATION           = S.IS_APPRECIATION,
+               T.GOODS_WEIGHT              = S.GOODS_WEIGHT,
+               T.IS_RESERVED               = S.IS_RESERVED,
+               T.SUPERSCRIPT_ID            = S.SUPERSCRIPT_ID,
+               T.EXTRA_POINT               = S.EXTRA_POINT,
+               T.IS_RESERVATION_DELIVERY   = S.IS_RESERVATION_DELIVERY,
+               T.EXTRA_GIFT                = S.EXTRA_GIFT,
+               T.ZTLHRP                    = S.ZTLHRP,
+               T.IS_GROUP_PURCHASE         = S.IS_GROUP_PURCHASE,
+               T.COMMISSION_RULE           = S.COMMISSION_RULE,
+               T.COMMISSION_RATE           = S.COMMISSION_RATE,
+               T.RATEBY                    = S.RATEBY,
+               T.DELAY_DAYS                = S.DELAY_DAYS,
+               T.W_INSERT_DT               = S.W_INSERT_DT,
+               T.W_UPDATE_DT               = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.GOODS_ID,
+           T.ITEM_CODE,
+           T.ERP_CODE,
+           T.GOODS_COMMONID,
+           T.GOODS_NAME,
+           T.GOODS_JINGLE,
+           T.GOODS_JINGLE2,
+           T.STORE_ID,
+           T.STORE_NAME,
+           T.GC_ID,
+           T.GC_ID_1,
+           T.GC_ID_2,
+           T.GC_ID_3,
+           T.BRAND_ID,
+           T.GOODS_PRICE,
+           T.GOODS_PROMOTION_PRICE,
+           T.GOODS_PROMOTION_TYPE,
+           T.GOODS_PROMOTION_ID,
+           T.GOODS_PROMOTION_PRICE_APP,
+           T.GOODS_PROMOTION_TYPE_APP,
+           T.GOODS_PROMOTION_ID_APP,
+           T.GOODS_PROMOTION_PRICE_WX,
+           T.GOODS_PROMOTION_TYPE_WX,
+           T.GOODS_PROMOTION_ID_WX,
+           T.GOODS_PROMOTION_PRICE_3G,
+           T.GOODS_PROMOTION_TYPE_3G,
+           T.GOODS_PROMOTION_ID_3G,
+           T.GOODS_MARKETPRICE,
+           T.GOODS_SERIAL,
+           T.GOODS_STORAGE_ALARM,
+           T.GOODS_CLICK,
+           T.GOODS_SALENUM,
+           T.GOODS_COLLECT,
+           T.GOODS_SPEC,
+           T.GOODS_STORAGE,
+           T.GOODS_IMAGE,
+           T.GOODS_VIDEOURL,
+           T.GOODS_STATE,
+           T.GOODS_VERIFY,
+           T.GOODS_ADDTIME,
+           T.GOODS_EDITTIME,
+           T.AREAID_1,
+           T.AREAID_2,
+           T.COLOR_ID,
+           T.TRANSPORT_ID,
+           T.GOODS_FREIGHT,
+           T.GOODS_VAT,
+           T.GOODS_COMMEND,
+           T.GOODS_STCIDS,
+           T.EVALUATION_GOOD_STAR,
+           T.EVALUATION_COUNT,
+           T.IS_VIRTUAL,
+           T.VIRTUAL_INDATE,
+           T.VIRTUAL_LIMIT,
+           T.VIRTUAL_INVALID_REFUND,
+           T.IS_FCODE,
+           T.IS_APPOINT,
+           T.IS_PRESELL,
+           T.HAVE_GIFT,
+           T.IS_OWN_SHOP,
+           T.IS_TV,
+           T.IS_ADD_CART,
+           T.RETENTION_TIME,
+           T.SUPPLIER_ID,
+           T.SUPPLIER_NAME,
+           T.IS_LIVE_PROMOTION,
+           T.IS_ALLOW_OFFLINE,
+           T.IS_ALLOW_POINT,
+           T.IS_ALLOW_VOUCHER,
+           T.IS_ALLOW_PAYPROMOTION,
+           T.PAYPROMOTION_AMOUNT,
+           T.IS_ALLOW_BANKPROMOTION,
+           T.IS_VALUABLES,
+           T.IS_BIG,
+           T.GIVE_POINTS,
+           T.SYNC_RULE_ID,
+           T.SYNC_LAST_TIME,
+           T.SYNC_FAIL_TIME,
+           T.SYNC_ERROR_LOG,
+           T.SYNC_STATUS,
+           T.IS_SHIPPING_SELF,
+           T.IS_NEW_MEMBER_GIFT,
+           T.IS_ALLOW_RETURN,
+           T.IS_APPRECIATION,
+           T.GOODS_WEIGHT,
+           T.IS_RESERVED,
+           T.SUPERSCRIPT_ID,
+           T.EXTRA_POINT,
+           T.IS_RESERVATION_DELIVERY,
+           T.EXTRA_GIFT,
+           T.ZTLHRP,
+           T.IS_GROUP_PURCHASE,
+           T.COMMISSION_RULE,
+           T.COMMISSION_RATE,
+           T.RATEBY,
+           T.DELAY_DAYS,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.GOODS_ID,
+           S.ITEM_CODE,
+           S.ERP_CODE,
+           S.GOODS_COMMONID,
+           S.GOODS_NAME,
+           S.GOODS_JINGLE,
+           S.GOODS_JINGLE2,
+           S.STORE_ID,
+           S.STORE_NAME,
+           S.GC_ID,
+           S.GC_ID_1,
+           S.GC_ID_2,
+           S.GC_ID_3,
+           S.BRAND_ID,
+           S.GOODS_PRICE,
+           S.GOODS_PROMOTION_PRICE,
+           S.GOODS_PROMOTION_TYPE,
+           S.GOODS_PROMOTION_ID,
+           S.GOODS_PROMOTION_PRICE_APP,
+           S.GOODS_PROMOTION_TYPE_APP,
+           S.GOODS_PROMOTION_ID_APP,
+           S.GOODS_PROMOTION_PRICE_WX,
+           S.GOODS_PROMOTION_TYPE_WX,
+           S.GOODS_PROMOTION_ID_WX,
+           S.GOODS_PROMOTION_PRICE_3G,
+           S.GOODS_PROMOTION_TYPE_3G,
+           S.GOODS_PROMOTION_ID_3G,
+           S.GOODS_MARKETPRICE,
+           S.GOODS_SERIAL,
+           S.GOODS_STORAGE_ALARM,
+           S.GOODS_CLICK,
+           S.GOODS_SALENUM,
+           S.GOODS_COLLECT,
+           S.GOODS_SPEC,
+           S.GOODS_STORAGE,
+           S.GOODS_IMAGE,
+           S.GOODS_VIDEOURL,
+           S.GOODS_STATE,
+           S.GOODS_VERIFY,
+           S.GOODS_ADDTIME,
+           S.GOODS_EDITTIME,
+           S.AREAID_1,
+           S.AREAID_2,
+           S.COLOR_ID,
+           S.TRANSPORT_ID,
+           S.GOODS_FREIGHT,
+           S.GOODS_VAT,
+           S.GOODS_COMMEND,
+           S.GOODS_STCIDS,
+           S.EVALUATION_GOOD_STAR,
+           S.EVALUATION_COUNT,
+           S.IS_VIRTUAL,
+           S.VIRTUAL_INDATE,
+           S.VIRTUAL_LIMIT,
+           S.VIRTUAL_INVALID_REFUND,
+           S.IS_FCODE,
+           S.IS_APPOINT,
+           S.IS_PRESELL,
+           S.HAVE_GIFT,
+           S.IS_OWN_SHOP,
+           S.IS_TV,
+           S.IS_ADD_CART,
+           S.RETENTION_TIME,
+           S.SUPPLIER_ID,
+           S.SUPPLIER_NAME,
+           S.IS_LIVE_PROMOTION,
+           S.IS_ALLOW_OFFLINE,
+           S.IS_ALLOW_POINT,
+           S.IS_ALLOW_VOUCHER,
+           S.IS_ALLOW_PAYPROMOTION,
+           S.PAYPROMOTION_AMOUNT,
+           S.IS_ALLOW_BANKPROMOTION,
+           S.IS_VALUABLES,
+           S.IS_BIG,
+           S.GIVE_POINTS,
+           S.SYNC_RULE_ID,
+           S.SYNC_LAST_TIME,
+           S.SYNC_FAIL_TIME,
+           S.SYNC_ERROR_LOG,
+           S.SYNC_STATUS,
+           S.IS_SHIPPING_SELF,
+           S.IS_NEW_MEMBER_GIFT,
+           S.IS_ALLOW_RETURN,
+           S.IS_APPRECIATION,
+           S.GOODS_WEIGHT,
+           S.IS_RESERVED,
+           S.SUPERSCRIPT_ID,
+           S.EXTRA_POINT,
+           S.IS_RESERVATION_DELIVERY,
+           S.EXTRA_GIFT,
+           S.ZTLHRP,
+           S.IS_GROUP_PURCHASE,
+           S.COMMISSION_RULE,
+           S.COMMISSION_RATE,
+           S.RATEBY,
+           S.DELAY_DAYS,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+      /*更新供应商名称FACT_EC_GOODS.SUPPLIER_NAME*/
+      UPDATE FACT_EC_GOODS A
+         SET A.SUPPLIER_NAME =
+             (SELECT B.SUPPLIER_NAME
+                FROM (SELECT D.ZVENDOR SUPPLIER_ID, D.ZVEN_NAME SUPPLIER_NAME
+                        FROM ODSHAPPIGO.ODS_VENDOR D
+                       WHERE D.ZVENDOR =
+                             TRANSLATE(D.ZVENDOR,
+                                       '0' ||
+                                       TRANSLATE(D.ZVENDOR, '#0123456789', '#'),
+                                       '0')) B
+               WHERE LPAD(A.SUPPLIER_ID, 10, '0') = B.SUPPLIER_ID)
+       WHERE EXISTS
+       (SELECT 1
+                FROM (SELECT D.ZVENDOR SUPPLIER_ID, D.ZVEN_NAME SUPPLIER_NAME
+                        FROM ODSHAPPIGO.ODS_VENDOR D
+                       WHERE D.ZVENDOR =
+                             TRANSLATE(D.ZVENDOR,
+                                       '0' ||
+                                       TRANSLATE(D.ZVENDOR, '#0123456789', '#'),
+                                       '0')) C
+               WHERE LPAD(A.SUPPLIER_ID, 10, '0') = C.SUPPLIER_ID
+                 AND NVL(A.SUPPLIER_NAME, ' ') <> C.SUPPLIER_NAME);
+      UPDATE_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_EC_GOODS;
+
   PROCEDURE MERGE_EC_GOODS_COMMON IS
     S_ETL       W_ETL_LOG%ROWTYPE;
     SP_NAME     S_PARAMETERS2.PNAME%TYPE;
@@ -1891,8 +2397,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_EC_GOODS_COMMON T
+      MERGE INTO FACT_EC_GOODS_COMMON T
       USING (SELECT A.GOODS_COMMONID,
                     A.ITEM_CODE,
                     A.GOODS_NAME,
@@ -2020,6 +2525,10 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
                     A.COMMISSION_RULE,
                     A.COMMISSION_RATE,
                     A.DELAY_DAYS,
+                    A.GOODS_SHORT_NAME,
+                    A.JD_URL,
+                    A.TMALL_URL,
+                    A.OTHER_TAGS,
                     SYSDATE                     W_INSERT_DT,
                     SYSDATE                     W_UPDATE_DT
                FROM EC_GOODS_COMMON_TMP A) S
@@ -2152,6 +2661,10 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
                T.COMMISSION_RULE           = S.COMMISSION_RULE,
                T.COMMISSION_RATE           = S.COMMISSION_RATE,
                T.DELAY_DAYS                = S.DELAY_DAYS,
+               T.GOODS_SHORT_NAME          = S.GOODS_SHORT_NAME,
+               T.JD_URL                    = S.JD_URL,
+               T.TMALL_URL                 = S.TMALL_URL,
+               T.OTHER_TAGS                = S.OTHER_TAGS,
                T.W_UPDATE_DT               = S.W_UPDATE_DT
       WHEN NOT MATCHED THEN
         INSERT
@@ -2282,6 +2795,10 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
            T.COMMISSION_RULE,
            T.COMMISSION_RATE,
            T.DELAY_DAYS,
+           T.GOODS_SHORT_NAME,
+           T.JD_URL,
+           T.TMALL_URL,
+           T.OTHER_TAGS,
            T.W_INSERT_DT,
            T.W_UPDATE_DT)
         VALUES
@@ -2412,6 +2929,10 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
            S.COMMISSION_RULE,
            S.COMMISSION_RATE,
            S.DELAY_DAYS,
+           S.GOODS_SHORT_NAME,
+           S.JD_URL,
+           S.TMALL_URL,
+           S.OTHER_TAGS,
            S.W_INSERT_DT,
            S.W_UPDATE_DT);
       INSERT_ROWS := SQL%ROWCOUNT;
@@ -2465,8 +2986,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_EC_GOODS_MANUAL T
+      MERGE INTO FACT_EC_GOODS_MANUAL T
       USING (SELECT A.MANUAL_ID,
                     A.ITEM_CODE,
                     A.COMMON_ID,
@@ -2567,8 +3087,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO DIM_EC_GOODS_CLASS_SUB T
+      MERGE INTO DIM_EC_GOODS_CLASS_SUB T
       USING (SELECT A.ID,
                     A.GC_ID,
                     A.NAME,
@@ -2633,6 +3152,198 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
       RETURN;
   END MERGE_EC_GOODS_CLASS_SUB;
 
+  PROCEDURE MERGE_EC_TAGS IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-03-23
+    */
+  BEGIN
+    SP_NAME          := 'HAPPIGO_EC_PKG.MERGE_EC_TAGS'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'EC_TAGS'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE INTO EC_TAGS T
+      USING (SELECT A.TAG_ID,
+                    A.TAG_NAME,
+                    A.PARENT_ID,
+                    A.IS_SHOW,
+                    A.IS_CHECKBOX,
+                    A.SORT,
+                    A.ADD_TIME,
+                    A.EDIT_TIME,
+                    SYSDATE       W_INSERT_DT,
+                    SYSDATE       W_UPDATE_DT
+               FROM EC_TAGS_TMP A) S
+      ON (T.TAG_ID = S.TAG_ID)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.TAG_NAME    = S.TAG_NAME,
+               T.PARENT_ID   = S.PARENT_ID,
+               T.IS_SHOW     = S.IS_SHOW,
+               T.IS_CHECKBOX = S.IS_CHECKBOX,
+               T.SORT        = S.SORT,
+               T.ADD_TIME    = S.ADD_TIME,
+               T.EDIT_TIME   = S.EDIT_TIME,
+               T.W_UPDATE_DT = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.TAG_ID,
+           T.TAG_NAME,
+           T.PARENT_ID,
+           T.IS_SHOW,
+           T.IS_CHECKBOX,
+           T.SORT,
+           T.ADD_TIME,
+           T.EDIT_TIME,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.TAG_ID,
+           S.TAG_NAME,
+           S.PARENT_ID,
+           S.IS_SHOW,
+           S.IS_CHECKBOX,
+           S.SORT,
+           S.ADD_TIME,
+           S.EDIT_TIME,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+    
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_EC_TAGS;
+
+  PROCEDURE MERGE_EC_GOODS_TAGS IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-03-23
+    */
+  BEGIN
+    SP_NAME          := 'HAPPIGO_EC_PKG.MERGE_EC_GOODS_TAGS'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'EC_GOODS_TAGS'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE INTO EC_GOODS_TAGS T
+      USING (SELECT A.GOODS_TAG_ID,
+                    A.ITEM_CODE,
+                    A.GOODS_COMMONID,
+                    A.TAG_ID,
+                    A.STATE,
+                    A.ADD_TIME,
+                    A.EDIT_TIME,
+                    SYSDATE          W_INSERT_DT,
+                    SYSDATE          W_UPDATE_DT
+               FROM EC_GOODS_TAGS_TMP A) S
+      ON (T.GOODS_TAG_ID = S.GOODS_TAG_ID)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.ITEM_CODE      = S.ITEM_CODE,
+               T.GOODS_COMMONID = S.GOODS_COMMONID,
+               T.TAG_ID         = S.TAG_ID,
+               T.STATE          = S.STATE,
+               T.ADD_TIME       = S.ADD_TIME,
+               T.EDIT_TIME      = S.EDIT_TIME,
+               T.W_UPDATE_DT    = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.GOODS_TAG_ID,
+           T.ITEM_CODE,
+           T.GOODS_COMMONID,
+           T.TAG_ID,
+           T.STATE,
+           T.ADD_TIME,
+           T.EDIT_TIME,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.GOODS_TAG_ID,
+           S.ITEM_CODE,
+           S.GOODS_COMMONID,
+           S.TAG_ID,
+           S.STATE,
+           S.ADD_TIME,
+           S.EDIT_TIME,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+    
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_EC_GOODS_TAGS;
+
   PROCEDURE MERGE_G_ACTIVITY IS
     S_ETL       W_ETL_LOG%ROWTYPE;
     SP_NAME     S_PARAMETERS2.PNAME%TYPE;
@@ -2662,8 +3373,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO G_ACTIVITY T
+      MERGE INTO G_ACTIVITY T
       USING (SELECT A.ID_COL,
                     A.TITLE,
                     A.SHARE_TITLE,
@@ -2781,8 +3491,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO G_ACTIVITY_GOODS T
+      MERGE INTO G_ACTIVITY_GOODS T
       USING (SELECT A.ID_COL,
                     A.GROUP_ID,
                     A.GOODS_NAME,
@@ -2940,8 +3649,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO G_ACTIVITY_GOODS_GROUP T
+      MERGE INTO G_ACTIVITY_GOODS_GROUP T
       USING (SELECT A.ID_COL,
                     A.ACTIVITY_ID,
                     A.TITLE,
@@ -3039,8 +3747,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO G_ACTIVITY_VOUCHER T
+      MERGE INTO G_ACTIVITY_VOUCHER T
       USING (SELECT A.ID_COL,
                     A.ACTIVITY_ID,
                     A.VOUCHER_ID,
@@ -3130,8 +3837,7 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
     END;
   
     BEGIN
-      MERGE /*+APPEND*/
-      INTO FACT_GOODS_EVALUATE_ALIYUN T
+      MERGE INTO FACT_GOODS_EVALUATE_ALIYUN T
       USING (SELECT A.ID_COL,
                     A.GEVAL_ID,
                     A.GEVAL_ORDERGOODSID,
@@ -3207,6 +3913,207 @@ CREATE OR REPLACE PACKAGE BODY HAPPIGO_EC_PKG IS
       SP_SBI_W_ETL_LOG(S_ETL);
       RETURN;
   END MERGE_GOODS_EVALUATE_ALIYUN;
+
+  PROCEDURE MERGE_FACT_GOODS_EVALUATE IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    /*
+    功能说明：
+    作者时间：yangjin  2018-03-23
+    */
+  BEGIN
+    SP_NAME          := 'HAPPIGO_EC_PKG.MERGE_FACT_GOODS_EVALUATE'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'FACT_GOODS_EVALUATE'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      MERGE INTO FACT_GOODS_EVALUATE T
+      USING (SELECT A.GEVAL_ID,
+                    A.GEVAL_ORDERID,
+                    A.GEVAL_ORDERNO,
+                    A.GEVAL_ORDERGOODSID,
+                    A.GEVAL_GOODS_COMMONID,
+                    A.ITEM_CODE,
+                    A.GEVAL_GOODSNAME,
+                    A.GEVAL_GOODSPRICE,
+                    A.GEVAL_GOODSIMAGE,
+                    A.GEVAL_SCORES,
+                    A.GEVAL_SHIPPING_SCORES,
+                    A.GEVAL_DELIVERY_SCORES,
+                    A.GEVAL_CONTENT,
+                    A.GEVAL_ISANONYMOUS,
+                    A.GEVAL_STOREID,
+                    A.GEVAL_STORENAME,
+                    A.GEVAL_ADDTIME,
+                    A.GEVAL_ADDTIME_KEY,
+                    A.GEVAL_MEMBER_KEY,
+                    A.GEVAL_FROMMEMBERNAME,
+                    A.GEVAL_STATE,
+                    A.GEVAL_REMARK,
+                    A.GEVAL_EXPLAIN,
+                    A.GEVAL_IMAGE,
+                    A.GEVAL_CREATEBY,
+                    A.GIVE_POINTS,
+                    A.GIVE_STATE,
+                    A.GEVAL_EXPLAIN_TIME,
+                    A.GEVAL_EXPLAIN_MEMBER_KEY,
+                    A.GEVAL_STATE_TIME,
+                    A.GEVAL_STATE_MEMBER,
+                    A.GEVAL_SENTIMENT_POLARITY,
+                    A.GEVAL_SENTIMENT_POLARITY_INTEN,
+                    A.GEVAL_SENTIMENT_POLARITY_IASPE,
+                    SYSDATE                          W_INSERT_DT,
+                    SYSDATE                          W_UPDATE_DT
+               FROM EC_GOODS_EVALUATE_TMP A) S
+      ON (T.GEVAL_ID = S.GEVAL_ID)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.GEVAL_ORDERID                  = S.GEVAL_ORDERID,
+               T.GEVAL_ORDERNO                  = S.GEVAL_ORDERNO,
+               T.GEVAL_ORDERGOODSID             = S.GEVAL_ORDERGOODSID,
+               T.GEVAL_GOODS_COMMONID           = S.GEVAL_GOODS_COMMONID,
+               T.ITEM_CODE                      = S.ITEM_CODE,
+               T.GEVAL_GOODSNAME                = S.GEVAL_GOODSNAME,
+               T.GEVAL_GOODSPRICE               = S.GEVAL_GOODSPRICE,
+               T.GEVAL_GOODSIMAGE               = S.GEVAL_GOODSIMAGE,
+               T.GEVAL_SCORES                   = S.GEVAL_SCORES,
+               T.GEVAL_SHIPPING_SCORES          = S.GEVAL_SHIPPING_SCORES,
+               T.GEVAL_DELIVERY_SCORES          = S.GEVAL_DELIVERY_SCORES,
+               T.GEVAL_CONTENT                  = S.GEVAL_CONTENT,
+               T.GEVAL_ISANONYMOUS              = S.GEVAL_ISANONYMOUS,
+               T.GEVAL_STOREID                  = S.GEVAL_STOREID,
+               T.GEVAL_STORENAME                = S.GEVAL_STORENAME,
+               T.GEVAL_ADDTIME                  = S.GEVAL_ADDTIME,
+               T.GEVAL_ADDTIME_KEY              = S.GEVAL_ADDTIME_KEY,
+               T.GEVAL_MEMBER_KEY               = S.GEVAL_MEMBER_KEY,
+               T.GEVAL_FROMMEMBERNAME           = S.GEVAL_FROMMEMBERNAME,
+               T.GEVAL_STATE                    = S.GEVAL_STATE,
+               T.GEVAL_REMARK                   = S.GEVAL_REMARK,
+               T.GEVAL_EXPLAIN                  = S.GEVAL_EXPLAIN,
+               T.GEVAL_IMAGE                    = S.GEVAL_IMAGE,
+               T.GEVAL_CREATEBY                 = S.GEVAL_CREATEBY,
+               T.GIVE_POINTS                    = S.GIVE_POINTS,
+               T.GIVE_STATE                     = S.GIVE_STATE,
+               T.GEVAL_EXPLAIN_TIME             = S.GEVAL_EXPLAIN_TIME,
+               T.GEVAL_EXPLAIN_MEMBER_KEY       = S.GEVAL_EXPLAIN_MEMBER_KEY,
+               T.GEVAL_STATE_TIME               = S.GEVAL_STATE_TIME,
+               T.GEVAL_STATE_MEMBER             = S.GEVAL_STATE_MEMBER,
+               T.GEVAL_SENTIMENT_POLARITY       = S.GEVAL_SENTIMENT_POLARITY,
+               T.GEVAL_SENTIMENT_POLARITY_INTEN = S.GEVAL_SENTIMENT_POLARITY_INTEN,
+               T.GEVAL_SENTIMENT_POLARITY_IASPE = S.GEVAL_SENTIMENT_POLARITY_IASPE,
+               T.W_UPDATE_DT                    = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.GEVAL_ID,
+           T.GEVAL_ORDERID,
+           T.GEVAL_ORDERNO,
+           T.GEVAL_ORDERGOODSID,
+           T.GEVAL_GOODS_COMMONID,
+           T.ITEM_CODE,
+           T.GEVAL_GOODSNAME,
+           T.GEVAL_GOODSPRICE,
+           T.GEVAL_GOODSIMAGE,
+           T.GEVAL_SCORES,
+           T.GEVAL_SHIPPING_SCORES,
+           T.GEVAL_DELIVERY_SCORES,
+           T.GEVAL_CONTENT,
+           T.GEVAL_ISANONYMOUS,
+           T.GEVAL_STOREID,
+           T.GEVAL_STORENAME,
+           T.GEVAL_ADDTIME,
+           T.GEVAL_ADDTIME_KEY,
+           T.GEVAL_MEMBER_KEY,
+           T.GEVAL_FROMMEMBERNAME,
+           T.GEVAL_STATE,
+           T.GEVAL_REMARK,
+           T.GEVAL_EXPLAIN,
+           T.GEVAL_IMAGE,
+           T.GEVAL_CREATEBY,
+           T.GIVE_POINTS,
+           T.GIVE_STATE,
+           T.GEVAL_EXPLAIN_TIME,
+           T.GEVAL_EXPLAIN_MEMBER_KEY,
+           T.GEVAL_STATE_TIME,
+           T.GEVAL_STATE_MEMBER,
+           T.GEVAL_SENTIMENT_POLARITY,
+           T.GEVAL_SENTIMENT_POLARITY_INTEN,
+           T.GEVAL_SENTIMENT_POLARITY_IASPE,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.GEVAL_ID,
+           S.GEVAL_ORDERID,
+           S.GEVAL_ORDERNO,
+           S.GEVAL_ORDERGOODSID,
+           S.GEVAL_GOODS_COMMONID,
+           S.ITEM_CODE,
+           S.GEVAL_GOODSNAME,
+           S.GEVAL_GOODSPRICE,
+           S.GEVAL_GOODSIMAGE,
+           S.GEVAL_SCORES,
+           S.GEVAL_SHIPPING_SCORES,
+           S.GEVAL_DELIVERY_SCORES,
+           S.GEVAL_CONTENT,
+           S.GEVAL_ISANONYMOUS,
+           S.GEVAL_STOREID,
+           S.GEVAL_STORENAME,
+           S.GEVAL_ADDTIME,
+           S.GEVAL_ADDTIME_KEY,
+           S.GEVAL_MEMBER_KEY,
+           S.GEVAL_FROMMEMBERNAME,
+           S.GEVAL_STATE,
+           S.GEVAL_REMARK,
+           S.GEVAL_EXPLAIN,
+           S.GEVAL_IMAGE,
+           S.GEVAL_CREATEBY,
+           S.GIVE_POINTS,
+           S.GIVE_STATE,
+           S.GEVAL_EXPLAIN_TIME,
+           S.GEVAL_EXPLAIN_MEMBER_KEY,
+           S.GEVAL_STATE_TIME,
+           S.GEVAL_STATE_MEMBER,
+           S.GEVAL_SENTIMENT_POLARITY,
+           S.GEVAL_SENTIMENT_POLARITY_INTEN,
+           S.GEVAL_SENTIMENT_POLARITY_IASPE,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_FACT_GOODS_EVALUATE;
 
 END HAPPIGO_EC_PKG;
 /

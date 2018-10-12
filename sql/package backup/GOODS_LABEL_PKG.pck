@@ -18,6 +18,26 @@ CREATE OR REPLACE PACKAGE GOODS_LABEL_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE SYNC_EC_TAGS;
+  /*
+  功能名:       SYNC_EC_TAGS
+  目的:         同步happigo_ec的商品标签主表到goods_label_head
+  作者:         yangjin
+  创建时间：    2018/07/10
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE SYNC_EC_GOODS_TAGS;
+  /*
+  功能名:       SYNC_EC_GOODS_TAGS
+  目的:         同步happigo_ec的商品标签关联表到goods_label_link
+  作者:         yangjin
+  创建时间：    2018/07/10
+  最后修改人：
+  最后更改日期：
+  */
+
   PROCEDURE DISTRIBUTION_TYPE;
   /*
   功能名:       DISTRIBUTION_TYPE
@@ -117,6 +137,31 @@ CREATE OR REPLACE PACKAGE GOODS_LABEL_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE GOODS_EVALUATE_ASPECT;
+  /*
+  功能名:       GOODS_EVALUATE_ASPECT
+  目的:         从fact_goods_evaluate表的geval_sentiment_polarity_iaspe字段获取JSON，
+                解析后插入fact_goods_evaluate_aspect表
+  作者:         yangjin
+  创建时间：    2018/07/24
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE GOODS_EVALUATION_LEVEL;
+  /*
+  功能名:       GOODS_EVALUATION_LEVEL
+  目的:         商品标签-用户口碑等级
+                单商品该商品评价大于10时开始计算
+                90%以上评价为正向时 表示该标签用户满意度为高(HIGH)
+                70~89%评价为正向时 表示该标签用户满意度为中(MEDIUM)
+                70%以下评价为正向时 表示该标签用户满意度为低(LOW)
+  作者:         yangjin
+  创建时间：    2018/05/29
+  最后修改人：
+  最后更改日期：
+  */
+
 END GOODS_LABEL_PKG;
 /
 CREATE OR REPLACE PACKAGE BODY GOODS_LABEL_PKG IS
@@ -159,6 +204,228 @@ CREATE OR REPLACE PACKAGE BODY GOODS_LABEL_PKG IS
       COMMIT;
     END;
   END CREATE_GOODS_LABEL;
+
+  PROCEDURE SYNC_EC_TAGS IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    DELETE_ROWS NUMBER;
+    /*
+    功能说明：  
+    作者时间：yangjin  2018-04-23
+    */
+  BEGIN
+    SP_NAME          := 'GOODS_LABEL_PKG.SYNC_EC_TAGS'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'GOODS_LABEL_HEAD'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      --1.insert goods_label_head
+      INSERT INTO GOODS_LABEL_HEAD
+        (G_LABEL_ID,
+         G_LABEL_NAME,
+         G_LABEL_DESC,
+         G_LABEL_TYPE_ID,
+         IS_LEAF_NODE,
+         CREATE_DATE,
+         CREATE_USER_ID,
+         LAST_UPDATE_DATE,
+         LAST_UPDATE_USER_ID,
+         CURRENT_FLAG,
+         G_LABEL_FATHER_ID)
+        SELECT GOODS_LABEL_HEAD_SEQ.NEXTVAL G_LABEL_ID,
+               A.TAG_ID G_LABEL_NAME,
+               A.TAG_NAME G_LABEL_DESC,
+               1 G_LABEL_TYPE_ID,
+               NULL IS_LEAF_NODE,
+               SYSDATE CREATE_DATE,
+               'happigo_ec' CREATE_USER_ID,
+               SYSDATE LAST_UPDATE_DATE,
+               'happigo_ec' LAST_UPDATE_USER_ID,
+               1 CURRENT_FLAG,
+               NULL G_LABEL_FATHER_ID
+          FROM (SELECT 'ec_' || A1.TAG_ID TAG_ID,
+                       'ec_' || A1.TAG_NAME TAG_NAME,
+                       'ec_' || A1.PARENT_ID PARENT_ID
+                  FROM EC_TAGS A1) A
+         WHERE NOT EXISTS (SELECT 1
+                  FROM GOODS_LABEL_HEAD B
+                 WHERE A.TAG_ID = B.G_LABEL_NAME);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+      --2.update IS_LEAF_NODE=1
+      UPDATE GOODS_LABEL_HEAD A
+         SET A.IS_LEAF_NODE = 1
+       WHERE A.CREATE_USER_ID = 'happigo_ec'
+         AND EXISTS
+       (SELECT 1
+                FROM (SELECT NVL(C.LV4_TAG_ID,
+                                 NVL(C.LV3_TAG_ID,
+                                     NVL(C.LV2_TAG_ID, C.LV1_TAG_ID))) G_LABEL_NAME,
+                             C.LV1_TAG_ID,
+                             C.LV2_TAG_ID,
+                             C.LV3_TAG_ID,
+                             C.LV4_TAG_ID
+                        FROM EC_GOODS_LABEL_HEAD_LEVEL_V C) B
+               WHERE A.G_LABEL_NAME = B.G_LABEL_NAME);
+      COMMIT;
+      --2.1.update IS_LEAF_NODE=0
+      UPDATE GOODS_LABEL_HEAD A
+         SET A.IS_LEAF_NODE = 0
+       WHERE A.CREATE_USER_ID = 'happigo_ec'
+         AND A.IS_LEAF_NODE IS NULL;
+      COMMIT;
+    
+      --3.update g_label_father_id
+      UPDATE GOODS_LABEL_HEAD A
+         SET A.G_LABEL_FATHER_ID =
+             (SELECT C.G_LABEL_ID
+                FROM (SELECT 'ec_' || B1.TAG_ID TAG_ID,
+                             'ec_' || B1.PARENT_ID PARENT_ID
+                        FROM EC_TAGS B1) B,
+                     (SELECT C1.G_LABEL_ID, C1.G_LABEL_NAME
+                        FROM GOODS_LABEL_HEAD C1) C
+               WHERE A.G_LABEL_NAME = B.TAG_ID
+                 AND B.PARENT_ID = C.G_LABEL_NAME)
+       WHERE A.CREATE_USER_ID = 'happigo_ec'
+         AND A.G_LABEL_FATHER_ID IS NULL;
+      UPDATE_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END SYNC_EC_TAGS;
+
+  PROCEDURE SYNC_EC_GOODS_TAGS IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    DELETE_ROWS NUMBER;
+    /*
+    功能说明：  
+    作者时间：yangjin  2018-04-23
+    */
+  BEGIN
+    SP_NAME          := 'GOODS_LABEL_PKG.SYNC_EC_GOODS_TAGS'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'GOODS_LABEL_LINK'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      --1.insert goods_label_link
+      INSERT INTO GOODS_LABEL_LINK
+        (ITEM_CODE,
+         G_LABEL_ID,
+         G_LABEL_TYPE_ID,
+         CREATE_DATE,
+         CREATE_USER_ID,
+         LAST_UPDATE_DATE,
+         LAST_UPDATE_USER_ID,
+         ROW_ID)
+        SELECT C.ITEM_CODE,
+               C.G_LABEL_ID,
+               C.G_LABEL_TYPE_ID,
+               SYSDATE CREATE_DATE,
+               'happigo_ec' CREATE_USER_ID,
+               SYSDATE LAST_UPDATE_DATE,
+               'happigo_ec' LAST_UPDATE_USER_ID,
+               GOODS_LABEL_LINK_SEQ.NEXTVAL
+          FROM (SELECT B.G_LABEL_ID,
+                       'ec_' || A.TAG_ID G_LABEL_NAME,
+                       A.ITEM_CODE,
+                       B.G_LABEL_TYPE_ID
+                  FROM EC_GOODS_TAGS A, GOODS_LABEL_HEAD B
+                 WHERE 'ec_' || A.TAG_ID = B.G_LABEL_NAME
+                   AND A.STATE = 1
+                   AND B.CREATE_USER_ID = 'happigo_ec') C
+         WHERE NOT EXISTS (SELECT 1
+                  FROM GOODS_LABEL_LINK D
+                 WHERE C.G_LABEL_ID = D.G_LABEL_ID
+                   AND C.ITEM_CODE = D.ITEM_CODE);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+      --2.delete goods_label_link             
+      DELETE GOODS_LABEL_LINK A
+       WHERE EXISTS (SELECT 1
+                FROM (SELECT D.G_LABEL_ID,
+                             'ec_' || C.TAG_ID G_LABEL_NAME,
+                             C.ITEM_CODE,
+                             D.G_LABEL_TYPE_ID
+                        FROM EC_GOODS_TAGS C, GOODS_LABEL_HEAD D
+                       WHERE 'ec_' || C.TAG_ID = D.G_LABEL_NAME
+                         AND C.STATE = 0
+                         AND D.CREATE_USER_ID = 'happigo_ec') B
+               WHERE A.ITEM_CODE = B.ITEM_CODE
+                 AND A.G_LABEL_ID = B.G_LABEL_ID);
+      UPDATE_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END SYNC_EC_GOODS_TAGS;
 
   PROCEDURE DISTRIBUTION_TYPE IS
     S_ETL       W_ETL_LOG%ROWTYPE;
@@ -338,7 +605,7 @@ CREATE OR REPLACE PACKAGE BODY GOODS_LABEL_PKG IS
                                     27,
                                     28,
                                     29,
-																		999,
+                                    999,
                                     1000,
                                     1001,
                                     1002,
@@ -741,10 +1008,11 @@ CREATE OR REPLACE PACKAGE BODY GOODS_LABEL_PKG IS
                          WHEN B.UV >= 1000 THEN
                           'HIGH_TRAFFIC'
                        END TRAFFIC_LEVEL
-                  FROM (SELECT A.PAGE_VALUE ITEM_CODE,
+                  FROM (SELECT E.ITEM_CODE ITEM_CODE,
                                COUNT(DISTINCT A.VID) UV
-                          FROM FACT_PAGE_VIEW A
-                         WHERE A.VISIT_DATE_KEY BETWEEN
+                          FROM FACT_PAGE_VIEW A, DIM_EC_GOOD E
+                         WHERE A.PAGE_VALUE = E.GOODS_COMMONID
+                           AND A.VISIT_DATE_KEY BETWEEN
                                TO_CHAR(TO_DATE(IN_DATE_KEY, 'YYYYMMDD') - 30,
                                        'YYYYMMDD') AND IN_DATE_KEY /*最近一个月*/
                            AND UPPER(A.PAGE_NAME) = 'GOOD'
@@ -757,7 +1025,7 @@ CREATE OR REPLACE PACKAGE BODY GOODS_LABEL_PKG IS
                                                           '#0123456789',
                                                           '#'),
                                          '0')
-                         GROUP BY A.PAGE_VALUE) B) C,
+                         GROUP BY E.ITEM_CODE) B) C,
                GOODS_LABEL_HEAD D
          WHERE C.TRAFFIC_LEVEL = D.G_LABEL_NAME;
       COMMIT;
@@ -1234,6 +1502,308 @@ CREATE OR REPLACE PACKAGE BODY GOODS_LABEL_PKG IS
       SP_SBI_W_ETL_LOG(S_ETL);
       RETURN;
   END GOODS_MATXXL_PRICE_LEVEL;
+
+  PROCEDURE GOODS_EVALUATE_ASPECT IS
+    S_ETL                   W_ETL_LOG%ROWTYPE;
+    SP_NAME                 S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER             S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS             NUMBER;
+    DELETE_ROWS             NUMBER;
+    UPDATE_ROWS             NUMBER;
+    JSONARRAY               JSON_LIST; /*定义JSON数组*/
+    ROW_FACT_GOODS_EVALUATE FACT_GOODS_EVALUATE%ROWTYPE;
+    /*定义二维数组*/
+    TYPE TYPE_RECORD IS RECORD(
+      GEVAL_ID NUMBER(20));
+    TYPE TYPE_TABLE IS TABLE OF TYPE_RECORD INDEX BY BINARY_INTEGER;
+    ROW_GEVAL_ID TYPE_TABLE;
+    /*
+    功能说明：  
+    作者时间：yangjin  2018-07-25
+    */
+  BEGIN
+    SP_NAME          := 'GOODS_LABEL_PKG.GOODS_EVALUATE_ASPECT'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'FACT_GOODS_EVALUATE_ASPECT'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*处理不完整的JSON串*/
+      UPDATE FACT_GOODS_EVALUATE A
+         SET A.GEVAL_SENTIMENT_POLARITY_IASPE = SUBSTR(A.GEVAL_SENTIMENT_POLARITY_IASPE,
+                                                       1,
+                                                       INSTR(A.GEVAL_SENTIMENT_POLARITY_IASPE,
+                                                             '}',
+                                                             -1)) || ']'
+       WHERE A.GEVAL_SENTIMENT_POLARITY_IASPE IS NOT NULL
+         AND A.GEVAL_SENTIMENT_POLARITY_IASPE NOT LIKE '%}]';
+      UPDATE_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+      /*插入二维数组*/
+      SELECT A.GEVAL_ID
+        BULK COLLECT
+        INTO ROW_GEVAL_ID
+        FROM FACT_GOODS_EVALUATE A
+       WHERE A.GEVAL_SENTIMENT_POLARITY <> 0
+         AND A.GEVAL_SENTIMENT_POLARITY_IASPE IS NOT NULL
+         AND A.GEVAL_SENTIMENT_POLARITY_IASPE LIKE '%}]'
+         AND NOT EXISTS (SELECT 1
+                FROM FACT_GOODS_EVALUATE_ASPECT B
+               WHERE A.GEVAL_ID = B.GEVAL_ID)
+      --AND ROWNUM <= 10000
+       ORDER BY A.GEVAL_ID;
+    
+      /*逐条ROW_GEVAL_ID循环处理*/
+      FOR I IN 1 .. ROW_GEVAL_ID.COUNT LOOP
+        BEGIN
+          SELECT A.GEVAL_ID,
+                 A.GEVAL_ORDERGOODSID,
+                 A.GEVAL_GOODS_COMMONID,
+                 A.GEVAL_SENTIMENT_POLARITY_IASPE
+            INTO ROW_FACT_GOODS_EVALUATE.GEVAL_ID,
+                 ROW_FACT_GOODS_EVALUATE.GEVAL_ORDERGOODSID,
+                 ROW_FACT_GOODS_EVALUATE.GEVAL_GOODS_COMMONID,
+                 ROW_FACT_GOODS_EVALUATE.GEVAL_SENTIMENT_POLARITY_IASPE
+            FROM FACT_GOODS_EVALUATE A
+           WHERE A.GEVAL_ID = ROW_GEVAL_ID(I).GEVAL_ID;
+          /*JSON传入*/
+          JSONARRAY := JSON_LIST(ROW_FACT_GOODS_EVALUATE.GEVAL_SENTIMENT_POLARITY_IASPE);
+          /*JSON循环*/
+          FOR I IN 1 .. JSONARRAY.COUNT LOOP
+            DBMS_OUTPUT.PUT_LINE(JSON_EXT.GET_STRING(JSON(JSONARRAY.GET(I)),
+                                                     'aspectCategory'));
+            /*INSERT TABLE*/
+            INSERT INTO FACT_GOODS_EVALUATE_ASPECT
+              (ID_COL,
+               GEVAL_ID,
+               GEVAL_ORDERGOODSID,
+               GEVAL_GOODS_COMMONID,
+               ASPECT_CATEGORY,
+               ASPECT_TERM,
+               ASPECT_INDEX,
+               ASPECT_POLARITY,
+               OPINION_TERM,
+               W_INSERT_DT,
+               W_UPDATE_DT)
+            VALUES
+              (FACT_GOODS_EVALUATE_ASPECT_SEQ.NEXTVAL,
+               ROW_FACT_GOODS_EVALUATE.GEVAL_ID,
+               ROW_FACT_GOODS_EVALUATE.GEVAL_ORDERGOODSID,
+               ROW_FACT_GOODS_EVALUATE.GEVAL_GOODS_COMMONID,
+               JSON_EXT.GET_STRING(JSON(JSONARRAY.GET(I)), 'aspectCategory'),
+               JSON_EXT.GET_STRING(JSON(JSONARRAY.GET(I)), 'aspectTerm'),
+               JSON_EXT.GET_STRING(JSON(JSONARRAY.GET(I)), 'aspectIndex'),
+               JSON_EXT.GET_STRING(JSON(JSONARRAY.GET(I)), 'aspectPolarity'),
+               JSON_EXT.GET_STRING(JSON(JSONARRAY.GET(I)), 'opinionTerm'),
+               SYSDATE,
+               SYSDATE);
+            INSERT_ROWS := SQL%ROWCOUNT + NVL(INSERT_ROWS, 0);
+            COMMIT;
+          END LOOP;
+        END;
+      END LOOP;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END GOODS_EVALUATE_ASPECT;
+
+  PROCEDURE GOODS_EVALUATION_LEVEL IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    DELETE_ROWS NUMBER;
+    /*
+    功能说明：  
+    作者时间：yangjin  2018-06-22
+    */
+  BEGIN
+    SP_NAME          := 'GOODS_LABEL_PKG.GOODS_EVALUATION_LEVEL'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'GOODS_LABEL_LINK'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*中间表*/
+      EXECUTE IMMEDIATE 'TRUNCATE TABLE GOODS_LABEL_1080_STAGE';
+    
+      INSERT INTO GOODS_LABEL_1080_STAGE
+        (ITEM_CODE,
+         ASPECT_CATEGORY,
+         G_LABEL_ID,
+         G_LABEL_NAME,
+         G_LABEL_TYPE_ID,
+         EVA_COUNT,
+         EVA_POSITIVE_COUNT,
+         EVA_NEGATIVE_COUNT,
+         W_INSERT_DT,
+         W_UPDATE_DT)
+        SELECT D.ITEM_CODE,
+               D.ASPECT_CATEGORY,
+               G.LV3_ID G_LABEL_ID,
+               E.LV2_NAME || '_' || D.EVA_LEVEL G_LABEL_NAME,
+               G.LV3_TYPE_ID G_LABEL_TYPE_ID,
+               D.EVA_COUNT,
+               D.EVA_POSITIVE_COUNT,
+               D.EVA_NEGATIVE_COUNT,
+               SYSDATE W_INSERT_DT,
+               SYSDATE W_UPDATE_DT
+          FROM (SELECT C.ITEM_CODE,
+                       C.ASPECT_CATEGORY,
+                       C.EVA_COUNT,
+                       C.EVA_POSITIVE_COUNT,
+                       C.EVA_NEGATIVE_COUNT,
+                       CASE
+                         WHEN C.EVA_POSITIVE_PER < 0.7 THEN
+                          'LOW'
+                         WHEN C.EVA_POSITIVE_PER >= 0.7 AND
+                              C.EVA_POSITIVE_PER < 0.9 THEN
+                          'MEDIUM'
+                         WHEN C.EVA_POSITIVE_PER >= 0.7 THEN
+                          'HIGH'
+                       END EVA_LEVEL
+                  FROM (SELECT B.ITEM_CODE,
+                               B.ASPECT_CATEGORY,
+                               COUNT(1) EVA_COUNT,
+                               SUM(B.COL1) EVA_POSITIVE_COUNT,
+                               SUM(B.COL2) EVA_NEGATIVE_COUNT,
+                               ROUND(SUM(B.COL1) / COUNT(1), 2) EVA_POSITIVE_PER
+                          FROM (SELECT B1.ITEM_CODE,
+                                       A1.ASPECT_CATEGORY,
+                                       A1.ASPECT_POLARITY,
+                                       CASE
+                                         WHEN A1.ASPECT_POLARITY = '正' THEN
+                                          1
+                                         ELSE
+                                          0
+                                       END COL1,
+                                       CASE
+                                         WHEN A1.ASPECT_POLARITY = '负' THEN
+                                          1
+                                         ELSE
+                                          0
+                                       END COL2
+                                  FROM FACT_GOODS_EVALUATE_ASPECT A1,
+                                       DIM_EC_GOOD                B1
+                                 WHERE A1.GEVAL_GOODS_COMMONID =
+                                       B1.GOODS_COMMONID) B
+                         GROUP BY B.ITEM_CODE, B.ASPECT_CATEGORY) C
+                 WHERE C.EVA_COUNT >= 10 /*评论数大于10才打商品标签*/
+                ) D,
+               (SELECT DISTINCT F.LV2_NAME,
+                                SUBSTR(F.LV2_DESC,
+                                       INSTR(F.LV2_DESC, '(', 1) + 1,
+                                       INSTR(F.LV2_DESC, ')', 1) -
+                                       INSTR(F.LV2_DESC, '(', 1) - 1) ASPECT_CATEGORY
+                  FROM GOODS_LABEL_HEAD_LEVEL_V F
+                 WHERE F.LV1_ID = 1080) E,
+               (SELECT H.LV3_TYPE_ID, H.LV3_ID, H.LV3_NAME
+                  FROM GOODS_LABEL_HEAD_LEVEL_V H
+                 WHERE H.LV1_ID = 1080) G
+         WHERE D.ASPECT_CATEGORY = E.ASPECT_CATEGORY
+           AND E.LV2_NAME || '_' || D.EVA_LEVEL = G.LV3_NAME;
+      COMMIT;
+    
+      /*insert*/
+      INSERT INTO GOODS_LABEL_LINK
+        (ITEM_CODE,
+         G_LABEL_ID,
+         G_LABEL_TYPE_ID,
+         CREATE_DATE,
+         CREATE_USER_ID,
+         LAST_UPDATE_DATE,
+         LAST_UPDATE_USER_ID,
+         ROW_ID)
+        SELECT A.ITEM_CODE,
+               A.G_LABEL_ID,
+               A.G_LABEL_TYPE_ID,
+               SYSDATE CREATE_DATE,
+               'yangjin' CREATE_USER_ID,
+               SYSDATE LAST_UPDATE_DATE,
+               'yangjin' LAST_UPDATE_USER_ID,
+               GOODS_LABEL_LINK_SEQ.NEXTVAL
+          FROM GOODS_LABEL_1080_STAGE A
+         WHERE NOT EXISTS
+         (SELECT 1
+                  FROM GOODS_LABEL_LINK B
+                 WHERE A.ITEM_CODE = B.ITEM_CODE
+                   AND A.G_LABEL_ID = B.G_LABEL_ID
+                   AND A.G_LABEL_TYPE_ID = B.G_LABEL_TYPE_ID);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+      /*删除商品标签,如果商品评论没有则删除标签*/
+      DELETE GOODS_LABEL_LINK A
+       WHERE EXISTS (SELECT 1
+                FROM GOODS_LABEL_HEAD_LEVEL_V F
+               WHERE F.LV1_ID = 1080
+                 AND A.G_LABEL_ID = F.LV3_ID)
+         AND NOT EXISTS (SELECT 1
+                FROM GOODS_LABEL_1080_STAGE B
+               WHERE A.ITEM_CODE = B.ITEM_CODE
+                 AND A.G_LABEL_ID = B.G_LABEL_ID);
+      DELETE_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END GOODS_EVALUATION_LEVEL;
 
 END GOODS_LABEL_PKG;
 /

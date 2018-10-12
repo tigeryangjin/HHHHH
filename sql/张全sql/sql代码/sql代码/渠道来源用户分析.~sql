@@ -1,0 +1,57 @@
+------新客分析(定义新客)
+create global temporary table ls_test3 (col1 varchar(200),col2 NUMBER(20),col3 NUMBER(20),col4 varchar(200)) On Commit Preserve Rows;
+insert into  ls_test3 
+(
+select M_LABEL_DESC as col1,MEMBER_BP as col2,FIRST_ACTIVE_DATE_KEY as col3,FIRST_ACTIVE_VID  as col4  from (
+select M_LABEL_DESC,MEMBER_BP,FIRST_ACTIVE_DATE_KEY,FIRST_ACTIVE_VID  from(
+select MEMBER_KEY,M_LABEL_DESC from MEMBER_LABEL_LINK_V where  M_LABEL_DESC in ('扫码','自然','推广')
+)a  left join 
+(select MEMBER_BP,FIRST_ACTIVE_DATE_KEY,FIRST_ACTIVE_VID from dim_member 
+where FIRST_ACTIVE_DATE_KEY between 20170101 and 20171231)  b 
+on a.MEMBER_KEY=b.MEMBER_BP) where FIRST_ACTIVE_DATE_KEY is not null )
+
+-----新客行为分析 
+select * from fact_page_view where  visit_date_key between  20170101 and 20170101
+and vid in (
+select *  from ls_test3 where col3=20170101)
+
+
+----新客订购分析 
+----(播出非播出)
+select sum(ORDER_AMOUNT),sum(NUMS),count(distinct MEMBER_KEY),LIVE_STATE,REPLAY_STATE,SALES_SOURCE_SECOND_KEY
+ from (
+select * from (
+SELECT GOODS_COMMON_KEY,LIVE_STATE,REPLAY_STATE,ORDER_AMOUNT,NUMS,MEMBER_KEY,SALES_SOURCE_SECOND_KEY FROM  FACT_GOODS_SALES WHERE ORDER_KEY IN (
+select min(CRM_ORDER_NO) from factec_order where MEMBER_KEY in(
+select COL2  from ls_test3) AND  ORDER_STATE>10 
+GROUP BY MEMBER_KEY
+) and TRAN_TYPE=0) a left join 
+(
+select ITEM_CODE,GOODS_NAME,MATDLT,GROUP_NAME,GOOD_PRICE_LEVEL from dim_good
+) b on a.GOODS_COMMON_KEY=b.ITEM_CODE)   group by LIVE_STATE,REPLAY_STATE,SALES_SOURCE_SECOND_KEY
+---(类目分析)
+select sum(ORDER_AMOUNT),sum(NUMS),count(distinct MEMBER_KEY),GROUP_NAME,MATDLT,GOOD_PRICE_LEVEL
+ from (
+select * from (
+SELECT GOODS_COMMON_KEY,LIVE_STATE,REPLAY_STATE,ORDER_AMOUNT,NUMS,MEMBER_KEY,SALES_SOURCE_SECOND_KEY FROM  FACT_GOODS_SALES WHERE ORDER_KEY IN (
+select min(CRM_ORDER_NO) from factec_order where MEMBER_KEY in(
+select COL2  from ls_test3) AND  ORDER_STATE>10 
+GROUP BY MEMBER_KEY
+) and TRAN_TYPE=0) a left join 
+(
+select ITEM_CODE,GOODS_NAME,MATDLT,GROUP_NAME,GOOD_PRICE_LEVEL from dim_good
+) b on a.GOODS_COMMON_KEY=b.ITEM_CODE)   group by GROUP_NAME,MATDLT,GOOD_PRICE_LEVEL
+
+
+
+
+
+----新客搜索分析
+
+
+
+----老客复购分析
+
+
+
+---

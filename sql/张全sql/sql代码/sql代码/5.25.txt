@@ -1,0 +1,1 @@
+select o.order_key,o.order_h_key,oo.posting_hour from zqls_order o left join fact_order oo on oo.order_obj_id=o.order_h_key

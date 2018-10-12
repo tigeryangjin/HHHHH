@@ -1,0 +1,24 @@
+INSERT INTO ls_test  (SSID,SNAME)
+
+select  MEMBER_KEY as SSID,APPLICATION_KEY AS SNAME from fact_page_view where  VISIT_DATE_KEY between 20160801 and 20160811 and MEMBER_KEY!=0
+group by  MEMBER_KEY,APPLICATION_KEY;
+
+INSERT INTO ls_test  (SSID,SNAME)
+select  MEMBER_KEY as SSID,APPLICATION_KEY AS SNAME from fact_page_view where  VISIT_DATE_KEY between 20160812 and 20160821 and MEMBER_KEY!=0
+group by  MEMBER_KEY,APPLICATION_KEY;
+
+INSERT INTO ls_test  (SSID,SNAME)
+select  MEMBER_KEY as SSID,APPLICATION_KEY AS SNAME from fact_page_view where  VISIT_DATE_KEY between 20160822 and 20160831 and MEMBER_KEY!=0
+group by  MEMBER_KEY,APPLICATION_KEY;
+
+select SSID,SNAME,ACTIVE_TIMES,to_number(to_date('20160831')-to_date(CREATE_DATE_KEY)),REGISTER_RESOURCE from (
+select SSID,SNAME from ls_test  group by SSID,SNAME  ) a left join  dim_member b on a.ssid=b.member_bp
+
+
+select FIRST_ACTIVE_DATE_KEY,END_ACTIVE_DATE_KEY,ACTIVE_DAYS,ACTIVE_TIMES,CREATE_DATE_KEY,REGISTER_RESOURCE from dim_member
+
+select count(1),count(distinct(ssid))  from ls_test
+
+
+
+SELECT * FROM FACT_PAGE_VIEW

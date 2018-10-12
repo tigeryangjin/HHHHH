@@ -1,0 +1,20 @@
+declare
+  i  date;
+  i1 varchar2(100);
+begin
+  select nvl(max(t.end_time),
+             to_date('2016-07-19 00:00:00', 'yyyy-mm-dd hh24:mi:ss'))
+    into i
+    from stats_online_good_minute t;
+
+  select to_char(max(e.visit_date), 'yyyymmddhh24mi')
+    into i1
+    from fact_page_view e
+   where e.visit_date_key = to_number(to_char(sysdate, 'yyyymmdd'))
+     and e.page_key in (1924, 2841, 24146, 11586, 355, 38629)
+     and e.ip_geo_key != 0;
+  dbms_output.put_line(to_number(to_char(i, 'yyyymmddhh24mi')));
+  dbms_output.put_line(to_number(to_char(i + 10 / 24 / 60,
+                                         'yyyymmddhh24mi')));
+  dbms_output.put_line(to_number(i1));
+end;

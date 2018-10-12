@@ -291,6 +291,36 @@ CREATE OR REPLACE PACKAGE MEMBER_LABEL_PKG IS
   最后更改日期：
   */
 
+  PROCEDURE MERGE_GOODS_PRICE_SEGMENT;
+  /*
+  功能名:       MERGE_GOODS_PRICE_SEGMENT
+  目的:         商品价位段偏好
+  通过对比用户近一年订过的商品进行判断，在哪个价位段的次数最多即为哪个标签，如有多个价位段出现的次数一样。取高价位段
+  0-200元
+  200-400元
+  400-600元
+  600-800元
+  800-1000元
+  1000-2000元
+  2000-3000元
+  3000元以上
+  作者:         yangjin
+  创建时间：    2018/08/31
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE MERGE_ORDER_RECEIVE_CITY;
+  /*
+  功能名:       MERGE_ORDER_RECEIVE_CITY
+  目的:         会员订单收货城市标签
+  
+  作者:         yangjin
+  创建时间：    2018/08/31
+  最后修改人：
+  最后更改日期：
+  */
+
 END MEMBER_LABEL_PKG;
 /
 CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
@@ -438,22 +468,25 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                SALES.MEMBER_KEY,
                                SALES.GOODS_COMMON_KEY ITEM_CODE,
                                NVL(TV_GOOD.IS_BCST, 0) IS_BCST
-                          FROM (SELECT DISTINCT A.POSTING_DATE_KEY,
-                                                A.ORDER_KEY,
-                                                A.MEMBER_KEY,
-                                                A.GOODS_COMMON_KEY
-                                  FROM FACT_GOODS_SALES A
-                                 WHERE A.POSTING_DATE_KEY >=
-                                       TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
-                                               'YYYYMMDD') /*180天数据统计*/
-                                   AND EXISTS
-                                 (SELECT 1
+                          FROM (SELECT A.POSTING_DATE_KEY,
+                                       A.ORDER_KEY,
+                                       A.MEMBER_KEY,
+                                       A.GOODS_COMMON_KEY
+                                  FROM (SELECT DISTINCT A1.POSTING_DATE_KEY,
+                                                        A1.ORDER_KEY,
+                                                        A1.MEMBER_KEY,
+                                                        A1.GOODS_COMMON_KEY
+                                          FROM FACT_GOODS_SALES A1
+                                         WHERE A1.POSTING_DATE_KEY >=
+                                               TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
+                                                       'YYYYMMDD') /*180天数据统计*/
+                                           AND A1.ORDER_STATE = 1
+                                           AND A1.TRAN_TYPE = 0) A,
+                                       (SELECT G.MEMBER_KEY
                                           FROM FACT_GOODS_SALES G
                                          WHERE G.POSTING_DATE_KEY =
-                                               IN_POSTING_DATE_KEY
-                                           AND G.MEMBER_KEY = A.MEMBER_KEY) /*只处理当天日期的member_key*/
-                                   AND A.ORDER_STATE = 1
-                                   AND A.TRAN_TYPE = 0) SALES,
+                                               IN_POSTING_DATE_KEY) B /*只处理当天日期的member_key*/
+                                 WHERE A.MEMBER_KEY = B.MEMBER_KEY) SALES,
                                (SELECT B.ITEM_CODE,
                                        B.TV_STARTDAY_KEY,
                                        1 IS_BCST /*是否播出*/
@@ -594,21 +627,25 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                SALES.MEMBER_KEY,
                                SALES.GOODS_COMMON_KEY ITEM_CODE,
                                NVL(TV_GOOD.IS_TV, 0) IS_TV
-                          FROM (SELECT DISTINCT A.ORDER_KEY,
-                                                A.MEMBER_KEY,
-                                                A.GOODS_COMMON_KEY
-                                  FROM FACT_GOODS_SALES A
-                                 WHERE A.POSTING_DATE_KEY >=
-                                       TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
-                                               'YYYYMMDD') /*180天数据统计*/
-                                   AND EXISTS
-                                 (SELECT 1
+                          FROM (SELECT A.POSTING_DATE_KEY,
+                                       A.ORDER_KEY,
+                                       A.MEMBER_KEY,
+                                       A.GOODS_COMMON_KEY
+                                  FROM (SELECT DISTINCT A1.POSTING_DATE_KEY,
+                                                        A1.ORDER_KEY,
+                                                        A1.MEMBER_KEY,
+                                                        A1.GOODS_COMMON_KEY
+                                          FROM FACT_GOODS_SALES A1
+                                         WHERE A1.POSTING_DATE_KEY >=
+                                               TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
+                                                       'YYYYMMDD') /*180天数据统计*/
+                                           AND A1.ORDER_STATE = 1
+                                           AND A1.TRAN_TYPE = 0) A,
+                                       (SELECT G.MEMBER_KEY
                                           FROM FACT_GOODS_SALES G
                                          WHERE G.POSTING_DATE_KEY =
-                                               IN_POSTING_DATE_KEY
-                                           AND G.MEMBER_KEY = A.MEMBER_KEY) /*只处理当天日期的member_key*/
-                                   AND A.ORDER_STATE = 1
-                                   AND A.TRAN_TYPE = 0) SALES,
+                                               IN_POSTING_DATE_KEY) B
+                                 WHERE A.MEMBER_KEY = B.MEMBER_KEY) SALES,
                                (SELECT ITEM_CODE, 1 IS_TV /*TV商品*/
                                   FROM DIM_GOOD
                                  WHERE GROUP_ID = 1000) TV_GOOD
@@ -743,21 +780,25 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                SALES.MEMBER_KEY,
                                SALES.GOODS_COMMON_KEY ITEM_CODE,
                                NVL(ONLINE_GOOD.IS_ONLINE, 0) IS_ONLINE
-                          FROM (SELECT DISTINCT A.ORDER_KEY,
-                                                A.MEMBER_KEY,
-                                                A.GOODS_COMMON_KEY
-                                  FROM FACT_GOODS_SALES A
-                                 WHERE A.POSTING_DATE_KEY >=
-                                       TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
-                                               'YYYYMMDD') /*180天数据统计*/
-                                   AND EXISTS
-                                 (SELECT 1
+                          FROM (SELECT A.POSTING_DATE_KEY,
+                                       A.ORDER_KEY,
+                                       A.MEMBER_KEY,
+                                       A.GOODS_COMMON_KEY
+                                  FROM (SELECT DISTINCT A1.POSTING_DATE_KEY,
+                                                        A1.ORDER_KEY,
+                                                        A1.MEMBER_KEY,
+                                                        A1.GOODS_COMMON_KEY
+                                          FROM FACT_GOODS_SALES A1
+                                         WHERE A1.POSTING_DATE_KEY >=
+                                               TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
+                                                       'YYYYMMDD') /*180天数据统计*/
+                                           AND A1.ORDER_STATE = 1
+                                           AND A1.TRAN_TYPE = 0) A,
+                                       (SELECT G.MEMBER_KEY
                                           FROM FACT_GOODS_SALES G
                                          WHERE G.POSTING_DATE_KEY =
-                                               IN_POSTING_DATE_KEY
-                                           AND G.MEMBER_KEY = A.MEMBER_KEY) /*只处理当天日期的member_key*/
-                                   AND A.ORDER_STATE = 1
-                                   AND A.TRAN_TYPE = 0) SALES,
+                                               IN_POSTING_DATE_KEY) B
+                                 WHERE A.MEMBER_KEY = B.MEMBER_KEY) SALES,
                                (SELECT ITEM_CODE, 1 IS_ONLINE /*电商商品*/
                                   FROM DIM_GOOD
                                  WHERE GROUP_ID = 2000) ONLINE_GOOD
@@ -906,21 +947,25 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                SALES.MEMBER_KEY,
                                SALES.GOODS_COMMON_KEY ITEM_CODE,
                                GOOD.IS_SELF_SALES
-                          FROM (SELECT DISTINCT A.ORDER_KEY,
-                                                A.MEMBER_KEY,
-                                                A.GOODS_COMMON_KEY
-                                  FROM FACT_GOODS_SALES A
-                                 WHERE A.POSTING_DATE_KEY >=
-                                       TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
-                                               'YYYYMMDD') /*180天数据统计*/
-                                   AND EXISTS
-                                 (SELECT 1
+                          FROM (SELECT A.POSTING_DATE_KEY,
+                                       A.ORDER_KEY,
+                                       A.MEMBER_KEY,
+                                       A.GOODS_COMMON_KEY
+                                  FROM (SELECT DISTINCT A1.POSTING_DATE_KEY,
+                                                        A1.ORDER_KEY,
+                                                        A1.MEMBER_KEY,
+                                                        A1.GOODS_COMMON_KEY
+                                          FROM FACT_GOODS_SALES A1
+                                         WHERE A1.POSTING_DATE_KEY >=
+                                               TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
+                                                       'YYYYMMDD') /*180天数据统计*/
+                                           AND A1.ORDER_STATE = 1
+                                           AND A1.TRAN_TYPE = 0) A,
+                                       (SELECT G.MEMBER_KEY
                                           FROM FACT_GOODS_SALES G
                                          WHERE G.POSTING_DATE_KEY =
-                                               IN_POSTING_DATE_KEY
-                                           AND G.MEMBER_KEY = A.MEMBER_KEY) /*只处理当天日期的member_key*/
-                                   AND A.ORDER_STATE = 1
-                                   AND A.TRAN_TYPE = 0) SALES,
+                                               IN_POSTING_DATE_KEY) B
+                                 WHERE A.MEMBER_KEY = B.MEMBER_KEY) SALES,
                                (SELECT ITEM_CODE,
                                        CASE
                                          WHEN IS_SHIPPING_SELF = '自送' THEN
@@ -1039,21 +1084,25 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                SYSDATE               LAST_UPDATE_DATE,
                E.LAST_UPDATE_USER_ID LAST_UPDATE_USER_ID
           FROM (SELECT B.MEMBER_KEY, COUNT(B.ORDER_KEY) ORDER_COUNT
-                  FROM (SELECT DISTINCT A.ORDER_KEY,
-                                        A.MEMBER_KEY,
-                                        A.GOODS_COMMON_KEY
-                          FROM FACT_GOODS_SALES A
-                         WHERE A.POSTING_DATE_KEY >=
-                               TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
-                                       'YYYYMMDD') /*180天数据统计*/
-                           AND EXISTS
-                         (SELECT 1
-                                  FROM FACT_GOODS_SALES G
-                                 WHERE G.POSTING_DATE_KEY =
-                                       IN_POSTING_DATE_KEY
-                                   AND G.MEMBER_KEY = A.MEMBER_KEY) /*只处理当天日期的member_key*/
-                           AND A.ORDER_STATE = 1
-                           AND A.TRAN_TYPE = 0) B
+                  FROM (SELECT A.POSTING_DATE_KEY,
+                                       A.ORDER_KEY,
+                                       A.MEMBER_KEY,
+                                       A.GOODS_COMMON_KEY
+                                  FROM (SELECT DISTINCT A1.POSTING_DATE_KEY,
+                                                        A1.ORDER_KEY,
+                                                        A1.MEMBER_KEY,
+                                                        A1.GOODS_COMMON_KEY
+                                          FROM FACT_GOODS_SALES A1
+                                         WHERE A1.POSTING_DATE_KEY >=
+                                               TO_CHAR(TRUNC(IN_POSTING_DATE - 179),
+                                                       'YYYYMMDD') /*180天数据统计*/
+                                           AND A1.ORDER_STATE = 1
+                                           AND A1.TRAN_TYPE = 0) A,
+                                       (SELECT G.MEMBER_KEY
+                                          FROM FACT_GOODS_SALES G
+                                         WHERE G.POSTING_DATE_KEY =
+                                               IN_POSTING_DATE_KEY) B
+                                 WHERE A.MEMBER_KEY = B.MEMBER_KEY) B
                  GROUP BY B.MEMBER_KEY
                 HAVING COUNT(B.ORDER_KEY) >= 4) C,
                (SELECT F.M_LABEL_ID,
@@ -1640,9 +1689,8 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                        AND ORD.MEMBER_KEY = MLL.MEMBER_KEY
                        AND MLH.M_LABEL_ID = MLL.M_LABEL_ID);
           COMMIT;
-          INSERT_ROWS := INSERT_ROWS + 1;
         END LOOP;
-      
+        INSERT_ROWS := VAR_ARRAY.COUNT;
       END;
     
       /*当会员首次订购后，更新未产生首单标志*/
@@ -1664,11 +1712,12 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                   FROM MEMBER_LABEL_LINK A
                  WHERE A.M_LABEL_ID = 42
                  GROUP BY A.MEMBER_KEY) P
-         WHERE EXISTS (SELECT 1
+         WHERE EXISTS (SELECT /*+INDEX(B GS_POSTING_KEY)*/
+                 1
                   FROM FACT_GOODS_SALES B
                  WHERE B.ORDER_STATE = 1
-                      /*订购日期大于未产生首单标签的日期*/
-                   AND B.POSTING_DATE_KEY >= CREATE_DATE
+                      /*订购日期大于未产生首单标签的日期,此条件导致速度太慢*/
+                      --AND B.POSTING_DATE_KEY >= CREATE_DATE
                    AND P.MEMBER_KEY = B.MEMBER_KEY);
       
         FOR I IN 1 .. VAR_ARRAY.COUNT LOOP
@@ -2774,9 +2823,8 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                                              A.MEMBER_KEY,
                                                              1 CNT
                                                FROM FACT_PAGE_VIEW A
-                                              WHERE A.VISIT_DATE_KEY >=
-                                                    TO_CHAR(TRUNC(IN_POSTING_DATE - 65),
-                                                            'YYYYMMDD') /*统计最近65天的访问记录*/
+                                              WHERE A.VISIT_DATE >=
+                                                    IN_POSTING_DATE - 65 /*统计最近65天的访问记录*/
                                                 AND A.MEMBER_KEY <> 0) B
                                       GROUP BY B.MEMBER_KEY) C,
                                     (SELECT E.MEMBER_BP MEMBER_KEY,
@@ -2942,9 +2990,8 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                                FROM FACT_PAGE_VIEW A
                                               WHERE A.APPLICATION_KEY IN
                                                     (10, 20) /*APP*/
-                                                AND A.VISIT_DATE_KEY >=
-                                                    TO_CHAR(TRUNC(IN_POSTING_DATE - 65),
-                                                            'YYYYMMDD') /*统计最近65天的访问记录*/
+                                                AND A.VISIT_DATE >=
+                                                    IN_POSTING_DATE - 65 /*统计最近65天的访问记录*/
                                                 AND A.MEMBER_KEY <> 0) B
                                       GROUP BY B.MEMBER_KEY) C,
                                     (SELECT E.MEMBER_BP MEMBER_KEY,
@@ -3110,9 +3157,8 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
                                                              1 CNT
                                                FROM FACT_PAGE_VIEW A
                                               WHERE A.APPLICATION_KEY = 50 /*微信*/
-                                                AND A.VISIT_DATE_KEY >=
-                                                    TO_CHAR(TRUNC(IN_POSTING_DATE - 65),
-                                                            'YYYYMMDD') /*统计最近65天的访问记录*/
+                                                AND A.VISIT_DATE >=
+                                                    IN_POSTING_DATE - 65 /*统计最近65天的访问记录*/
                                                 AND A.MEMBER_KEY <> 0) B
                                       GROUP BY B.MEMBER_KEY) C,
                                     (SELECT E.MEMBER_BP MEMBER_KEY,
@@ -3578,6 +3624,325 @@ CREATE OR REPLACE PACKAGE BODY MEMBER_LABEL_PKG IS
       SP_SBI_W_ETL_LOG(S_ETL);
       RETURN;
   END MESSAGE_PUSH_LABEL;
+
+  PROCEDURE MERGE_GOODS_PRICE_SEGMENT IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    DELETE_ROWS NUMBER;
+    /*
+    功能说明：  商品价位段偏好
+    作者时间：yangjin  2018-08-31
+    */
+  BEGIN
+    SP_NAME          := 'MEMBER_LABEL_PKG.MERGE_GOODS_PRICE_SEGMENT'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'MEMBER_LABEL_LINK'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*中间表*/
+      EXECUTE IMMEDIATE 'TRUNCATE TABLE MEMBER_LABEL_429_STAGE';
+    
+      INSERT INTO MEMBER_LABEL_429_STAGE
+        (MEMBER_KEY,
+         M_LABEL_ID,
+         M_LABEL_TYPE_ID,
+         CREATE_USER_ID,
+         LAST_UPDATE_USER_ID,
+         W_INSERT_DT,
+         W_UPDATE_DT)
+        SELECT F.MEMBER_KEY,
+               H.M_LABEL_ID,
+               H.M_LABEL_TYPE_ID,
+               H.CREATE_USER_ID,
+               H.LAST_UPDATE_USER_ID,
+               SYSDATE               W_INSERT_DT,
+               SYSDATE               W_UPDATE_DT
+          FROM (SELECT E.MEMBER_KEY,
+                       DECODE(E.GOODS_PRICE_SEG_ID,
+                              1,
+                              'PRICE_SEGMENT_0_200',
+                              2,
+                              'PRICE_SEGMENT_200_400',
+                              3,
+                              'PRICE_SEGMENT_400_600',
+                              4,
+                              'PRICE_SEGMENT_600_800',
+                              5,
+                              'PRICE_SEGMENT_800_1000',
+                              6,
+                              'PRICE_SEGMENT_1000_2000',
+                              7,
+                              'PRICE_SEGMENT_2000-3000',
+                              8,
+                              'PRICE_SEGMENT_MORE_3000') GOODS_PRICE_SEG_NAME
+                  FROM (SELECT D.MEMBER_KEY,
+                               D.GOODS_PRICE_SEG_ID,
+                               D.CNT,
+                               ROW_NUMBER() OVER(PARTITION BY D.MEMBER_KEY ORDER BY D.CNT DESC) RN
+                          FROM (SELECT C.MEMBER_KEY,
+                                       C.GOODS_PRICE_SEG_ID,
+                                       COUNT(1) CNT
+                                  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_KEY,
+                                               B.GOODS_COMMONID,
+                                               B.GOODS_PRICE,
+                                               CASE
+                                                 WHEN B.GOODS_PRICE >= 0 AND
+                                                      B.GOODS_PRICE <= 200 THEN
+                                                  1
+                                                 WHEN B.GOODS_PRICE > 200 AND
+                                                      B.GOODS_PRICE <= 400 THEN
+                                                  2
+                                                 WHEN B.GOODS_PRICE > 400 AND
+                                                      B.GOODS_PRICE <= 600 THEN
+                                                  3
+                                                 WHEN B.GOODS_PRICE > 600 AND
+                                                      B.GOODS_PRICE <= 800 THEN
+                                                  4
+                                                 WHEN B.GOODS_PRICE > 800 AND
+                                                      B.GOODS_PRICE <= 1000 THEN
+                                                  5
+                                                 WHEN B.GOODS_PRICE > 1000 AND
+                                                      B.GOODS_PRICE <= 2000 THEN
+                                                  6
+                                                 WHEN B.GOODS_PRICE > 2000 AND
+                                                      B.GOODS_PRICE <= 3000 THEN
+                                                  7
+                                                 WHEN B.GOODS_PRICE > 3000 THEN
+                                                  8
+                                               END GOODS_PRICE_SEG_ID
+                                          FROM FACT_EC_ORDER_2     A,
+                                               FACT_EC_ORDER_GOODS B
+                                         WHERE A.ORDER_ID = B.ORDER_ID
+                                           AND A.ORDER_STATE >= 20
+                                           AND A.ADD_TIME >=
+                                               TRUNC(SYSDATE) - 365) C
+                                 GROUP BY C.MEMBER_KEY, C.GOODS_PRICE_SEG_ID) D) E
+                 WHERE E.RN = 1) F,
+               (SELECT G.M_LABEL_ID,
+                       G.M_LABEL_NAME,
+                       G.M_LABEL_TYPE_ID,
+                       G.CREATE_USER_ID,
+                       G.LAST_UPDATE_USER_ID
+                  FROM MEMBER_LABEL_HEAD G
+                 WHERE G.M_LABEL_FATHER_ID = 429) H
+         WHERE F.GOODS_PRICE_SEG_NAME = H.M_LABEL_NAME;
+      COMMIT;
+    
+      /*merge MEMBER_LABEL_LINK*/
+      MERGE /*+APPEND*/
+      INTO (SELECT ROW_ID,
+                   MEMBER_KEY,
+                   M_LABEL_ID,
+                   M_LABEL_TYPE_ID,
+                   CREATE_DATE,
+                   CREATE_USER_ID,
+                   LAST_UPDATE_DATE,
+                   LAST_UPDATE_USER_ID
+              FROM MEMBER_LABEL_LINK
+             WHERE M_LABEL_ID BETWEEN 430 AND 437) T
+      USING (SELECT A.MEMBER_KEY,
+                    A.M_LABEL_ID,
+                    A.M_LABEL_TYPE_ID,
+                    A.CREATE_USER_ID,
+                    A.LAST_UPDATE_USER_ID,
+                    A.W_INSERT_DT,
+                    A.W_UPDATE_DT
+               FROM MEMBER_LABEL_429_STAGE A) S
+      ON (T.MEMBER_KEY = S.MEMBER_KEY)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.M_LABEL_ID = S.M_LABEL_ID, T.LAST_UPDATE_DATE = SYSDATE
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ROW_ID,
+           T.MEMBER_KEY,
+           T.M_LABEL_ID,
+           T.M_LABEL_TYPE_ID,
+           T.CREATE_DATE,
+           T.CREATE_USER_ID,
+           T.LAST_UPDATE_DATE,
+           T.LAST_UPDATE_USER_ID)
+        VALUES
+          (MEMBER_LABEL_LINK_SEQ.NEXTVAL,
+           S.MEMBER_KEY,
+           S.M_LABEL_ID,
+           1,
+           SYSDATE,
+           S.CREATE_USER_ID,
+           SYSDATE,
+           S.LAST_UPDATE_USER_ID);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_GOODS_PRICE_SEGMENT;
+
+  PROCEDURE MERGE_ORDER_RECEIVE_CITY IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    DELETE_ROWS NUMBER;
+    /*
+    功能说明：  会员订单收货城市标签
+    作者时间：yangjin  2018-08-31
+    */
+  BEGIN
+    SP_NAME          := 'MEMBER_LABEL_PKG.MERGE_ORDER_RECEIVE_CITY'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'MEMBER_LABEL_LINK'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      /*中间表*/
+      EXECUTE IMMEDIATE 'TRUNCATE TABLE MEMBER_LABEL_438_STAGE';
+    
+      INSERT INTO MEMBER_LABEL_438_STAGE
+        (MEMBER_KEY,
+         M_LABEL_ID,
+         M_LABEL_TYPE_ID,
+         CREATE_USER_ID,
+         LAST_UPDATE_USER_ID,
+         W_INSERT_DT,
+         W_UPDATE_DT)
+        SELECT G.MEMBER_KEY,
+               H.M_LABEL_ID,
+               H.M_LABEL_TYPE_ID,
+               H.CREATE_USER_ID,
+               H.LAST_UPDATE_USER_ID,
+               SYSDATE               W_INSERT_DT,
+               SYSDATE               W_UPDATE_DT
+          FROM (SELECT F.MEMBER_KEY, F.VTEXT2
+                  FROM (SELECT E.MEMBER_KEY,
+                               E.VTEXT2,
+                               E.ORDER_CNT,
+                               ROW_NUMBER() OVER(PARTITION BY E.MEMBER_KEY ORDER BY E.ORDER_CNT DESC) RN
+                          FROM (SELECT D.MEMBER_KEY,
+                                       D.VTEXT2,
+                                       COUNT(D.ORDER_ID) ORDER_CNT
+                                  FROM (SELECT A.ORDER_ID,
+                                               TO_NUMBER(B.CUST_NO) MEMBER_KEY,
+                                               C.VTEXT2
+                                          FROM FACT_EC_ORDER_COMMON A,
+                                               FACT_EC_ORDER_2      B,
+                                               DIM_ZONE             C
+                                         WHERE A.ORDER_ID = B.ORDER_ID
+                                           AND A.TRANSPZONE = C.ZONE
+                                           AND B.ADD_TIME >=
+                                               TRUNC(SYSDATE) - 365) D
+                                 GROUP BY D.MEMBER_KEY, D.VTEXT2) E) F
+                 WHERE F.RN = 1) G,
+               MEMBER_LABEL_HEAD H
+         WHERE G.VTEXT2 = H.M_LABEL_NAME;
+      COMMIT;
+    
+      /*merge MEMBER_LABEL_LINK*/
+      MERGE /*+APPEND*/
+      INTO (SELECT ROW_ID,
+                   MEMBER_KEY,
+                   M_LABEL_ID,
+                   M_LABEL_TYPE_ID,
+                   CREATE_DATE,
+                   CREATE_USER_ID,
+                   LAST_UPDATE_DATE,
+                   LAST_UPDATE_USER_ID
+              FROM MEMBER_LABEL_LINK
+             WHERE M_LABEL_ID BETWEEN 439 AND 783) T
+      USING (SELECT A.MEMBER_KEY,
+                    A.M_LABEL_ID,
+                    A.M_LABEL_TYPE_ID,
+                    A.CREATE_USER_ID,
+                    A.LAST_UPDATE_USER_ID,
+                    A.W_INSERT_DT,
+                    A.W_UPDATE_DT
+               FROM MEMBER_LABEL_438_STAGE A) S
+      ON (T.MEMBER_KEY = S.MEMBER_KEY)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.M_LABEL_ID = S.M_LABEL_ID, T.LAST_UPDATE_DATE = SYSDATE
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.ROW_ID,
+           T.MEMBER_KEY,
+           T.M_LABEL_ID,
+           T.M_LABEL_TYPE_ID,
+           T.CREATE_DATE,
+           T.CREATE_USER_ID,
+           T.LAST_UPDATE_DATE,
+           T.LAST_UPDATE_USER_ID)
+        VALUES
+          (MEMBER_LABEL_LINK_SEQ.NEXTVAL,
+           S.MEMBER_KEY,
+           S.M_LABEL_ID,
+           1,
+           SYSDATE,
+           S.CREATE_USER_ID,
+           SYSDATE,
+           S.LAST_UPDATE_USER_ID);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '无输入参数';
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END MERGE_ORDER_RECEIVE_CITY;
 
 END MEMBER_LABEL_PKG;
 /

@@ -1,0 +1,79 @@
+  ---TV
+  select  round(sum(nums)/count(distinct(visit_date_key))),round(sum(nums1)/count(distinct(visit_date_key))),page_name from (
+ select count(distinct(vid)) nums,count(1) nums1,page_name,visit_date_key  from fact_page_view_hit sd 
+ where
+ --- visit_date_key between 20170728 and  20170803
+ visit_date_key  between 20170719 and  20170726
+ and  sd.application_key in(10,20) and  (sd.page_name like '%SL_TV_%'  or sd.page_name like '%LS_TV_%')
+ group by page_name,visit_date_key)
+ group by page_name;
+ 
+
+
+ ---- B2C_icon  ¶ş¡¢ÍÆ¼öÒ³
+  select  round(sum(nums)/count(distinct(visit_date_key))),round(sum(nums1)/count(distinct(visit_date_key))),page_name from (
+ select count(distinct(vid)) nums,count(1) nums1,page_name,visit_date_key  from fact_page_view_hit sd 
+ where
+ --- visit_date_key between 20170728 and  20170803
+visit_date_key between  20170719 and  20170726
+ and  sd.application_key in(10,20) and  (sd.page_name like '%LS_B2C_%'  or sd.page_name like '%SL_B2C%')
+ group by page_name,visit_date_key)
+ group by page_name;
+ 
+----SL_Category_
+ select  round(sum(nums)/count(distinct(visit_date_key))),round(sum(nums1)/count(distinct(visit_date_key))),page_name from (
+ select count(distinct(vid)) nums,count(1) nums1,page_name,visit_date_key  from fact_page_view_hit sd 
+ where
+  visit_date_key between 20170728 and  20170803
+ --- visit_date_key between between 20170719 and  20170726
+ and  sd.application_key in(10,20) and  sd.page_name like '%SL_Category_%'  
+ group by page_name,visit_date_key)
+ group by page_name;
+
+-----SL_Search_
+ select  round(sum(nums)/count(distinct(visit_date_key))),round(sum(nums1)/count(distinct(visit_date_key))),page_name from (
+ select count(distinct(vid)) nums,count(1) nums1,page_name,visit_date_key  from fact_page_view_hit sd 
+ where
+  visit_date_key between 20170728 and  20170803
+ --- visit_date_key between between 20170719 and  20170726
+ and  sd.application_key in(10,20) and  sd.page_name like '%SL_Search_%'  
+ group by page_name,visit_date_key)
+ group by page_name;
+
+-----SL_Video_
+ select  round(sum(nums)/count(distinct(visit_date_key))),round(sum(nums1)/count(distinct(visit_date_key))),page_name from (
+ select count(distinct(vid)) nums,count(1) nums1,page_name,visit_date_key  from fact_page_view_hit sd 
+ where
+  visit_date_key between 20170728 and  20170803
+ --- visit_date_key between between 20170719 and  20170726
+ and  sd.application_key in(10,20) and  sd.page_name like '%SL_Video_%'  
+ group by page_name,visit_date_key)
+ group by page_name;
+
+-----SL_Good_
+ select  round(sum(nums)/count(distinct(visit_date_key))),round(sum(nums1)/count(distinct(visit_date_key))),page_value from (
+ select count(distinct(vid)) nums,count(1) nums1,page_value,visit_date_key  from fact_page_view_hit sd 
+ where
+  visit_date_key between 20170728 and  20170803
+ ---visit_date_key between 20170719 and  20170726
+ and  sd.application_key in(10,20) and  sd.page_name='SL_Category_Z1'
+ group by page_value,visit_date_key)
+ group by page_value;
+ 
+ 
+
+------------------
+
+ select  round(sum(nums)/count(distinct(visit_date_key))), round(sum(nums1)/count(distinct(visit_date_key))),page_name from (
+ select count(distinct(vid)) nums,count(1) nums1,page_name,visit_date_key  from fact_page_view_hit sd where 
+ visit_date_key between 20170808 and  20170809
+ and  sd.application_key in(10,20) and  sd.page_name like '%_B2C_%'  
+ group by page_name,visit_date_key)
+ group by page_name;
+------
+ select   round(sum(nums)/count(distinct(visit_date_key))), round(sum(nums1)/count(distinct(visit_date_key))),page_name from (
+ select count(distinct(vid)) nums,count(1) nums1,page_name,visit_date_key  from fact_page_view_hit sd where 
+ visit_date_key between 20170808 and  20170809
+ and  sd.application_key in(10,20) and  sd.page_name like '%_TV_%'  
+ group by page_name,visit_date_key)
+ group by page_name;

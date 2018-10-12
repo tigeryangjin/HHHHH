@@ -24,12 +24,32 @@ CREATE OR REPLACE PACKAGE YJ_REPORT IS
   最后更改日期：
   */
 
-  PROCEDURE OPER_MEMBER_REPUR_REPORT_P(IN_DATE_KEY IN NUMBER);
+  PROCEDURE OPER_MEMBER_REPUR_RRT_P(IN_DATE_KEY IN NUMBER);
   /*
-  功能名:       OPER_MEMBER_REPUR_REPORT_P
+  功能名:       OPER_MEMBER_REPUR_RRT_P
   目的:         新媒体中心月报-会员订购频次
   作者:         yangjin
   创建时间：    2018/05/29
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE OPER_EC_PRODUCT_SUMMARY_PROC(IN_DATE_KEY IN NUMBER);
+  /*
+  功能名:       OPER_EC_PRODUCT_SUMMARY_PROC
+  目的:         在架商品汇总报表
+  作者:         yangjin
+  创建时间：    2018/07/06
+  最后修改人：
+  最后更改日期：
+  */
+
+  PROCEDURE OPER_MOBILEHOME_REPORT_PROC(IN_DATE_KEY IN NUMBER);
+  /*
+  功能名:       OPER_MOBILEHOME_REPORT_PROC
+  目的:         在架商品汇总报表
+  作者:         yangjin
+  创建时间：    2018/07/06
   最后修改人：
   最后更改日期：
   */
@@ -459,7 +479,7 @@ CREATE OR REPLACE PACKAGE BODY YJ_REPORT IS
       RETURN;
   END OPER_MEMBER_SOURCE_REPORT_P;
 
-  PROCEDURE OPER_MEMBER_REPUR_REPORT_P(IN_DATE_KEY IN NUMBER) IS
+  PROCEDURE OPER_MEMBER_REPUR_RRT_P(IN_DATE_KEY IN NUMBER) IS
     S_ETL                  W_ETL_LOG%ROWTYPE;
     SP_NAME                S_PARAMETERS2.PNAME%TYPE;
     S_PARAMETER            S_PARAMETERS1.PARAMETER_VALUE%TYPE;
@@ -472,8 +492,8 @@ CREATE OR REPLACE PACKAGE BODY YJ_REPORT IS
     作者时间：yangjin  2018-05-28
     */
   BEGIN
-    SP_NAME          := 'YJ_REPORT.OPER_MEMBER_REPUR_REPORT_P'; --需要手工填入所写PROCEDURE的名称
-    S_ETL.TABLE_NAME := 'OPER_MEMBER_REPURCHASE_REPORT'; --此处需要手工录入该PROCEDURE操作的表格
+    SP_NAME          := 'YJ_REPORT.OPER_MEMBER_REPUR_RRT_P'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'OPER_MEMBER_REPURCHASE_RPT'; --此处需要手工录入该PROCEDURE操作的表格
     S_ETL.PROC_NAME  := SP_NAME;
     S_ETL.START_TIME := SYSDATE;
     S_PARAMETER      := 0;
@@ -500,7 +520,7 @@ CREATE OR REPLACE PACKAGE BODY YJ_REPORT IS
     BEGIN
     
       MERGE /*+APPEND*/
-      INTO OPER_MEMBER_REPURCHASE_REPORT T
+      INTO OPER_MEMBER_REPURCHASE_RPT T
       USING (SELECT C.MONTH_KEY,
                     C.ORDER_COUNT,
                     COUNT(C.CUST_NO) MEMBER_COUNT,
@@ -564,7 +584,441 @@ CREATE OR REPLACE PACKAGE BODY YJ_REPORT IS
       S_ETL.ERR_MSG    := SQLERRM;
       SP_SBI_W_ETL_LOG(S_ETL);
       RETURN;
-  END OPER_MEMBER_REPUR_REPORT_P;
+  END OPER_MEMBER_REPUR_RRT_P;
+
+  PROCEDURE OPER_EC_PRODUCT_SUMMARY_PROC(IN_DATE_KEY IN NUMBER) IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    DELETE_ROWS NUMBER;
+    /*
+    功能说明：  
+    作者时间：yangjin  2018-07-06
+    */
+  BEGIN
+    SP_NAME          := 'YJ_REPORT.OPER_EC_PRODUCT_SUMMARY_PROC'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'OPER_EC_PRODUCT_SUMMARY_REPORT'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      EXECUTE IMMEDIATE 'TRUNCATE TABLE OPER_EC_PRODUCT_SUMMARY_TMP';
+      /*插入中间表*/
+      INSERT INTO OPER_EC_PRODUCT_SUMMARY_TMP
+        (GOODS_ID,
+         ITEM_CODE,
+         ERP_CODE,
+         GOODS_NAME,
+         BRAND_NAME,
+         SUPPLIER_ID,
+         SUPPLIER_NAME,
+         MD,
+         GC_NAME,
+         COST_PRICE,
+         VALID_DATE,
+         GOODS_PRICE,
+         PROFIT_RATE,
+         PROFIT_AMOUNT,
+         GOODS_MARKETPRICE,
+         REPORT_DATE,
+         FIRSTONSELLTIME,
+         IS_SHIPPING_SELF,
+         GOODS_STORAGE,
+         ORDER_QTY,
+         ORDER_AMOUNT,
+         LAST_3D_ORDER_QTY,
+         LAST_7D_ORDER_QTY,
+         LAST_10D_ORDER_QTY)
+        WITH DIM AS
+         (SELECT A.GOODS_ID,
+                 A.ITEM_CODE /*商品编号（SPU）*/,
+                 A.ERP_CODE /*商品编号（SKU）*/,
+                 A.GOODS_NAME /*商品名称*/,
+                 B.BRAND_NAME /*品牌*/,
+                 A.SUPPLIER_ID /*供应商编号*/,
+                 A.SUPPLIER_NAME /*供应商名称*/,
+                 C.MD /*MD*/,
+                 D.GC_NAME /*品类*/,
+                 C1.COST_PRICE /*供货价*/,
+                 TO_NUMBER(C1.VALID_DATE) VALID_DATE /*供货价有效期*/,
+                 A.GOODS_PRICE /*快乐价*/,
+                 DECODE(NVL(A.GOODS_PRICE, 0),
+                        0,
+                        0,
+                        (NVL(A.GOODS_PRICE, 0) - NVL(C1.COST_PRICE, 0)) /
+                        NVL(A.GOODS_PRICE, 0)) PROFIT_RATE /*毛利率*/,
+                 NVL(A.GOODS_PRICE, 0) - NVL(C1.COST_PRICE, 0) PROFIT_AMOUNT /*毛利额*/,
+                 A.GOODS_MARKETPRICE /*市场价*/,
+                 TO_NUMBER(C1.REPORT_DATE) REPORT_DATE /*提报日期*/,
+                 E.FIRSTONSELLTIME /*首次上架时间*/,
+                 CASE
+                   WHEN A.IS_SHIPPING_SELF = 0 THEN
+                    '直配送'
+                   WHEN A.IS_SHIPPING_SELF = 1 THEN
+                    '入库'
+                 END IS_SHIPPING_SELF /*配送方式*/,
+                 A.GOODS_STORAGE /*库存数量*/
+            FROM FACT_EC_GOODS A,
+                 DIM_EC_BRAND B,
+                 DIM_GOOD C,
+                 DIM_GOOD_CLASS D,
+                 FACT_EC_GOODS_COMMON E,
+                 DIM_GOOD_COST C1,
+                 (SELECT M1.ITEM_CODE, M1.MD
+                    FROM DIM_GOOD_MD M1
+                   WHERE NOT EXISTS
+                   (SELECT 1
+                            FROM (SELECT M3.ITEM_CODE, COUNT(1)
+                                    FROM (SELECT DISTINCT M4.ITEM_CODE, M4.MD
+                                            FROM DIM_GOOD_MD M4) M3
+                                   GROUP BY M3.ITEM_CODE
+                                  HAVING COUNT(1) > 1) M2
+                           WHERE M1.ITEM_CODE = M2.ITEM_CODE)) M
+           WHERE A.BRAND_ID = B.BRAND_ID(+)
+             AND A.GOODS_COMMONID = C.GOODS_COMMONID(+)
+             AND C.MATL_GROUP = D.MATKL(+)
+             AND A.GOODS_COMMONID = E.GOODS_COMMONID(+)
+             AND A.ITEM_CODE = M.ITEM_CODE(+)
+             AND A.ITEM_CODE = C1.ITEM_CODE(+)
+             AND C1.VALID_DATE =
+                 TRANSLATE(C1.VALID_DATE,
+                           '0' ||
+                           TRANSLATE(C1.VALID_DATE, '#0123456789', '#'),
+                           '0')
+             AND C.CURRENT_FLG = 'Y'),
+        ORD AS /*订购*/
+         (SELECT H.GOODS_ID,
+                 SUM(H.ORDER_QTY) ORDER_QTY,
+                 SUM(H.ORDER_AMOUNT) ORDER_AMOUNT,
+                 SUM(H.LAST_3D_ORDER_QTY) LAST_3D_ORDER_QTY,
+                 SUM(H.LAST_7D_ORDER_QTY) LAST_7D_ORDER_QTY,
+                 SUM(H.LAST_10D_ORDER_QTY) LAST_10D_ORDER_QTY
+            FROM (SELECT TO_CHAR(F.ADD_TIME, 'YYYYMMDD') ORDER_DATE,
+                         G.GOODS_ID,
+                         G.GOODS_NUM ORDER_QTY,
+                         G.GOODS_NUM * G.GOODS_PAY_PRICE ORDER_AMOUNT,
+                         /*近三天订购件数*/
+                         CASE
+                           WHEN TRUNC(F.ADD_TIME) >= TRUNC(SYSDATE) - 3 THEN
+                            G.GOODS_NUM
+                           ELSE
+                            0
+                         END LAST_3D_ORDER_QTY,
+                         /*近七天订购件数*/
+                         CASE
+                           WHEN TRUNC(F.ADD_TIME) >= TRUNC(SYSDATE) - 7 THEN
+                            G.GOODS_NUM
+                           ELSE
+                            0
+                         END LAST_7D_ORDER_QTY,
+                         /*近十天订购件数*/
+                         CASE
+                           WHEN TRUNC(F.ADD_TIME) >= TRUNC(SYSDATE) - 10 THEN
+                            G.GOODS_NUM
+                           ELSE
+                            0
+                         END LAST_10D_ORDER_QTY
+                    FROM FACT_EC_ORDER_2 F, FACT_EC_ORDER_GOODS G
+                   WHERE F.ORDER_ID = G.ORDER_ID
+                     AND F.ORDER_STATE >= 20) H
+           GROUP BY H.GOODS_ID)
+        SELECT DIM.GOODS_ID,
+               DIM.ITEM_CODE,
+               DIM.ERP_CODE,
+               DIM.GOODS_NAME,
+               DIM.BRAND_NAME,
+               DIM.SUPPLIER_ID,
+               DIM.SUPPLIER_NAME,
+               DIM.MD,
+               DIM.GC_NAME,
+               DIM.COST_PRICE,
+               DIM.VALID_DATE,
+               DIM.GOODS_PRICE,
+               DIM.PROFIT_RATE,
+               DIM.PROFIT_AMOUNT,
+               DIM.GOODS_MARKETPRICE,
+               DIM.REPORT_DATE,
+               DIM.FIRSTONSELLTIME,
+               DIM.IS_SHIPPING_SELF,
+               DIM.GOODS_STORAGE,
+               ORD.ORDER_QTY,
+               ORD.ORDER_AMOUNT,
+               ORD.LAST_3D_ORDER_QTY,
+               ORD.LAST_7D_ORDER_QTY,
+               ORD.LAST_10D_ORDER_QTY
+          FROM DIM, ORD
+         WHERE DIM.GOODS_ID = ORD.GOODS_ID(+);
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+      /*merge进报表*/
+      MERGE /*+APPEND*/
+      INTO OPER_EC_PRODUCT_SUMMARY_REPORT T
+      USING (SELECT A.GOODS_ID,
+                    A.ITEM_CODE,
+                    A.ERP_CODE,
+                    A.GOODS_NAME,
+                    A.BRAND_NAME,
+                    A.SUPPLIER_ID,
+                    A.SUPPLIER_NAME,
+                    A.MD,
+                    A.GC_NAME,
+                    A.COST_PRICE,
+                    A.VALID_DATE,
+                    A.GOODS_PRICE,
+                    A.PROFIT_RATE,
+                    A.PROFIT_AMOUNT,
+                    A.GOODS_MARKETPRICE,
+                    A.REPORT_DATE,
+                    A.FIRSTONSELLTIME,
+                    A.IS_SHIPPING_SELF,
+                    A.GOODS_STORAGE,
+                    A.ORDER_QTY,
+                    A.ORDER_AMOUNT,
+                    A.LAST_3D_ORDER_QTY,
+                    A.LAST_7D_ORDER_QTY,
+                    A.LAST_10D_ORDER_QTY,
+                    SYSDATE              W_INSERT_DT,
+                    SYSDATE              W_UPDATE_DT
+               FROM OPER_EC_PRODUCT_SUMMARY_TMP A) S
+      ON (T.GOODS_ID = S.GOODS_ID)
+      WHEN MATCHED THEN
+        UPDATE
+           SET T.ITEM_CODE          = S.ITEM_CODE,
+               T.ERP_CODE           = S.ERP_CODE,
+               T.GOODS_NAME         = S.GOODS_NAME,
+               T.BRAND_NAME         = S.BRAND_NAME,
+               T.SUPPLIER_ID        = S.SUPPLIER_ID,
+               T.SUPPLIER_NAME      = S.SUPPLIER_NAME,
+               T.MD                 = S.MD,
+               T.GC_NAME            = S.GC_NAME,
+               T.COST_PRICE         = S.COST_PRICE,
+               T.VALID_DATE         = S.VALID_DATE,
+               T.GOODS_PRICE        = S.GOODS_PRICE,
+               T.PROFIT_RATE        = S.PROFIT_RATE,
+               T.PROFIT_AMOUNT      = S.PROFIT_AMOUNT,
+               T.GOODS_MARKETPRICE  = S.GOODS_MARKETPRICE,
+               T.REPORT_DATE        = S.REPORT_DATE,
+               T.FIRSTONSELLTIME    = S.FIRSTONSELLTIME,
+               T.IS_SHIPPING_SELF   = S.IS_SHIPPING_SELF,
+               T.GOODS_STORAGE      = S.GOODS_STORAGE,
+               T.ORDER_QTY          = S.ORDER_QTY,
+               T.ORDER_AMOUNT       = S.ORDER_AMOUNT,
+               T.LAST_3D_ORDER_QTY  = S.LAST_3D_ORDER_QTY,
+               T.LAST_7D_ORDER_QTY  = S.LAST_7D_ORDER_QTY,
+               T.LAST_10D_ORDER_QTY = S.LAST_10D_ORDER_QTY,
+               T.W_UPDATE_DT        = S.W_UPDATE_DT
+      WHEN NOT MATCHED THEN
+        INSERT
+          (T.GOODS_ID,
+           T.ITEM_CODE,
+           T.ERP_CODE,
+           T.GOODS_NAME,
+           T.BRAND_NAME,
+           T.SUPPLIER_ID,
+           T.SUPPLIER_NAME,
+           T.MD,
+           T.GC_NAME,
+           T.COST_PRICE,
+           T.VALID_DATE,
+           T.GOODS_PRICE,
+           T.PROFIT_RATE,
+           T.PROFIT_AMOUNT,
+           T.GOODS_MARKETPRICE,
+           T.REPORT_DATE,
+           T.FIRSTONSELLTIME,
+           T.IS_SHIPPING_SELF,
+           T.GOODS_STORAGE,
+           T.ORDER_QTY,
+           T.ORDER_AMOUNT,
+           T.LAST_3D_ORDER_QTY,
+           T.LAST_7D_ORDER_QTY,
+           T.LAST_10D_ORDER_QTY,
+           T.W_INSERT_DT,
+           T.W_UPDATE_DT)
+        VALUES
+          (S.GOODS_ID,
+           S.ITEM_CODE,
+           S.ERP_CODE,
+           S.GOODS_NAME,
+           S.BRAND_NAME,
+           S.SUPPLIER_ID,
+           S.SUPPLIER_NAME,
+           S.MD,
+           S.GC_NAME,
+           S.COST_PRICE,
+           S.VALID_DATE,
+           S.GOODS_PRICE,
+           S.PROFIT_RATE,
+           S.PROFIT_AMOUNT,
+           S.GOODS_MARKETPRICE,
+           S.REPORT_DATE,
+           S.FIRSTONSELLTIME,
+           S.IS_SHIPPING_SELF,
+           S.GOODS_STORAGE,
+           S.ORDER_QTY,
+           S.ORDER_AMOUNT,
+           S.LAST_3D_ORDER_QTY,
+           S.LAST_7D_ORDER_QTY,
+           S.LAST_10D_ORDER_QTY,
+           S.W_INSERT_DT,
+           S.W_UPDATE_DT);
+      UPDATE_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数IN_DATE_KEY:' || IN_DATE_KEY;
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END OPER_EC_PRODUCT_SUMMARY_PROC;
+
+  PROCEDURE OPER_MOBILEHOME_REPORT_PROC(IN_DATE_KEY IN NUMBER) IS
+    S_ETL       W_ETL_LOG%ROWTYPE;
+    SP_NAME     S_PARAMETERS2.PNAME%TYPE;
+    S_PARAMETER S_PARAMETERS1.PARAMETER_VALUE%TYPE;
+    INSERT_ROWS NUMBER;
+    UPDATE_ROWS NUMBER;
+    DELETE_ROWS NUMBER;
+    /*
+    功能说明：  
+    作者时间：yangjin  2018-07-24
+    */
+  BEGIN
+    SP_NAME          := 'YJ_REPORT.OPER_MOBILEHOME_REPORT_PROC'; --需要手工填入所写PROCEDURE的名称
+    S_ETL.TABLE_NAME := 'OPER_MOBILEHOME_REPORT'; --此处需要手工录入该PROCEDURE操作的表格
+    S_ETL.PROC_NAME  := SP_NAME;
+    S_ETL.START_TIME := SYSDATE;
+    S_PARAMETER      := 0;
+  
+    BEGIN
+      SP_PARAMETER_TWO(SP_NAME, S_PARAMETER);
+      IF S_PARAMETER = '0'
+      THEN
+        S_ETL.END_TIME := SYSDATE;
+        S_ETL.ERR_MSG  := '没有找到对应的过程加载类型数据';
+        SP_SBI_W_ETL_LOG(S_ETL);
+        RETURN;
+      END IF;
+    END;
+  
+    BEGIN
+      DELETE OPER_MOBILEHOME_REPORT A
+       WHERE A.VISIT_DATE = TO_DATE(IN_DATE_KEY, 'YYYYMMDD');
+      COMMIT;
+      /*插入报表*/
+      INSERT INTO OPER_MOBILEHOME_REPORT
+        (VISIT_DATE,
+         UV,
+         ZC,
+         ZD,
+         YXRS,
+         YXDS,
+         YXJE,
+         W_INSERT_DT,
+         W_UPDATE_DT)
+        SELECT TO_DATE(VISIT_DATE_KEY, 'YYYYMMDD') VISIT_DATE,
+               UV,
+               ZC,
+               ZD,
+               YXRS,
+               YXDS,
+               YXJE,
+               SYSDATE W_INSERT_DT,
+               SYSDATE W_UPDATE_DT
+          FROM (SELECT COUNT(DISTINCT IP) UV,
+                       COUNT(DISTINCT C.MEMBER_KEY) ZC,
+                       VISIT_DATE_KEY
+                  FROM (SELECT VID, IP, VISIT_DATE_KEY
+                          FROM FACT_PAGE_VIEW
+                         WHERE VISIT_DATE_KEY = IN_DATE_KEY
+                           AND PAGE_NAME = 'MobileHome'
+                           AND APPLICATION_KEY = 30
+                         GROUP BY VID, IP, VISIT_DATE_KEY) A
+                  LEFT JOIN
+                
+                 (SELECT VID, FIST_IP, START_DATE_KEY, MEMBER_KEY
+                   FROM (SELECT VID, FIST_IP, START_DATE_KEY, MEMBER_KEY
+                           FROM FACT_SESSION
+                          WHERE START_DATE_KEY = IN_DATE_KEY
+                            AND APPLICATION_KEY = 30) S
+                   JOIN (SELECT MEMBER_CRMBP, MEMBER_TIME
+                          FROM FACT_ECMEMBER
+                         WHERE MEMBER_TIME = IN_DATE_KEY) SS
+                     ON S.MEMBER_KEY = SS.MEMBER_CRMBP
+                    AND S.START_DATE_KEY = SS.MEMBER_TIME
+                  GROUP BY VID, FIST_IP, START_DATE_KEY, MEMBER_KEY) C
+                    ON
+                
+                 (A.IP = C.FIST_IP AND A.VISIT_DATE_KEY = C.START_DATE_KEY)
+                
+                 GROUP BY VISIT_DATE_KEY) S
+          LEFT JOIN (SELECT COUNT(DISTINCT VID) ZD, ADD_TIME
+                       FROM FACTEC_ORDER
+                      WHERE ADD_TIME = IN_DATE_KEY
+                        AND ORDER_FROM = 83
+                      GROUP BY ADD_TIME) SS
+            ON S.VISIT_DATE_KEY = SS.ADD_TIME
+        
+          LEFT JOIN (SELECT COUNT(DISTINCT VID) YXRS,
+                            COUNT(1) YXDS,
+                            SUM(ORDER_AMOUNT) YXJE,
+                            ADD_TIME
+                       FROM FACTEC_ORDER
+                      WHERE ADD_TIME = IN_DATE_KEY
+                        AND ORDER_FROM = 83
+                        AND ORDER_STATE > 10
+                      GROUP BY ADD_TIME) SSS
+            ON S.VISIT_DATE_KEY = SSS.ADD_TIME;
+      INSERT_ROWS := SQL%ROWCOUNT;
+      COMMIT;
+    
+    END;
+    /*日志记录模块*/
+    S_ETL.END_TIME       := SYSDATE;
+    S_ETL.ETL_RECORD_INS := INSERT_ROWS;
+    S_ETL.ETL_RECORD_UPD := UPDATE_ROWS;
+    S_ETL.ETL_RECORD_DEL := DELETE_ROWS;
+    S_ETL.ETL_STATUS     := 'SUCCESS';
+    S_ETL.ERR_MSG        := '输入参数IN_DATE_KEY:' || IN_DATE_KEY;
+    S_ETL.ETL_DURATION   := TRUNC((S_ETL.END_TIME - S_ETL.START_TIME) *
+                                  86400);
+    SP_SBI_W_ETL_LOG(S_ETL);
+  EXCEPTION
+    WHEN OTHERS THEN
+      S_ETL.END_TIME   := SYSDATE;
+      S_ETL.ETL_STATUS := 'FAILURE';
+      S_ETL.ERR_MSG    := SQLERRM;
+      SP_SBI_W_ETL_LOG(S_ETL);
+      RETURN;
+  END OPER_MOBILEHOME_REPORT_PROC;
 
 END YJ_REPORT;
 /

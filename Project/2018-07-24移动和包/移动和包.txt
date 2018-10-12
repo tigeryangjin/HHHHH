@@ -1,0 +1,52 @@
+select VISIT_DATE_KEY  日期,UV  进入人数,ZC 注册人数,ZD 总订购人数,YXRS 有效订购人数,YXDS 有效订购单数 ,YXJE  有效订购金额
+  from (select count(distinct IP) UV,
+               count(distinct c.MEMBER_KEY) ZC,
+               VISIT_DATE_KEY
+          from (select VID, IP, VISIT_DATE_KEY
+                  from fact_page_view
+                 where visit_date_key between
+                       to_char(sysdate - 15, 'yyyymmdd') and
+                       to_char(sysdate - 1, 'yyyymmdd')
+                   and page_name = 'MobileHome'
+                   and APPLICATION_KEY = 30
+                 group by VID, IP, VISIT_DATE_KEY) a
+          left join
+        
+         (select VID, FIST_IP, START_DATE_KEY, MEMBER_KEY
+           from (select VID, FIST_IP, START_DATE_KEY, MEMBER_KEY
+                   from fact_session
+                  where START_DATE_KEY between
+                        to_char(sysdate - 15, 'yyyymmdd') and
+                        to_char(sysdate - 1, 'yyyymmdd')
+                    and APPLICATION_KEY = 30) s
+           join (select MEMBER_CRMBP, MEMBER_TIME
+                  from fact_ecmember
+                 where MEMBER_TIME between to_char(sysdate - 15, 'yyyymmdd') and
+                       to_char(sysdate - 1, 'yyyymmdd')) ss
+             on s.MEMBER_KEY = ss.MEMBER_CRMBP
+            and s.START_DATE_KEY = ss.MEMBER_TIME
+          group by VID, FIST_IP, START_DATE_KEY, MEMBER_KEY) c
+            on
+        
+         (a.ip = c.FIST_IP and a.VISIT_DATE_KEY = c.START_DATE_KEY)
+        
+         group by VISIT_DATE_KEY) s
+  left join (select count(distinct vid) zd, add_time
+               from factec_order
+              where add_time between to_char(sysdate - 15, 'yyyymmdd') and
+                    to_char(sysdate - 1, 'yyyymmdd')
+                and order_from = 83
+              group by add_time) ss
+    on s.VISIT_DATE_KEY = ss.add_time
+
+  left join (select count(distinct vid) yxrs,
+                    count(1) yxds,
+                    sum(order_amount) yxje,
+                    add_time
+               from factec_order
+              where add_time between to_char(sysdate - 15, 'yyyymmdd') and
+                    to_char(sysdate - 1, 'yyyymmdd')
+                and order_from = 83
+                and order_state > 10
+              group by add_time) sss
+    on s.VISIT_DATE_KEY = sss.add_time

@@ -1,0 +1,8 @@
+select count(1),count(distinct(ORDER_KEY)) from fact_goods_sales ss where  ss.ORDER_DATE_KEY between 20160801 and 20160804 and  SUPPLIER_KEY in
+ (
+ select distinct(SUPPLIER_KEY) from fact_goods_sales  where   GOODS_COMMON_KEY 
+ in (201346,
+196933,
+201435,
+198397,
+199132))  and ss.order_state=1  and SALES_SOURCE_KEY=20

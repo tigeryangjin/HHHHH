@@ -1,0 +1,19 @@
+
+--- 注册后7天没有产生订单 
+select member_crmbp as member_key,to_number(to_char(to_date(20160626,'yyyy-mm-dd')- 7,'yyyymmdd')) as posting_date_key 
+from fact_ecmember where member_time=to_number(to_char(to_date(20160626,'yyyy-mm-dd')- 7,'yyyymmdd'))
+and member_crmbp not in (
+select distinct(member_key) from fact_order 
+where order_state=1 and sales_source_second_key in (20022,20021,20020,20018,20017) 
+and posting_date_key between to_number(to_char(to_date(20160626,'yyyy-mm-dd')- 7,'yyyymmdd')) and 20160626 and member_key in (
+select member_crmbp from fact_ecmember where member_time=to_number(to_char(to_date(20160626,'yyyy-mm-dd')- 7,'yyyymmdd'))))
+
+--共计订购过1次，15天内未重复订购
+
+select member_key from (
+select member_key,count(1) as nums from fact_order where order_state=1 and sales_source_second_key in (20022,20021,20020,20018,20017) and member_key in (
+select distinct(member_key) as member_key from fact_order where order_state=1 and sales_source_second_key in (20022,20021,20020,20018,20017) 
+and posting_date_key=to_number(to_char(to_date(20160626,'yyyy-mm-dd')- 15,'yyyymmdd'))) group by member_key) p where p.nums=1
+
+
+--

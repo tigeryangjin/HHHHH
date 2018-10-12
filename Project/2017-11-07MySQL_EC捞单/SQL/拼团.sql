@@ -30,7 +30,7 @@ select *
 from ec_group_purchase_task_member
 where
   is_creator = 1
-  and add_time > UNIX_TIMESTAMP('2017-10-20')
+  and add_time > UNIX_TIMESTAMP('2018-08-27')
   and join_state in (1, 6);
 
 #成团数

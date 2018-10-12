@@ -1,0 +1,199 @@
+/*
+商品编号（SPU） 
+商品编号（SKU） 
+商品名称  
+品牌  
+供应商编号 
+供应商名称 
+MD  
+品类  
+--供货价 
+--供货价有效期  
+快乐价 
+--毛利率 
+--毛利额 
+市场价 
+--提报日期  
+上架日期  
+配送方式  
+今日库存  
+总订购件数 
+总订购金额 
+近3天销售 
+近7天销售 
+近10天销售
+
+说明：
+毛利额=快乐价-供货价    
+毛利率=（快乐价-供货价）/快乐价
+*/
+
+CREATE TABLE OPER_EC_PRODUCT_SUMMARY_TMP AS
+WITH DIM AS
+ (SELECT A.GOODS_ID,
+         A.ITEM_CODE /*商品编号（SPU）*/,
+         A.ERP_CODE /*商品编号（SKU）*/,
+         A.GOODS_NAME /*商品名称*/,
+         B.BRAND_NAME /*品牌*/,
+         A.SUPPLIER_ID /*供应商编号*/,
+         A.SUPPLIER_NAME /*供应商名称*/,
+         C.MD /*MD*/,
+         D.GC_NAME /*品类*/,
+         ' ' COL_A,
+         ' ' COL_B,
+         A.GOODS_PRICE /*快乐价*/,
+         ' ' COL_C,
+         ' ' COL_D,
+         A.GOODS_MARKETPRICE /*市场价*/,
+         ' ' COL_E,
+         E.FIRSTONSELLTIME /*首次上架时间*/,
+         CASE
+           WHEN A.IS_SHIPPING_SELF = 0 THEN
+            '直配送'
+           WHEN A.IS_SHIPPING_SELF = 1 THEN
+            '入库'
+         END IS_SHIPPING_SELF /*配送方式*/,
+         A.GOODS_STORAGE /*库存数量*/
+    FROM FACT_EC_GOODS        A,
+         DIM_EC_BRAND         B,
+         DIM_GOOD             C,
+         DIM_EC_GOODS_CLASS   D,
+         FACT_EC_GOODS_COMMON E
+   WHERE A.BRAND_ID = B.BRAND_ID(+)
+     AND A.GOODS_COMMONID = C.GOODS_COMMONID(+)
+     AND A.GC_ID = D.GC_ID
+     AND A.GOODS_COMMONID = E.GOODS_COMMONID(+)
+		 AND C.CURRENT_FLG='Y'),
+ORD AS /*订购*/
+ (SELECT H.GOODS_ID,
+         SUM(H.ORDER_QTY) ORDER_QTY,
+         SUM(H.ORDER_AMOUNT) ORDER_AMOUNT,
+         SUM(H.LAST_3D_ORDER_QTY) LAST_3D_ORDER_QTY,
+         SUM(H.LAST_7D_ORDER_QTY) LAST_7D_ORDER_QTY,
+         SUM(H.LAST_10D_ORDER_QTY) LAST_10D_ORDER_QTY
+    FROM (SELECT TO_CHAR(F.ADD_TIME, 'YYYYMMDD') ORDER_DATE,
+                 G.GOODS_ID,
+                 G.GOODS_NUM ORDER_QTY,
+                 G.GOODS_NUM * G.GOODS_PAY_PRICE ORDER_AMOUNT,
+                 /*近三天订购件数*/
+                 CASE
+                   WHEN TRUNC(F.ADD_TIME) >= TRUNC(SYSDATE) - 3 THEN
+                    G.GOODS_NUM
+                   ELSE
+                    0
+                 END LAST_3D_ORDER_QTY,
+                 /*近七天订购件数*/
+                 CASE
+                   WHEN TRUNC(F.ADD_TIME) >= TRUNC(SYSDATE) - 7 THEN
+                    G.GOODS_NUM
+                   ELSE
+                    0
+                 END LAST_7D_ORDER_QTY,
+                 /*近十天订购件数*/
+                 CASE
+                   WHEN TRUNC(F.ADD_TIME) >= TRUNC(SYSDATE) - 10 THEN
+                    G.GOODS_NUM
+                   ELSE
+                    0
+                 END LAST_10D_ORDER_QTY
+            FROM FACT_EC_ORDER_2 F, FACT_EC_ORDER_GOODS G
+           WHERE F.ORDER_ID = G.ORDER_ID
+             AND F.ORDER_STATE >= 20) H
+   GROUP BY H.GOODS_ID)
+SELECT DIM.ITEM_CODE,
+       DIM.ERP_CODE,
+       DIM.GOODS_NAME,
+       DIM.BRAND_NAME,
+       DIM.SUPPLIER_ID,
+       DIM.SUPPLIER_NAME,
+       DIM.MD,
+       DIM.GC_NAME,
+       DIM.COL_A,
+       DIM.COL_B,
+       DIM.GOODS_PRICE,
+       DIM.COL_C,
+       DIM.COL_D,
+       DIM.GOODS_MARKETPRICE,
+       DIM.COL_E,
+       DIM.FIRSTONSELLTIME,
+       DIM.IS_SHIPPING_SELF,
+       DIM.GOODS_STORAGE,
+       ORD.ORDER_QTY,
+       ORD.ORDER_AMOUNT,
+       ORD.LAST_3D_ORDER_QTY,
+       ORD.LAST_7D_ORDER_QTY,
+       ORD.LAST_10D_ORDER_QTY
+  FROM DIM, ORD
+ WHERE DIM.GOODS_ID = ORD.GOODS_ID;
+
+
+SELECT *
+  FROM OPER_EC_PRODUCT_SUMMARY_REPORT A
+ WHERE NOT EXISTS (SELECT 1
+          FROM OPER_EC_PRODUCT_SUMMARY_TMP B
+         WHERE A.ERP_CODE = B.ERP_CODE);
+
+--add col
+UPDATE OPER_EC_PRODUCT_SUMMARY_REPORT A
+   SET A.PROFIT_AMOUNT = NULL
+ WHERE A.PROFIT_AMOUNT = ' ';
+COMMIT;
+
+UPDATE OPER_EC_PRODUCT_SUMMARY_TMP A
+   SET A.PROFIT_AMOUNT = NULL
+ WHERE A.PROFIT_AMOUNT = ' ';
+COMMIT;
+
+
+select * from OPER_EC_PRODUCT_SUMMARY_REPORT t order by t.goods_price;
+
+
+
+--TMP
+SELECT * FROM W_ETL_LOG A WHERE A.PROC_NAME='YJ_REPORT.OPER_EC_PRODUCT_SUMMARY_PROC' ORDER BY A.START_TIME DESC;
+SELECT * FROM S_PARAMETERS2 FOR UPDATE;
+SELECT * FROM FACT_EC_GOODS_COMMON A WHERE A.GOODS_COMMONID = 175098;
+SELECT * FROM FACT_EC_GOODS A WHERE A.GOODS_COMMONID = 175098;
+SELECT * FROM DIM_EC_GOOD A WHERE A.GOODS_COMMONID = 175098;
+SELECT * FROM DIM_GOOD A WHERE A.GOODS_COMMONID = 175098;
+
+SELECT * FROM FACT_EC_ORDER_2 A WHERE A.ADD_TIME >= DATE '2018-07-05';
+SELECT * FROM FACT_EC_ORDER_2 A WHERE A.ORDER_ID = 3105311;
+SELECT * FROM FACT_EC_ORDER_GOODS A WHERE A.ORDER_ID = 3105311;
+
+SELECT * FROM FACT_DAILY_GOODZAIJIA;
+
+SELECT * FROM DIM_GOOD;
+SELECT * FROM odshappigo.ods_vendor A WHERE A.ZVENDOR = '0000103258';
+
+SELECT DISTINCT A.GC_NAME, A.MATDLT FROM DIM_GOOD A;
+
+SELECT * FROM odshappigo.ods_vendor;
+
+SELECT TO_NUMBER(B.ZVENDOR) SUPPLIER_CODE, B.ZVEN_NAME SUPPLIER_NAME
+  FROM ODSHAPPIGO.ODS_VENDOR B
+ WHERE B.ZVENDOR = TRANSLATE(B.ZVENDOR,
+                             '0' || TRANSLATE(B.ZVENDOR, '#0123456789', '#'),
+                             '0');
+
+SELECT * FROM ALL_SOURCE A WHERE UPPER(A.TEXT) LIKE '%DIM_GOOD%';
+
+SELECT *
+  FROM ALL_ALL_TABLES A
+ WHERE UPPER(A.table_name) LIKE '%ZAIJIA%'
+   AND A.owner = 'DW_USER';
+
+SELECT *
+  FROM ALL_COL_COMMENTS A
+ WHERE A.COLUMN_NAME LIKE '%MD%'
+   AND A.OWNER = 'DW_USER'
+ ORDER BY 3, 2;
+
+SELECT *
+  FROM ALL_COL_COMMENTS A
+ WHERE A.COMMENTS LIKE '%配送%'
+   AND A.OWNER = 'DW_USER'
+ ORDER BY 3, 2;
+
+SELECT * FROM DIM_MATERCATE;
+SELECT * FROM DIM_GOOD_CLASS;

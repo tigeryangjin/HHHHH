@@ -1,0 +1,63 @@
+
+--  有效订购金额（衰减算法）
+select sum(p.nums),
+sum((case when p.yesrs=2016 then p.order_total
+else p.order_total*power(0.89,(2016-p.yesrs))
+end)) as order_amount,p.member_key
+ from (
+
+select trunc(posting_date_key/10000) as yesrs,sum(order_amount) as order_total,count(1) as nums,member_key from fact_order
+where member_key in (select member_key from ls_member_order) and order_state=1 and sales_source_key=20
+group by member_key,trunc(posting_date_key/10000)) p group by p.member_key
+
+
+-- 物料细类 平均订购件数 
+(select o.sales_source_second_key,g.matxl,o.goods_common_key,o.nums from fact_goods_sales o
+left join dim_good g on o.goods_common_key=g.item_code
+where o.posting_date_key between 20160101 and 20160531 and o.sales_source_key=20) p
+group by p.sales_source_second_key,p.matxl order by p.sales_source_second_key desc,p.matxl desc
+
+
+-- TOP100订购商品 
+
+select p.item_code,p.total,pp.goods_name from (
+select (case when goods_key>1000000 then trunc(goods_key/1000)
+       else goods_key end
+) as item_code,sum(nums) as total from fact_goods_sales
+where sales_source_key=20 and order_state=1 and
+member_key in (
+  select member_key from ls_member_order
+  where member_key not in (select member_key from fact_jcfx where age is not null)
+  )
+group by (case when goods_key>1000000 then trunc(goods_key/1000)
+       else goods_key end
+)) p left join dim_ec_good pp on pp.item_code=p.item_code
+
+
+--laiyuan
+
+
+ 
+ 
+ select  count(VISTOR_KEY),HMSC from fact_visitor_register   where  APPLICATION_KEY  in (10,20)  
+  and VISTOR_KEY in
+  
+  ( select  DEVICE_KEY from  ls_member_vid  where   MEMBER_KEY in
+ (select  member_key from 
+(
+select sum(p.nums) as mum,
+sum((case when p.yesrs=2016 then p.order_total else p.order_total*power(0.89,(2016-p.yesrs))end)) as order_amount,
+p.member_key from 
+(select trunc(posting_date_key/10000) as yesrs,
+ sum(order_amount) as order_total,count(1) as nums,
+ member_key from fact_order
+where member_key in
+ (select member_key from ls_member_order) 
+ and order_state=1 
+ and sales_source_key=20
+group by member_key,
+trunc(posting_date_key/10000)) p group by p.member_key
+
+)  where  mum<4 and  order_amount>1818)  
+group  by DEVICE_KEY ,MEMBER_KEY)
+group by HMSC
