@@ -1,0 +1,82 @@
+--1.
+SELECT A.TABLESPACE_NAME,
+       A.FILE_ID,
+       COUNT(1) CNT,
+       SUM(A.BYTES) / 1024 / 1024 MB_BYTES
+  FROM DBA_FREE_SPACE A
+ WHERE A.TABLESPACE_NAME IN
+       ('DWDATA01')
+ GROUP BY A.TABLESPACE_NAME, A.FILE_ID
+ ORDER BY 1, 4 desc, 2;
+
+--2.
+select mapping.file_id,
+       mapping.block_id,
+       mapping.blocks,
+       (mapping.blocks * tbs.block_size) / 1024 / 1024 size_mb,
+       mapping.segment_name,
+       mapping.segment_type,
+       mapping.partition_name
+  from (select file_id,
+               block_id,
+               blocks,
+               segment_name,
+               segment_type,
+               partition_name,
+               tablespace_name
+          from dba_extents
+         where tablespace_name = 'DWDATA01'
+        union all
+        select file_id,
+               block_id,
+               blocks,
+               'Free Space',
+               'Free Space',
+               'Free Space',
+               tablespace_name
+          from dba_free_space
+         where tablespace_name = 'DWDATA01') mapping,
+       dba_tablespaces tbs
+ where tbs.tablespace_name = mapping.tablespace_name
+   and mapping.file_id = 11
+ order by mapping.file_id, mapping.block_id desc;
+
+--3.∆’Õ®±Ì
+SELECT B.COL1, B.OWNER, B.TABLE_NAME, B.COL2
+  FROM (SELECT 1 COL1,
+                A.owner,
+                A.TABLE_NAME,
+                'ALTER TABLE ' || A.OWNER || '.' || A.TABLE_NAME ||
+                ' MOVE PARALLEL(DEGREE 4) NOLOGGING;' COL2
+           FROM DBA_TABLES A
+          WHERE /*A.tablespace_name = 'BDUDATA00'
+            AND*/ A.PARTITIONED = 'NO'
+         UNION ALL
+         SELECT 2 COL1,
+                A.owner,
+                A.TABLE_NAME,
+                'ALTER INDEX ' || A.OWNER || '.' || A.index_name ||
+                ' REBUILD PARALLEL(DEGREE 4) NOLOGGING;' COL2
+           FROM DBA_INDEXES A
+          WHERE /*A.tablespace_name = 'BDUDATA00'                                                                                                                                                             AND*/
+          A.partitioned = 'NO'
+       AND A.INDEX_TYPE = 'NORMAL'
+         UNION ALL
+         SELECT 3 COL1,
+                A.owner,
+                A.TABLE_NAME,
+                'ALTER INDEX ' || A.OWNER || '.' || A.index_name ||
+                ' NOPARALLEL;' COL2
+           FROM DBA_INDEXES A
+          WHERE /*A.tablespace_name = 'BDUDATA00'
+                                                                                                                                                                             AND*/
+          A.partitioned = 'NO'
+       AND A.INDEX_TYPE = 'NORMAL') B
+ WHERE B.TABLE_NAME = 'MSEG_TEMP'
+ ORDER BY B.OWNER, B.TABLE_NAME, B.COL1; 
+ 
+ 
+--tmp
+SELECT * FROM DBA_SEGMENTS A WHERE A.tablespace_name='EXDATA';
+SELECT * FROM ODSHAPPIGO.MSEG;
+

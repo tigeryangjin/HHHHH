@@ -1,0 +1,4 @@
+SELECT min(id), max(id)
+  FROM ODS_PAGEVIEW
+ where isprocessed = 0
+   and id > 385941549;

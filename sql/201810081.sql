@@ -4,7 +4,7 @@ SELECT A.TABLESPACE_NAME,
        COUNT(1) CNT,
        SUM(A.BYTES) / 1024 / 1024 MB_BYTES
   FROM DBA_FREE_SPACE A
- WHERE A.TABLESPACE_NAME = 'BDUDATA00'
+ WHERE A.TABLESPACE_NAME = 'BDUDATA02'
  GROUP BY A.TABLESPACE_NAME, A.FILE_ID
  ORDER BY 3 DESC;
 
@@ -24,7 +24,7 @@ select mapping.file_id,
                partition_name,
                tablespace_name
           from dba_extents
-         where tablespace_name = 'BDUDATA00'
+         where tablespace_name = 'BDUDATA02'
         union all
         select file_id,
                block_id,
@@ -34,13 +34,13 @@ select mapping.file_id,
                'Free Space',
                tablespace_name
           from dba_free_space
-         where tablespace_name = 'BDUDATA00') mapping,
+         where tablespace_name = 'BDUDATA02') mapping,
        dba_tablespaces tbs
  where tbs.tablespace_name = mapping.tablespace_name
-   and mapping.file_id = 55
+   and mapping.file_id = 109
  order by mapping.file_id, mapping.block_id desc;
 
---3.
+--3.分区表
 SELECT A.TABLE_OWNER,
        A.TABLE_NAME,
        A.PARTITION_NAME,
@@ -48,9 +48,9 @@ SELECT A.TABLE_OWNER,
        ' MOVE PARTITION ' || A.PARTITION_NAME ||
        ' PARALLEL(DEGREE 4) NOLOGGING;' COL2
   FROM DBA_TAB_PARTITIONS A
- WHERE A.TABLE_NAME = 'FACT_VISITOR_REGISTER';
+ WHERE A.TABLE_NAME = 'FACT_MEMBER_REGISTER';
 
---4.
+--4.分区索引
 SELECT A.INDEX_OWNER,
        A.INDEX_NAME,
        A.PARTITION_NAME,
@@ -62,8 +62,58 @@ SELECT A.INDEX_OWNER,
    AND A.INDEX_NAME IN
        (SELECT A.INDEX_NAME
           FROM DBA_INDEXES A
-         WHERE A.table_name = 'FACT_VISITOR_REGISTER')
+         WHERE A.table_name = 'FACT_PAGE_VIEW')
  ORDER BY A.INDEX_OWNER, A.INDEX_NAME, A.PARTITION_NAME;
+
+--5.子分区索引
+SELECT A.INDEX_OWNER,
+       A.INDEX_NAME,
+       A.subpartition_name,
+       'ALTER INDEX ' || A.INDEX_OWNER || '.' || A.INDEX_NAME ||
+       ' REBUILD TABLESPACE FPV_INDEX PARTITION ' || A.subpartition_name ||
+       ' PARALLEL(DEGREE 4) NOLOGGING;' COL1
+  FROM DBA_IND_SUBPARTITIONS A
+ WHERE A.INDEX_NAME IN
+       (SELECT A.INDEX_NAME
+          FROM DBA_INDEXES A
+         WHERE A.table_name = 'FACT_PAGE_VIEW')
+   AND A.INDEX_NAME = 'IP_GEO_IDX'
+ ORDER BY A.INDEX_OWNER, A.INDEX_NAME, A.subpartition_name;
+
+--6.普通表
+SELECT B.COL1, B.OWNER, B.TABLE_NAME, B.COL2
+  FROM (SELECT 1 COL1,
+                A.owner,
+                A.TABLE_NAME,
+                'ALTER TABLE ' || A.OWNER || '.' || A.TABLE_NAME ||
+                ' MOVE PARALLEL(DEGREE 4) NOLOGGING;' COL2
+           FROM DBA_TABLES A
+          WHERE A.tablespace_name = 'BDUDATA00'
+            AND A.PARTITIONED = 'NO'
+         UNION ALL
+         SELECT 2 COL1,
+                A.owner,
+                A.TABLE_NAME,
+                'ALTER INDEX ' || A.OWNER || '.' || A.index_name ||
+                ' REBUILD PARALLEL(DEGREE 4) NOLOGGING;' COL2
+           FROM DBA_INDEXES A
+          WHERE /*A.tablespace_name = 'BDUDATA00'
+                    AND*/
+          A.partitioned = 'NO'
+       AND A.INDEX_TYPE = 'NORMAL'
+         UNION ALL
+         SELECT 3 COL1,
+                A.owner,
+                A.TABLE_NAME,
+                'ALTER INDEX ' || A.OWNER || '.' || A.index_name ||
+                ' NOPARALLEL;' COL2
+           FROM DBA_INDEXES A
+          WHERE /*A.tablespace_name = 'BDUDATA00'
+                    AND*/
+          A.partitioned = 'NO'
+       AND A.INDEX_TYPE = 'NORMAL') B
+ WHERE B.TABLE_NAME = 'FACT_VISITOR_ACTIVE'
+ ORDER BY B.OWNER, B.TABLE_NAME, B.COL1;
 
 SELECT * FROM DBA_INDEXES A WHERE A.table_name = 'FACT_VISITOR_REGISTER';
 SELECT * FROM DBA_IND_PARTITIONS;

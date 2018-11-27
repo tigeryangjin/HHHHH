@@ -1,0 +1,290 @@
+/*
+4.复购：     9.10-10.14   新老会员复购率  VS    8.6-9.9   新老会员复购率
+             9.10-10.14   拼拼拼新老会员复购率VS  9.10-10.14 常规会员复购率
+             9.10-10.14   拼拼拼新老会员人均购买次数VS  9.10-10.14 常规会员人均购买次数
+*/
+--临时表
+DROP TABLE YANGJIN.MEMBER_NEW_OLD;
+CREATE TABLE YANGJIN.MEMBER_NEW_OLD AS
+SELECT C.MEMBER_BP, C.ORDER_ID, C.MIN_ORDER_DATE, C.ORDER_TYPE
+  FROM (SELECT TO_NUMBER(B.CUST_NO) MEMBER_BP,
+               B.ORDER_ID,
+               TO_NUMBER(TO_CHAR(B.ADD_TIME, 'YYYYMMDD')) MIN_ORDER_DATE,
+               B.ORDER_TYPE,
+               RANK() OVER(PARTITION BY B.CUST_NO ORDER BY B.ORDER_ID) RN
+          FROM FACT_EC_ORDER_2 B
+         WHERE B.ORDER_STATE >= 20) C
+ WHERE C.RN = 1;
+	 
+--新会员人数
+SELECT COUNT(DISTINCT C.MEMBER_BP)
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-08-06' AND DATE '2018-09-09'
+           AND A.ORDER_STATE >= 20
+           AND EXISTS
+         (SELECT 1
+                  FROM YANGJIN.MEMBER_NEW_OLD B
+                 WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+                   AND B.MIN_ORDER_DATE BETWEEN 20180806 AND 20180909)) C;
+									 
+--新会员订购二次以上人数
+SELECT COUNT(D.MEMBER_BP)
+  FROM (SELECT C.MEMBER_BP, COUNT(1)
+          FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+                  FROM FACT_EC_ORDER_2 A
+                 WHERE A.ADD_TIME BETWEEN DATE '2018-08-06' AND DATE
+                 '2018-09-09'
+                   AND A.ORDER_STATE >= 20
+                   AND EXISTS
+                 (SELECT 1
+                          FROM YANGJIN.MEMBER_NEW_OLD B
+                         WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+                           AND B.MIN_ORDER_DATE BETWEEN 20180806 AND 20180909)) C
+         GROUP BY C.MEMBER_BP
+        HAVING COUNT(1) > 1) D;
+
+
+--老会员人数
+SELECT COUNT(DISTINCT C.MEMBER_BP)
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-08-06' AND DATE '2018-09-09'
+           AND A.ORDER_STATE >= 20
+           AND EXISTS
+         (SELECT 1
+                  FROM YANGJIN.MEMBER_NEW_OLD B
+                 WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+                   AND B.MIN_ORDER_DATE < 20180806 )) C;
+									 
+--老会员订购二次以上人数
+SELECT COUNT(D.MEMBER_BP)
+  FROM (SELECT C.MEMBER_BP, COUNT(1)
+          FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+                  FROM FACT_EC_ORDER_2 A
+                 WHERE A.ADD_TIME BETWEEN DATE '2018-08-06' AND DATE
+                 '2018-09-09'
+                   AND A.ORDER_STATE >= 20
+                   AND EXISTS
+                 (SELECT 1
+                          FROM YANGJIN.MEMBER_NEW_OLD B
+                         WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+                           AND B.MIN_ORDER_DATE < 20180806)) C
+         GROUP BY C.MEMBER_BP
+        HAVING COUNT(1) > 1) D;
+
+--拼拼拼新会员人数
+SELECT COUNT(DISTINCT C.MEMBER_BP)
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE '2018-10-14'
+           AND A.ORDER_STATE >= 20
+           AND A.ORDER_TYPE = 2
+           AND EXISTS
+         (SELECT 1
+                  FROM YANGJIN.MEMBER_NEW_OLD B
+                 WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+                   AND B.MIN_ORDER_DATE BETWEEN 20180910 AND 20181014
+                   AND B.ORDER_TYPE = 2)) C;
+									 
+--拼拼拼新会员订购二次以上人数
+SELECT COUNT(D.MEMBER_BP)
+  FROM (SELECT C.MEMBER_BP, COUNT(1)
+          FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+                  FROM FACT_EC_ORDER_2 A
+                 WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+                 '2018-10-14'
+                   AND A.ORDER_STATE >= 20
+                   AND A.ORDER_TYPE = 2
+                   AND EXISTS
+                 (SELECT 1
+                          FROM YANGJIN.MEMBER_NEW_OLD B
+                         WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+                           AND B.MIN_ORDER_DATE BETWEEN 20180910 AND 20181014
+                           AND B.ORDER_TYPE = 2)) C
+         GROUP BY C.MEMBER_BP
+        HAVING COUNT(1) > 1) D;
+				
+--拼拼拼老会员人数
+SELECT COUNT(DISTINCT C.MEMBER_BP)
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE '2018-10-14'
+           AND A.ORDER_STATE >= 20
+					 AND A.ORDER_TYPE=2
+           AND EXISTS (SELECT 1
+                  FROM YANGJIN.MEMBER_NEW_OLD B
+                 WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+                   AND B.MIN_ORDER_DATE < 20180910)) C;
+									 
+--拼拼拼老会员订购二次以上人数
+SELECT COUNT(D.MEMBER_BP)
+  FROM (SELECT C.MEMBER_BP, COUNT(1)
+          FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+                  FROM FACT_EC_ORDER_2 A
+                 WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+                 '2018-10-14'
+                   AND A.ORDER_STATE >= 20
+                   AND A.ORDER_TYPE = 2
+                   AND EXISTS (SELECT 1
+                          FROM YANGJIN.MEMBER_NEW_OLD B
+                         WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+                           AND B.MIN_ORDER_DATE < 20180910
+                        /*AND B.ORDER_TYPE = 2*/
+                        )) C
+         GROUP BY C.MEMBER_BP
+        HAVING COUNT(1) > 1) D;
+
+
+--拼拼拼新会员人均购买次数
+SELECT COUNT(C.ORDER_ID), COUNT(DISTINCT C.MEMBER_BP)
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE '2018-10-14'
+           AND A.ORDER_STATE >= 20
+           AND A.ORDER_TYPE = 2
+           AND EXISTS
+         (SELECT 1
+                  FROM YANGJIN.MEMBER_NEW_OLD B
+                 WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+                   AND B.MIN_ORDER_DATE BETWEEN 20180910 AND 20181014
+                   AND B.ORDER_TYPE = 2)) C;
+
+--拼拼拼老会员人均购买次数
+SELECT COUNT(C.ORDER_ID), COUNT(DISTINCT C.MEMBER_BP)
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE '2018-10-14'
+           AND A.ORDER_STATE >= 20
+           AND A.ORDER_TYPE = 2
+           AND EXISTS (SELECT 1
+                  FROM YANGJIN.MEMBER_NEW_OLD B
+                 WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+                   AND B.MIN_ORDER_DATE < 20180910)) C;
+
+--拼拼拼总人数
+SELECT COUNT(DISTINCT C.MEMBER_BP)
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+         '2018-10-14'
+           AND A.ORDER_STATE >= 20
+           AND A.ORDER_TYPE = 2) C;
+
+--拼拼拼总人数（订购二次以上）
+SELECT COUNT(D.MEMBER_BP)
+  FROM (SELECT C.MEMBER_BP, COUNT(1)
+          FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+                  FROM FACT_EC_ORDER_2 A
+                 WHERE A.ADD_TIME BETWEEN DATE '2018-08-06' AND DATE
+                 '2018-09-09'
+                   AND A.ORDER_STATE >= 20
+                   AND A.ORDER_TYPE = 2) C
+         GROUP BY C.MEMBER_BP
+        HAVING COUNT(1) > 1) D;
+				
+/*
+5. 会员占比： 9.10-10.14    拼拼拼会员中会员等级占比、男女占比、订购偏好
+*/
+--会员占比
+SELECT C.MEMBER_LEVEL, COUNT(1)
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, B.MEMBER_LEVEL
+          FROM FACT_EC_ORDER_2 A, DIM_MEMBER B
+         WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+           AND A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+         '2018-10-14'
+           AND A.CUST_NO <> 0
+           AND A.ORDER_STATE >= 20) C
+ GROUP BY C.MEMBER_LEVEL;
+
+--拼拼拼会员中会员等级占比
+SELECT C.MEMBER_LEVEL, COUNT(1)
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, B.MEMBER_LEVEL
+          FROM FACT_EC_ORDER_2 A, DIM_MEMBER B
+         WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+           AND A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+         '2018-10-14'
+           AND A.CUST_NO <> 0
+           AND A.ORDER_STATE >= 20
+           AND A.ORDER_TYPE = 2) C
+ GROUP BY C.MEMBER_LEVEL;
+
+--拼拼拼会员男女占比
+SELECT C.MEMBER_AGENDA, COUNT(1)
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, B.MEMBER_AGENDA
+          FROM FACT_EC_ORDER_2 A, DIM_MEMBER B
+         WHERE TO_NUMBER(A.CUST_NO) = B.MEMBER_BP
+           AND A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+         '2018-10-14'
+           AND A.CUST_NO <> 0
+           AND A.ORDER_STATE >= 20
+           /*AND A.ORDER_TYPE = 2*/) C
+ GROUP BY C.MEMBER_AGENDA;
+ 
+--拼拼拼会员订购偏好
+SELECT '[' || F.GC_ID || ']' || F.GC_NAME GC,
+       D.MEMBER_LEVEL,
+       SUM(C.QTY) QTY
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP,
+               A.ORDER_ID,
+               B.GOODS_COMMONID,
+               SUM(B.GOODS_NUM) QTY
+          FROM FACT_EC_ORDER_2 A, FACT_EC_ORDER_GOODS B
+         WHERE A.ORDER_ID = B.ORDER_ID
+           AND A.CUST_NO <> 0
+           AND A.ORDER_STATE >= 20
+           AND A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+         '2018-10-14'
+         GROUP BY TO_NUMBER(A.CUST_NO), A.ORDER_ID, B.GOODS_COMMONID) C,
+       DIM_MEMBER D,
+       DIM_GOOD E,
+       DIM_GOOD_CLASS F
+ WHERE C.MEMBER_BP = D.MEMBER_BP
+   AND C.GOODS_COMMONID = E.GOODS_COMMONID
+   AND E.MATL_GROUP = F.MATKL
+ GROUP BY '[' || F.GC_ID || ']' || F.GC_NAME, D.MEMBER_LEVEL
+ ORDER BY 1, 2;
+
+--会员订购偏好
+SELECT '[' || F.GC_ID || ']' || F.GC_NAME GC,
+       D.MEMBER_LEVEL,
+       SUM(C.QTY) QTY
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP,
+               A.ORDER_ID,
+               B.GOODS_COMMONID,
+               SUM(B.GOODS_NUM) QTY
+          FROM FACT_EC_ORDER_2 A, FACT_EC_ORDER_GOODS B
+         WHERE A.ORDER_ID = B.ORDER_ID
+           AND A.CUST_NO <> 0
+           AND A.ORDER_STATE >= 20
+           AND A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+         '2018-10-14'
+         GROUP BY TO_NUMBER(A.CUST_NO), A.ORDER_ID, B.GOODS_COMMONID) C,
+       DIM_MEMBER D,
+       DIM_GOOD E,
+       DIM_GOOD_CLASS F
+ WHERE C.MEMBER_BP = D.MEMBER_BP
+   AND C.GOODS_COMMONID = E.GOODS_COMMONID
+   AND E.MATL_GROUP = F.MATKL
+ GROUP BY '[' || F.GC_ID || ']' || F.GC_NAME, D.MEMBER_LEVEL
+ ORDER BY 1, 2;
+
+--tmp
+SELECT * FROM Fact_Ecmember;
+select * from tmp_0926 a where a.order_type = 2;
+
+select * from fact_ec_order_2;
+
+SELECT * FROM ALL_SOURCE A WHERE UPPER(A.TEXT) LIKE '%FACT_EC_ORDER_2%';
+SELECT * FROM ALL_SOURCE A WHERE UPPER(A.TEXT) LIKE '%新老%';
+
+
+SELECT C.MEMBER_BP, C.ORDER_ID, C.ADD_TIME, C.ORDER_TYPE
+  FROM (SELECT TO_NUMBER(B.CUST_NO) MEMBER_BP,
+               B.ORDER_ID,
+               TO_NUMBER(TO_CHAR(B.ADD_TIME, 'YYYYMMDD')),
+               B.ORDER_TYPE,
+               RANK() OVER(PARTITION BY B.CUST_NO ORDER BY B.ORDER_ID) RN
+          FROM FACT_EC_ORDER_2 B
+         WHERE B.ORDER_STATE >= 20) C
+ WHERE C.RN = 1;

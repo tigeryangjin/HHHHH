@@ -12,7 +12,8 @@ SELECT A.OWNER,
          WHERE A.TABLE_NAME = B.TABLE_NAME
            AND A.INDEX_NAME = B.INDEX_NAME
            AND B.monitoring = 'NO'
-           AND B.used = 'NO');
+           AND B.used = 'NO')
+ ORDER BY A.OWNER, A.TABLE_NAME, A.INDEX_NAME;
 
 --1.2.¹Ø±ÕË÷Òý¼à¿Ø
 SELECT A.OWNER,

@@ -9,10 +9,13 @@ select a.tablespace_name,
  order by FSFI;
 
 --1.1数据文件空闲空间
-SELECT A.FILE_ID, COUNT(1) CNT, SUM(A.BYTES) / 1024 / 1024 MB_BYTES
+SELECT A.TABLESPACE_NAME,
+       A.FILE_ID,
+       COUNT(1) CNT,
+       SUM(A.BYTES) / 1024 / 1024 MB_BYTES
   FROM DBA_FREE_SPACE A
- WHERE A.TABLESPACE_NAME = 'DB_LOGISTICS'
- GROUP BY A.FILE_ID
+WHERE A.TABLESPACE_NAME = 'FPV_DATA_2015'
+ GROUP BY A.TABLESPACE_NAME, A.FILE_ID
  ORDER BY 3 DESC;
 
 --2.块分布
@@ -31,7 +34,7 @@ select mapping.file_id,
                partition_name,
                tablespace_name
           from dba_extents
-         where tablespace_name = 'BDUDATAORDER'
+         where tablespace_name = 'FPV_DATA_2015'
         union all
         select file_id,
                block_id,
@@ -41,7 +44,7 @@ select mapping.file_id,
                'Free Space',
                tablespace_name
           from dba_free_space
-         where tablespace_name = 'BDUDATAORDER') mapping,
+         where tablespace_name = 'FPV_DATA_2015') mapping,
        dba_tablespaces tbs
  where tbs.tablespace_name = mapping.tablespace_name
    and mapping.file_id = 67

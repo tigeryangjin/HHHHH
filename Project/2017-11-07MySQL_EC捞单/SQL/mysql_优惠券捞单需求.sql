@@ -12,10 +12,20 @@ SELECT
   FROM_UNIXTIME(add_time)     AS '下单时间'
 FROM happigo_ec.ec_order a, happigo_ec.ec_order_common b
 WHERE a.order_id = b.order_id
-      AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2018-10-01 00:00:00') AND
-      add_time <= UNIX_TIMESTAMP('2018-10-08 08:00:00')
+      AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2018-10-18 20:00:00') AND
+      add_time <= UNIX_TIMESTAMP('2018-10-22 00:00:00')
       AND b.voucher_ref IN
-          ('5907', '5908', '5909', '5910', '5911', '5912', '5913', '5914', '5915', '5916', '5917')
+          ('5951',
+            '5952',
+            '5953',
+            '5954',
+            '5955',
+            '5956',
+            '5957',
+            '5963',
+            '5964',
+            '5965',
+            '5966')
 ORDER BY voucher_ref, a.order_id;
 
 /*优惠券商品级捞单SQL*/
@@ -35,11 +45,77 @@ SELECT
   goods_num                   AS '商品数量'
 FROM happigo_ec.ec_order a, happigo_ec.ec_order_common b, happigo_ec.ec_order_goods c
 WHERE a.order_id = b.order_id AND b.order_id = c.order_id AND a.order_id = c.order_id
-      AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2018-10-01 00:00:00') AND
-      add_time < UNIX_TIMESTAMP('2018-10-08 08:00:00')
+      AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2018-10-18 20:00:00') AND
+      add_time < UNIX_TIMESTAMP('2018-10-22 00:00:00')
       AND b.voucher_ref IN
-          ('5907', '5908', '5909', '5910', '5911', '5912', '5913', '5914', '5915', '5916', '5917')
+          ('5951',
+            '5952',
+            '5953',
+            '5954',
+            '5955',
+            '5956',
+            '5957',
+            '5963',
+            '5964',
+            '5965',
+            '5966')
 ORDER BY voucher_ref, a.order_id;
+
+#合计优惠券的商品金额，订单金额
+select
+  券号,
+  COUNT(DISTINCT 顾客编号) 订购人数,
+  COUNT(DISTINCT 订单编号) 订购单数,
+  sum(商品金额)            商品金额,
+  sum(订单金额)            订单金额
+from (
+       SELECT
+         voucher_ref                 AS '券号',
+         voucher_name                AS '券名称',
+         voucher_price               AS '券金额',
+         cust_no                     AS '顾客编号',
+         member_level                AS '会员等级',
+         CONCAT('`', order_sn)       AS '订单编号',
+         CONCAT('`', a.erp_order_no) AS 'ERP订单编号',
+         goods_amount                AS '商品金额',
+         order_amount                AS '订单金额',
+         FROM_UNIXTIME(add_time)     AS '下单时间'
+       FROM happigo_ec.ec_order a, happigo_ec.ec_order_common b
+       WHERE a.order_id = b.order_id
+             AND a.order_state >= '20' AND add_time >= UNIX_TIMESTAMP('2018-11-09 00:00:00') AND
+             add_time < UNIX_TIMESTAMP('2018-11-12 00:00:00')
+             AND b.voucher_ref IN
+                 ('4037',
+                   '4038',
+                   '4039',
+                   '4040',
+                   '4041',
+                   '4042',
+                   '4043',
+                   '4044',
+                   '4045',
+                   '4046',
+                   '4047',
+                   '4048',
+                   '4049',
+                   '4051',
+                   '4052',
+                   '4566',
+                   '4567',
+                   '4568',
+                   '4569',
+                   '4572',
+                   '4573',
+                  '4564',
+                  '4565',
+                  '4980',
+                  '4977',
+                  '4978',
+                  '4555',
+                  '4556'
+                 )
+       ORDER BY voucher_ref, a.order_id) a
+group by 券号;
 
 /*满减数据捞单*/
 SELECT
@@ -70,17 +146,52 @@ ORDER BY discount_mansong_id, a.order_id;
 
 /*优惠券领取使用数*/
 SELECT
-  voucher_t_id,
-  count(1) AS '优惠券领取数'
-FROM ec_voucher
-WHERE voucher_t_id IN ('5029', '5030', '5031', '5032')
-GROUP BY voucher_t_id;
-SELECT
-  voucher_t_id,
-  count(1) AS '优惠券使用数'
-FROM ec_voucher
-WHERE voucher_order_id > 0 AND voucher_t_id IN ('5029', '5030', '5031', '5032')
-GROUP BY voucher_t_id;
+  A.voucher_t_id                 券号,
+  A.voucher_title                券名,
+  A.all_count                    发放数,
+  A.user_count                   使用数,
+  A.user_count * A.voucher_price 使用金额
+FROM (
+       SELECT
+         voucher_t_id,
+         voucher_title,
+         voucher_price,
+         sum(1)          all_count,
+         sum(case when voucher_order_id > 0
+           then 1
+             else 0 end) user_count
+       FROM ec_voucher
+       WHERE voucher_t_id IN ('4037',
+         '4038',
+         '4039',
+         '4040',
+         '4041',
+         '4042',
+         '4043',
+         '4044',
+         '4045',
+         '4046',
+         '4047',
+         '4048',
+         '4049',
+         '4051',
+         '4052',
+         '4566',
+         '4567',
+         '4568',
+         '4569',
+         '4572',
+         '4573',
+                              '4564',
+                              '4565',
+                              '4980',
+                              '4977',
+                              '4978',
+                              '4555',
+                              '4556')
+             AND voucher_active_date >= UNIX_TIMESTAMP('2018-11-09 00:00:00') AND
+             voucher_active_date < UNIX_TIMESTAMP('2018-11-12 00:00:00')
+       group by voucher_t_id, voucher_title) A;
 
 #券号，使用渠道，使用数
 SELECT
@@ -278,3 +389,22 @@ WHERE voucher_t_id IN ('4543',
                        '4545',
                        '4546')
 GROUP BY voucher_t_id;
+
+#领取优惠券的BP号
+SELECT distinct b.member_crmbp
+FROM ec_voucher a, ec_member b
+WHERE a.voucher_owner_id = b.member_id
+      and voucher_t_id IN ('5951',
+  '5952',
+  '5953',
+  '5954',
+  '5955',
+  '5956',
+  '5957',
+  '5963',
+  '5964',
+  '5965',
+  '5966')
+      and a.voucher_active_date >= UNIX_TIMESTAMP('2018-10-15 00:00:00') and
+      a.voucher_active_date < UNIX_TIMESTAMP('2018-10-20 00:00:00')
+order by b.member_crmbp;

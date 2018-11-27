@@ -4,7 +4,8 @@ SELECT A.TABLE_NAME,
        A.AVG_ROW_LEN * A.NUM_ROWS / 1024 / 1024 / 0.9 NEED,
        A.BLOCKS * 8 / 1024 TRUE,
        (A.BLOCKS * 8 / 1024 -
-       A.AVG_ROW_LEN * A.NUM_ROWS / 1024 / 1024 / 0.9) RECOVER_MB
+       A.AVG_ROW_LEN * A.NUM_ROWS / 1024 / 1024 / 0.9) RECOVER_MB,
+			 A.LAST_ANALYZED
   FROM dba_tables A
  WHERE /*tablespace_name = 'PSAPSR3'
    AND*/
@@ -15,8 +16,8 @@ SELECT A.TABLE_NAME,
 --确认表碎片化的SQL
 SELECT B.OWNER "owner",
        B.TABLE_NAME "table_naeme",
-       ROUND(A.SEG_BYTES / 1024 / 1024, 1) "allocated_size(MB)",
-       ROUND(B.TAB_BYTES / 1024 / 1024, 1) "used_size(MB)",
+       ROUND(A.SEG_BYTES / 1024 / 1024, 1) "SEG_BYTES(MB)",
+       ROUND(B.TAB_BYTES / 1024 / 1024, 1) "TAB_BYTES(MB)",
        ROUND((A.SEG_BYTES - B.TAB_BYTES) / 1024 / 1024, 1) "free(MB)",
        ROUND(B.TAB_BYTES / A.SEG_BYTES, 2) "used_per",
        B.LAST_ANALYZED
@@ -33,28 +34,7 @@ SELECT B.OWNER "owner",
    AND B.OWNER IN ('DW_USER', 'ODSHAPPIGO')
  ORDER BY 5 DESC;
 
---
-select c.owner,
-       c.table_name,
-       c.num_rows,
-       c.tab_bytes,
-       c.seg_bytes,
-       c.frag,
-       'call yj_optimization.atss(''' || c.table_name || ''');' s
-  from (select a.owner,
-               a.table_name,
-               a.num_rows,
-               a.avg_row_len * a.num_rows tab_bytes,
-               sum(b.bytes) seg_bytes,
-               (a.avg_row_len * a.num_rows) / sum(b.bytes) frag
-          from dba_tables a, dba_segments b
-         where a.table_name = b.segment_name
-           and a.owner = b.owner
-           and a.owner in ('DW_USER', 'ODSHAPPIGO', 'DW_HAPPIGO')
-         group by a.owner, a.table_name, a.avg_row_len, a.num_rows
-        having a.avg_row_len * a.num_rows / sum(b.bytes) < 0.7
-         order by sum(b.bytes) desc) c
- where rownum <= 100;
+
 
 --
 BEGIN

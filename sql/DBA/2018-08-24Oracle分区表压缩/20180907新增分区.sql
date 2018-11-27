@@ -60,6 +60,25 @@ VALUES LESS THAN (TO_DATE('2020-01-01','YYYY-MM-DD'))
 TABLESPACE BDUDATA04 
 (SUBPARTITION FPV201901 VALUES(201901) TABLESPACE BDUDATA04); 
 
+--4.5.设置索引的默认表空间
+alter index FACT_PAGE_VIEW_IP_INT modify default attributes tablespace fpv_index;
+alter index FPV_VISITOR2 modify default attributes tablespace fpv_index;
+alter index IP_GEO_IDX modify default attributes tablespace fpv_index;
+alter index FPV_MONTH modify default attributes tablespace fpv_index;
+alter index FPV_VISITOR modify default attributes tablespace fpv_index;
+alter index FPV_STAT modify default attributes tablespace fpv_index;
+alter index FPV_ZT modify default attributes tablespace fpv_index;
+alter index FPV_DATETIME modify default attributes tablespace fpv_index;
+alter index FPV_ID modify default attributes tablespace fpv_index;
+alter index FPV_APP_KEY modify default attributes tablespace fpv_index;
+alter index FPV_DATE modify default attributes tablespace fpv_index;
+alter index FPV_HMSC modify default attributes tablespace fpv_index;
+alter index FPV_HOUR modify default attributes tablespace fpv_index;
+alter index FPV_PAGE_KEY modify default attributes tablespace fpv_index;
+alter index FPV_SESSION modify default attributes tablespace fpv_index;
+alter index FPV_VER modify default attributes tablespace fpv_index;
+alter index IPGEO_KEY_IDX modify default attributes tablespace fpv_index;
+
 --5.FACT_VISITOR_REGISTER
 ALTER TABLE FACT_VISITOR_REGISTER ADD PARTITION VR5
 VALUES LESS THAN (TO_DATE('2020-01-01','YYYY-MM-DD')) 

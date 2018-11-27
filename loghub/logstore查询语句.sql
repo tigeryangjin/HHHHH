@@ -21,3 +21,16 @@ projectname=EC.MemberOrderStatus.task|select case when count(1) is null then 0 e
 * and source: 10.33.2.180 and Query_time|select count(1) cnt limit 1000
 
 Wxcms.AdminSendHb.Api and loglevel=error and message=改红包不存在
+
+loglevel=error|SELECT regexp_extract(resource,'/[a-z.]*') as resource,COUNT(*) as c GROUP BY resource ORDER BY c DESC limit 20
+*|SELECT resource,error_count,all_count,round(cast(error_count as double)/cast(all_count as double),4) as error_per FROM (SELECT regexp_extract(resource,'[0-9.]*/[a-z.]*') as resource, sum(CASE WHEN loglevel='error' THEN 1 else 0 end) as error_count,COUNT(*) as all_count FROM log GROUP BY resource) ORDER BY error_per DESC LIMIT 10000
+
+#2018-11-02
+projectname=Ec.Voucher.Exchange.Api|SELECT json_extract_scalar(content,'$.in.cust_no') LIMIT 100000
+
+#2018-11-06
+resource=1.0/ec.orders and method=GET and 'searchContent' and not('searchContent=&')|SELECT count(1)
+
+#2018-11-15
+loglevel=error|SELECT trim(regexp_extract(resource,'/[a-zA-Z.]*'),'/') as resource,COUNT(*) as c GROUP BY resource ORDER BY c DESC limit 20
+loglevel=error|SELECT regexp_extract(resource,'[a-zA-Z][a-zA-Z.]*') as resource,COUNT(*) as c GROUP BY resource ORDER BY c DESC limit 20

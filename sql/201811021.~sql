@@ -1,0 +1,31 @@
+/*
+processstatvtminute
+processstatvtminute5
+processstatvtminute30
+10:app-ios
+20:app-android
+30:3G
+40:¹ÙÍø
+50:Î¢ĞÅ
+
+*/
+
+select w_statid_s.nextval,
+       10,
+       'app-ios',
+       to_number(to_char(i + 1 / 24 / 60, 'yyyymmdd')) as realdate,
+       to_number(to_char(i + 1 / 24 / 60, 'hh24')) as realhour,
+       to_number(to_char(i + 1 / 24 / 60, 'mi')) as realminute,
+       to_date(to_char(i, 'yyyy-mm-dd hh24:mi'), 'yyyy-mm-dd hh24:mi:ss') as start_time,
+       to_date(to_char(i + 1 / 24 / 60, 'yyyy-mm-dd hh24:mi'),
+               'yyyy-mm-dd hh24:mi:ss') as end_time,
+       z2.uvcount,
+       1
+  from (select 1, nvl(count(distinct p3.vid), 1) as uvcount
+        
+          from fact_page_view_vt p3
+         where p3.visit_date >= i
+           and p3.visit_date < i + 1 / 24 / 60
+           and p3.application_key = 10) z2;
+					 
+SELECT * FROM STATS_ONLINE_VISITOR_MINUTE;

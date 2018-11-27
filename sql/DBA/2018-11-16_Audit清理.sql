@@ -1,0 +1,46 @@
+--1.
+SELECT * FROM SYS.AUD$;
+SELECT COUNT(1) FROM SYS.AUD$;
+select min(ntimestamp#) from sys.aud$;
+
+--2.查看审计数据最后归档时间，只有归档的数据才能删除
+SELECT * FROM dba_audit_mgmt_last_arch_ts;
+
+--3.初始化清理Audit的功能，该命令只有在第一次执行时需要运行，default_cleanup_interval =>168代表清理周期为168小时。
+BEGIN
+  sys.DBMS_AUDIT_MGMT.init_cleanup(audit_trail_type         => sys.DBMS_AUDIT_MGMT.AUDIT_TRAIL_ALL,
+                                   default_cleanup_interval => 168);
+END;
+/
+
+--4.确认清除Audit功能是否开启，yes为开启
+BEGIN
+  IF sys.DBMS_AUDIT_MGMT.is_cleanup_initialized(sys.DBMS_AUDIT_MGMT.AUDIT_TRAIL_AUD_STD)
+  THEN
+    DBMS_OUTPUT.put_line('YES');
+  ELSE
+    DBMS_OUTPUT.put_line('NO');
+  END IF;
+END;
+/
+
+--5.设置需要清理的天数，最后一个数字‘7’代表清理‘7’天前的数据（归档时间大于等于清除时间）
+BEGIN
+  sys.DBMS_AUDIT_MGMT.set_last_archive_timestamp(audit_trail_type  => sys.DBMS_AUDIT_MGMT.AUDIT_TRAIL_AUD_STD,
+                                                 last_archive_time => SYSTIMESTAMP - 7 /* Day */);
+END;
+/
+
+--6.执行清除，时间长短受数据量大小影响
+BEGIN
+      sys.DBMS_AUDIT_MGMT.clean_audit_trail(
+      audit_trail_type        => sys.DBMS_AUDIT_MGMT.AUDIT_TRAIL_AUD_STD,
+      use_last_arch_timestamp => TRUE);
+END;
+/
+
+
+--tmp
+SELECT * FROM DBA_SEGMENTS A WHERE A.tablespace_name='SYSTEM';
+SELECT 51824820224 / 1024 / 1024 FROM DUAL;
+

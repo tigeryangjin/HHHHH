@@ -1,0 +1,38 @@
+SELECT A.owner,
+       A.segment_name,
+       A.partition_name,
+       A.segment_type,
+       A.segment_subtype,
+       A.tablespace_name,
+       A.header_file,
+       A.header_block,
+       A.BYTES / 1024 / 1024,
+       A.blocks,
+       A.extents,
+       A.initial_extent,
+       A.next_extent,
+       A.min_extents,
+       A.max_extents,
+       A.max_size,
+       A.retention,
+       A.minretention,
+       A.pct_increase,
+       A.freelists,
+       A.freelist_groups,
+       A.relative_fno,
+       A.BUFFER_POOL,
+       A.flash_cache,
+       A.cell_flash_cache
+  FROM DBA_SEGMENTS A
+ WHERE A.tablespace_name = 'DB_LOGISTICS'
+ ORDER BY A.BYTES DESC;
+
+--2.
+ALTER INDEX ODSHAPPIGO.PK_ZTSCM012 REBUILD TABLESPACE ODSINDEX01 PARALLEL(DEGREE 4) NOLOGGING;
+ALTER INDEX ODSHAPPIGO.PK_ZTSCM012 NOPARALLEL;
+
+ALTER INDEX ODSHAPPIGO.PK_LIPS REBUILD TABLESPACE ODSINDEX01 PARALLEL(DEGREE 4) NOLOGGING;
+ALTER INDEX ODSHAPPIGO.PK_LIPS NOPARALLEL;
+
+ALTER INDEX ODSHAPPIGO.PK_LIKP REBUILD TABLESPACE ODSINDEX01 PARALLEL(DEGREE 4) NOLOGGING;
+ALTER INDEX ODSHAPPIGO.PK_LIKP NOPARALLEL;

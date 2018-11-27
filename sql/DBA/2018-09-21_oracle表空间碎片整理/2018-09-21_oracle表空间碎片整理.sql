@@ -14,7 +14,7 @@ SELECT A.TABLESPACE_NAME,
        COUNT(1) CNT,
        SUM(A.BYTES) / 1024 / 1024 MB_BYTES
   FROM DBA_FREE_SPACE A
---WHERE A.TABLESPACE_NAME = 'BDUDATA00'
+WHERE A.TABLESPACE_NAME = 'FPV_DATA_2015'
  GROUP BY A.TABLESPACE_NAME, A.FILE_ID
  ORDER BY 3 DESC;
 
@@ -34,7 +34,7 @@ select mapping.file_id,
                partition_name,
                tablespace_name
           from dba_extents
-         where tablespace_name = 'BDUDATAORDER'
+         where tablespace_name = 'FPV_DATA_2015'
         union all
         select file_id,
                block_id,
@@ -44,10 +44,10 @@ select mapping.file_id,
                'Free Space',
                tablespace_name
           from dba_free_space
-         where tablespace_name = 'BDUDATAORDER') mapping,
+         where tablespace_name = 'FPV_DATA_2015') mapping,
        dba_tablespaces tbs
  where tbs.tablespace_name = mapping.tablespace_name
-   and mapping.file_id = 67
+   and mapping.file_id = 89
  order by mapping.file_id, mapping.block_id desc;
 
 --2.1.∂Œ¥Û–°
