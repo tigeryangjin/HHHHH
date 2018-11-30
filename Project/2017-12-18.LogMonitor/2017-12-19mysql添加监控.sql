@@ -826,3 +826,9 @@ CALL log_monitor_add('happigo-application', 'Ec.Presale.Fakenum.task');
 Ec.Presale.ShareDiscount.task
 */
 CALL log_monitor_add('happigo-application', 'Ec.Presale.ShareDiscount.task');
+
+/*
+2018-11-29
+Ec.Presale.addcart.task
+*/
+CALL log_monitor_add('happigo-application', 'Ec.Presale.addcart.task');

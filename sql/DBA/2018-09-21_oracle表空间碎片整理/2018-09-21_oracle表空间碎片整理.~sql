@@ -47,7 +47,7 @@ select mapping.file_id,
          where tablespace_name = 'FPV_DATA_2015') mapping,
        dba_tablespaces tbs
  where tbs.tablespace_name = mapping.tablespace_name
-   and mapping.file_id = 67
+   and mapping.file_id = 89
  order by mapping.file_id, mapping.block_id desc;
 
 --2.1.ถฮด๓ะก
