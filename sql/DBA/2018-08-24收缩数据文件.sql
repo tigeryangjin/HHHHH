@@ -28,8 +28,11 @@ SELECT * FROM DBA_DATA_FILES;
 SELECT 1911 - 880 FROM DUAL;
 
 --tmp
-alter database datafile '/data/u01/oradata/bihappigo/acquisition_data_08.dbf' resize 23643M;
-alter database datafile '/data/u01/oradata/bihappigo/logistics04.dbf' resize 13332M;
+alter database datafile '/data/u01/oradata/bihappigo/acquisition_data_08.dbf' resize 28559M;
+alter database datafile '/data/u01/oradata/bihappigo/logistics04.dbf' resize 15296M;
+
+
+
 
 
 
