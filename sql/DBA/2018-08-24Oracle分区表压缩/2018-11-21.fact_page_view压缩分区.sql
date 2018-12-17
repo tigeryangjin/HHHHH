@@ -9,7 +9,32 @@ SELECT 'ALTER TABLE ' || A.TABLE_NAME || ' MOVE SUBPARTITION ' ||
 BEGIN
   DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
                                 TABNAME  => 'FACT_PAGE_VIEW',
-                                PARTNAME => 'FPV201506',
+                                PARTNAME => 'FPV201507',
+                                DEGREE   => 4,
+                                CASCADE  => TRUE);
+  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
+                                TABNAME  => 'FACT_PAGE_VIEW',
+                                PARTNAME => 'FPV201508',
+                                DEGREE   => 4,
+                                CASCADE  => TRUE);
+  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
+                                TABNAME  => 'FACT_PAGE_VIEW',
+                                PARTNAME => 'FPV201509',
+                                DEGREE   => 4,
+                                CASCADE  => TRUE);
+  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
+                                TABNAME  => 'FACT_PAGE_VIEW',
+                                PARTNAME => 'FPV201510',
+                                DEGREE   => 4,
+                                CASCADE  => TRUE);
+  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
+                                TABNAME  => 'FACT_PAGE_VIEW',
+                                PARTNAME => 'FPV201511',
+                                DEGREE   => 4,
+                                CASCADE  => TRUE);
+  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
+                                TABNAME  => 'FACT_PAGE_VIEW',
+                                PARTNAME => 'FPV201512',
                                 DEGREE   => 4,
                                 CASCADE  => TRUE);
 END;

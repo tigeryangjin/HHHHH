@@ -1,0 +1,12 @@
+BEGIN
+  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
+                                TABNAME  => 'FACT_PAGE_VIEW',
+                                PARTNAME => 'FPV201611',
+                                DEGREE   => 4,
+                                CASCADE  => TRUE);
+  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
+                                TABNAME  => 'FACT_PAGE_VIEW',
+                                PARTNAME => 'FPV201612',
+                                DEGREE   => 4,
+                                CASCADE  => TRUE);
+END;
