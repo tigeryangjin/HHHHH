@@ -1,0 +1,31 @@
+???create table DW_USER.TMP11042
+(
+  vid VARCHAR2(200),
+  cnt NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.VID111042IDX on DW_USER.TMP11042 (VID)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

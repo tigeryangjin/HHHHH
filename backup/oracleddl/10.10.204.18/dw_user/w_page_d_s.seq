@@ -1,0 +1,7 @@
+???create sequence DW_USER.W_PAGE_D_S
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 42908
+increment by 1
+cache 20;
+

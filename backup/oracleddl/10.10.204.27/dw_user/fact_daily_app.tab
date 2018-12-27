@@ -1,0 +1,72 @@
+???create table DW_USER.FACT_DAILY_APP
+(
+  visit_date_key NUMBER(10),
+  iosnewvt       NUMBER(10),
+  aznewvt        NUMBER(10),
+  newvtcount     NUMBER(10),
+  iosvt          NUMBER(10),
+  azvt           NUMBER(10),
+  uvcnt          NUMBER(10),
+  iosmembercnt   NUMBER(10),
+  cntstart       NUMBER(10),
+  lcrate         NUMBER(10,2),
+  tvsmrs         NUMBER(10),
+  pvcnt          NUMBER(10),
+  avgpv          NUMBER(10,2),
+  avglife_time   NUMBER(10,2),
+  newvtrate      NUMBER(10,2),
+  bonusrate      NUMBER(10,2),
+  orderrate      NUMBER(10,3),
+  andmembercnt   NUMBER(10),
+  zbsmrs         NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_APP.visit_date_key
+  is '访问时间key';
+comment on column DW_USER.FACT_DAILY_APP.iosnewvt
+  is 'IOS新用户终端访问量（当日注册）';
+comment on column DW_USER.FACT_DAILY_APP.aznewvt
+  is 'android新用户终端访问量（当日注册）';
+comment on column DW_USER.FACT_DAILY_APP.newvtcount
+  is '新用户终端访问（当日注册）';
+comment on column DW_USER.FACT_DAILY_APP.iosvt
+  is 'IOS用户终端访问量';
+comment on column DW_USER.FACT_DAILY_APP.azvt
+  is 'android用户终端访问量';
+comment on column DW_USER.FACT_DAILY_APP.uvcnt
+  is '用户终端访问';
+comment on column DW_USER.FACT_DAILY_APP.iosmembercnt
+  is 'IOS注册用户数';
+comment on column DW_USER.FACT_DAILY_APP.cntstart
+  is '访问会话数';
+comment on column DW_USER.FACT_DAILY_APP.lcrate
+  is '新注册用户隔日访问率';
+comment on column DW_USER.FACT_DAILY_APP.tvsmrs
+  is 'TV扫码人数';
+comment on column DW_USER.FACT_DAILY_APP.pvcnt
+  is '合计PV数';
+comment on column DW_USER.FACT_DAILY_APP.avgpv
+  is '平均浏览页面数';
+comment on column DW_USER.FACT_DAILY_APP.avglife_time
+  is '平均访问时间';
+comment on column DW_USER.FACT_DAILY_APP.newvtrate
+  is '新用户访问比率';
+comment on column DW_USER.FACT_DAILY_APP.bonusrate
+  is '跳出率';
+comment on column DW_USER.FACT_DAILY_APP.orderrate
+  is '订购用户比率';
+comment on column DW_USER.FACT_DAILY_APP.andmembercnt
+  is 'android注册用户数';
+comment on column DW_USER.FACT_DAILY_APP.zbsmrs
+  is 'ZB扫码人数？？';
+

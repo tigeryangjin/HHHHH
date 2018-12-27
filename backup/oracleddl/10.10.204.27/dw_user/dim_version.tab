@@ -1,0 +1,34 @@
+???create table DW_USER.DIM_VERSION
+(
+  id               NUMBER(10),
+  ver_key          NUMBER(10),
+  ver_name         VARCHAR2(20),
+  application_key  NUMBER(10),
+  application_name VARCHAR2(20),
+  create_date      DATE
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_VERSION
+  is '版本维表';
+comment on column DW_USER.DIM_VERSION.ver_key
+  is '版本KEY';
+comment on column DW_USER.DIM_VERSION.ver_name
+  is '版本名称';
+comment on column DW_USER.DIM_VERSION.application_key
+  is '应用KEY';
+comment on column DW_USER.DIM_VERSION.application_name
+  is '应用';
+comment on column DW_USER.DIM_VERSION.create_date
+  is '建立时间';
+

@@ -1,0 +1,21 @@
+???create table DW_USER.OPER_M_ORDER_3_199
+(
+  member_key      NUMBER(20),
+  last_date_key   NUMBER(10),
+  order_total     NUMBER(10),
+  record_date_key NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_M_ORDER_3_199
+  is '自然年内有效订购金额大于等于199的总计有10次以上的会员';
+

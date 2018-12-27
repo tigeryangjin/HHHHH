@@ -1,0 +1,36 @@
+???create table DW_USER.WEIXIN_HUAXIANG_REAL
+(
+  member_key   NUMBER,
+  member_level VARCHAR2(20),
+  genda        VARCHAR2(10),
+  age          NUMBER,
+  city         VARCHAR2(30),
+  hy           NUMBER,
+  dg           NUMBER,
+  tot          NUMBER,
+  nums         NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.MKHEXIN_APP_IDX on DW_USER.WEIXIN_HUAXIANG_REAL (MEMBER_KEY)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

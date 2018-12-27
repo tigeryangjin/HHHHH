@@ -1,0 +1,46 @@
+???create table DW_HAPPIGO.R_JOB
+(
+  id_job               INTEGER not null,
+  id_directory         INTEGER,
+  name                 VARCHAR2(255),
+  description          CLOB,
+  extended_description CLOB,
+  job_version          VARCHAR2(255),
+  job_status           INTEGER,
+  id_database_log      INTEGER,
+  table_name_log       VARCHAR2(255),
+  created_user         VARCHAR2(255),
+  created_date         DATE,
+  modified_user        VARCHAR2(255),
+  modified_date        DATE,
+  use_batch_id         CHAR(1),
+  pass_batch_id        CHAR(1),
+  use_logfield         CHAR(1),
+  shared_file          VARCHAR2(255)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table DW_HAPPIGO.R_JOB
+  add primary key (ID_JOB)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

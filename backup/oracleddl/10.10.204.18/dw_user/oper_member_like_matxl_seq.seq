@@ -1,0 +1,7 @@
+???create sequence DW_USER.OPER_MEMBER_LIKE_MATXL_SEQ
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 77470617
+increment by 1
+cache 20;
+

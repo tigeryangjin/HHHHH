@@ -1,0 +1,26 @@
+???create table DW_USER.YUNYING1023
+(
+  visit_date     DATE,
+  visit_date_key NUMBER(10),
+  vid            VARCHAR2(1000),
+  page_name      VARCHAR2(500),
+  page_value     VARCHAR2(3000),
+  member_key     NUMBER(20),
+  ip             VARCHAR2(500),
+  通路业务分类         VARCHAR2(6),
+  激活日期           NUMBER(10),
+  scan_date_key  NUMBER(10),
+  新老用户           CHAR(3)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

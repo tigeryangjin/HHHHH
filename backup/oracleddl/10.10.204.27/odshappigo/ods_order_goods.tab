@@ -1,0 +1,54 @@
+???create table ODSHAPPIGO.ODS_ORDER_GOODS
+(
+  rec_id       NUMBER(11) not null,
+  order_id     VARCHAR2(50),
+  goods_id     NUMBER(11),
+  spec_id      NUMBER(11),
+  sku          VARCHAR2(100),
+  goods_name   VARCHAR2(500),
+  market_price NUMBER(10,2),
+  goods_price  NUMBER(10,2),
+  points       NUMBER(10,2),
+  goods_number NUMBER(11)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index ODSHAPPIGO.ORDER_GOODS_IDX on ODSHAPPIGO.ODS_ORDER_GOODS (ORDER_ID)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create unique index ODSHAPPIGO.REC_ID_IDX on ODSHAPPIGO.ODS_ORDER_GOODS (REC_ID)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table ODSHAPPIGO.ODS_ORDER_GOODS
+  add constraint REC_IDD unique (REC_ID);
+

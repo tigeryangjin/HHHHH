@@ -1,0 +1,36 @@
+???create table DW_USER.S_PARAMETERS
+(
+  id              NUMBER(10),
+  startid         NUMBER(20),
+  endid           NUMBER(20),
+  procedures_name VARCHAR2(100),
+  update_time     DATE,
+  status          NUMBER(5),
+  totalrow        NUMBER(10)
+)
+tablespace DWDATA02
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.S_PARAMETERS.id
+  is '索引';
+comment on column DW_USER.S_PARAMETERS.startid
+  is '上次更新起点ID';
+comment on column DW_USER.S_PARAMETERS.endid
+  is '上次更新结束ID';
+comment on column DW_USER.S_PARAMETERS.procedures_name
+  is '过程名';
+comment on column DW_USER.S_PARAMETERS.update_time
+  is '更新时间';
+comment on column DW_USER.S_PARAMETERS.status
+  is '状态0为不更新，1为更新';
+comment on column DW_USER.S_PARAMETERS.totalrow
+  is '每次更新条数';
+

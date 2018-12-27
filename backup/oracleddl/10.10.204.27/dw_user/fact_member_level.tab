@@ -1,0 +1,30 @@
+???create table DW_USER.FACT_MEMBER_LEVEL
+(
+  member_key   NUMBER,
+  member_level VARCHAR2(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.MLEVEL_IDX on DW_USER.FACT_MEMBER_LEVEL (MEMBER_LEVEL)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

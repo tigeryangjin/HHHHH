@@ -1,0 +1,20 @@
+???create table DW_USER.LS_EC_GOODS_COMMON
+(
+  item_code  NUMBER(10),
+  goods_name VARCHAR2(500),
+  add_time   NUMBER(10),
+  sh_time    NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

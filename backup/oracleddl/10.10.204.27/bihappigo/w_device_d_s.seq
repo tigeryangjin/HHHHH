@@ -1,0 +1,7 @@
+???create sequence BIHAPPIGO.W_DEVICE_D_S
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 79521
+increment by 1
+cache 20;
+

@@ -1,0 +1,62 @@
+???create table DW_USER.OPER_PRODUCT_DAILY_EVAL_S
+(
+  geval_addtime_key NUMBER(10) not null,
+  item_code         NUMBER(20) not null,
+  low_eval_count    NUMBER,
+  med_eval_count    NUMBER,
+  high_eval_count   NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_PRODUCT_DAILY_EVAL_S
+  is '商品运营处商品日报-评价中间表
+by yangjin
+2018-01-24';
+comment on column DW_USER.OPER_PRODUCT_DAILY_EVAL_S.geval_addtime_key
+  is '日期key';
+comment on column DW_USER.OPER_PRODUCT_DAILY_EVAL_S.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_PRODUCT_DAILY_EVAL_S.low_eval_count
+  is '差评次数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_EVAL_S.med_eval_count
+  is '中评次数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_EVAL_S.high_eval_count
+  is '好评次数';
+create index DW_USER.OPER_PRODUCT_DAILY_EVAL_S_I1 on DW_USER.OPER_PRODUCT_DAILY_EVAL_S (ITEM_CODE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.OPER_PRODUCT_DAILY_EVAL_S
+  add constraint OPER_PRODUCT_DAILY_EVAL_S_PK primary key (GEVAL_ADDTIME_KEY, ITEM_CODE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.OPER_PRODUCT_DAILY_EVAL_S_PK nologging;
+

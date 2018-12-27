@@ -1,0 +1,27 @@
+???create table DW_HAPPIGO.FACT_SEARCH
+(
+  id               NUMBER(20) not null,
+  vid              VARCHAR2(50),
+  member_key       NUMBER(20) default 0,
+  ip               VARCHAR2(100),
+  create_date      DATE,
+  skw              VARCHAR2(1500),
+  application_key  NUMBER(10) default 0,
+  application_name VARCHAR2(50),
+  visitor_key      NUMBER(20) default 0,
+  ip_geo_key       NUMBER(20) default 0,
+  create_date_key  NUMBER(20),
+  search_key       NUMBER(20) not null
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 8K
+    minextents 1
+    maxextents unlimited
+  );
+

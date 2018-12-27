@@ -1,0 +1,81 @@
+???create table DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE
+(
+  id               NUMBER(10),
+  application_key  NUMBER(10),
+  statdate         NUMBER(10),
+  stathour         NUMBER(10),
+  statminute       NUMBER(10),
+  start_time       DATE,
+  end_time         DATE,
+  onlinevisitor    NUMBER(10),
+  frequency        NUMBER(10),
+  application_name VARCHAR2(50)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE.id
+  is '序号';
+comment on column DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE.application_key
+  is '应用渠道编号';
+comment on column DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE.statdate
+  is '统计日期';
+comment on column DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE.stathour
+  is '统计小时';
+comment on column DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE.statminute
+  is '统计分钟';
+comment on column DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE.start_time
+  is '开始时间';
+comment on column DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE.end_time
+  is '结束时间';
+comment on column DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE.onlinevisitor
+  is '在线人数';
+comment on column DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE.frequency
+  is '统计频率';
+comment on column DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE.application_name
+  is '应用渠道名称';
+create index DW_HAPPIGO.STATAPP_IDX on DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE (APPLICATION_KEY)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_HAPPIGO.STATID_IDX on DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE (ID)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_HAPPIGO.STATSTART_IDX on DW_HAPPIGO.STATS_ONLINE_VISITOR_MINUTE (STATDATE)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

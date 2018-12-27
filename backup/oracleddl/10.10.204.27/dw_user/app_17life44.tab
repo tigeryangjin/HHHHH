@@ -1,0 +1,17 @@
+???create table DW_USER.APP_17LIFE44
+(
+  zone174 VARCHAR2(100),
+  tot174  NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

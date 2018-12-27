@@ -28,24 +28,16 @@ SELECT * FROM DBA_DATA_FILES;
 SELECT 1911 - 880 FROM DUAL;
 
 --tmp
-alter database datafile '/data/u01/oradata/bihappigo/fpv_data_2017_00.dbf' resize 32023M;
-alter database datafile '/data/u01/oradata/bihappigo/fpv_index12.dbf' resize 29939M;
-alter database datafile '/data/u01/oradata/bihappigo/fpv_data_2017_03.dbf' resize 26052M;
-alter database datafile '/data/u01/oradata/bihappigo/bsdudata010.dbf' resize 20128M;
-alter database datafile '/data/u01/oradata/bihappigo/logistics04.dbf' resize 20066M;
-alter database datafile '/data/u01/oradata/bihappigo/bsdudata030.dbf' resize 19708M;
-alter database datafile '/data/u01/oradata/bihappigo/bsdudata020.dbf' resize 19605M;
-alter database datafile '/data/u01/oradata/bihappigo/bsdudata000.dbf' resize 19555M;
-alter database datafile '/data/u01/oradata/bihappigo/exdata01.dbf' resize 16280M;
-alter database datafile '/data/u01/oradata/bihappigo/exdata00.dbf' resize 16235M;
-alter database datafile '/data/u01/oradata/bihappigo/exdata03.dbf' resize 16181M;
-alter database datafile '/data/u01/oradata/bihappigo/exdata02.dbf' resize 16129M;
-alter database datafile '/data/u01/oradata/bihappigo/fact_par_data_00.dbf' resize 6546M;
-alter database datafile '/data/u01/oradata/bihappigo/fact_par_index_00.dbf' resize 5816M;
-alter database datafile '/data/u01/oradata/bihappigo/fpv_data_2016_03.dbf' resize 6176M;
-alter database datafile '/data/u01/oradata/bihappigo/acquisition_data_09.dbf' resize 4920M;
-alter database datafile '/data/u01/oradata/bihappigo/fpv_data_2017_04.dbf' resize 4752M;
-alter database datafile '/data/u01/oradata/bihappigo/odsdata01c.dbf' resize 1622M;
+alter database datafile '/data/u01/oradata/bihappigo/acquisition_data_09.dbf' resize 5256M;
+alter database datafile '/data/u01/oradata/bihappigo/bsdudata010.dbf' resize 20138M;
+alter database datafile '/data/u01/oradata/bihappigo/dim_index00.dbf' resize 4412M;
+alter database datafile '/data/u01/oradata/bihappigo/fpv_data_2017_02.dbf' resize 16800M;
+alter database datafile '/data/u01/oradata/bihappigo/logistics04.dbf' resize 21741M;
+alter database datafile '/data/u01/oradata/bihappigo/odsdata01c.dbf' resize 3236M;
+
+
+
+
 
 
 

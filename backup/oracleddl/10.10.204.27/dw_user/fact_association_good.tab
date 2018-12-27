@@ -1,0 +1,40 @@
+???create table DW_USER.FACT_ASSOCIATION_GOOD
+(
+  item_code          NUMBER(10),
+  item_code_relation NUMBER(10),
+  nums               NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACT_ASSOCIATION_GOOD
+  is 'by bobo';
+comment on column DW_USER.FACT_ASSOCIATION_GOOD.item_code
+  is '商品编号';
+comment on column DW_USER.FACT_ASSOCIATION_GOOD.item_code_relation
+  is '关联商品';
+comment on column DW_USER.FACT_ASSOCIATION_GOOD.nums
+  is '关联次数';
+create index DW_USER.FAG_ITEM_CODES on DW_USER.FACT_ASSOCIATION_GOOD (ITEM_CODE, ITEM_CODE_RELATION)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,56 @@
+???create table DW_USER.FACT_EC_VOUCHER_BATCH
+(
+  id           NUMBER(10),
+  voucher_id   VARCHAR2(300),
+  member_id    VARCHAR2(60),
+  cust_no      VARCHAR2(60),
+  state        NUMBER(10),
+  addtime      DATE,
+  remarks      VARCHAR2(600),
+  voucher_key  VARCHAR2(300),
+  out_sn       VARCHAR2(150),
+  erp_order_no VARCHAR2(150),
+  send_type    VARCHAR2(60),
+  w_insert_dt  DATE,
+  w_update_dt  DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_VOUCHER_BATCH
+  is 'ec后台优惠券批量发放表
+by yangjin
+周煜轩说此表已经废除';
+comment on column DW_USER.FACT_EC_VOUCHER_BATCH.id
+  is '自增ID';
+comment on column DW_USER.FACT_EC_VOUCHER_BATCH.voucher_id
+  is '优惠券ID';
+comment on column DW_USER.FACT_EC_VOUCHER_BATCH.member_id
+  is '用户ID';
+comment on column DW_USER.FACT_EC_VOUCHER_BATCH.cust_no
+  is 'bp号';
+comment on column DW_USER.FACT_EC_VOUCHER_BATCH.state
+  is '发放状态';
+comment on column DW_USER.FACT_EC_VOUCHER_BATCH.addtime
+  is '发放时间';
+comment on column DW_USER.FACT_EC_VOUCHER_BATCH.remarks
+  is '发放备注';
+comment on column DW_USER.FACT_EC_VOUCHER_BATCH.out_sn
+  is '外部业务单号';
+comment on column DW_USER.FACT_EC_VOUCHER_BATCH.erp_order_no
+  is 'ERP订单号';
+comment on column DW_USER.FACT_EC_VOUCHER_BATCH.send_type
+  is '活动类型';
+comment on column DW_USER.FACT_EC_VOUCHER_BATCH.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_EC_VOUCHER_BATCH.w_update_dt
+  is '记录更新时间';
+

@@ -1,0 +1,42 @@
+???create table DW_USER.FACT_VOUCHER20160516
+(
+  voucher_id          NUMBER(20),
+  voucher_code        VARCHAR2(200),
+  voucher_t_id        NUMBER(20),
+  voucher_title       VARCHAR2(500),
+  voucher_desc        VARCHAR2(500),
+  start_date_key      NUMBER(10),
+  voucher_price       NUMBER(10,2),
+  voucher_limit       NUMBER(10,2),
+  member_key          NUMBER(20),
+  remark              VARCHAR2(500),
+  end_date_key        NUMBER(10),
+  voucher_active_date NUMBER(20),
+  member_id           NUMBER(10) default 0
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.FVOUCHER_ID20160516 on DW_USER.FACT_VOUCHER20160516 (VOUCHER_ID)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

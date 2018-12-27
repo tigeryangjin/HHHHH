@@ -1,0 +1,25 @@
+???create table DW_USER.FACT_CMS_FLOOR
+(
+  id           NUMBER(11),
+  name         VARCHAR2(100),
+  pic          VARCHAR2(200),
+  pic_url      VARCHAR2(200),
+  sort         NUMBER(11),
+  remark       VARCHAR2(800),
+  homegroup_id NUMBER(11),
+  start_time   NUMBER(11),
+  end_time     NUMBER(11),
+  timestamp    NUMBER(11)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

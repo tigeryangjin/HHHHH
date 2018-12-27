@@ -1,0 +1,3 @@
+???create or replace synonym BIHAPPIGO.ODS_GOODS_BRAND
+  for ;
+

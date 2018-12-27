@@ -1,0 +1,84 @@
+???create table DW_USER.TP_COMMUNITY_GROUP_FANS_A
+(
+  apply_id       NUMBER(11) not null,
+  group_id       NUMBER(11) not null,
+  nickname       VARCHAR2(50),
+  fans_img       VARCHAR2(200),
+  fans_ip        VARCHAR2(15),
+  ec_cust_no     VARCHAR2(50),
+  openid         VARCHAR2(200),
+  vid            VARCHAR2(100),
+  ec_member_id   NUMBER(11),
+  ec_member_name VARCHAR2(100),
+  audit_status   NUMBER(2),
+  audit_user     NUMBER(10),
+  audit_remark   VARCHAR2(500),
+  audit_time     DATE,
+  add_time       DATE not null,
+  token          VARCHAR2(30) not null,
+  w_insert_dt    DATE,
+  w_update_dt    DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.TP_COMMUNITY_GROUP_FANS_A
+  is '社群成员申请表
+by yangjin
+2018-03-26';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.apply_id
+  is '索引主键';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.group_id
+  is '所属分组';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.nickname
+  is '申请人名字';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.fans_img
+  is '头像';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.fans_ip
+  is 'ip';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.ec_cust_no
+  is 'Cust_no';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.vid
+  is 'vid';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.ec_member_id
+  is 'Ec 会员id';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.ec_member_name
+  is 'Ec会员名';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.audit_status
+  is '审核状态 10待审核 20 审核通过 30审核失败';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.audit_user
+  is '审核人';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.audit_remark
+  is '备注';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.audit_time
+  is '审核时间';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.add_time
+  is '创建时间';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS_A.w_update_dt
+  is '记录修改时间';
+alter table DW_USER.TP_COMMUNITY_GROUP_FANS_A
+  add constraint TP_COMMUNITY_GROUP_FANS_A_PK primary key (APPLY_ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.TP_COMMUNITY_GROUP_FANS_A_PK nologging;
+

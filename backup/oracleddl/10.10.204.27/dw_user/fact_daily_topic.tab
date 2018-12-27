@@ -1,0 +1,26 @@
+???create table DW_USER.FACT_DAILY_TOPIC
+(
+  visit_date_key NUMBER,
+  zt_name        VARCHAR2(200),
+  application_nm VARCHAR2(18),
+  totaluv        NUMBER,
+  orderuv        NUMBER,
+  ordercnt       NUMBER,
+  goods_num      NUMBER,
+  goods_amount   NUMBER,
+  orderrate      NUMBER,
+  pageavgtime    NUMBER,
+  visit_date     DATE
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

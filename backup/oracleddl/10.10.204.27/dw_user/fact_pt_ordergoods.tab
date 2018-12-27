@@ -1,0 +1,26 @@
+???create table DW_USER.FACT_PT_ORDERGOODS
+(
+  order_id        NUMBER(11),
+  goods_commonid  NUMBER(11),
+  erp_code        NUMBER(11),
+  goods_pay_price NUMBER(10,2),
+  goods_num       NUMBER(5),
+  is_kjg          NUMBER(1),
+  createtime      DATE,
+  pml_title       VARCHAR2(50),
+  pml_id          NUMBER(11),
+  pml_discount    NUMBER(10,2),
+  goods_name      VARCHAR2(200)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

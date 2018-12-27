@@ -1,0 +1,10 @@
+???create table DW_HAPPIGO.R_JOB_NOTE
+(
+  id_job  INTEGER,
+  id_note INTEGER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+

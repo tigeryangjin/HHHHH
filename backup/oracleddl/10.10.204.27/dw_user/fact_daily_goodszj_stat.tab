@@ -1,0 +1,56 @@
+???create table DW_USER.FACT_DAILY_GOODSZJ_STAT
+(
+  item_code  NUMBER(10),
+  goods_name VARCHAR2(500),
+  matdl      NUMBER(10),
+  matdlt     VARCHAR2(200),
+  brand_id   NUMBER(10),
+  brand_name VARCHAR2(200),
+  zj_time    NUMBER(10),
+  xj_time    NUMBER(10),
+  zj_state   NUMBER(5)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.FACT_DAILY_GOODSZJ_STAT.item_code
+  is '商品编码';
+comment on column DW_USER.FACT_DAILY_GOODSZJ_STAT.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_DAILY_GOODSZJ_STAT.matdl
+  is '物料大类';
+comment on column DW_USER.FACT_DAILY_GOODSZJ_STAT.matdlt
+  is '物料大类名称';
+comment on column DW_USER.FACT_DAILY_GOODSZJ_STAT.brand_id
+  is '品牌ID';
+comment on column DW_USER.FACT_DAILY_GOODSZJ_STAT.brand_name
+  is '品牌名称';
+comment on column DW_USER.FACT_DAILY_GOODSZJ_STAT.zj_time
+  is '上架日期';
+comment on column DW_USER.FACT_DAILY_GOODSZJ_STAT.xj_time
+  is '下架日期';
+comment on column DW_USER.FACT_DAILY_GOODSZJ_STAT.zj_state
+  is '在架状态';
+create index DW_USER.FDGS_ITEM_CODE on DW_USER.FACT_DAILY_GOODSZJ_STAT (ITEM_CODE)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,30 @@
+???create table DW_USER.MEMBER_ITEM_APRIORI_ITEMSET2
+(
+  item_code_a   NUMBER(20),
+  item_code_b   NUMBER(20),
+  confidence    NUMBER,
+  suppport_rate NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.MEMBER_ITEM_APRIORI_ITEMSET2
+  is '会员商品关联分析
+by yangjin';
+comment on column DW_USER.MEMBER_ITEM_APRIORI_ITEMSET2.item_code_a
+  is '商品编码';
+comment on column DW_USER.MEMBER_ITEM_APRIORI_ITEMSET2.item_code_b
+  is '推荐商品编码';
+comment on column DW_USER.MEMBER_ITEM_APRIORI_ITEMSET2.confidence
+  is '置信度（购买了AB二个商品的会员人数占购买了A商品的会员人数之比）';
+comment on column DW_USER.MEMBER_ITEM_APRIORI_ITEMSET2.suppport_rate
+  is '支持度（购买了AB二个商品的会员人数占整体会员人数之比）';
+

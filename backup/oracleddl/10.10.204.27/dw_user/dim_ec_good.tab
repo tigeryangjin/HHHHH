@@ -1,0 +1,184 @@
+???create table DW_USER.DIM_EC_GOOD
+(
+  goods_commonid    NUMBER(10),
+  item_code         NUMBER(11),
+  goods_name        VARCHAR2(200),
+  gc_id             NUMBER(10),
+  gc_id_1           NUMBER(10),
+  gc_id_2           NUMBER(10),
+  gc_id_3           NUMBER(10),
+  gc_name           VARCHAR2(200),
+  matdl             NUMBER(11),
+  matzl             NUMBER(11),
+  matxl             NUMBER(11),
+  matkl             NUMBER(11),
+  brand_id          NUMBER(10),
+  brand_name        VARCHAR2(100),
+  goods_state       NUMBER(3),
+  goods_addtime     NUMBER(10),
+  goods_price       NUMBER(10,2),
+  goods_storage     NUMBER(10),
+  is_tv             NUMBER(3),
+  is_kjg            NUMBER(1),
+  goods_createtime  DATE,
+  matdlt            VARCHAR2(100),
+  matzlt            VARCHAR2(100),
+  matxlt            VARCHAR2(100),
+  matklt            VARCHAR2(100),
+  is_shipping_self  NUMBER(5),
+  supplier_id       VARCHAR2(200),
+  supplier_name     VARCHAR2(200),
+  firstonselltime   NUMBER(10),
+  store_id          NUMBER(10),
+  store_name        VARCHAR2(100),
+  is_vedio          NUMBER(1),
+  is_allow_voucher  NUMBER(1),
+  is_allow_point    NUMBER(1),
+  is_valuables      NUMBER(1),
+  is_big            NUMBER(1),
+  is_add_cart       NUMBER(1),
+  goods_marketprice NUMBER(10,2),
+  is_own_shop       NUMBER(1)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_EC_GOOD.goods_commonid
+  is '商品公共表id';
+comment on column DW_USER.DIM_EC_GOOD.item_code
+  is '商品编号';
+comment on column DW_USER.DIM_EC_GOOD.goods_name
+  is '商品名称';
+comment on column DW_USER.DIM_EC_GOOD.gc_id
+  is '商品分类';
+comment on column DW_USER.DIM_EC_GOOD.gc_id_1
+  is '一级分类id';
+comment on column DW_USER.DIM_EC_GOOD.gc_id_2
+  is '二级分类id';
+comment on column DW_USER.DIM_EC_GOOD.gc_id_3
+  is '三级分类id';
+comment on column DW_USER.DIM_EC_GOOD.gc_name
+  is '商品分类';
+comment on column DW_USER.DIM_EC_GOOD.matdl
+  is 'erp分类-大类id';
+comment on column DW_USER.DIM_EC_GOOD.matzl
+  is 'erp分类-中类id';
+comment on column DW_USER.DIM_EC_GOOD.matxl
+  is 'erp分类-小类id';
+comment on column DW_USER.DIM_EC_GOOD.matkl
+  is 'erp分类-细类id';
+comment on column DW_USER.DIM_EC_GOOD.brand_id
+  is '品牌id';
+comment on column DW_USER.DIM_EC_GOOD.brand_name
+  is '品牌名称';
+comment on column DW_USER.DIM_EC_GOOD.goods_state
+  is '商品状态 0下架，1正常，10违规（禁售）';
+comment on column DW_USER.DIM_EC_GOOD.goods_addtime
+  is '商品添加时间';
+comment on column DW_USER.DIM_EC_GOOD.goods_price
+  is '商品价格';
+comment on column DW_USER.DIM_EC_GOOD.goods_storage
+  is '商品总库存';
+comment on column DW_USER.DIM_EC_GOOD.is_tv
+  is '是否TV商品';
+comment on column DW_USER.DIM_EC_GOOD.is_kjg
+  is '是否跨境购';
+comment on column DW_USER.DIM_EC_GOOD.goods_createtime
+  is '创建时间';
+comment on column DW_USER.DIM_EC_GOOD.matdlt
+  is 'erp分类-大类';
+comment on column DW_USER.DIM_EC_GOOD.matzlt
+  is 'erp分类-中类';
+comment on column DW_USER.DIM_EC_GOOD.matxlt
+  is 'erp分类-小类';
+comment on column DW_USER.DIM_EC_GOOD.matklt
+  is 'erp分类-细类';
+comment on column DW_USER.DIM_EC_GOOD.is_shipping_self
+  is '是否直配（0：供应商，1：快乐购）';
+comment on column DW_USER.DIM_EC_GOOD.supplier_id
+  is '供应商编号';
+comment on column DW_USER.DIM_EC_GOOD.supplier_name
+  is '供应商';
+comment on column DW_USER.DIM_EC_GOOD.firstonselltime
+  is '首次销售时间';
+comment on column DW_USER.DIM_EC_GOOD.store_id
+  is '商铺ID';
+comment on column DW_USER.DIM_EC_GOOD.store_name
+  is '商铺';
+comment on column DW_USER.DIM_EC_GOOD.is_vedio
+  is '0,无视频，1，有视频';
+comment on column DW_USER.DIM_EC_GOOD.is_allow_voucher
+  is '是否允许用券(1是0否)';
+comment on column DW_USER.DIM_EC_GOOD.is_allow_point
+  is '是否允许用积分(1是0否)';
+comment on column DW_USER.DIM_EC_GOOD.is_valuables
+  is '是否贵品(1是0否)';
+comment on column DW_USER.DIM_EC_GOOD.is_big
+  is '是否大件(1是0否)';
+comment on column DW_USER.DIM_EC_GOOD.is_add_cart
+  is '是否允许加入购物车(1是0否)';
+comment on column DW_USER.DIM_EC_GOOD.goods_marketprice
+  is '商品市场价格';
+comment on column DW_USER.DIM_EC_GOOD.is_own_shop
+  is '是否新媒体自营';
+create index DW_USER.DIM_EC_KJG_IDX on DW_USER.DIM_EC_GOOD (IS_KJG)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.GOODS_COMMONID2_IDX on DW_USER.DIM_EC_GOOD (TO_CHAR(GOODS_COMMONID))
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.GOODS_COMMONID_IDX on DW_USER.DIM_EC_GOOD (GOODS_COMMONID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ITEM_CODE_IDX on DW_USER.DIM_EC_GOOD (ITEM_CODE)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

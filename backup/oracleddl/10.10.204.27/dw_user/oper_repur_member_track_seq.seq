@@ -1,0 +1,7 @@
+???create sequence DW_USER.OPER_REPUR_MEMBER_TRACK_SEQ
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 2835981
+increment by 1
+cache 20;
+

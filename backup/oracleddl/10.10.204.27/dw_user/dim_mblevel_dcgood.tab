@@ -1,0 +1,47 @@
+???create table DW_USER.DIM_MBLEVEL_DCGOOD
+(
+  id             NUMBER(10),
+  pml_id         NUMBER(10),
+  pml_title      VARCHAR2(50),
+  start_time     DATE,
+  end_time       DATE,
+  goods_commonid NUMBER(10),
+  goods_name     VARCHAR2(150),
+  discount_value VARCHAR2(500),
+  sort           NUMBER(10),
+  status         NUMBER(3),
+  is_deleted     NUMBER(3)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_MBLEVEL_DCGOOD.pml_id
+  is '活动ID';
+comment on column DW_USER.DIM_MBLEVEL_DCGOOD.pml_title
+  is '活动名称/标题';
+comment on column DW_USER.DIM_MBLEVEL_DCGOOD.start_time
+  is '开始时间';
+comment on column DW_USER.DIM_MBLEVEL_DCGOOD.end_time
+  is '结束时间';
+comment on column DW_USER.DIM_MBLEVEL_DCGOOD.goods_commonid
+  is '商品SPU';
+comment on column DW_USER.DIM_MBLEVEL_DCGOOD.goods_name
+  is '商品名称';
+comment on column DW_USER.DIM_MBLEVEL_DCGOOD.discount_value
+  is '促销额';
+comment on column DW_USER.DIM_MBLEVEL_DCGOOD.sort
+  is '排序号  数字越大越靠前';
+comment on column DW_USER.DIM_MBLEVEL_DCGOOD.status
+  is '状态 0关闭 1开启';
+comment on column DW_USER.DIM_MBLEVEL_DCGOOD.is_deleted
+  is '删除标记  0为删除';
+

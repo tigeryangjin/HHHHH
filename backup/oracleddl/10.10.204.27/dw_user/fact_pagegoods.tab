@@ -1,0 +1,51 @@
+???create table DW_USER.FACT_PAGEGOODS
+(
+  page_value      VARCHAR2(1000),
+  page_name       VARCHAR2(500),
+  goodcode        NUMBER,
+  session_key     NUMBER(20),
+  vid             VARCHAR2(1000),
+  visit_date      DATE,
+  page_staytime   NUMBER(10),
+  id              NUMBER(20),
+  application_key NUMBER(20),
+  page_key        NUMBER(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.PAGEGOODSID_IDX on DW_USER.FACT_PAGEGOODS (ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.PAGEGOODS_IDX on DW_USER.FACT_PAGEGOODS (SESSION_KEY, GOODCODE, VISIT_DATE, PAGE_VALUE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

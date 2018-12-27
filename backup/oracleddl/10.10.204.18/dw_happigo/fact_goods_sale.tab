@@ -1,0 +1,36 @@
+???create table DW_HAPPIGO.FACT_GOODS_SALE
+(
+  id              NUMBER(11) not null,
+  order_key       VARCHAR2(50),
+  goods_key       NUMBER(11),
+  item_code       NUMBER(11),
+  sku_key         VARCHAR2(100),
+  goods_name      VARCHAR2(500),
+  goods_number    NUMBER(11),
+  sort_key        NUMBER(11),
+  type_key        NUMBER(11),
+  kind_key        NUMBER(11),
+  devloper_key    NUMBER(11),
+  brand_key       NUMBER(11),
+  goods_price     NUMBER(10,2),
+  create_date     DATE,
+  create_date_key NUMBER(20),
+  hour_key        NUMBER(10),
+  hour            NUMBER(10),
+  ckey            NUMBER(11),
+  member_key      NUMBER(10),
+  channel_key     NUMBER(10),
+  channel_name    VARCHAR2(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

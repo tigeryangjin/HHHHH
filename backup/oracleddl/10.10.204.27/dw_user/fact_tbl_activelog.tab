@@ -1,0 +1,66 @@
+???create table DW_USER.FACT_TBL_ACTIVELOG
+(
+  logid          NUMBER(20),
+  gdt_muid       VARCHAR2(40),
+  vid            VARCHAR2(100),
+  appname        VARCHAR2(40),
+  dtype          VARCHAR2(20),
+  create_time    DATE,
+  ip             VARCHAR2(20),
+  mapping_status NUMBER(2),
+  mapping_to     NUMBER(20),
+  mapping_time   DATE,
+  push_status    NUMBER(2),
+  push_message   VARCHAR2(100)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.TBL_ACTIVEID_IDX on DW_USER.FACT_TBL_ACTIVELOG (LOGID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.TBL_GDTMUID_IDX on DW_USER.FACT_TBL_ACTIVELOG (GDT_MUID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.TBL_VID_MAP_IDX on DW_USER.FACT_TBL_ACTIVELOG (VID, MAPPING_STATUS)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

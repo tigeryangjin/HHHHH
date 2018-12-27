@@ -1,0 +1,122 @@
+???create table DW_USER.FACT_GOODS_ORDER_DAYLY
+(
+  posting_date_key        NUMBER(10) default 0,
+  today_nums              NUMBER(10) default 0,
+  today_order             NUMBER(10) default 0,
+  today_member            NUMBER(10) default 0,
+  cancel_nums             NUMBER(10) default 0,
+  cancel_order            NUMBER(10) default 0,
+  cancel_member           NUMBER(10) default 0,
+  rejection_nums          NUMBER(10) default 0,
+  rejection_order         NUMBER(10) default 0,
+  rejection_member        NUMBER(10) default 0,
+  rejection_cancel_nums   NUMBER(10) default 0,
+  rejection_cancel_order  NUMBER(10) default 0,
+  rejection_cancel_member NUMBER(10) default 0,
+  effective_nums          NUMBER(10) default 0,
+  effective_order         NUMBER(10) default 0,
+  effective_member        NUMBER(10) default 0,
+  zj_state                NUMBER(1) default 1,
+  cart_nums               NUMBER(10) default 0,
+  sc_nums                 NUMBER(10) default 0,
+  pv_nums                 NUMBER(10) default 0,
+  comment_total           NUMBER(10) default 0,
+  comment_good            NUMBER(10) default 0,
+  comment_better          NUMBER(10) default 0,
+  comment_best            NUMBER(10) default 0,
+  item_code               NUMBER(10) default 0,
+  goods_common_key        NUMBER(10) default 0
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACT_GOODS_ORDER_DAYLY
+  is '商品每天订购统计';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.posting_date_key
+  is '统计日期';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.today_nums
+  is '今天商品件数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.today_order
+  is '今天订单数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.today_member
+  is '今天订购人数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.cancel_nums
+  is '今日取消数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.cancel_order
+  is '今天取消单数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.cancel_member
+  is '取消人数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.rejection_nums
+  is '拒收退货数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.rejection_order
+  is '拒收订单数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.rejection_member
+  is '拒收人数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.rejection_cancel_nums
+  is '拒收取消数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.rejection_cancel_order
+  is '拒收取消单';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.rejection_cancel_member
+  is '拒收取消人数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.effective_nums
+  is '有效数量';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.effective_order
+  is '有效订单';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.effective_member
+  is '有效用户';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.zj_state
+  is '1在架0不在架';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.cart_nums
+  is '购物车存放总次数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.sc_nums
+  is '收藏数量';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.pv_nums
+  is 'pv数量';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.comment_total
+  is '评论总数';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.comment_good
+  is '差评';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.comment_better
+  is '中评';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.comment_best
+  is '好评';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.item_code
+  is '商品编号';
+comment on column DW_USER.FACT_GOODS_ORDER_DAYLY.goods_common_key
+  is 'ec商品编号';
+create index DW_USER.GD_ITEM_CODE on DW_USER.FACT_GOODS_ORDER_DAYLY (ITEM_CODE)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.GD_POSTING_DATE_KEY on DW_USER.FACT_GOODS_ORDER_DAYLY (POSTING_DATE_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

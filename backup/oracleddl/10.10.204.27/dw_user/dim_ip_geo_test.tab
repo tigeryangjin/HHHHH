@@ -1,0 +1,57 @@
+???create table DW_USER.DIM_IP_GEO_TEST
+(
+  ip_geo_key   NUMBER(10),
+  ip_int       NUMBER(10),
+  startip      VARCHAR2(30),
+  endip        VARCHAR2(30),
+  ip_continent VARCHAR2(50),
+  ip_nation    VARCHAR2(50),
+  ip_province  VARCHAR2(50),
+  ip_city      VARCHAR2(50),
+  telecoms     VARCHAR2(50),
+  post_code    VARCHAR2(50),
+  nation_nm    VARCHAR2(50),
+  nation_ab    VARCHAR2(10),
+  longitude    VARCHAR2(50),
+  latitude     VARCHAR2(50),
+  ip_area      VARCHAR2(50)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.GEO_KEY12_IDX on DW_USER.DIM_IP_GEO_TEST (IP_GEO_KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.IP_START12_IDX on DW_USER.DIM_IP_GEO_TEST (IP_INT)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

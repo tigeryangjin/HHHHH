@@ -1,0 +1,7 @@
+???create sequence DW_USER.W_VISITOR_F_S
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 27651355
+increment by 1
+cache 20;
+

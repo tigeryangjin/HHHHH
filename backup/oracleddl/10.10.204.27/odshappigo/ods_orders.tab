@@ -1,0 +1,55 @@
+???create table ODSHAPPIGO.ODS_ORDERS
+(
+  rec_id          NUMBER(11) not null,
+  user_id         NUMBER(11),
+  order_id        VARCHAR2(50),
+  addr_id         NUMBER(11),
+  total_price     NUMBER(10,2),
+  save_price      NUMBER(10,2),
+  total_points    NUMBER(10,2),
+  create_time     DATE,
+  pay_type        NUMBER(11),
+  bank_id         VARCHAR2(10),
+  info            VARCHAR2(1000),
+  status          NUMBER(2),
+  partner         VARCHAR2(50),
+  cust_no         VARCHAR2(20),
+  channel         VARCHAR2(20),
+  order_status    NUMBER(2),
+  order_orgin     VARCHAR2(10),
+  merchant_id     NUMBER(11),
+  proc_state      VARCHAR2(50),
+  create_time_key NUMBER(20),
+  hour            NUMBER(20),
+  hour_key        NUMBER(20)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index ODSHAPPIGO.ORDER_ID on ODSHAPPIGO.ODS_ORDERS (ORDER_ID)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table ODSHAPPIGO.ODS_ORDERS
+  add constraint REC_ID unique (REC_ID)
+  disable
+  novalidate;
+

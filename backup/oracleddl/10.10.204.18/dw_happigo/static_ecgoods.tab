@@ -1,0 +1,28 @@
+???create table DW_HAPPIGO.STATIC_ECGOODS
+(
+  stat_date_key NUMBER(10),
+  stat_duration VARCHAR2(20),
+  livegoods     VARCHAR2(200),
+  uvgoods       VARCHAR2(200),
+  is_tv         VARCHAR2(50),
+  tguv          NUMBER(10),
+  ftguv         NUMBER(10),
+  uv            NUMBER(10),
+  cnt           NUMBER(10),
+  tot           NUMBER(10,2),
+  cgcnt         NUMBER(10),
+  cgtot         NUMBER(10,2),
+  zhrate        NUMBER(10,2)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

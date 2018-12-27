@@ -1,0 +1,38 @@
+???create table DW_HAPPIGO.R_JOBENTRY_COPY
+(
+  id_jobentry_copy INTEGER not null,
+  id_jobentry      INTEGER,
+  id_job           INTEGER,
+  id_jobentry_type INTEGER,
+  nr               INTEGER,
+  gui_location_x   INTEGER,
+  gui_location_y   INTEGER,
+  gui_draw         CHAR(1),
+  parallel         CHAR(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table DW_HAPPIGO.R_JOBENTRY_COPY
+  add primary key (ID_JOBENTRY_COPY)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

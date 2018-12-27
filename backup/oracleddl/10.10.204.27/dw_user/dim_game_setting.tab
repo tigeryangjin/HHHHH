@@ -1,0 +1,30 @@
+???create table DW_USER.DIM_GAME_SETTING
+(
+  id                 NUMBER(11),
+  name               VARCHAR2(80),
+  starttime          DATE,
+  endtime            DATE,
+  pointcost          NUMBER(11),
+  freeplaytimes      NUMBER(11),
+  dailytimes         NUMBER(11),
+  enable             NUMBER(2),
+  createtime         DATE,
+  limit_ip_10minutes NUMBER(11),
+  limit_vid_daily    NUMBER(11),
+  limit_member_daily NUMBER(11),
+  limit_ip_daily     NUMBER(11),
+  enableblacklist    NUMBER(2)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

@@ -1,0 +1,75 @@
+???create table DW_USER.DIM_MB_COUNT
+(
+  member_key      NUMBER(20),
+  mbcnt           NUMBER,
+  insert_date_key NUMBER,
+  modify_date_key NUMBER,
+  chg_flag        NUMBER,
+  mod_flag        NUMBER,
+  mod_date_key    NUMBER
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.DMC_CNT_IDX on DW_USER.DIM_MB_COUNT (MBCNT)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.DMC_FLAG2_IDX on DW_USER.DIM_MB_COUNT (MOD_DATE_KEY, MOD_FLAG)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.DMC_FLAG_IDX on DW_USER.DIM_MB_COUNT (MODIFY_DATE_KEY, CHG_FLAG)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.DMC_KEY_IDX on DW_USER.DIM_MB_COUNT (MEMBER_KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

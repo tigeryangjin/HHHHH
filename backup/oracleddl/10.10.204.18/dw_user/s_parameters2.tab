@@ -1,0 +1,20 @@
+???create table DW_USER.S_PARAMETERS2
+(
+  pname     VARCHAR2(100),
+  ptype     NUMBER(1),
+  developer VARCHAR2(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.S_PARAMETERS2.developer
+  is '开发者';
+

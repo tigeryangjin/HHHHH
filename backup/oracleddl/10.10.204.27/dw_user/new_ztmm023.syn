@@ -1,0 +1,3 @@
+???create or replace synonym DW_USER.NEW_ZTMM023
+  for ODSHAPPIGO.NEW_ZTMM023@BIODS_LINK;
+

@@ -1,0 +1,54 @@
+???create table DW_USER.OPER_NM_VOUCHER_REPORT
+(
+  voucher_t_id       NUMBER(10),
+  coupon_tv_id       VARCHAR2(60),
+  voucher_title      VARCHAR2(150),
+  voucher_type       VARCHAR2(12),
+  voucher_price      NUMBER(10),
+  voucher_start_date DATE,
+  voucher_end_date   DATE,
+  send_voucher_count NUMBER,
+  used_voucher_count NUMBER,
+  used_voucher_rate  NUMBER,
+  voucher_cost       NUMBER,
+  order_amount       NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_NM_VOUCHER_REPORT
+  is '新媒体中心优惠券报表
+by yangjin';
+comment on column DW_USER.OPER_NM_VOUCHER_REPORT.voucher_t_id
+  is '新媒体优惠券号';
+comment on column DW_USER.OPER_NM_VOUCHER_REPORT.coupon_tv_id
+  is 'Home券号';
+comment on column DW_USER.OPER_NM_VOUCHER_REPORT.voucher_title
+  is '优惠券名称';
+comment on column DW_USER.OPER_NM_VOUCHER_REPORT.voucher_type
+  is '优惠券类型';
+comment on column DW_USER.OPER_NM_VOUCHER_REPORT.voucher_price
+  is '面额';
+comment on column DW_USER.OPER_NM_VOUCHER_REPORT.voucher_start_date
+  is '有效期开始日期';
+comment on column DW_USER.OPER_NM_VOUCHER_REPORT.voucher_end_date
+  is '有效期结束日期';
+comment on column DW_USER.OPER_NM_VOUCHER_REPORT.send_voucher_count
+  is '领用总数';
+comment on column DW_USER.OPER_NM_VOUCHER_REPORT.used_voucher_count
+  is '有效使用数';
+comment on column DW_USER.OPER_NM_VOUCHER_REPORT.used_voucher_rate
+  is '券使用率';
+comment on column DW_USER.OPER_NM_VOUCHER_REPORT.voucher_cost
+  is '券优惠总成本';
+comment on column DW_USER.OPER_NM_VOUCHER_REPORT.order_amount
+  is '有效订购金额';
+

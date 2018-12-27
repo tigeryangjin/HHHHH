@@ -1,0 +1,57 @@
+???create table DW_USER.FACT_DAILY_3G
+(
+  visit_date_key NUMBER(10),
+  uvcnt          NUMBER(10),
+  newvtcount     NUMBER(10),
+  pvcnt          NUMBER(10),
+  ipcnt          NUMBER(10),
+  avgpv          NUMBER(10,2),
+  avglife_time   NUMBER(10,2),
+  newvtrate      NUMBER(10,2),
+  bonusrate      NUMBER(10,2),
+  orderrate      NUMBER(10,3),
+  mcnt           NUMBER(10),
+  hbpv           NUMBER(10),
+  hbuv           NUMBER(10),
+  hbzc           NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_3G.visit_date_key
+  is '访问时间key';
+comment on column DW_USER.FACT_DAILY_3G.uvcnt
+  is 'UV计数';
+comment on column DW_USER.FACT_DAILY_3G.newvtcount
+  is '新用户计数';
+comment on column DW_USER.FACT_DAILY_3G.pvcnt
+  is 'PV计数';
+comment on column DW_USER.FACT_DAILY_3G.ipcnt
+  is '访问IP计数';
+comment on column DW_USER.FACT_DAILY_3G.avgpv
+  is '平均PV计数';
+comment on column DW_USER.FACT_DAILY_3G.avglife_time
+  is '评价访问时长';
+comment on column DW_USER.FACT_DAILY_3G.newvtrate
+  is '新用户访问占比';
+comment on column DW_USER.FACT_DAILY_3G.bonusrate
+  is '跳出率';
+comment on column DW_USER.FACT_DAILY_3G.orderrate
+  is '订购人数占比';
+comment on column DW_USER.FACT_DAILY_3G.mcnt
+  is '会员人数';
+comment on column DW_USER.FACT_DAILY_3G.hbpv
+  is '移动和包PV';
+comment on column DW_USER.FACT_DAILY_3G.hbuv
+  is '移动和包UV';
+comment on column DW_USER.FACT_DAILY_3G.hbzc
+  is '移动和包注册';
+

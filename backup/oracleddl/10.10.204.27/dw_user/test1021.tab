@@ -1,0 +1,13 @@
+???create table DW_USER.TEST1021
+(
+  member_id   NUMBER,
+  goods_name  VARCHAR2(500),
+  total       NUMBER,
+  insert_date DATE,
+  maxdate     DATE
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+

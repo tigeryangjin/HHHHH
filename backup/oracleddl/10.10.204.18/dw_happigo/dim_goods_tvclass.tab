@@ -1,0 +1,24 @@
+???create table DW_HAPPIGO.DIM_GOODS_TVCLASS
+(
+  matid  NUMBER(10),
+  matdl  NUMBER(10),
+  matdlt VARCHAR2(50),
+  matzl  NUMBER(10),
+  matzlt VARCHAR2(50),
+  matxl  NUMBER(10),
+  matxlt VARCHAR2(50),
+  matkl  NUMBER(10),
+  matklt VARCHAR2(50)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

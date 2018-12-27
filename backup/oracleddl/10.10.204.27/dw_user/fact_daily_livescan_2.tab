@@ -1,0 +1,26 @@
+???create table DW_USER.FACT_DAILY_LIVESCAN_2
+(
+  sid            NUMBER,
+  weekname       VARCHAR2(98),
+  visit_date_key NUMBER(10),
+  item_code      NUMBER(11),
+  matdlt         VARCHAR2(100),
+  tv_name        VARCHAR2(800),
+  smcs           NUMBER,
+  smrs           NUMBER,
+  dgrs           NUMBER,
+  dgsl           NUMBER,
+  dgje           NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

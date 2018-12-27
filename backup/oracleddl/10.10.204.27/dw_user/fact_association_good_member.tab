@@ -1,0 +1,64 @@
+???create table DW_USER.FACT_ASSOCIATION_GOOD_MEMBER
+(
+  member_key       NUMBER(20),
+  item_code        NUMBER(10),
+  posting_date_key NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.FACT_ASSOCIATION_GOOD_MEMBER.member_key
+  is '用户key';
+comment on column DW_USER.FACT_ASSOCIATION_GOOD_MEMBER.item_code
+  is '商品编号';
+comment on column DW_USER.FACT_ASSOCIATION_GOOD_MEMBER.posting_date_key
+  is '时间';
+create index DW_USER.FAGSM_ITEM_CODE on DW_USER.FACT_ASSOCIATION_GOOD_MEMBER (ITEM_CODE, MEMBER_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FAGSM_MEMBER_KEY on DW_USER.FACT_ASSOCIATION_GOOD_MEMBER (MEMBER_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FAGSM_POSTING_DATE_KEY on DW_USER.FACT_ASSOCIATION_GOOD_MEMBER (POSTING_DATE_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

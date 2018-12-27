@@ -1,0 +1,66 @@
+???create table DW_USER.OPER_MEMBER_LIKE_MATXL
+(
+  row_wid            NUMBER(10),
+  posting_date_key   NUMBER,
+  member_key         NUMBER,
+  matxl              NUMBER(10),
+  pv_freq            NUMBER,
+  fav_freq           NUMBER,
+  car_freq           NUMBER,
+  order_net_qty      NUMBER,
+  pv_weight          NUMBER,
+  fav_weight         NUMBER,
+  car_weight         NUMBER,
+  order_weight       NUMBER,
+  total_matxl_weight NUMBER,
+  matxl_ranking      NUMBER,
+  w_insert_dt        DATE,
+  w_update_dt        DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_MEMBER_LIKE_MATXL
+  is '会员喜欢的小类表（统计最近活跃的15天）
+by yangjin';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.row_wid
+  is '唯一代理键';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.posting_date_key
+  is '业务日期';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.member_key
+  is '会员BP号';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.matxl
+  is '物料小类编码';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.pv_freq
+  is '浏览频次';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.fav_freq
+  is '收藏频次';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.car_freq
+  is '加购物车频次';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.order_net_qty
+  is '净销售数量';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.pv_weight
+  is '浏览权重（浏览频次*1）';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.fav_weight
+  is '收藏权重（收藏频次*3）';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.car_weight
+  is '加购物车权重（加购物车频次*5）';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.order_weight
+  is '订购权重（净销售数量*15）';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.total_matxl_weight
+  is '小类合计权重（浏览权重+收藏权重+加购物车权重+订购权重）';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.matxl_ranking
+  is '小类推荐排名（小类合计权重倒序）';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.w_insert_dt
+  is '记录插入日期';
+comment on column DW_USER.OPER_MEMBER_LIKE_MATXL.w_update_dt
+  is '记录修改日期';
+

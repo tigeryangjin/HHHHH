@@ -1,0 +1,61 @@
+???create table DW_USER.MEMBER_ITEM_APRIORI_BASE
+(
+  member_bp NUMBER(20) not null,
+  item_code NUMBER(20) not null
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.MEMBER_ITEM_APRIORI_BASE
+  is '商品关联分析基表
+by yangjin';
+create index DW_USER.MEMBER_ITEM_APRIORI_BASE_I1 on DW_USER.MEMBER_ITEM_APRIORI_BASE (MEMBER_BP)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEMBER_ITEM_APRIORI_BASE_I2 on DW_USER.MEMBER_ITEM_APRIORI_BASE (ITEM_CODE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.MEMBER_ITEM_APRIORI_BASE
+  add constraint MEMBER_ITEM_APRIORI_BASE_PK primary key (MEMBER_BP, ITEM_CODE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.MEMBER_ITEM_APRIORI_BASE_PK nologging;
+

@@ -1,0 +1,31 @@
+???create table DW_USER.DIM_EC_GOODS_CLASS
+(
+  gc_id   NUMBER(10),
+  gc_name VARCHAR2(200)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.EC_GOODS_CLASS_ID on DW_USER.DIM_EC_GOODS_CLASS (GC_ID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

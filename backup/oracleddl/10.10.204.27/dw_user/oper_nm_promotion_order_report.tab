@@ -1,0 +1,39 @@
+???create table DW_USER.OPER_NM_PROMOTION_ORDER_REPORT
+(
+  add_time                DATE,
+  order_sn                VARCHAR2(40),
+  promotion_name          VARCHAR2(300),
+  pathway                 VARCHAR2(6),
+  promontion_type         VARCHAR2(12),
+  sales_amount            NUMBER,
+  discount_mansong_amount NUMBER(10,2)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_NM_PROMOTION_ORDER_REPORT
+  is '新媒体中心促销报表（订单级别）
+by yangjin 2017-09-19';
+comment on column DW_USER.OPER_NM_PROMOTION_ORDER_REPORT.add_time
+  is '订购日期';
+comment on column DW_USER.OPER_NM_PROMOTION_ORDER_REPORT.order_sn
+  is '订单编号';
+comment on column DW_USER.OPER_NM_PROMOTION_ORDER_REPORT.promotion_name
+  is '促销名称/券名称';
+comment on column DW_USER.OPER_NM_PROMOTION_ORDER_REPORT.pathway
+  is '通路';
+comment on column DW_USER.OPER_NM_PROMOTION_ORDER_REPORT.promontion_type
+  is '促销类型';
+comment on column DW_USER.OPER_NM_PROMOTION_ORDER_REPORT.sales_amount
+  is '订单有效金额';
+comment on column DW_USER.OPER_NM_PROMOTION_ORDER_REPORT.discount_mansong_amount
+  is '促销金额';
+

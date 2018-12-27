@@ -1,0 +1,93 @@
+???create table DW_USER.FACT_DAILY_WX_NEW
+(
+  visit_date_key NUMBER(10),
+  uvcnt          NUMBER,
+  newvtcount     NUMBER,
+  pvcnt          NUMBER,
+  avgpv          NUMBER,
+  avglife_time   NUMBER,
+  newvtrate      NUMBER,
+  bonusrate      NUMBER,
+  orderrs        NUMBER,
+  orderrate      NUMBER,
+  mcnt           NUMBER,
+  wscorderrate   NUMBER,
+  noscan_orderrs NUMBER,
+  wscuvcnt       NUMBER,
+  wscnewvtcount  NUMBER,
+  liteuvcnt      NUMBER,
+  litepvcnt      NUMBER,
+  litenewvtcount NUMBER,
+  liteorderrs    NUMBER,
+  litenewvtrate  NUMBER,
+  liteorderrate  NUMBER,
+  smuvcnt        NUMBER,
+  sm_orderrs     NUMBER,
+  smyj           NUMBER,
+  smcnt          NUMBER,
+  liteyj         NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_WX_NEW.visit_date_key
+  is '统计日期';
+comment on column DW_USER.FACT_DAILY_WX_NEW.uvcnt
+  is '微信UV';
+comment on column DW_USER.FACT_DAILY_WX_NEW.newvtcount
+  is '新访客数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.pvcnt
+  is '浏览数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.avgpv
+  is '平均浏览数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.avglife_time
+  is '平均浏览时长';
+comment on column DW_USER.FACT_DAILY_WX_NEW.newvtrate
+  is '新访客率';
+comment on column DW_USER.FACT_DAILY_WX_NEW.bonusrate
+  is '跳出率';
+comment on column DW_USER.FACT_DAILY_WX_NEW.orderrs
+  is '订购人数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.orderrate
+  is '订购转化率';
+comment on column DW_USER.FACT_DAILY_WX_NEW.mcnt
+  is '注册人数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.wscorderrate
+  is '微商城转化率';
+comment on column DW_USER.FACT_DAILY_WX_NEW.noscan_orderrs
+  is '微商城订购人数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.wscuvcnt
+  is '微商城访客数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.wscnewvtcount
+  is '微商城新访客数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.liteuvcnt
+  is '小程序访客数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.litepvcnt
+  is '小程序浏览数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.litenewvtcount
+  is '小程序新访客数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.liteorderrs
+  is '小程序订购人数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.litenewvtrate
+  is '小程序新访客率';
+comment on column DW_USER.FACT_DAILY_WX_NEW.liteorderrate
+  is '小程序转化率';
+comment on column DW_USER.FACT_DAILY_WX_NEW.smuvcnt
+  is '扫码访客数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.sm_orderrs
+  is '扫码订购人数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.smyj
+  is '扫码订购金额';
+comment on column DW_USER.FACT_DAILY_WX_NEW.smcnt
+  is '扫码注册人数';
+comment on column DW_USER.FACT_DAILY_WX_NEW.liteyj
+  is '小程序订购金额';
+

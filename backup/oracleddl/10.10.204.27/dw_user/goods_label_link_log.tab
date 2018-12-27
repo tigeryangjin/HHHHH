@@ -1,0 +1,39 @@
+???create table DW_USER.GOODS_LABEL_LINK_LOG
+(
+  item_code               NUMBER(10),
+  g_label_id              NUMBER(5),
+  g_label_type_id         NUMBER(5),
+  g_label_effective_begin DATE,
+  g_label_effective_end   DATE,
+  operation_date          DATE,
+  operation_user_id       VARCHAR2(50)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.GOODS_LABEL_LINK_LOG
+  is '商品标签变更历史表
+by yangjin';
+comment on column DW_USER.GOODS_LABEL_LINK_LOG.item_code
+  is '商品编码';
+comment on column DW_USER.GOODS_LABEL_LINK_LOG.g_label_id
+  is '商品标签ID';
+comment on column DW_USER.GOODS_LABEL_LINK_LOG.g_label_type_id
+  is '商品标签类型ID';
+comment on column DW_USER.GOODS_LABEL_LINK_LOG.g_label_effective_begin
+  is '标签生效日期';
+comment on column DW_USER.GOODS_LABEL_LINK_LOG.g_label_effective_end
+  is '标签终止日期';
+comment on column DW_USER.GOODS_LABEL_LINK_LOG.operation_date
+  is '操作日期';
+comment on column DW_USER.GOODS_LABEL_LINK_LOG.operation_user_id
+  is '操作人员ID';
+

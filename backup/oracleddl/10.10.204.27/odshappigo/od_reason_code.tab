@@ -1,0 +1,31 @@
+???create table ODSHAPPIGO.OD_REASON_CODE
+(
+  code_lgroup VARCHAR2(6),
+  code_grade  VARCHAR2(2),
+  front_code  VARCHAR2(5),
+  code_mgroup VARCHAR2(5),
+  code_name   VARCHAR2(80),
+  relation    VARCHAR2(3),
+  valid_flag  VARCHAR2(1),
+  insert_id   VARCHAR2(10),
+  insert_date DATE,
+  modify_id   VARCHAR2(10),
+  modify_date DATE,
+  code_group  VARCHAR2(20),
+  remark2     VARCHAR2(100),
+  bear_man    VARCHAR2(2),
+  gstatus     VARCHAR2(6)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

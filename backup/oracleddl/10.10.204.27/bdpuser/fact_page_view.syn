@@ -1,0 +1,3 @@
+???create or replace synonym BDPUSER.FACT_PAGE_VIEW
+  for ;
+

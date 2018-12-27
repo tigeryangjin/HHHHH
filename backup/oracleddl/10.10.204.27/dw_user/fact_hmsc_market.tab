@@ -1,0 +1,60 @@
+???create table DW_USER.FACT_HMSC_MARKET
+(
+  visit_date_key  NUMBER(10),
+  application_key VARCHAR2(7),
+  hmmd            VARCHAR2(50),
+  hmpl            VARCHAR2(10),
+  xlflag          CHAR(9),
+  mcnt            NUMBER,
+  vcnt            NUMBER,
+  scnt            NUMBER,
+  avglife_time    NUMBER,
+  orderrs         NUMBER,
+  ordercs         NUMBER,
+  orderamount     NUMBER,
+  ordercgrs       NUMBER,
+  ordercgcs       NUMBER,
+  ordercgamount   NUMBER,
+  nvcnt           NUMBER,
+  mnewcnt         NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_HMSC_MARKET.visit_date_key
+  is '访问时间key';
+comment on column DW_USER.FACT_HMSC_MARKET.application_key
+  is '应用key';
+comment on column DW_USER.FACT_HMSC_MARKET.hmmd
+  is '渠道名称';
+comment on column DW_USER.FACT_HMSC_MARKET.hmpl
+  is '广告系列';
+comment on column DW_USER.FACT_HMSC_MARKET.xlflag
+  is '新老用户标识';
+comment on column DW_USER.FACT_HMSC_MARKET.mcnt
+  is '会员人数';
+comment on column DW_USER.FACT_HMSC_MARKET.vcnt
+  is '用户终端数';
+comment on column DW_USER.FACT_HMSC_MARKET.scnt
+  is '会话数';
+comment on column DW_USER.FACT_HMSC_MARKET.orderrs
+  is '订单人数';
+comment on column DW_USER.FACT_HMSC_MARKET.ordercs
+  is '订单数';
+comment on column DW_USER.FACT_HMSC_MARKET.orderamount
+  is '订单金额';
+comment on column DW_USER.FACT_HMSC_MARKET.ordercgrs
+  is '有效订单人数';
+comment on column DW_USER.FACT_HMSC_MARKET.ordercgcs
+  is '有效订单数';
+comment on column DW_USER.FACT_HMSC_MARKET.ordercgamount
+  is '有效订单金额';
+

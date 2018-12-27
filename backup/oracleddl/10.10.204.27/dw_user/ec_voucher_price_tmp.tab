@@ -1,0 +1,23 @@
+???create table DW_USER.EC_VOUCHER_PRICE_TMP
+(
+  voucher_price_id       NUMBER(10),
+  voucher_price          NUMBER(10),
+  voucher_defaultpoints  NUMBER(10),
+  w_insert_dt            DATE,
+  w_update_dt            DATE,
+  voucher_price_describe VARCHAR2(255)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.EC_VOUCHER_PRICE_TMP
+  is 'ec_voucher_price_tmp中间表';
+

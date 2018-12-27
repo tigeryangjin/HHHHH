@@ -1,0 +1,108 @@
+???create table DW_USER.FACT_EC_ORDER_COMMON
+(
+  order_id            NUMBER(11),
+  store_id            NUMBER(10),
+  shipping_time       DATE,
+  shipping_express_id NUMBER(10),
+  evaluation_time     DATE,
+  evalseller_state    NUMBER(10),
+  evalseller_time     NUMBER(10),
+  order_message       VARCHAR2(3000),
+  order_pointscount   NUMBER(11),
+  voucher_name        VARCHAR2(90),
+  voucher_price       NUMBER(11),
+  voucher_desc        VARCHAR2(150),
+  voucher_ref         VARCHAR2(100),
+  dcissue_seq         VARCHAR2(100),
+  voucher_code        VARCHAR2(100),
+  deliver_explain     VARCHAR2(2000),
+  daddress_id         VARCHAR2(30),
+  transpzone          VARCHAR2(30),
+  reciver_name        VARCHAR2(150),
+  reciver_info        VARCHAR2(1500),
+  reciver_province_id NUMBER(10),
+  reciver_city_id     NUMBER(10),
+  invoice_info        VARCHAR2(1500),
+  promotion_info      VARCHAR2(1500),
+  dlyo_pickup_code    VARCHAR2(12),
+  receiver_seq        VARCHAR2(30),
+  w_insert_dt         DATE,
+  w_update_dt         DATE,
+  voucher_start_date  DATE,
+  voucher_end_date    DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_ORDER_COMMON
+  is 'ec订单信息扩展表
+by yangjin';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.order_id
+  is '订单索引id';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.store_id
+  is '店铺ID';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.shipping_time
+  is '配送时间';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.shipping_express_id
+  is '配送公司ID';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.evaluation_time
+  is '评价时间';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.evalseller_state
+  is '卖家是否已评价买家';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.evalseller_time
+  is '卖家评价买家的时间';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.order_message
+  is '订单留言';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.order_pointscount
+  is '订单赠送积分';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.voucher_name
+  is '代金券名称';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.voucher_price
+  is '代金券面额';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.voucher_desc
+  is '代金券备注';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.voucher_ref
+  is 'EC的优惠券模板号';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.dcissue_seq
+  is 'CRM中的优惠券号';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.voucher_code
+  is '代金券编码';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.deliver_explain
+  is '发货备注';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.daddress_id
+  is '发货地址ID';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.transpzone
+  is '四级地址编号';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.reciver_name
+  is '收货人姓名';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.reciver_info
+  is '收货人其它信息';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.reciver_province_id
+  is '收货人省级ID';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.reciver_city_id
+  is '收货人市级ID';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.invoice_info
+  is '发票信息';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.promotion_info
+  is '促销信息备注';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.dlyo_pickup_code
+  is '提货码';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.receiver_seq
+  is '顾客地址编号';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.w_update_dt
+  is '记录更新时间';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.voucher_start_date
+  is '券开始时间';
+comment on column DW_USER.FACT_EC_ORDER_COMMON.voucher_end_date
+  is '券失效时间';
+

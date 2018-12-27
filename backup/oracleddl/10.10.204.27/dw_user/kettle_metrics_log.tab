@@ -1,0 +1,24 @@
+???create table DW_USER.KETTLE_METRICS_LOG
+(
+  id_batch            INTEGER,
+  channel_id          VARCHAR2(255),
+  log_date            DATE,
+  metrics_date        DATE,
+  metrics_code        VARCHAR2(255),
+  metrics_description VARCHAR2(255),
+  metrics_subject     VARCHAR2(255),
+  metrics_type        VARCHAR2(255),
+  metrics_value       INTEGER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -1,0 +1,23 @@
+???create table DW_USER.FACT_DAILY_ACTIVITY_OD
+(
+  add_time        NUMBER(10),
+  ec_goods_common NUMBER(10),
+  goods_name      VARCHAR2(500),
+  application_key NUMBER,
+  ordercnt        NUMBER,
+  orderrs         NUMBER,
+  ordernum        NUMBER,
+  order_amount    NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

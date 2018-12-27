@@ -1,0 +1,23 @@
+???create table DW_USER.V_PRODUCE_POKESEQ
+(
+  sortseq        INTEGER,
+  sortnum        INTEGER,
+  regioncode     VARCHAR2(32),
+  customername   VARCHAR2(128),
+  packagemachine INTEGER,
+  cigarettecode  VARCHAR2(32),
+  cigarettename  VARCHAR2(128),
+  pokenum        INTEGER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 16K
+    next 8K
+    minextents 1
+    maxextents unlimited
+  );
+

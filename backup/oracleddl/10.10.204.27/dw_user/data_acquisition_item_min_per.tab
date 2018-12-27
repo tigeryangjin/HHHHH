@@ -1,0 +1,43 @@
+???create table DW_USER.DATA_ACQUISITION_ITEM_MIN_PER
+(
+  acq_item_code VARCHAR2(50) not null,
+  min_period    VARCHAR2(80),
+  insert_dt     DATE
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DATA_ACQUISITION_ITEM_MIN_PER
+  is '统计DATA_ACQUISITION_ITEM表的商品的最早销售日期
+by yangjin';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_MIN_PER.acq_item_code
+  is '商品编码';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_MIN_PER.min_period
+  is '最早销售日期';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_MIN_PER.insert_dt
+  is '插入时间';
+alter table DW_USER.DATA_ACQUISITION_ITEM_MIN_PER
+  add constraint ACQUISITION_ITEM_MIN_PER_PK primary key (ACQ_ITEM_CODE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.ACQUISITION_ITEM_MIN_PER_PK nologging;
+

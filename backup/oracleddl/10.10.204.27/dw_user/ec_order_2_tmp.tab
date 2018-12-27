@@ -1,0 +1,78 @@
+???create table DW_USER.EC_ORDER_2_TMP
+(
+  order_id                      NUMBER(10),
+  order_sn                      NUMBER(20),
+  pay_sn                        NUMBER(20),
+  store_id                      NUMBER(10),
+  store_name                    VARCHAR2(150),
+  cust_no                       VARCHAR2(60),
+  member_level                  VARCHAR2(60),
+  buyer_id                      NUMBER(10),
+  buyer_name                    VARCHAR2(150),
+  buyer_email                   VARCHAR2(240),
+  add_time                      DATE,
+  payment_code                  VARCHAR2(10),
+  payment_time                  DATE,
+  finnshed_time                 DATE,
+  goods_amount                  NUMBER(10,2),
+  order_amount                  NUMBER(10,2),
+  rcb_amount                    NUMBER(10,2),
+  pd_amount                     NUMBER(10,2),
+  shipping_fee                  NUMBER(10,2),
+  evaluation_state              NUMBER(4),
+  order_state                   NUMBER(4),
+  vbeln_no                      VARCHAR2(60),
+  refund_state                  NUMBER(4),
+  lock_state                    NUMBER(4),
+  delete_state                  NUMBER(4),
+  refund_amount                 NUMBER(10,2),
+  delay_time                    DATE,
+  cps_u_id                      VARCHAR2(300),
+  order_from                    VARCHAR2(30),
+  shipping_type                 NUMBER(4),
+  shipping_name                 VARCHAR2(150),
+  shipping_code                 VARCHAR2(150),
+  app_name                      VARCHAR2(60),
+  vid                           VARCHAR2(300),
+  expire_time                   DATE,
+  erp_order_no                  NUMBER(15),
+  crm_order_no                  NUMBER(15),
+  erp_order_time                DATE,
+  erp_log                       VARCHAR2(300),
+  erp_order_fail                NUMBER(8),
+  audit_status                  NUMBER(4),
+  audit_times                   DATE,
+  audit_remark                  VARCHAR2(1500),
+  audit_admin_id                NUMBER(10),
+  order_ip                      VARCHAR2(600),
+  integrals_amount              NUMBER(10,2),
+  integrals_sum                 NUMBER(10),
+  discount_mansong_id           NUMBER(10),
+  discount_mansong_amount       NUMBER(10,2),
+  discount_paymentway_amount    NUMBER(10,2),
+  discount_paymentway_desc      VARCHAR2(300),
+  discount_paymentchanel_amount NUMBER(10,2),
+  discount_paymentchanel_desc   VARCHAR2(300),
+  paymentchannel                VARCHAR2(60),
+  follow_up_time                DATE,
+  tuotou_memberid               VARCHAR2(30),
+  reservation_delivery_at       VARCHAR2(60),
+  order_type                    NUMBER(4),
+  order_other_id                NUMBER(10),
+  w_insert_dt                   DATE,
+  w_update_dt                   DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.EC_ORDER_2_TMP
+  is 'ec_order中间表';
+

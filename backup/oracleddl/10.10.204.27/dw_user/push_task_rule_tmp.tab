@@ -1,0 +1,56 @@
+???create table DW_USER.PUSH_TASK_RULE_TMP
+(
+  id              NUMBER(10),
+  task_name       VARCHAR2(100),
+  task_type       NUMBER(2),
+  add_time        DATE,
+  start_time      DATE,
+  member_group_id NUMBER(10),
+  msg_t_id        NUMBER(10),
+  msg_content     VARCHAR2(4000),
+  task_stauts     VARCHAR2(20),
+  run_records     NUMBER(10),
+  result_records  NUMBER(10),
+  fail_records    NUMBER(10),
+  remark          VARCHAR2(500)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.PUSH_TASK_RULE_TMP
+  is '推送任务中间表';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.id
+  is '自增编码';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.task_name
+  is '任务名称';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.task_type
+  is '通知类型，1：微信推送，2：短信推送，3：APP推送';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.add_time
+  is '创建时间';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.start_time
+  is '发送开始时间';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.member_group_id
+  is '发送用户组编号，用户组表ID';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.msg_t_id
+  is '发送模版编号，模版主表ID';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.msg_content
+  is '通知消息文案,冗余通知字段';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.task_stauts
+  is '-5：停止，-3：创建， -1：待审核，0：待执行，1：用户初始化中5：数据初始化完成，10：发送消息中，15：运行成功, ';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.run_records
+  is '运行条数';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.result_records
+  is '成功条数';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.fail_records
+  is '失败条数';
+comment on column DW_USER.PUSH_TASK_RULE_TMP.remark
+  is '备注';
+

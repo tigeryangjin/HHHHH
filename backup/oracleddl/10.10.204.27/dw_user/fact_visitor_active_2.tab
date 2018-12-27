@@ -1,0 +1,33 @@
+???create table DW_USER.FACT_VISITOR_ACTIVE_2
+(
+  visitor_key      NUMBER(20),
+  vid              VARCHAR2(1000),
+  ip               VARCHAR2(500),
+  application_key  NUMBER(10),
+  application_name VARCHAR2(500),
+  active_date_key  NUMBER(10),
+  active_date      DATE,
+  level1           VARCHAR2(50),
+  level2           VARCHAR2(50),
+  os               VARCHAR2(50),
+  ver_key          NUMBER(10),
+  ver_name         VARCHAR2(500),
+  url              VARCHAR2(1000),
+  keyword          VARCHAR2(1000),
+  plan             VARCHAR2(1000),
+  adgroup          VARCHAR2(1000),
+  active_hour_key  NUMBER(10),
+  member_key       NUMBER(10)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

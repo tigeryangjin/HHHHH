@@ -1,0 +1,47 @@
+???create table DW_HAPPIGO.R_JOB_ATTRIBUTE
+(
+  id_job_attribute INTEGER not null,
+  id_job           INTEGER,
+  nr               INTEGER,
+  code             VARCHAR2(255),
+  value_num        INTEGER,
+  value_str        CLOB
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create unique index DW_HAPPIGO.IDX_JOB_ATTRIBUTE_LOOKUP on DW_HAPPIGO.R_JOB_ATTRIBUTE (ID_JOB, CODE, NR)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table DW_HAPPIGO.R_JOB_ATTRIBUTE
+  add primary key (ID_JOB_ATTRIBUTE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

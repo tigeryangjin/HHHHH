@@ -1,0 +1,80 @@
+???create table DW_USER.TP_COMMUNITY_GROUP_FANS
+(
+  fans_id        NUMBER(11) not null,
+  group_id       NUMBER(11) not null,
+  nickname       VARCHAR2(50),
+  fans_img       VARCHAR2(200),
+  fans_ip        VARCHAR2(15),
+  ec_cust_no     VARCHAR2(50),
+  openid         VARCHAR2(200),
+  vid            VARCHAR2(100),
+  ec_member_id   NUMBER(11),
+  ec_member_name VARCHAR2(100),
+  audit_user     NUMBER(20),
+  remark         VARCHAR2(200),
+  is_valid       NUMBER(2) not null,
+  update_time    DATE,
+  add_time       DATE not null,
+  token          VARCHAR2(30) not null,
+  w_insert_dt    DATE,
+  w_update_dt    DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.TP_COMMUNITY_GROUP_FANS
+  is '社群成员表-中间表
+by yangjin
+2018-03-26';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.fans_id
+  is '索引主键';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.group_id
+  is '所属分组';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.nickname
+  is '昵称';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.fans_img
+  is '用户头像';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.fans_ip
+  is 'ip';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.ec_cust_no
+  is 'cust_no';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.ec_member_id
+  is 'ec对应会员id';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.ec_member_name
+  is 'ec对应名字';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.audit_user
+  is '审核人';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.is_valid
+  is '是否有效 1为无效   默认为0';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.update_time
+  is '更新时间';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.add_time
+  is '创建时间';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.TP_COMMUNITY_GROUP_FANS.w_update_dt
+  is '记录更新时间';
+alter table DW_USER.TP_COMMUNITY_GROUP_FANS
+  add constraint TP_COMMUNITY_GROUP_FANS_PK primary key (FANS_ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.TP_COMMUNITY_GROUP_FANS_PK nologging;
+

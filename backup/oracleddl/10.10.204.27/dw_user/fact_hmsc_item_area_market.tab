@@ -1,0 +1,89 @@
+???create table DW_USER.FACT_HMSC_ITEM_AREA_MARKET
+(
+  visit_date_key  NUMBER(10),
+  application_key VARCHAR2(7),
+  hmmd            VARCHAR2(50),
+  hmpl            VARCHAR2(10),
+  xlflag          CHAR(9),
+  ip_city         VARCHAR2(50),
+  item_code       NUMBER(11),
+  goods_name      VARCHAR2(200),
+  mcnt            NUMBER,
+  vcnt            NUMBER,
+  scnt            NUMBER,
+  orderrs         NUMBER,
+  ordercs         NUMBER,
+  orderamount     NUMBER,
+  ordercgrs       NUMBER,
+  ordercgcs       NUMBER,
+  ordercgamount   NUMBER,
+  insert_dt       DATE,
+  update_dt       DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACT_HMSC_ITEM_AREA_MARKET
+  is '此表是在FACT_HMSC_MARKET的基础上再细分到商品、区域维度
+by yangjin';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.visit_date_key
+  is '访问时间key';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.application_key
+  is '应用key';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.hmmd
+  is '渠道名称';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.hmpl
+  is '广告系列';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.xlflag
+  is '新老用户标识';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.ip_city
+  is 'IP城市';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.item_code
+  is '商品编码';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.mcnt
+  is '会员人数';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.vcnt
+  is '用户终端数';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.scnt
+  is '会话数';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.orderrs
+  is '订单人数';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.ordercs
+  is '订单数';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.orderamount
+  is '订单金额';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.ordercgrs
+  is '有效订单人数';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.ordercgcs
+  is '有效订单数';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.ordercgamount
+  is '有效订单金额';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.insert_dt
+  is '插入时间';
+comment on column DW_USER.FACT_HMSC_ITEM_AREA_MARKET.update_dt
+  is '更新时间';
+create index DW_USER.FACT_HMSC_ITEM_AREA_MARKET_I1 on DW_USER.FACT_HMSC_ITEM_AREA_MARKET (VISIT_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

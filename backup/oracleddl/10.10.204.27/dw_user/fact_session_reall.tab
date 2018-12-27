@@ -1,0 +1,41 @@
+???create table DW_USER.FACT_SESSION_REALL
+(
+  member_key NUMBER(20),
+  leixin     CHAR(2)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.ESSION_REALL_IDX on DW_USER.FACT_SESSION_REALL (LEIXIN)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.ESSION_REALL_MEMIDX on DW_USER.FACT_SESSION_REALL (MEMBER_KEY)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

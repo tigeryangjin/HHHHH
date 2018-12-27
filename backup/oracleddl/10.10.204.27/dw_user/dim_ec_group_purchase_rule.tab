@@ -1,0 +1,136 @@
+???create table DW_USER.DIM_EC_GROUP_PURCHASE_RULE
+(
+  id                        NUMBER(11) not null,
+  rule_name                 VARCHAR2(100),
+  store_id                  NUMBER(11),
+  share_title               VARCHAR2(100),
+  share_desc                VARCHAR2(200),
+  goods_commonid            NUMBER(11),
+  item_code                 NUMBER(11),
+  goods_name                VARCHAR2(200),
+  head_price                NUMBER(11,2),
+  member_price              NUMBER(11,2),
+  shipping_fee              NUMBER(11,2),
+  max_group_num             NUMBER(11),
+  group_member_num          NUMBER(11),
+  max_group_num_member_join NUMBER(11),
+  max_goods_num_per_order   NUMBER(11),
+  state                     NUMBER(2),
+  start_time                DATE,
+  end_time                  DATE,
+  group_retention_time      NUMBER(11),
+  order_retention_time      NUMBER(11),
+  is_buy_separately         NUMBER(2),
+  is_new_member_join        NUMBER(2),
+  fail_reward_voucher_ids   VARCHAR2(100),
+  fail_reward_voucher_keys  VARCHAR2(500),
+  head_share_num_condition  NUMBER(11),
+  head_share_voucher_price  NUMBER(11,2),
+  head_share_voucher_ids    VARCHAR2(100),
+  head_share_voucher_keys   VARCHAR2(500),
+  goods_service_ids         VARCHAR2(50),
+  add_time                  DATE,
+  update_time               DATE,
+  remark                    VARCHAR2(50),
+  group_opened_num          NUMBER(11),
+  is_recommend              NUMBER(1),
+  sort                      NUMBER(11)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.id
+  is '自增编码';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.rule_name
+  is '活动名称';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.store_id
+  is '店铺ID';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.share_title
+  is '分享标题';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.share_desc
+  is '描述';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.goods_commonid
+  is '商品SPU';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.item_code
+  is 'item_code';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.goods_name
+  is '商品名称';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.head_price
+  is '团长价';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.member_price
+  is '团员价';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.shipping_fee
+  is '运费';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.max_group_num
+  is '开团总数';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.group_member_num
+  is '成团人数';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.max_group_num_member_join
+  is '用户最大参团数';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.max_goods_num_per_order
+  is '每次订购最大商品数';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.state
+  is '状态0：暂停，1：有效，2：删除';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.start_time
+  is '活动开始时间';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.end_time
+  is '活动结束时间';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.group_retention_time
+  is '参团有效期,单位分钟';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.order_retention_time
+  is '订单支付有效期,单位分钟';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.is_buy_separately
+  is '是否允许单独购买,用于详情页显示,1:允许，0不允许';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.is_new_member_join
+  is '是否只允许新用户参团，1：只允许新用户，0：全部';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.fail_reward_voucher_ids
+  is '失败返券ID,有多个用,分割';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.fail_reward_voucher_keys
+  is '失败返券Key,有多个用,分割';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.head_share_num_condition
+  is '团长获得分享奖励的次数条件';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.head_share_voucher_price
+  is '团长分享奖励金额';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.head_share_voucher_ids
+  is '团长分享奖励返券ID,有多个用,分割';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.head_share_voucher_keys
+  is '团长分享奖励返券KEY';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.goods_service_ids
+  is '服务政策IDS,有多个用,分割';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.add_time
+  is '添加时间';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.update_time
+  is '修改时间';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.remark
+  is '备注';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.group_opened_num
+  is '已开团数';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.is_recommend
+  is '是否推荐首页，1：推荐，0：不推荐';
+comment on column DW_USER.DIM_EC_GROUP_PURCHASE_RULE.sort
+  is '排序';
+alter table DW_USER.DIM_EC_GROUP_PURCHASE_RULE
+  add constraint GP_PUR_RULE_IDX primary key (ID)
+  using index 
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.GP_PUR_RULE_IDX nologging;
+

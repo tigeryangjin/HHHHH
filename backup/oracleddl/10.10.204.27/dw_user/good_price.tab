@@ -1,0 +1,17 @@
+???create table DW_USER.GOOD_PRICE
+(
+  item_code  NUMBER,
+  unit_price NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

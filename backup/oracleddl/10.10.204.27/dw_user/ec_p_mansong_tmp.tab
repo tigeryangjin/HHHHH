@@ -1,0 +1,45 @@
+???create table DW_USER.EC_P_MANSONG_TMP
+(
+  mansong_id            NUMBER(10),
+  mansong_name          VARCHAR2(150),
+  quota_id              NUMBER(10),
+  start_time            DATE,
+  end_time              DATE,
+  member_id             NUMBER(10),
+  store_id              NUMBER(10),
+  member_name           VARCHAR2(150),
+  store_name            VARCHAR2(150),
+  state                 NUMBER(10),
+  remark                VARCHAR2(600),
+  mansong_web           NUMBER(10),
+  mansong_app           NUMBER(10),
+  mansong_wx            NUMBER(10),
+  mansong_3g            NUMBER(10),
+  mansong_num           NUMBER(10),
+  mansong_advertising   VARCHAR2(600),
+  isshop_cart           NUMBER(10),
+  isgoods_details       NUMBER(10),
+  mat_type              NUMBER(10),
+  goods_type            NUMBER(10),
+  min_level             NUMBER(11),
+  min_level_t           VARCHAR2(60),
+  isall_details         NUMBER(10),
+  app_minato_single_url VARCHAR2(1500),
+  web_minato_single_url VARCHAR2(1500),
+  w_insert_dt           DATE,
+  w_update_dt           DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.EC_P_MANSONG_TMP
+  is 'ec_p_mansong中间表';
+

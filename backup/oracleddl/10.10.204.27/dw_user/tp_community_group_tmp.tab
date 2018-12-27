@@ -1,0 +1,41 @@
+???create table DW_USER.TP_COMMUNITY_GROUP_TMP
+(
+  group_id    NUMBER(11) not null,
+  group_no    VARCHAR2(11) not null,
+  group_name  VARCHAR2(50) not null,
+  group_admin VARCHAR2(50),
+  add_time    DATE,
+  token       VARCHAR2(30) not null,
+  remark      VARCHAR2(255),
+  create_time DATE not null
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.TP_COMMUNITY_GROUP_TMP
+  is '社群表-中间表
+by yangjin
+2018-03-26';
+comment on column DW_USER.TP_COMMUNITY_GROUP_TMP.group_id
+  is '索引主键';
+comment on column DW_USER.TP_COMMUNITY_GROUP_TMP.group_no
+  is '群号 （随机字符串 8位小写字母）';
+comment on column DW_USER.TP_COMMUNITY_GROUP_TMP.group_name
+  is '组名';
+comment on column DW_USER.TP_COMMUNITY_GROUP_TMP.group_admin
+  is '组管理人';
+comment on column DW_USER.TP_COMMUNITY_GROUP_TMP.add_time
+  is '添加时间';
+comment on column DW_USER.TP_COMMUNITY_GROUP_TMP.remark
+  is '备注';
+comment on column DW_USER.TP_COMMUNITY_GROUP_TMP.create_time
+  is '创建时间';
+

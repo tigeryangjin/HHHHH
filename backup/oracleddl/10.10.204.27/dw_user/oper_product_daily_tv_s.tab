@@ -1,0 +1,68 @@
+???create table DW_USER.OPER_PRODUCT_DAILY_TV_S
+(
+  posting_date_key NUMBER(10) not null,
+  matdlt           VARCHAR2(100),
+  matzlt           VARCHAR2(100),
+  matxlt           VARCHAR2(100),
+  item_code        NUMBER(10) not null,
+  tv_order_qty     NUMBER,
+  tv_order_amount  NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_PRODUCT_DAILY_TV_S
+  is '商品运营处商品日报-TV销售中间表
+by yangjin
+2018-01-24';
+comment on column DW_USER.OPER_PRODUCT_DAILY_TV_S.posting_date_key
+  is '日期key';
+comment on column DW_USER.OPER_PRODUCT_DAILY_TV_S.matdlt
+  is '大类名称';
+comment on column DW_USER.OPER_PRODUCT_DAILY_TV_S.matzlt
+  is '中类名称';
+comment on column DW_USER.OPER_PRODUCT_DAILY_TV_S.matxlt
+  is '小类名称';
+comment on column DW_USER.OPER_PRODUCT_DAILY_TV_S.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_PRODUCT_DAILY_TV_S.tv_order_qty
+  is 'TV销售件数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_TV_S.tv_order_amount
+  is 'TV销售金额';
+create index DW_USER.OPER_PRODUCT_DAILY_TV_S_I1 on DW_USER.OPER_PRODUCT_DAILY_TV_S (ITEM_CODE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.OPER_PRODUCT_DAILY_TV_S
+  add constraint OPER_PRODUCT_DAILY_TV_S_PK primary key (POSTING_DATE_KEY, ITEM_CODE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.OPER_PRODUCT_DAILY_TV_S_PK nologging;
+

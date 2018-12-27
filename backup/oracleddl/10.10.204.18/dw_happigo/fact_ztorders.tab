@@ -1,0 +1,27 @@
+???create table DW_HAPPIGO.FACT_ZTORDERS
+(
+  order_id        NUMBER(10),
+  goods_num       NUMBER(10),
+  goods_pay_price NUMBER(10,2),
+  vid             VARCHAR2(100),
+  goods_commonid  NUMBER(10),
+  goods_name      VARCHAR2(200),
+  session_key     NUMBER(20),
+  addtime         DATE,
+  addtime_key     NUMBER(10),
+  matdlt          VARCHAR2(100),
+  brand_name      VARCHAR2(100),
+  is_tv           VARCHAR2(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

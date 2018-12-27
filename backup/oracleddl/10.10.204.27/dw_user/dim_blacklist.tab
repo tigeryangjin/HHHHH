@@ -1,0 +1,32 @@
+???create table DW_USER.DIM_BLACKLIST
+(
+  id         NUMBER(10),
+  member_key VARCHAR2(20),
+  cust_no    NUMBER(20)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.BLACK_CUST_IDX on DW_USER.DIM_BLACKLIST (CUST_NO)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

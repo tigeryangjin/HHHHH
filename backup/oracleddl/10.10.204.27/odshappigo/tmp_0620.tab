@@ -1,0 +1,19 @@
+???create table ODSHAPPIGO.TMP_0620
+(
+  tabname   VARCHAR2(100),
+  fieldname VARCHAR2(100),
+  ddtext    VARCHAR2(500)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

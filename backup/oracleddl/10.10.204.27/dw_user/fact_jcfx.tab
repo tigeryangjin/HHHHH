@@ -1,0 +1,24 @@
+???create table DW_USER.FACT_JCFX
+(
+  member_key   NUMBER,
+  age          VARCHAR2(10),
+  gender       VARCHAR2(1),
+  membersource VARCHAR2(7),
+  provincecode VARCHAR2(10),
+  citycode     VARCHAR2(10),
+  towncode     VARCHAR2(10),
+  countycode   VARCHAR2(10),
+  county_code  NUMBER(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

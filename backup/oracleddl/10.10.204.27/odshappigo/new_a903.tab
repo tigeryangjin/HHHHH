@@ -1,0 +1,43 @@
+???create table ODSHAPPIGO.NEW_A903
+(
+  mandt  VARCHAR2(9),
+  kappl  VARCHAR2(6),
+  kschl  VARCHAR2(12),
+  matnr  VARCHAR2(54),
+  kfrst  VARCHAR2(3),
+  datbi  VARCHAR2(24),
+  datab  VARCHAR2(24),
+  kbstat VARCHAR2(6),
+  knumh  VARCHAR2(30)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column ODSHAPPIGO.NEW_A903.mandt
+  is '客户端 ';
+comment on column ODSHAPPIGO.NEW_A903.kappl
+  is '应用程序';
+comment on column ODSHAPPIGO.NEW_A903.kschl
+  is '条件类型';
+comment on column ODSHAPPIGO.NEW_A903.matnr
+  is '商品';
+comment on column ODSHAPPIGO.NEW_A903.kfrst
+  is '批准状态';
+comment on column ODSHAPPIGO.NEW_A903.datbi
+  is '条件记录有效截止日期';
+comment on column ODSHAPPIGO.NEW_A903.datab
+  is '条件记录有效起始日';
+comment on column ODSHAPPIGO.NEW_A903.kbstat
+  is '定价的处理状态 ';
+comment on column ODSHAPPIGO.NEW_A903.knumh
+  is '条件记录号 ';
+

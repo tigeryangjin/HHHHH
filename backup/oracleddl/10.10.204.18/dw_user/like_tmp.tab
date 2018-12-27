@@ -1,0 +1,25 @@
+???create table DW_USER.LIKE_TMP
+(
+  posting_date_key NUMBER,
+  member_key       NUMBER,
+  item_code        NUMBER,
+  matxl            NUMBER(10),
+  pv_freq          NUMBER,
+  fav_freq         NUMBER,
+  car_freq         NUMBER,
+  order_net_qty    NUMBER,
+  w_insert_dt      DATE,
+  w_update_dt      DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

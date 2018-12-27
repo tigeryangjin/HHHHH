@@ -1,0 +1,222 @@
+???create table DW_USER.FACT_EC_ORDER_2
+(
+  order_id                      NUMBER(10) not null,
+  order_sn                      NUMBER(20),
+  pay_sn                        NUMBER(20),
+  store_id                      NUMBER(10),
+  store_name                    VARCHAR2(150),
+  cust_no                       VARCHAR2(60),
+  member_level                  VARCHAR2(60),
+  buyer_id                      NUMBER(10),
+  buyer_name                    VARCHAR2(150),
+  buyer_email                   VARCHAR2(240),
+  add_time                      DATE,
+  payment_code                  VARCHAR2(10),
+  payment_time                  DATE,
+  finnshed_time                 DATE,
+  goods_amount                  NUMBER(10,2),
+  order_amount                  NUMBER(10,2),
+  rcb_amount                    NUMBER(10,2),
+  pd_amount                     NUMBER(10,2),
+  shipping_fee                  NUMBER(10,2),
+  evaluation_state              NUMBER(4),
+  order_state                   NUMBER(4),
+  vbeln_no                      VARCHAR2(60),
+  refund_state                  NUMBER(4),
+  lock_state                    NUMBER(4),
+  delete_state                  NUMBER(4),
+  refund_amount                 NUMBER(10,2),
+  delay_time                    DATE,
+  cps_u_id                      VARCHAR2(300),
+  order_from                    VARCHAR2(30),
+  shipping_type                 NUMBER(4),
+  shipping_name                 VARCHAR2(150),
+  shipping_code                 VARCHAR2(150),
+  app_name                      VARCHAR2(60),
+  vid                           VARCHAR2(300),
+  expire_time                   DATE,
+  erp_order_no                  NUMBER(15),
+  crm_order_no                  NUMBER(15),
+  erp_order_time                DATE,
+  erp_log                       VARCHAR2(300),
+  erp_order_fail                NUMBER(8),
+  audit_status                  NUMBER(4),
+  audit_times                   DATE,
+  audit_remark                  VARCHAR2(1500),
+  audit_admin_id                NUMBER(10),
+  order_ip                      VARCHAR2(600),
+  integrals_amount              NUMBER(10,2),
+  integrals_sum                 NUMBER(10),
+  discount_mansong_id           NUMBER(10),
+  discount_mansong_amount       NUMBER(10,2),
+  discount_paymentway_amount    NUMBER(10,2),
+  discount_paymentway_desc      VARCHAR2(300),
+  discount_paymentchanel_amount NUMBER(10,2),
+  discount_paymentchanel_desc   VARCHAR2(300),
+  paymentchannel                VARCHAR2(60),
+  follow_up_time                DATE,
+  tuotou_memberid               VARCHAR2(30),
+  reservation_delivery_at       VARCHAR2(60),
+  order_type                    NUMBER(4),
+  order_other_id                NUMBER(10),
+  w_insert_dt                   DATE,
+  w_update_dt                   DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_ORDER_2
+  is 'ec订单表 by yangjin';
+comment on column DW_USER.FACT_EC_ORDER_2.order_id
+  is '订单索引id';
+comment on column DW_USER.FACT_EC_ORDER_2.order_sn
+  is '订单编号';
+comment on column DW_USER.FACT_EC_ORDER_2.pay_sn
+  is '支付单号';
+comment on column DW_USER.FACT_EC_ORDER_2.store_id
+  is '卖家店铺id';
+comment on column DW_USER.FACT_EC_ORDER_2.store_name
+  is '卖家店铺名称';
+comment on column DW_USER.FACT_EC_ORDER_2.cust_no
+  is '顾客编号';
+comment on column DW_USER.FACT_EC_ORDER_2.member_level
+  is '会员级别';
+comment on column DW_USER.FACT_EC_ORDER_2.buyer_id
+  is '买家id';
+comment on column DW_USER.FACT_EC_ORDER_2.buyer_name
+  is '买家姓名';
+comment on column DW_USER.FACT_EC_ORDER_2.buyer_email
+  is '买家电子邮箱';
+comment on column DW_USER.FACT_EC_ORDER_2.add_time
+  is '订单生成时间';
+comment on column DW_USER.FACT_EC_ORDER_2.payment_code
+  is '支付方式名称代码';
+comment on column DW_USER.FACT_EC_ORDER_2.payment_time
+  is '支付(付款)时间';
+comment on column DW_USER.FACT_EC_ORDER_2.finnshed_time
+  is '订单完成时间';
+comment on column DW_USER.FACT_EC_ORDER_2.goods_amount
+  is '商品总价格';
+comment on column DW_USER.FACT_EC_ORDER_2.order_amount
+  is '订单总价格';
+comment on column DW_USER.FACT_EC_ORDER_2.rcb_amount
+  is '充值卡支付金额';
+comment on column DW_USER.FACT_EC_ORDER_2.pd_amount
+  is '预存款支付金额';
+comment on column DW_USER.FACT_EC_ORDER_2.shipping_fee
+  is '运费';
+comment on column DW_USER.FACT_EC_ORDER_2.evaluation_state
+  is '评价状态 0未评价，1已评价，2已过期未评价';
+comment on column DW_USER.FACT_EC_ORDER_2.order_state
+  is '订单状态：0(已取消)10(默认):未付款;20:已付款;30:已发货;40:已收货（妥投）;50:已确认收货;';
+comment on column DW_USER.FACT_EC_ORDER_2.vbeln_no
+  is 'CRM的交货单号';
+comment on column DW_USER.FACT_EC_ORDER_2.refund_state
+  is '退款状态:0是无退款,1是部分退款,2是全部退款';
+comment on column DW_USER.FACT_EC_ORDER_2.lock_state
+  is '锁定状态:0是正常,大于0是锁定,默认是0';
+comment on column DW_USER.FACT_EC_ORDER_2.delete_state
+  is '删除状态0未删除1放入回收站2彻底删除';
+comment on column DW_USER.FACT_EC_ORDER_2.refund_amount
+  is '退款金额';
+comment on column DW_USER.FACT_EC_ORDER_2.delay_time
+  is '延迟时间,默认为0';
+comment on column DW_USER.FACT_EC_ORDER_2.order_from
+  is '参见CPS码表VALUE1(76:扫码购)';
+comment on column DW_USER.FACT_EC_ORDER_2.shipping_type
+  is '0表示公司物流   1表示四通一达  5供应商配送';
+comment on column DW_USER.FACT_EC_ORDER_2.shipping_name
+  is '物流公司名称';
+comment on column DW_USER.FACT_EC_ORDER_2.shipping_code
+  is '物流单号';
+comment on column DW_USER.FACT_EC_ORDER_2.app_name
+  is '下单来源应用名';
+comment on column DW_USER.FACT_EC_ORDER_2.vid
+  is '下单设备编号';
+comment on column DW_USER.FACT_EC_ORDER_2.expire_time
+  is '订单过期时间';
+comment on column DW_USER.FACT_EC_ORDER_2.erp_order_no
+  is 'ERP订单编号';
+comment on column DW_USER.FACT_EC_ORDER_2.crm_order_no
+  is 'CRM订单号';
+comment on column DW_USER.FACT_EC_ORDER_2.erp_order_time
+  is '生成CRM订单时间';
+comment on column DW_USER.FACT_EC_ORDER_2.erp_log
+  is '抛单信息记录';
+comment on column DW_USER.FACT_EC_ORDER_2.erp_order_fail
+  is '抛单次数';
+comment on column DW_USER.FACT_EC_ORDER_2.audit_status
+  is '审核状态 0待审核 1通过  -1未通过 ';
+comment on column DW_USER.FACT_EC_ORDER_2.audit_times
+  is '审核时间';
+comment on column DW_USER.FACT_EC_ORDER_2.audit_remark
+  is '审核备注';
+comment on column DW_USER.FACT_EC_ORDER_2.audit_admin_id
+  is '审核人id';
+comment on column DW_USER.FACT_EC_ORDER_2.order_ip
+  is '下单IP';
+comment on column DW_USER.FACT_EC_ORDER_2.integrals_amount
+  is '积分抵扣金额';
+comment on column DW_USER.FACT_EC_ORDER_2.integrals_sum
+  is '使用积分数量';
+comment on column DW_USER.FACT_EC_ORDER_2.discount_mansong_id
+  is '享受的满减促销ID';
+comment on column DW_USER.FACT_EC_ORDER_2.discount_mansong_amount
+  is '订单满减折扣金额';
+comment on column DW_USER.FACT_EC_ORDER_2.discount_paymentway_amount
+  is '支付方式享受折扣';
+comment on column DW_USER.FACT_EC_ORDER_2.discount_paymentchanel_amount
+  is '支付渠道享受折扣';
+comment on column DW_USER.FACT_EC_ORDER_2.paymentchannel
+  is '支付渠道，（支付宝手机:Alipay_M，支付宝网站Alipay_W，微信_WX）';
+comment on column DW_USER.FACT_EC_ORDER_2.follow_up_time
+  is '订单后续更新时间';
+comment on column DW_USER.FACT_EC_ORDER_2.tuotou_memberid
+  is '妥投人';
+comment on column DW_USER.FACT_EC_ORDER_2.reservation_delivery_at
+  is '预约发货时间备注（直接记录时间，网站与APP应统一）';
+comment on column DW_USER.FACT_EC_ORDER_2.order_type
+  is '订单类型 1:普通订单(默认)，2：预售尾款订单,3：拼团订单，4：砍价订单,5：团购订单';
+comment on column DW_USER.FACT_EC_ORDER_2.order_other_id
+  is '订单类型活动id';
+comment on column DW_USER.FACT_EC_ORDER_2.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_EC_ORDER_2.w_update_dt
+  is '记录修改时间';
+create index DW_USER.FACT_EC_ORDER_2_I1 on DW_USER.FACT_EC_ORDER_2 (ADD_TIME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.FACT_EC_ORDER_2
+  add constraint FACT_EC_ORDER_2_PK primary key (ORDER_ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.FACT_EC_ORDER_2_PK nologging;
+

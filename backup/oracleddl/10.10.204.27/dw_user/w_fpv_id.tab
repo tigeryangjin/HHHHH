@@ -1,0 +1,20 @@
+???create table DW_USER.W_FPV_ID
+(
+  id    NUMBER(20),
+  name  VARCHAR2(10),
+  endid NUMBER(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.W_FPV_ID.id
+  is 'id';
+

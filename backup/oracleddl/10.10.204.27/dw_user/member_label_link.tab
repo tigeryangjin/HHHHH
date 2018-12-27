@@ -1,0 +1,114 @@
+???create table DW_USER.MEMBER_LABEL_LINK
+(
+  member_key          NUMBER(15),
+  m_label_id          NUMBER(5),
+  m_label_type_id     NUMBER(5),
+  create_date         DATE,
+  create_user_id      VARCHAR2(50),
+  last_update_date    DATE,
+  last_update_user_id VARCHAR2(50),
+  row_id              NUMBER(15) not null
+)
+partition by range (M_LABEL_TYPE_ID)
+(
+  partition M_LABEL_TYPE_ID_1 values less than (1)
+    tablespace DWDATA02
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 64K
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition M_LABEL_TYPE_ID_2 values less than (2)
+    tablespace DWDATA02
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 64K
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition M_LABEL_TYPE_ID_3 values less than (3)
+    tablespace DWDATA02
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 64K
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition M_LABEL_TYPE_ID_4 values less than (4)
+    tablespace DWDATA02
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 64K
+      next 1M
+      minextents 1
+      maxextents unlimited
+    )
+);
+comment on table DW_USER.MEMBER_LABEL_LINK
+  is '会员标签映射表（只存放当前有效标签，如果失效，数据迁往MEMBER_LABEL_LOG）
+by yangjin';
+comment on column DW_USER.MEMBER_LABEL_LINK.member_key
+  is '会员编号';
+comment on column DW_USER.MEMBER_LABEL_LINK.m_label_id
+  is '会员标签ID';
+comment on column DW_USER.MEMBER_LABEL_LINK.m_label_type_id
+  is '标签类型ID';
+comment on column DW_USER.MEMBER_LABEL_LINK.create_date
+  is '创建日期';
+comment on column DW_USER.MEMBER_LABEL_LINK.create_user_id
+  is '创建人员ID';
+comment on column DW_USER.MEMBER_LABEL_LINK.last_update_date
+  is '最后修改日期';
+comment on column DW_USER.MEMBER_LABEL_LINK.last_update_user_id
+  is '最后修改人员ID';
+comment on column DW_USER.MEMBER_LABEL_LINK.row_id
+  is '记录唯一标识符';
+create index DW_USER.MEMBER_LABEL_LINK_I2 on DW_USER.MEMBER_LABEL_LINK (M_LABEL_ID)
+  nologging  local;
+create index DW_USER.MEMBER_LABEL_LINK_I3 on DW_USER.MEMBER_LABEL_LINK (MEMBER_KEY)
+  nologging  local;
+create index DW_USER.MEMBER_LABEL_LINK_I4 on DW_USER.MEMBER_LABEL_LINK (ROW_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create unique index DW_USER.MEMBER_LABEL_LINK_I5 on DW_USER.MEMBER_LABEL_LINK (MEMBER_KEY, M_LABEL_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.MEMBER_LABEL_LINK
+  add constraint MEMBER_LABEL_LINK_PK primary key (ROW_ID);
+

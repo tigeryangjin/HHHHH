@@ -1,0 +1,28 @@
+???create table DW_USER.FACT_SCAN_CUST
+(
+  statdate NUMBER,
+  usertype VARCHAR2(18),
+  rs       NUMBER,
+  je       NUMBER,
+  ds       NUMBER,
+  js       NUMBER,
+  t0count  NUMBER,
+  t1count  NUMBER,
+  t2count  NUMBER,
+  t3count  NUMBER,
+  t4count  NUMBER,
+  t5count  NUMBER,
+  t6count  NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

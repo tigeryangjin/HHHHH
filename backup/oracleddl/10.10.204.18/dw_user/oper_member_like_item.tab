@@ -1,0 +1,105 @@
+???create table DW_USER.OPER_MEMBER_LIKE_ITEM
+(
+  row_wid           NUMBER(10),
+  posting_date_key  NUMBER,
+  member_key        NUMBER,
+  item_code         NUMBER,
+  matxl             NUMBER(10),
+  pv_freq           NUMBER,
+  fav_freq          NUMBER,
+  car_freq          NUMBER,
+  order_net_qty     NUMBER,
+  pv_weight         NUMBER,
+  fav_weight        NUMBER,
+  car_weight        NUMBER,
+  order_weight      NUMBER,
+  total_item_weight NUMBER,
+  item_ranking      NUMBER,
+  w_insert_dt       DATE,
+  w_update_dt       DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_MEMBER_LIKE_ITEM
+  is '会员喜欢的商品表（统计最近活跃的15天）
+by yangjin';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.row_wid
+  is '唯一代理键';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.posting_date_key
+  is '业务日期';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.member_key
+  is '会员BP号';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.matxl
+  is '物料小类编码';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.pv_freq
+  is '浏览频次';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.fav_freq
+  is '收藏频次';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.car_freq
+  is '加购物车频次';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.order_net_qty
+  is '净销售数量';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.pv_weight
+  is '浏览权重（浏览频次*1）';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.fav_weight
+  is '收藏权重（收藏频次*3）';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.car_weight
+  is '加购物车权重（加购物车频次*5）';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.order_weight
+  is '订购权重（净销售数量*15）';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.total_item_weight
+  is '商品合计权重（浏览权重+收藏权重+加购物车权重-订购权重）';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.item_ranking
+  is '商品推荐排名（商品合计权重倒序）';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.w_insert_dt
+  is '记录插入日期';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM.w_update_dt
+  is '记录修改日期';
+create index DW_USER.OPER_MEMBER_LIKE_ITEM_I1 on DW_USER.OPER_MEMBER_LIKE_ITEM (POSTING_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.OPER_MEMBER_LIKE_ITEM_I2 on DW_USER.OPER_MEMBER_LIKE_ITEM (MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.OPER_MEMBER_LIKE_ITEM_I3 on DW_USER.OPER_MEMBER_LIKE_ITEM (ITEM_CODE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

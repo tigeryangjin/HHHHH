@@ -1,0 +1,19 @@
+???create table DW_USER.TMP_NATURE
+(
+  date_key   NUMBER,
+  nature_uv  NUMBER default 0,
+  nature_reg NUMBER default 0,
+  nature_od  NUMBER default 0
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

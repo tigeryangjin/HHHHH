@@ -1,0 +1,21 @@
+???create table DW_USER.TMP_0508_3
+(
+  item_code    NUMBER,
+  item_name    VARCHAR2(200),
+  page_cnnm    VARCHAR2(100),
+  pv           NUMBER,
+  uv           NUMBER,
+  page_resouce VARCHAR2(100)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

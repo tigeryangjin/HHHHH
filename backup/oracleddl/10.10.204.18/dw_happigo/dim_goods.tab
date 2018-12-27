@@ -1,0 +1,42 @@
+???create table DW_HAPPIGO.DIM_GOODS
+(
+  goods_key   NUMBER(7) not null,
+  goods_code  NUMBER(20),
+  goods_name  VARCHAR2(200),
+  price_sale  NUMBER(10,2),
+  md_code     NUMBER(5),
+  sort_id     NUMBER(5),
+  type_id     NUMBER(5),
+  kind_id     NUMBER(5),
+  brand_id    NUMBER(5),
+  goods_code1 VARCHAR2(20),
+  ckey        NUMBER(20),
+  matdl       NUMBER(10),
+  matzl       NUMBER(10),
+  matxl       NUMBER(10),
+  matkl       NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create unique index ODSHAPPIGO.GOODS_KEY_IDX on DW_HAPPIGO.DIM_GOODS (GOODS_KEY)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

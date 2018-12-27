@@ -1,0 +1,22 @@
+???create table DW_USER.DIM_VOUCHER_MAT
+(
+  voucher_mat_id NUMBER(20),
+  matklt         NUMBER(20),
+  mat_type       NUMBER(5),
+  voucher_t_id   NUMBER(20)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_VOUCHER_MAT.mat_type
+  is '限制过滤类型，1：只允许使用的类型，2：禁止使用的类型';
+

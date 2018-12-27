@@ -1,0 +1,87 @@
+???create table DW_USER.FACT_EC_P_XIANSHI
+(
+  xianshi_id       NUMBER(10),
+  crm_policy_id    VARCHAR2(60),
+  xianshi_type     NUMBER(10),
+  xianshi_name     VARCHAR2(150),
+  xianshi_title    VARCHAR2(30),
+  xianshi_explain  VARCHAR2(150),
+  quota_id         NUMBER(10),
+  start_time       DATE,
+  end_time         DATE,
+  xianshi_time     DATE,
+  member_id        NUMBER(10),
+  store_id         NUMBER(10),
+  member_name      VARCHAR2(150),
+  store_name       VARCHAR2(150),
+  lower_limit      NUMBER(10),
+  state            NUMBER(10),
+  xianshi_web      NUMBER(10),
+  xianshi_3g       NUMBER(10),
+  xianshi_app      NUMBER(10),
+  xianshi_wx       NUMBER(10),
+  xianshi_schedule NUMBER(10),
+  w_insert_dt      DATE,
+  w_update_dt      DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_P_XIANSHI
+  is 'ec限时折扣活动表
+by yangjin';
+comment on column DW_USER.FACT_EC_P_XIANSHI.xianshi_id
+  is '限时编号';
+comment on column DW_USER.FACT_EC_P_XIANSHI.crm_policy_id
+  is 'CRM促销编号';
+comment on column DW_USER.FACT_EC_P_XIANSHI.xianshi_type
+  is '限时类型 1限时直降  2限时抢 3 tv直减';
+comment on column DW_USER.FACT_EC_P_XIANSHI.xianshi_name
+  is '活动名称';
+comment on column DW_USER.FACT_EC_P_XIANSHI.xianshi_title
+  is '活动标题';
+comment on column DW_USER.FACT_EC_P_XIANSHI.xianshi_explain
+  is '活动说明';
+comment on column DW_USER.FACT_EC_P_XIANSHI.quota_id
+  is '套餐编号';
+comment on column DW_USER.FACT_EC_P_XIANSHI.start_time
+  is '活动开始时间';
+comment on column DW_USER.FACT_EC_P_XIANSHI.end_time
+  is '活动结束时间';
+comment on column DW_USER.FACT_EC_P_XIANSHI.xianshi_time
+  is '限时抢日期';
+comment on column DW_USER.FACT_EC_P_XIANSHI.member_id
+  is '用户编号';
+comment on column DW_USER.FACT_EC_P_XIANSHI.store_id
+  is '店铺编号';
+comment on column DW_USER.FACT_EC_P_XIANSHI.member_name
+  is '用户名';
+comment on column DW_USER.FACT_EC_P_XIANSHI.store_name
+  is '店铺名称';
+comment on column DW_USER.FACT_EC_P_XIANSHI.lower_limit
+  is '购买下限，1为不限制';
+comment on column DW_USER.FACT_EC_P_XIANSHI.state
+  is '状态，0-取消 1-正常 2结束 3管理员关闭';
+comment on column DW_USER.FACT_EC_P_XIANSHI.xianshi_web
+  is '作用于网站';
+comment on column DW_USER.FACT_EC_P_XIANSHI.xianshi_3g
+  is '作用于3G';
+comment on column DW_USER.FACT_EC_P_XIANSHI.xianshi_app
+  is '作用于APP';
+comment on column DW_USER.FACT_EC_P_XIANSHI.xianshi_wx
+  is '作用于微信';
+comment on column DW_USER.FACT_EC_P_XIANSHI.xianshi_schedule
+  is '限时抢档期';
+comment on column DW_USER.FACT_EC_P_XIANSHI.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_EC_P_XIANSHI.w_update_dt
+  is '记录更新时间';
+

@@ -1,0 +1,39 @@
+???create table ODSHAPPIGO.ODS_SEARCH
+(
+  id          NUMBER(11) not null,
+  vid         VARCHAR2(1000),
+  mid         VARCHAR2(200),
+  ip          VARCHAR2(20),
+  createon    DATE,
+  isprocessed NUMBER(2),
+  skw         VARCHAR2(2000),
+  a           VARCHAR2(200)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+alter table ODSHAPPIGO.ODS_SEARCH
+  add constraint ODS_SEARCH_ID primary key (ID)
+  using index 
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index ODSHAPPIGO.ODS_SEARCH_ID nologging;
+

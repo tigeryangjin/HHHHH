@@ -1,0 +1,18 @@
+???create table DW_USER.FACT_PRICE_ZHUAN
+(
+  member_key NUMBER(20),
+  range      VARCHAR2(17),
+  rang_count NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

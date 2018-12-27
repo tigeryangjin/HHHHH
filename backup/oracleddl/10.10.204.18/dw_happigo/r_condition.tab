@@ -1,0 +1,23 @@
+???create table DW_HAPPIGO.R_CONDITION
+(
+  id_condition        INTEGER not null,
+  id_condition_parent INTEGER,
+  negated             CHAR(1),
+  operator            VARCHAR2(255),
+  left_name           VARCHAR2(255),
+  condition_function  VARCHAR2(255),
+  right_name          VARCHAR2(255),
+  id_value_right      INTEGER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+alter table DW_HAPPIGO.R_CONDITION
+  add primary key (ID_CONDITION)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+

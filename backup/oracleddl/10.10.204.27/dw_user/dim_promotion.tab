@@ -1,0 +1,35 @@
+???create table DW_USER.DIM_PROMOTION
+(
+  application_key  NUMBER(10),
+  application_name VARCHAR2(20),
+  level1           VARCHAR2(20),
+  level2           VARCHAR2(20),
+  url              VARCHAR2(200),
+  keyword          VARCHAR2(20)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.KEYWORD_IDX on DW_USER.DIM_PROMOTION (KEYWORD)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

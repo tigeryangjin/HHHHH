@@ -1,0 +1,44 @@
+???create table ODSHAPPIGO.ODS_GOOD_MD
+(
+  item_code VARCHAR2(50),
+  md        VARCHAR2(50)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index ODSHAPPIGO.OGM_ITEMCODE_IDX on ODSHAPPIGO.ODS_GOOD_MD (ITEM_CODE)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.OGM_MD_IDX on ODSHAPPIGO.ODS_GOOD_MD (MD)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

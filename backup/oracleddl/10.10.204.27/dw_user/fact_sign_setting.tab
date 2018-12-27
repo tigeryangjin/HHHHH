@@ -1,0 +1,23 @@
+???create table DW_USER.FACT_SIGN_SETTING
+(
+  id           NUMBER(11),
+  member_id    NUMBER(11),
+  member_name  VARCHAR2(200),
+  member_crmbp VARCHAR2(200),
+  vid          VARCHAR2(200),
+  app_name     VARCHAR2(50),
+  remind_time  VARCHAR2(200),
+  create_time  DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -1,0 +1,45 @@
+???create table DW_USER.LS_MEMBER
+(
+  member_key NUMBER(20),
+  status     NUMBER(5),
+  total      NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.LS_MEMBER_KEY on DW_USER.LS_MEMBER (MEMBER_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.LS_MEMBER_TOTAL on DW_USER.LS_MEMBER (TOTAL)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

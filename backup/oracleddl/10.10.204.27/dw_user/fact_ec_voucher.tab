@@ -1,0 +1,129 @@
+???create table DW_USER.FACT_EC_VOUCHER
+(
+  voucher_id              NUMBER(10),
+  voucher_code            VARCHAR2(100),
+  voucher_t_id            NUMBER(10),
+  voucher_title           VARCHAR2(150),
+  voucher_desc            VARCHAR2(800),
+  voucher_start_date      DATE,
+  voucher_end_date        DATE,
+  voucher_price           NUMBER(10),
+  voucher_limit           NUMBER(10,2),
+  voucher_store_id        NUMBER(10),
+  voucher_state           NUMBER(3),
+  voucher_active_date     DATE,
+  voucher_type            NUMBER(3),
+  voucher_owner_id        NUMBER(10),
+  voucher_owner_name      VARCHAR2(150),
+  voucher_order_id        NUMBER(10),
+  voucher_add_ip          VARCHAR2(60),
+  voucher_add_vid         VARCHAR2(300),
+  voucher_add_application VARCHAR2(60),
+  coupon_tv_id            VARCHAR2(60),
+  coupon_tv_code          VARCHAR2(120),
+  voucher_remark          VARCHAR2(600),
+  w_insert_dt             DATE,
+  w_update_dt             DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_VOUCHER
+  is 'ec代金券表
+by yangjin';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_id
+  is '代金券编号';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_code
+  is '代金券编码';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_t_id
+  is '代金券模版编号';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_title
+  is '代金券标题';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_desc
+  is '代金券描述';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_start_date
+  is '代金券有效期开始时间';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_end_date
+  is '代金券有效期结束时间';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_price
+  is '代金券面额';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_limit
+  is '代金券使用时的订单限额';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_store_id
+  is '代金券的店铺id';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_state
+  is '代金券状态(1-未用,2-已用,3-过期,4-收回)';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_active_date
+  is '代金券发放日期';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_type
+  is '代金券类别';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_owner_id
+  is '代金券所有者id';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_owner_name
+  is '代金券所有者名称';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_order_id
+  is '使用该代金券的订单索引ID';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_add_ip
+  is '领取时的IP';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_add_vid
+  is '领取时的设备编号';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_add_application
+  is '领取的应用';
+comment on column DW_USER.FACT_EC_VOUCHER.coupon_tv_id
+  is 'TV模板优惠券ID号';
+comment on column DW_USER.FACT_EC_VOUCHER.coupon_tv_code
+  is 'TV优惠券券码';
+comment on column DW_USER.FACT_EC_VOUCHER.voucher_remark
+  is '代金券备注';
+comment on column DW_USER.FACT_EC_VOUCHER.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_EC_VOUCHER.w_update_dt
+  is '记录更新时间';
+create unique index DW_USER.FACT_EC_VOUCHER_I1 on DW_USER.FACT_EC_VOUCHER (VOUCHER_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FACT_EC_VOUCHER_I2 on DW_USER.FACT_EC_VOUCHER (VOUCHER_ACTIVE_DATE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FACT_EC_VOUCHER_I3 on DW_USER.FACT_EC_VOUCHER (VOUCHER_TITLE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

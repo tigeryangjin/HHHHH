@@ -1,0 +1,25 @@
+???create table ODSHAPPIGO.NEW_A903_TEMP
+(
+  mandt  VARCHAR2(9),
+  kappl  VARCHAR2(6),
+  kschl  VARCHAR2(12),
+  matnr  VARCHAR2(54),
+  kfrst  VARCHAR2(3),
+  datbi  VARCHAR2(24),
+  datab  VARCHAR2(24),
+  kbstat VARCHAR2(6),
+  knumh  VARCHAR2(30)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

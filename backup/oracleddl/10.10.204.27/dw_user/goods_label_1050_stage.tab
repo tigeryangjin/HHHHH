@@ -1,0 +1,50 @@
+???create table DW_USER.GOODS_LABEL_1050_STAGE
+(
+  item_code       VARCHAR2(3000) not null,
+  g_label_id      NUMBER(5),
+  g_label_type_id NUMBER(5),
+  w_insert_dt     DATE,
+  w_update_dt     DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.GOODS_LABEL_1050_STAGE
+  is '商品标签-流量情况-中间表
+by yangjin
+2018-05-28
+';
+comment on column DW_USER.GOODS_LABEL_1050_STAGE.item_code
+  is '商品编码';
+comment on column DW_USER.GOODS_LABEL_1050_STAGE.g_label_id
+  is '商品标签ID';
+comment on column DW_USER.GOODS_LABEL_1050_STAGE.g_label_type_id
+  is '商品标签类型ID';
+comment on column DW_USER.GOODS_LABEL_1050_STAGE.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.GOODS_LABEL_1050_STAGE.w_update_dt
+  is '记录更新时间';
+alter table DW_USER.GOODS_LABEL_1050_STAGE
+  add constraint GOODS_LABEL_1050_STAGE_PK primary key (ITEM_CODE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.GOODS_LABEL_1050_STAGE_PK nologging;
+

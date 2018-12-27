@@ -1,0 +1,37 @@
+???create table DW_USER.OPER_MEMBER_REPURCHASE_RPT
+(
+  month_key    VARCHAR2(6),
+  order_count  NUMBER,
+  member_count NUMBER,
+  order_amount NUMBER,
+  w_insert_dt  DATE,
+  w_update_dt  DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_MEMBER_REPURCHASE_RPT
+  is '新媒体中心月报-会员订购频次
+by yangjin
+2018-06-05';
+comment on column DW_USER.OPER_MEMBER_REPURCHASE_RPT.month_key
+  is '月份key';
+comment on column DW_USER.OPER_MEMBER_REPURCHASE_RPT.order_count
+  is '订购频次';
+comment on column DW_USER.OPER_MEMBER_REPURCHASE_RPT.member_count
+  is '会员订购人数';
+comment on column DW_USER.OPER_MEMBER_REPURCHASE_RPT.order_amount
+  is '会员订购金额';
+comment on column DW_USER.OPER_MEMBER_REPURCHASE_RPT.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_MEMBER_REPURCHASE_RPT.w_update_dt
+  is '记录修改时间';
+

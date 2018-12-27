@@ -1,0 +1,24 @@
+???create table DW_USER.FACT_PRICE_RANGE
+(
+  member_key        NUMBER(20),
+  price_range100    NUMBER,
+  price_range200    NUMBER,
+  price_range300    NUMBER,
+  price_range400    NUMBER,
+  price_range500    NUMBER,
+  price_range1000   NUMBER,
+  price_range2000   NUMBER,
+  price_range2000up NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

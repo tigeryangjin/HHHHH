@@ -1,0 +1,57 @@
+???create table DW_USER.DIM_VOUCHER
+(
+  voucher_t_id                NUMBER(20),
+  voucher_t_title             VARCHAR2(200),
+  voucher_t_desc              VARCHAR2(500),
+  voucher_t_start_date_key    NUMBER(10),
+  voucher_t_end_date_key      NUMBER(10),
+  voucher_t_receive_start_key NUMBER(10),
+  voucher_t_receive_end_key   NUMBER(10),
+  voucher_t_price             NUMBER(10,2),
+  voucher_t_limit             NUMBER(10,2),
+  voucher_t_total             NUMBER(20),
+  voucher_t_add_date_key      NUMBER(10),
+  voucher_t_web               NUMBER(5),
+  voucher_t_app               NUMBER(5),
+  voucher_t_wx                NUMBER(5),
+  voucher_t_3g                NUMBER(5),
+  voucher_t_limit_goods       NUMBER(5),
+  voucher_t_transfer          NUMBER(5),
+  voucher_t_type              NUMBER(5),
+  mat_type                    NUMBER(5),
+  is_goodsdetail              NUMBER(5)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_VOUCHER.voucher_t_limit_goods
+  is '商品限制判断，(0：无限制，1：只允许使用的商品，2: 禁止使用的商品)';
+comment on column DW_USER.DIM_VOUCHER.voucher_t_type
+  is '代金券类型,1:积分兑换券，2：新媒体券，3：TV券';
+comment on column DW_USER.DIM_VOUCHER.mat_type
+  is '品类限制判断，关联dim_voucher_mat表。（0：无，1：有）';
+comment on column DW_USER.DIM_VOUCHER.is_goodsdetail
+  is '商品详情页显示优惠券，0:不显示，1：显示';
+create index DW_USER.DIMV_VOUCHER_T_ID on DW_USER.DIM_VOUCHER (VOUCHER_T_ID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

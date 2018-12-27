@@ -1,0 +1,63 @@
+???create table DW_USER.OPER_SENDCOUPONS_ORDER
+(
+  member_key         NUMBER(20),
+  register_time      NUMBER(10),
+  first_order_time   NUMBER(10),
+  last_order_time    NUMBER(10),
+  order_nums         NUMBER(10),
+  order_amount       NUMBER(10,2),
+  reverse_order_nums NUMBER(10),
+  reverse_last_time  NUMBER(10),
+  reverse_amount     NUMBER(10,2),
+  update_time        NUMBER(10),
+  state              NUMBER(5) default 0,
+  member_grade       VARCHAR2(100)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_SENDCOUPONS_ORDER
+  is '会员订购信息统计';
+comment on column DW_USER.OPER_SENDCOUPONS_ORDER.register_time
+  is '注册时间';
+comment on column DW_USER.OPER_SENDCOUPONS_ORDER.first_order_time
+  is '首单时间';
+comment on column DW_USER.OPER_SENDCOUPONS_ORDER.last_order_time
+  is '最后订购时间';
+comment on column DW_USER.OPER_SENDCOUPONS_ORDER.order_nums
+  is '累计订单数';
+comment on column DW_USER.OPER_SENDCOUPONS_ORDER.order_amount
+  is '累计订购金额';
+comment on column DW_USER.OPER_SENDCOUPONS_ORDER.reverse_order_nums
+  is '消退订单数';
+comment on column DW_USER.OPER_SENDCOUPONS_ORDER.reverse_last_time
+  is '最后消退时间';
+comment on column DW_USER.OPER_SENDCOUPONS_ORDER.reverse_amount
+  is '累计消退金额';
+comment on column DW_USER.OPER_SENDCOUPONS_ORDER.update_time
+  is '跟新日期时间';
+comment on column DW_USER.OPER_SENDCOUPONS_ORDER.state
+  is '是否处理';
+comment on column DW_USER.OPER_SENDCOUPONS_ORDER.member_grade
+  is '会员等级';
+create index DW_USER.OMO_MEMBER_KEY_NEW on DW_USER.OPER_SENDCOUPONS_ORDER (MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

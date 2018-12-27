@@ -1,0 +1,34 @@
+???create table DW_USER.FACT_EC_ORDER_STATE
+(
+  order_id    NUMBER(20) not null,
+  order_state NUMBER(5)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_ORDER_STATE
+  is 'by yangjin';
+alter table DW_USER.FACT_EC_ORDER_STATE
+  add constraint FACT_EC_ORDER_STATE primary key (ORDER_ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.FACT_EC_ORDER_STATE nologging;
+

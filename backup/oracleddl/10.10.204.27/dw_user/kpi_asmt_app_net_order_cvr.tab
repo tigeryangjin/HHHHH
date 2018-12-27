@@ -1,0 +1,32 @@
+???create table DW_USER.KPI_ASMT_APP_NET_ORDER_CVR
+(
+  month_key   VARCHAR2(24),
+  cvr         NUMBER,
+  w_insert_dt DATE,
+  w_update_dt DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.KPI_ASMT_APP_NET_ORDER_CVR
+  is 'KPI考核指标-渠道运营部-APP净订购转化率
+by yangjin
+2018-02-26
+';
+comment on column DW_USER.KPI_ASMT_APP_NET_ORDER_CVR.month_key
+  is '月份key';
+comment on column DW_USER.KPI_ASMT_APP_NET_ORDER_CVR.cvr
+  is '转化率 (Conversion Rate)平均值';
+comment on column DW_USER.KPI_ASMT_APP_NET_ORDER_CVR.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.KPI_ASMT_APP_NET_ORDER_CVR.w_update_dt
+  is '记录更新时间';
+

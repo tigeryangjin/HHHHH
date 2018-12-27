@@ -1,0 +1,64 @@
+???create table DW_USER.DIM_ZHUANGTI_GOODS
+(
+  id              NUMBER(10),
+  name            VARCHAR2(200),
+  goods_common_id NUMBER(10),
+  goods_name      VARCHAR2(200),
+  start_time      NUMBER(10),
+  zttype          VARCHAR2(20),
+  id1             NUMBER(11),
+  sort            NUMBER(11),
+  key             VARCHAR2(100)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.ZHUANGTI_GOODS_IDX on DW_USER.DIM_ZHUANGTI_GOODS (ID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ZHUANGTI_GOODS_KEY2_IDX on DW_USER.DIM_ZHUANGTI_GOODS (GOODS_COMMON_ID, KEY, ZTTYPE)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ZHUANGTI_GOODS_KEY_IDX on DW_USER.DIM_ZHUANGTI_GOODS (KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

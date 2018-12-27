@@ -1,0 +1,7 @@
+???create sequence DW_HAPPIGO.RESOURCE_KEY_S
+minvalue 1
+maxvalue 999999999999999999999999999
+start with 201
+increment by 1
+cache 20;
+

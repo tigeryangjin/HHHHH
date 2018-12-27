@@ -1,0 +1,36 @@
+???create table DW_USER.OPER_EC_MEMBER_TRACK_RANK
+(
+  member_bp                VARCHAR2(60),
+  add_time                 DATE,
+  order_id                 NUMBER(10),
+  sales_source_second_desc VARCHAR2(60),
+  promotion_desc           VARCHAR2(100),
+  rank1                    NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_EC_MEMBER_TRACK_RANK
+  is 'EC会员订单顺序排名表
+by yangjin';
+comment on column DW_USER.OPER_EC_MEMBER_TRACK_RANK.member_bp
+  is '会员BP号';
+comment on column DW_USER.OPER_EC_MEMBER_TRACK_RANK.add_time
+  is '订购时间';
+comment on column DW_USER.OPER_EC_MEMBER_TRACK_RANK.order_id
+  is 'ORDER_ID';
+comment on column DW_USER.OPER_EC_MEMBER_TRACK_RANK.sales_source_second_desc
+  is '二级渠道';
+comment on column DW_USER.OPER_EC_MEMBER_TRACK_RANK.promotion_desc
+  is '优惠方式';
+comment on column DW_USER.OPER_EC_MEMBER_TRACK_RANK.rank1
+  is '购买顺序排名';
+

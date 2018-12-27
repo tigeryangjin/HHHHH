@@ -9,7 +9,32 @@ SELECT 'ALTER TABLE ' || A.TABLE_NAME || ' MOVE SUBPARTITION ' ||
 BEGIN
   DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
                                 TABNAME  => 'FACT_PAGE_VIEW',
-                                PARTNAME => 'FPV201506',
+                                PARTNAME => 'FPV201507',
+                                DEGREE   => 4,
+                                CASCADE  => TRUE);
+  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
+                                TABNAME  => 'FACT_PAGE_VIEW',
+                                PARTNAME => 'FPV201508',
+                                DEGREE   => 4,
+                                CASCADE  => TRUE);
+  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
+                                TABNAME  => 'FACT_PAGE_VIEW',
+                                PARTNAME => 'FPV201509',
+                                DEGREE   => 4,
+                                CASCADE  => TRUE);
+  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
+                                TABNAME  => 'FACT_PAGE_VIEW',
+                                PARTNAME => 'FPV201510',
+                                DEGREE   => 4,
+                                CASCADE  => TRUE);
+  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
+                                TABNAME  => 'FACT_PAGE_VIEW',
+                                PARTNAME => 'FPV201511',
+                                DEGREE   => 4,
+                                CASCADE  => TRUE);
+  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
+                                TABNAME  => 'FACT_PAGE_VIEW',
+                                PARTNAME => 'FPV201512',
                                 DEGREE   => 4,
                                 CASCADE  => TRUE);
 END;
@@ -1679,7 +1704,7 @@ ALTER INDEX DW_USER.IPGEO_KEY_IDX REBUILD SUBPARTITION FPV201712 PARALLEL(DEGREE
 
 --FPV_DATA_2016------------------------------------------------------------------------------------------------------------
 --FPV201701
-ALTER TABLE DW_USER.FACT_PAGE_VIEW MOVE SUBPARTITION FPV201701 TABLESPACE FPV_DATA_2016 PARALLEL(DEGREE 4);
+ALTER TABLE DW_USER.FACT_PAGE_VIEW MOVE SUBPARTITION FPV201701 TABLESPACE FPV_DATA_2017 PARALLEL(DEGREE 4);
 ALTER INDEX DW_USER.FPV_APP_KEY REBUILD SUBPARTITION FPV201701 PARALLEL(DEGREE 4);
 ALTER INDEX DW_USER.FPV_DATE REBUILD SUBPARTITION FPV201701 PARALLEL(DEGREE 4);
 ALTER INDEX DW_USER.FPV_DATETIME REBUILD SUBPARTITION FPV201701 PARALLEL(DEGREE 4);

@@ -1,0 +1,23 @@
+???create table ODSHAPPIGO.ODS_CM003
+(
+  ztcrmc01   VARCHAR2(10),
+  zkunnr_l1  VARCHAR2(10),
+  zcrmd030   VARCHAR2(15),
+  crm_obj_id VARCHAR2(10),
+  zbpartner  VARCHAR2(10),
+  ztcmc016   VARCHAR2(10),
+  zcrmd040   VARCHAR2(10)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

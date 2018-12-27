@@ -1,0 +1,72 @@
+???create table DW_USER.GOODS_LABEL_LINK
+(
+  item_code           NUMBER(10),
+  g_label_id          NUMBER(5),
+  g_label_type_id     NUMBER(5),
+  create_date         DATE,
+  create_user_id      VARCHAR2(50),
+  last_update_date    DATE,
+  last_update_user_id VARCHAR2(50),
+  row_id              NUMBER(10) not null
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.GOODS_LABEL_LINK
+  is '商品标签映射表
+by yangjin';
+comment on column DW_USER.GOODS_LABEL_LINK.item_code
+  is '商品编码';
+comment on column DW_USER.GOODS_LABEL_LINK.g_label_id
+  is '商品标签ID';
+comment on column DW_USER.GOODS_LABEL_LINK.g_label_type_id
+  is '商品标签类型ID';
+comment on column DW_USER.GOODS_LABEL_LINK.create_date
+  is '创建日期';
+comment on column DW_USER.GOODS_LABEL_LINK.create_user_id
+  is '创建人员ID';
+comment on column DW_USER.GOODS_LABEL_LINK.last_update_date
+  is '最后修改日期';
+comment on column DW_USER.GOODS_LABEL_LINK.last_update_user_id
+  is '最后修改人员ID';
+comment on column DW_USER.GOODS_LABEL_LINK.row_id
+  is '记录唯一标识符';
+alter table DW_USER.GOODS_LABEL_LINK
+  add constraint GOODS_LABEL_LINK_PK primary key (ROW_ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.GOODS_LABEL_LINK_PK nologging;
+alter table DW_USER.GOODS_LABEL_LINK
+  add constraint GOODS_LABEL_LINK_I1 unique (ITEM_CODE, G_LABEL_ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.GOODS_LABEL_LINK_I1 nologging;
+

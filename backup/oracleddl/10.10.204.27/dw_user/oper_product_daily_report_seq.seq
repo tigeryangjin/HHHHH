@@ -1,0 +1,7 @@
+???create sequence DW_USER.OPER_PRODUCT_DAILY_REPORT_SEQ
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 5859782
+increment by 1
+cache 20;
+

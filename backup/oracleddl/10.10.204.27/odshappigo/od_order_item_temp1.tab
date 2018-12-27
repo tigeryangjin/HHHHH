@@ -1,0 +1,143 @@
+???create table ODSHAPPIGO.OD_ORDER_ITEM_TEMP1
+(
+  merchant_no                 VARCHAR2(12),
+  cust_no                     VARCHAR2(12),
+  order_gb                    VARCHAR2(6),
+  order_no                    VARCHAR2(14),
+  order_state                 VARCHAR2(6),
+  order_date                  DATE,
+  order_group_seq             VARCHAR2(10),
+  order_batch_seq             VARCHAR2(10),
+  order_seq                   VARCHAR2(10),
+  order_seq_rel               VARCHAR2(10),
+  item_select_no              VARCHAR2(20),
+  item_gb                     VARCHAR2(6),
+  msale_gb                    VARCHAR2(6),
+  msale_code                  VARCHAR2(10),
+  item_code                   VARCHAR2(12),
+  mitem_code                  VARCHAR2(12),
+  ven_code                    VARCHAR2(10),
+  unit_code                   VARCHAR2(3),
+  dt_info                     VARCHAR2(200),
+  order_qty                   INTEGER,
+  syslast_qty                 INTEGER,
+  wh_code                     VARCHAR2(6),
+  price_type                  VARCHAR2(3),
+  sale_price                  NUMBER(12,2),
+  dc_amt                      NUMBER(12,2),
+  gift_amt                    NUMBER(12,2),
+  rsale_amt                   NUMBER(12,2),
+  syslast_amt                 NUMBER(12,2),
+  dely_type                   VARCHAR2(2),
+  cust_dely_flag              VARCHAR2(1),
+  dely_hope_date              DATE,
+  dely_hope_yn                VARCHAR2(1),
+  dely_hope_time              VARCHAR2(2),
+  dely_remark                 VARCHAR2(400),
+  saveamt                     NUMBER(12,2),
+  saveamt_prom                NUMBER(12,2),
+  last_proc_date              DATE,
+  send_flag                   VARCHAR2(2),
+  msg                         VARCHAR2(2000),
+  ispay                       VARCHAR2(1),
+  fix_yn                      VARCHAR2(1),
+  refuse_dispatch             VARCHAR2(1),
+  cancel_code                 VARCHAR2(8),
+  cancel_qty                  INTEGER,
+  stock_flag                  VARCHAR2(2),
+  deal_flag                   VARCHAR2(2),
+  insert_date                 DATE,
+  insert_id                   VARCHAR2(20),
+  valid_flag                  VARCHAR2(1),
+  remark                      VARCHAR2(2000),
+  item_name                   VARCHAR2(400),
+  item_id                     NUMBER(28,7),
+  order_code                  VARCHAR2(8),
+  gstatus                     VARCHAR2(6),
+  orderstatus                 VARCHAR2(6),
+  return_type                 VARCHAR2(6),
+  sr_id                       VARCHAR2(12),
+  repay_flag                  VARCHAR2(3),
+  fee_batch_repay             VARCHAR2(3),
+  claim_qty                   INTEGER,
+  claim_cancel_qty            INTEGER,
+  exch_qty                    INTEGER,
+  exch_cancel_qty             INTEGER,
+  require_dely_qty            INTEGER,
+  require_claim_qty           INTEGER,
+  ok_dely_qty                 INTEGER,
+  ok_claim_qty                INTEGER,
+  exchange_out_qty            INTEGER,
+  exchange_return_qty         INTEGER,
+  require_exchange_out_qty    INTEGER,
+  require_exchange_return_qty INTEGER,
+  ok_exchange_out_qty         INTEGER,
+  ok_exchange_return_qty      INTEGER,
+  exchange_out_cancel_qty     INTEGER,
+  exchange_return_cancel_qty  INTEGER,
+  dely_cancel_qty             INTEGER,
+  order_rel_type              VARCHAR2(2),
+  order_rel_order_no          VARCHAR2(14),
+  order_rel_remark            VARCHAR2(200),
+  receiver_seq                VARCHAR2(14),
+  receiver_seq_crm            VARCHAR2(14),
+  dely_no                     VARCHAR2(14),
+  crm_order_no                VARCHAR2(40),
+  stock_type                  VARCHAR2(2),
+  order_rel_flag              VARCHAR2(2),
+  prog_id                     VARCHAR2(20),
+  dely_gb                     VARCHAR2(30),
+  dely_name                   VARCHAR2(40),
+  wb_no                       VARCHAR2(40),
+  freight_amt                 NUMBER(12,2),
+  wh_loc                      VARCHAR2(6),
+  batch_seq                   VARCHAR2(10),
+  customer_group              VARCHAR2(12),
+  md_code                     VARCHAR2(10),
+  sub_merchant_no             VARCHAR2(12),
+  ven_dely_date               DATE,
+  ven_dely_yn                 VARCHAR2(1),
+  order_point_flag            VARCHAR2(1),
+  order_split_flag            VARCHAR2(1),
+  workorder_no                VARCHAR2(20),
+  invoice_return_flag         VARCHAR2(1),
+  gift_amt_yhq                NUMBER(12,2),
+  gift_amt_djq                NUMBER(12,2),
+  gift_amt_wbyhq              NUMBER(12,2),
+  jf_amt                      NUMBER(12,2),
+  yfk_amt                     NUMBER(12,2),
+  xyk_amt                     NUMBER(12,2),
+  point_change_rate           NUMBER(12,4),
+  ecc_order_no                VARCHAR2(14),
+  main_pam_gb                 VARCHAR2(4),
+  main_pay_amt                NUMBER(12,2),
+  pay_adjustmen               NUMBER(12,2),
+  buy_price                   NUMBER(12,2),
+  zvbeln_input                VARCHAR2(20)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index ODSHAPPIGO.IDX_ORDER_ITEM_TEMP1_1 on ODSHAPPIGO.OD_ORDER_ITEM_TEMP1 (ORDER_NO, ORDER_SEQ)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

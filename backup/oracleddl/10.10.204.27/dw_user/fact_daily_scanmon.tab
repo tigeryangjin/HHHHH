@@ -1,0 +1,66 @@
+???create table DW_USER.FACT_DAILY_SCANMON
+(
+  stat_date_key CHAR(8),
+  smrs          NUMBER,
+  smxqy         NUMBER,
+  ddtjy         NUMBER,
+  xsm           NUMBER,
+  bqyf          NUMBER,
+  xsml          NUMBER,
+  appjh         NUMBER,
+  wxyj          NUMBER,
+  wxdd          NUMBER,
+  appyj         NUMBER,
+  appdd         NUMBER,
+  smyj          NUMBER,
+  zyj           NUMBER,
+  smzb          NUMBER,
+  wxrs          NUMBER,
+  apprs         NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_SCANMON.stat_date_key
+  is '统计日期';
+comment on column DW_USER.FACT_DAILY_SCANMON.smrs
+  is '扫码人数';
+comment on column DW_USER.FACT_DAILY_SCANMON.smxqy
+  is '商品详情页扫码访问人数';
+comment on column DW_USER.FACT_DAILY_SCANMON.ddtjy
+  is '订单提交页扫码访问人数';
+comment on column DW_USER.FACT_DAILY_SCANMON.xsm
+  is '新扫码用户数';
+comment on column DW_USER.FACT_DAILY_SCANMON.bqyf
+  is '扫码标签用户数';
+comment on column DW_USER.FACT_DAILY_SCANMON.xsml
+  is '新扫码率';
+comment on column DW_USER.FACT_DAILY_SCANMON.appjh
+  is 'APP新激活量';
+comment on column DW_USER.FACT_DAILY_SCANMON.wxyj
+  is '微信扫码业绩';
+comment on column DW_USER.FACT_DAILY_SCANMON.wxdd
+  is '微信扫码订单量';
+comment on column DW_USER.FACT_DAILY_SCANMON.appyj
+  is 'APP扫码业绩';
+comment on column DW_USER.FACT_DAILY_SCANMON.appdd
+  is 'APP扫码订单量';
+comment on column DW_USER.FACT_DAILY_SCANMON.smyj
+  is '总扫码业绩';
+comment on column DW_USER.FACT_DAILY_SCANMON.zyj
+  is '总有效业绩';
+comment on column DW_USER.FACT_DAILY_SCANMON.smzb
+  is '新媒体扫码业绩占比';
+comment on column DW_USER.FACT_DAILY_SCANMON.wxrs
+  is '微信订购人数';
+comment on column DW_USER.FACT_DAILY_SCANMON.apprs
+  is 'APP订购人数';
+

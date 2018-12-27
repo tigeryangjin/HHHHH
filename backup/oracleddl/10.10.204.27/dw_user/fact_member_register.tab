@@ -1,0 +1,169 @@
+???create table DW_USER.FACT_MEMBER_REGISTER
+(
+  member_id         NUMBER(20) not null,
+  member_key        NUMBER(20) not null,
+  register_date_key NUMBER(10),
+  register_time_key NUMBER(10),
+  device_key        NUMBER(20),
+  ip_geo_key        NUMBER(10),
+  register_date     DATE,
+  media_key         NUMBER(10),
+  media             VARCHAR2(20),
+  application_key   NUMBER(10),
+  application       VARCHAR2(20),
+  hmsc_key          NUMBER(10),
+  hmsc              VARCHAR2(20),
+  register_time     NUMBER(10),
+  ch_date_key       NUMBER(10),
+  ch_time_key       NUMBER(10),
+  ch_time           NUMBER(10),
+  member_level      VARCHAR2(10)
+)
+partition by range (REGISTER_DATE)
+(
+  partition MR1 values less than (TO_DATE(' 2016-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace FACT_PAR_DATA
+    pctfree 0
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 64K
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition MR2 values less than (TO_DATE(' 2017-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace FACT_PAR_DATA
+    pctfree 0
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 64K
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition MR3 values less than (TO_DATE(' 2018-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace FACT_PAR_DATA
+    pctfree 0
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 64K
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition MR4 values less than (TO_DATE(' 2019-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace FACT_PAR_DATA
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 64K
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition MR5 values less than (TO_DATE(' 2020-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace FACT_PAR_DATA
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 10M
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition MR6 values less than (TO_DATE(' 2021-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace FACT_PAR_DATA
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 10M
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition MR7 values less than (TO_DATE(' 2022-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace FACT_PAR_DATA
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 10M
+      next 1M
+      minextents 1
+      maxextents unlimited
+    )
+);
+comment on table DW_USER.FACT_MEMBER_REGISTER
+  is '会员注册事实表';
+comment on column DW_USER.FACT_MEMBER_REGISTER.member_id
+  is '主键索引ID';
+comment on column DW_USER.FACT_MEMBER_REGISTER.member_key
+  is '会员KEY';
+comment on column DW_USER.FACT_MEMBER_REGISTER.register_date_key
+  is '注册日期KEY';
+comment on column DW_USER.FACT_MEMBER_REGISTER.register_time_key
+  is '注册时间KEY';
+comment on column DW_USER.FACT_MEMBER_REGISTER.device_key
+  is '设备号KEY';
+comment on column DW_USER.FACT_MEMBER_REGISTER.ip_geo_key
+  is 'IP定位KEY';
+comment on column DW_USER.FACT_MEMBER_REGISTER.register_date
+  is '注册时间';
+comment on column DW_USER.FACT_MEMBER_REGISTER.media_key
+  is '大通路KEY';
+comment on column DW_USER.FACT_MEMBER_REGISTER.media
+  is '大通路';
+comment on column DW_USER.FACT_MEMBER_REGISTER.application_key
+  is '电商子通路KEY';
+comment on column DW_USER.FACT_MEMBER_REGISTER.application
+  is '电商子通路';
+comment on column DW_USER.FACT_MEMBER_REGISTER.hmsc_key
+  is '电商APP渠道KEY';
+comment on column DW_USER.FACT_MEMBER_REGISTER.hmsc
+  is '电商APP渠道';
+comment on column DW_USER.FACT_MEMBER_REGISTER.register_time
+  is '注册时间';
+comment on column DW_USER.FACT_MEMBER_REGISTER.ch_date_key
+  is '更改日期KEY';
+comment on column DW_USER.FACT_MEMBER_REGISTER.ch_time_key
+  is '更改时间KEY';
+comment on column DW_USER.FACT_MEMBER_REGISTER.ch_time
+  is '更改时间';
+comment on column DW_USER.FACT_MEMBER_REGISTER.member_level
+  is '会员级别';
+create index DW_USER.MR_APK on DW_USER.FACT_MEMBER_REGISTER (APPLICATION_KEY)
+  nologging  local;
+create index DW_USER.MR_DK on DW_USER.FACT_MEMBER_REGISTER (DEVICE_KEY)
+  nologging  local;
+create index DW_USER.MR_HDK on DW_USER.FACT_MEMBER_REGISTER (CH_DATE_KEY)
+  nologging  local;
+create index DW_USER.MR_HMK on DW_USER.FACT_MEMBER_REGISTER (HMSC_KEY)
+  nologging  local;
+create index DW_USER.MR_HTK on DW_USER.FACT_MEMBER_REGISTER (CH_TIME_KEY)
+  nologging  local;
+create index DW_USER.MR_IGK on DW_USER.FACT_MEMBER_REGISTER (IP_GEO_KEY)
+  nologging  local;
+create index DW_USER.MR_MDK on DW_USER.FACT_MEMBER_REGISTER (MEDIA_KEY)
+  nologging  local;
+create index DW_USER.MR_MID on DW_USER.FACT_MEMBER_REGISTER (MEMBER_ID)
+  nologging  local;
+create index DW_USER.MR_MK on DW_USER.FACT_MEMBER_REGISTER (MEMBER_KEY)
+  nologging  local;
+create index DW_USER.MR_RDK on DW_USER.FACT_MEMBER_REGISTER (REGISTER_DATE_KEY)
+  nologging  local;
+create index DW_USER.MR_RTK on DW_USER.FACT_MEMBER_REGISTER (REGISTER_TIME_KEY)
+  nologging  local;
+

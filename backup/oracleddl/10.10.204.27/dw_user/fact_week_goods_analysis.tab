@@ -1,0 +1,99 @@
+???create table DW_USER.FACT_WEEK_GOODS_ANALYSIS
+(
+  weeknm     VARCHAR2(98),
+  matdlt     VARCHAR2(100),
+  item_code  NUMBER,
+  goods_name VARCHAR2(200),
+  group_name VARCHAR2(50),
+  unit_price NUMBER(10,2),
+  bstatus    VARCHAR2(9),
+  xinlao     CHAR(9),
+  totamount  NUMBER,
+  totjs      NUMBER,
+  totcount   NUMBER,
+  totmem     NUMBER,
+  tgamount   NUMBER,
+  tgjs       NUMBER,
+  tgcnt      NUMBER,
+  tgmem      NUMBER,
+  pcamount   NUMBER,
+  pcjs       NUMBER,
+  pccnt      NUMBER,
+  pcmem      NUMBER,
+  appamount  NUMBER,
+  appjs      NUMBER,
+  appcnt     NUMBER,
+  appmem     NUMBER,
+  wxamount   NUMBER,
+  wxjs       NUMBER,
+  wxcnt      NUMBER,
+  wxmem      NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.weeknm
+  is '周度';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.matdlt
+  is '类目';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.item_code
+  is '编号';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.group_name
+  is '提报组';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.unit_price
+  is '快乐价';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.bstatus
+  is '是否播出';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.xinlao
+  is '新老会员';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.totamount
+  is '销售金额';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.totjs
+  is '销售件数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.totcount
+  is '销售单数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.totmem
+  is '销售人数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.tgamount
+  is '3G渠道金额';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.tgjs
+  is '3G渠道件数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.tgcnt
+  is '3G渠道单数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.tgmem
+  is '3G渠道人数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.pcamount
+  is 'PC渠道金额';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.pcjs
+  is 'PC渠道件数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.pccnt
+  is 'PC渠道单数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.pcmem
+  is 'PC渠道人数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.appamount
+  is 'APP渠道金额';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.appjs
+  is 'APP渠道件数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.appcnt
+  is 'APP渠道单数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.appmem
+  is 'APP渠道人数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.wxamount
+  is 'WX渠道金额';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.wxjs
+  is 'WX渠道件数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.wxcnt
+  is 'WX渠道单数';
+comment on column DW_USER.FACT_WEEK_GOODS_ANALYSIS.wxmem
+  is 'WX渠道人数';
+

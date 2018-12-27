@@ -1,0 +1,35 @@
+???create table DW_HAPPIGO.R_USER
+(
+  id_user     INTEGER not null,
+  login       VARCHAR2(255),
+  password    VARCHAR2(255),
+  name        VARCHAR2(255),
+  description VARCHAR2(255),
+  enabled     CHAR(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table DW_HAPPIGO.R_USER
+  add primary key (ID_USER)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

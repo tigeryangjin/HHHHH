@@ -1,0 +1,29 @@
+???create table DW_USER.FACT_DAILY_TOPIC_GOODS
+(
+  visit_date_key NUMBER,
+  zt_name        VARCHAR2(200),
+  item_code      NUMBER,
+  goods_name     VARCHAR2(200),
+  matdlt         VARCHAR2(100),
+  brand_name     VARCHAR2(100),
+  is_tv          VARCHAR2(18),
+  goods_price    NUMBER,
+  goodpv         NUMBER,
+  gooduv         NUMBER,
+  goodnum        NUMBER,
+  goodamount     NUMBER,
+  application_nm VARCHAR2(18),
+  visit_date     DATE
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

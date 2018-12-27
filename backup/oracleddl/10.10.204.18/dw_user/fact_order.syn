@@ -1,0 +1,3 @@
+???create or replace synonym DW_USER.FACT_ORDER
+  for DW_USER.FACT_ORDER@DW_DATALINK;
+

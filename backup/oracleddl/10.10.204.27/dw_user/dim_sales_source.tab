@@ -1,0 +1,35 @@
+???create table DW_USER.DIM_SALES_SOURCE
+(
+  sales_source_id          NUMBER(10),
+  sales_source_key         NUMBER(10),
+  sales_source_desc        VARCHAR2(200),
+  sales_source_name        VARCHAR2(200),
+  sales_source_second_key  NUMBER(10),
+  sales_source_second_desc VARCHAR2(200),
+  sales_source_second_name VARCHAR2(200)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_SALES_SOURCE.sales_source_key
+  is '销售一级组织key';
+comment on column DW_USER.DIM_SALES_SOURCE.sales_source_desc
+  is '销售一级组织编号';
+comment on column DW_USER.DIM_SALES_SOURCE.sales_source_name
+  is '销售一级组织名称';
+comment on column DW_USER.DIM_SALES_SOURCE.sales_source_second_key
+  is '销售二级组织key';
+comment on column DW_USER.DIM_SALES_SOURCE.sales_source_second_desc
+  is '销售二级组织编号';
+comment on column DW_USER.DIM_SALES_SOURCE.sales_source_second_name
+  is '销售二级组织名称';
+

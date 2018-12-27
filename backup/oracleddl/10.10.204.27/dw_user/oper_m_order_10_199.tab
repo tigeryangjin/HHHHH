@@ -1,0 +1,19 @@
+???create table DW_USER.OPER_M_ORDER_10_199
+(
+  member_key      NUMBER(20),
+  last_date_key   NUMBER(10),
+  order_total     NUMBER(10),
+  record_date_key NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

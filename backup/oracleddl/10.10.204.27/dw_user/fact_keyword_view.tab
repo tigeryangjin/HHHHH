@@ -1,0 +1,29 @@
+???create table DW_USER.FACT_KEYWORD_VIEW
+(
+  create_date_key      NUMBER(10),
+  vid                  VARCHAR2(1000),
+  channel_name         VARCHAR2(50),
+  source_one           VARCHAR2(500),
+  source_two           VARCHAR2(500),
+  plan                 VARCHAR2(1000),
+  adgroup              VARCHAR2(1000),
+  keyword              VARCHAR2(1000),
+  car_nums             NUMBER(10) default 0,
+  register_member_nums NUMBER(10) default 0,
+  banner_nums          NUMBER(10) default 0
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACT_KEYWORD_VIEW
+  is '关键词分析';
+

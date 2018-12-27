@@ -1,0 +1,41 @@
+???create table DW_USER.OPER_GOODRECOMMEND_M_FQ
+(
+  member_key NUMBER(20),
+  item_code  NUMBER(10),
+  preference NUMBER(10),
+  mat_status NUMBER(5) default 0,
+  grade      NUMBER(5),
+  matxl      NUMBER(20)
+)
+partition by hash (MEMBER_KEY)
+(
+  partition FMEOP_1
+    tablespace BDUDATAFMEPO01,
+  partition FMEOP_2
+    tablespace BDUDATAFMEPO02,
+  partition FMEOP_3
+    tablespace BDUDATAFMEPO03,
+  partition FMEOP_4
+    tablespace BDUDATAFMEPO04
+);
+comment on table DW_USER.OPER_GOODRECOMMEND_M_FQ
+  is '商品销售喜好top，分类喜好top';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_FQ.member_key
+  is '用户';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_FQ.item_code
+  is '商品编号';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_FQ.preference
+  is '评分';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_FQ.mat_status
+  is '0商品，1分类';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_FQ.grade
+  is '1商品(sp)10、分类5,2sp20、fl10';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_FQ.matxl
+  is '小类编号';
+create index DW_USER.FMEGF_ITEM_CODE on DW_USER.OPER_GOODRECOMMEND_M_FQ (ITEM_CODE)
+  nologging  local;
+create index DW_USER.FMEGF_MAT on DW_USER.OPER_GOODRECOMMEND_M_FQ (MATXL)
+  nologging  local;
+create index DW_USER.FMEGF_MEMBER_KEY on DW_USER.OPER_GOODRECOMMEND_M_FQ (MEMBER_KEY)
+  nologging  local;
+

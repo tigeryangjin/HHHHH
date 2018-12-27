@@ -1,0 +1,21 @@
+???create table DW_USER.GOODS_LABEL_TMP
+(
+  item_code NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.GOODS_LABEL_TMP
+  is '商品标签临时表
+by yangjin';
+comment on column DW_USER.GOODS_LABEL_TMP.item_code
+  is '商品编码';
+

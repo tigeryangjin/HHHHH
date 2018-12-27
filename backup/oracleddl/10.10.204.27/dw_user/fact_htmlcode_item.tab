@@ -1,0 +1,21 @@
+???create table DW_USER.FACT_HTMLCODE_ITEM
+(
+  id             NUMBER,
+  groupid        NUMBER,
+  act_id         NUMBER,
+  createtime     NUMBER,
+  html_code_item VARCHAR2(52),
+  flag           NUMBER default 0
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

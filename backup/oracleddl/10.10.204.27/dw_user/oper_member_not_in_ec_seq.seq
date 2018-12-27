@@ -1,0 +1,7 @@
+???create sequence DW_USER.OPER_MEMBER_NOT_IN_EC_SEQ
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 3621944
+increment by 1
+cache 20;
+

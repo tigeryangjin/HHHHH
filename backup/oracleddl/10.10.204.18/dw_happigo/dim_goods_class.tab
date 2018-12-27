@@ -1,0 +1,22 @@
+???create table DW_HAPPIGO.DIM_GOODS_CLASS
+(
+  ckey      NUMBER(10) not null,
+  sort_id   NUMBER(10),
+  type_id   NUMBER(10),
+  kind_id   NUMBER(10),
+  sort_name VARCHAR2(50),
+  type_name VARCHAR2(50),
+  kind_name VARCHAR2(50)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

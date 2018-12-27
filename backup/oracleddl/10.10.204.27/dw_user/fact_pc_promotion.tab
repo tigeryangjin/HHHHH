@@ -1,0 +1,41 @@
+???create table DW_USER.FACT_PC_PROMOTION
+(
+  vid          VARCHAR2(1000),
+  maxdate      DATE,
+  level1       VARCHAR2(50),
+  level2       VARCHAR2(50),
+  keyword      VARCHAR2(1000),
+  plan         VARCHAR2(1000),
+  adgroup      VARCHAR2(1000),
+  first_date   DATE,
+  first_level2 VARCHAR2(50)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_PC_PROMOTION.first_date
+  is '第一次进入的时间';
+comment on column DW_USER.FACT_PC_PROMOTION.first_level2
+  is '第一次进入的渠道';
+create index DW_USER.PC_VID_MAXDATE on DW_USER.FACT_PC_PROMOTION (VID, MAXDATE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

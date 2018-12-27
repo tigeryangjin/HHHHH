@@ -1,0 +1,20 @@
+???create table DW_HAPPIGO.R_DEPENDENCY
+(
+  id_dependency     INTEGER not null,
+  id_transformation INTEGER,
+  id_database       INTEGER,
+  table_name        VARCHAR2(255),
+  field_name        VARCHAR2(255)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+alter table DW_HAPPIGO.R_DEPENDENCY
+  add primary key (ID_DEPENDENCY)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+

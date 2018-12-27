@@ -1,0 +1,40 @@
+???create table DW_USER.OPER_ITEM_RECOMMEND_SR
+(
+  date_key    NUMBER,
+  item_code   NUMBER(10),
+  group_id    NUMBER(5),
+  qty         NUMBER,
+  qty_rank    NUMBER,
+  w_insert_dt DATE,
+  w_update_dt DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_ITEM_RECOMMEND_SR
+  is '商品推荐-热销商品Sales Rank
+数据来源：fact_goods_sales
+yangjin 2018-01-10';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_SR.date_key
+  is '日期key';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_SR.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_SR.group_id
+  is '商品提报组ID(1000:TV提报组,2000:电商提报组,2100:京东商品提报,3000:道格提报组,3100:未知,5000:芒果生活提报组,6000:外呼提报组,7000:全球购提报组)';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_SR.qty
+  is '销售数量';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_SR.qty_rank
+  is '销售数量排名';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_SR.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_SR.w_update_dt
+  is '记录修改时间';
+

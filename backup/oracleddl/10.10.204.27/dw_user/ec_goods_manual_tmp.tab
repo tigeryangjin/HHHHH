@@ -1,0 +1,67 @@
+???create table DW_USER.EC_GOODS_MANUAL_TMP
+(
+  manual_id   NUMBER(10) not null,
+  item_code   NUMBER(10),
+  common_id   NUMBER(10),
+  zmalab      VARCHAR2(50),
+  zlabname    VARCHAR2(100),
+  zmalabtxt   CLOB,
+  checked     NUMBER(1),
+  add_time    DATE,
+  show_sort   NUMBER(3),
+  w_insert_dt DATE,
+  w_update_dt DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.EC_GOODS_MANUAL_TMP
+  is '商品说明书信息表_中间表
+by yangjin
+2018-01-30';
+comment on column DW_USER.EC_GOODS_MANUAL_TMP.manual_id
+  is '自动ID';
+comment on column DW_USER.EC_GOODS_MANUAL_TMP.item_code
+  is '商品编号';
+comment on column DW_USER.EC_GOODS_MANUAL_TMP.common_id
+  is '商品公共ID';
+comment on column DW_USER.EC_GOODS_MANUAL_TMP.zmalab
+  is '说明书项key';
+comment on column DW_USER.EC_GOODS_MANUAL_TMP.zlabname
+  is '说明书项名称';
+comment on column DW_USER.EC_GOODS_MANUAL_TMP.zmalabtxt
+  is '说明书项内容';
+comment on column DW_USER.EC_GOODS_MANUAL_TMP.checked
+  is '是否勾选显示（1是，0否）';
+comment on column DW_USER.EC_GOODS_MANUAL_TMP.add_time
+  is '入库时间';
+comment on column DW_USER.EC_GOODS_MANUAL_TMP.show_sort
+  is '显示排序';
+comment on column DW_USER.EC_GOODS_MANUAL_TMP.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.EC_GOODS_MANUAL_TMP.w_update_dt
+  is '记录更新时间';
+alter table DW_USER.EC_GOODS_MANUAL_TMP
+  add constraint EC_GOODS_MANUAL_TMP_PK primary key (MANUAL_ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.EC_GOODS_MANUAL_TMP_PK nologging;
+

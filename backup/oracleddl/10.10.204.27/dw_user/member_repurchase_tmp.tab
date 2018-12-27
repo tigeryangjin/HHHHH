@@ -1,0 +1,40 @@
+???create table DW_USER.MEMBER_REPURCHASE_TMP
+(
+  member_bp              NUMBER(20),
+  repurchase_days        NUMBER,
+  repurchase_cycle_level NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.MEMBER_REPURCHASE_TMP
+  is '会员复购周期中间表
+by yangjin 2017-09-05';
+comment on column DW_USER.MEMBER_REPURCHASE_TMP.member_bp
+  is '会员bp号';
+comment on column DW_USER.MEMBER_REPURCHASE_TMP.repurchase_days
+  is '会员平均复购天数';
+comment on column DW_USER.MEMBER_REPURCHASE_TMP.repurchase_cycle_level
+  is '会员复购级别';
+create index DW_USER.MEMBER_REPURCHASE_TMP_I1 on DW_USER.MEMBER_REPURCHASE_TMP (MEMBER_BP)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

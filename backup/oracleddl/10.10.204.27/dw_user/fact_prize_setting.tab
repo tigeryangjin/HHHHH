@@ -1,0 +1,25 @@
+???create table DW_USER.FACT_PRIZE_SETTING
+(
+  id              NUMBER(11),
+  gameid          NUMBER(11),
+  probability     NUMBER(11),
+  prizename       VARCHAR2(200),
+  rewardmessage   VARCHAR2(200),
+  prizetype       NUMBER(5),
+  pointsreward    NUMBER(11),
+  voucherid       VARCHAR2(100),
+  vouchersend_key VARCHAR2(100),
+  createtime      DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

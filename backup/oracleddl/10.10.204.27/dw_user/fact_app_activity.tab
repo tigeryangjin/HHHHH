@@ -1,0 +1,22 @@
+???create table DW_USER.FACT_APP_ACTIVITY
+(
+  logid           NUMBER(10),
+  vid             VARCHAR2(100),
+  appname         VARCHAR2(50),
+  dttype          VARCHAR2(50),
+  create_time_key NUMBER(10),
+  create_time     DATE,
+  ip              VARCHAR2(15)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -28,18 +28,13 @@ SELECT * FROM DBA_DATA_FILES;
 SELECT 1911 - 880 FROM DUAL;
 
 --tmp
-alter database datafile '/data/u01/oradata/bihappigo/fpv_data_2017_00.dbf' resize 31874M;
-alter database datafile '/data/u01/oradata/bihappigo/fpv_index12.dbf' resize 29615M;
-alter database datafile '/data/u01/oradata/bihappigo/fpv_data_2017_03.dbf' resize 24709M;
-alter database datafile '/data/u01/oradata/bihappigo/bsdudata010.dbf' resize 19985M;
-alter database datafile '/data/u01/oradata/bihappigo/logistics04.dbf' resize 19778M;
-alter database datafile '/data/u01/oradata/bihappigo/bsdudata030.dbf' resize 19568M;
-alter database datafile '/data/u01/oradata/bihappigo/bsdudata020.dbf' resize 19464M;
-alter database datafile '/data/u01/oradata/bihappigo/bsdudata000.dbf' resize 19403M;
-alter database datafile '/data/u01/oradata/bihappigo/fpv_data_2016_03.dbf' resize 5361M;
-alter database datafile '/data/u01/oradata/bihappigo/acquisition_data_09.dbf' resize 2946M;
-alter database datafile '/data/u01/oradata/bihappigo/fpv_data_2017_04.dbf' resize 1996M;
-alter database datafile '/data/u01/oradata/bihappigo/odsdata01c.dbf' resize 1146M;
+alter database datafile '/data/u01/oradata/bihappigo/logistics04.dbf' resize 20818M;
+alter database datafile '/data/u01/oradata/bihappigo/bsdudata010.dbf' resize 19987M;
+alter database datafile '/data/u01/oradata/bihappigo/odsdata01c.dbf' resize 2493M;
+
+
+
+
 
 
 

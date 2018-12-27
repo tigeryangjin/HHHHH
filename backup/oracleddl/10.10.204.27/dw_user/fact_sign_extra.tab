@@ -1,0 +1,63 @@
+???create table DW_USER.FACT_SIGN_EXTRA
+(
+  id                    NUMBER(11),
+  rule_id               NUMBER(11),
+  member_id             NUMBER(11),
+  member_name           VARCHAR2(200),
+  member_crmbp          VARCHAR2(200),
+  vid                   VARCHAR2(200),
+  app_name              VARCHAR2(50),
+  sign_date             NUMBER(11),
+  continuous_times      NUMBER(11),
+  point_reward_2        NUMBER(11),
+  voucher_value         NUMBER(11),
+  voucher_id            VARCHAR2(100),
+  point_reward_status   NUMBER(2),
+  voucher_reward_status NUMBER(2),
+  point_reward_result   VARCHAR2(2000),
+  voucher_reward_result VARCHAR2(2000),
+  sign_ip               VARCHAR2(40),
+  remote_addr           VARCHAR2(40),
+  http_client_ip        VARCHAR2(40),
+  http_x_forwarded_for  VARCHAR2(400),
+  create_time           DATE,
+  point_reward          NUMBER(11,2)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.FCTIME_IDX on DW_USER.FACT_SIGN_EXTRA (TO_CHAR(CREATE_TIME,'yyyymmdd'))
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create unique index DW_USER.FSX_IDX on DW_USER.FACT_SIGN_EXTRA (ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

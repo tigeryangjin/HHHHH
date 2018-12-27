@@ -1,0 +1,31 @@
+???create table DW_USER.LS_POST_CODE
+(
+  post_code VARCHAR2(20),
+  id        NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.LPC_ID on DW_USER.LS_POST_CODE (ID)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

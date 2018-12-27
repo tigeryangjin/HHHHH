@@ -1,0 +1,32 @@
+???create table DW_USER.W_ETL_LOG
+(
+  row_id          NUMBER,
+  start_time      DATE,
+  end_time        DATE,
+  etl_duration    NUMBER(10,2),
+  proc_name       VARCHAR2(50),
+  measure_id      NUMBER(6),
+  proc_id         INTEGER,
+  table_name      VARCHAR2(50),
+  table_type      VARCHAR2(4),
+  etl_record_load INTEGER,
+  etl_record_ins  INTEGER,
+  etl_record_upd  INTEGER,
+  etl_record_del  INTEGER,
+  etl_status      VARCHAR2(30),
+  err_msg         VARCHAR2(4000),
+  err_sql         VARCHAR2(2000),
+  etl_memo        VARCHAR2(100)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

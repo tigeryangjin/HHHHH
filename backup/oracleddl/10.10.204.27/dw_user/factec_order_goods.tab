@@ -1,0 +1,105 @@
+???create table DW_USER.FACTEC_ORDER_GOODS
+(
+  rec_id             NUMBER(20),
+  ec_goods_id        NUMBER(10),
+  ec_goods_common    NUMBER(10),
+  item_code          NUMBER(10),
+  erp_code           NUMBER(10),
+  goods_name         VARCHAR2(500),
+  order_id           NUMBER(20),
+  goods_num          NUMBER(10),
+  goods_price        NUMBER(10,2),
+  goods_pay_price    NUMBER(10,2),
+  apportion_price    NUMBER(10,2),
+  tv_discount_amount NUMBER(10,2),
+  goods_type         VARCHAR2(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACTEC_ORDER_GOODS
+  is 'ec订单商品';
+comment on column DW_USER.FACTEC_ORDER_GOODS.rec_id
+  is '订单商品表索引id';
+comment on column DW_USER.FACTEC_ORDER_GOODS.ec_goods_id
+  is 'ec商品id';
+comment on column DW_USER.FACTEC_ORDER_GOODS.ec_goods_common
+  is 'ec公共商品编号';
+comment on column DW_USER.FACTEC_ORDER_GOODS.item_code
+  is '商品编码（spu）';
+comment on column DW_USER.FACTEC_ORDER_GOODS.erp_code
+  is '商品编码（sku）';
+comment on column DW_USER.FACTEC_ORDER_GOODS.goods_name
+  is '商品名称';
+comment on column DW_USER.FACTEC_ORDER_GOODS.order_id
+  is 'ec订单编号';
+comment on column DW_USER.FACTEC_ORDER_GOODS.goods_num
+  is '商品数量';
+comment on column DW_USER.FACTEC_ORDER_GOODS.goods_price
+  is '商品价格';
+comment on column DW_USER.FACTEC_ORDER_GOODS.goods_pay_price
+  is '商品实际成交价';
+comment on column DW_USER.FACTEC_ORDER_GOODS.goods_type
+  is '1默认2团购商品3限时折扣商品4组合套装5赠品6,满送商品。7,tv商品';
+create index DW_USER.FEOG_GOODS_COMMONID on DW_USER.FACTEC_ORDER_GOODS (EC_GOODS_COMMON)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FEOG_GOODS_TYPE on DW_USER.FACTEC_ORDER_GOODS (GOODS_TYPE)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FEOG_ORDER_ID on DW_USER.FACTEC_ORDER_GOODS (ORDER_ID)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FEOG_REC_ID on DW_USER.FACTEC_ORDER_GOODS (REC_ID)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

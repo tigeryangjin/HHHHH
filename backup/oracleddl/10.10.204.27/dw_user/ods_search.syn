@@ -1,0 +1,3 @@
+???create or replace synonym DW_USER.ODS_SEARCH
+  for ODSHAPPIGO.ODS_SEARCH@BIODS_LINK;
+

@@ -1,0 +1,32 @@
+???create table DW_USER.LS_MEMBER_VID
+(
+  member_key     NUMBER(20),
+  device_key     NUMBER(20),
+  visit_date_key NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.LSMV_MEMBER_VID on DW_USER.LS_MEMBER_VID (MEMBER_KEY, DEVICE_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

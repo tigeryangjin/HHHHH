@@ -1,0 +1,23 @@
+???create table DW_HAPPIGO.R_DIRECTORY
+(
+  id_directory        INTEGER not null,
+  id_directory_parent INTEGER,
+  directory_name      VARCHAR2(255)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+create unique index DW_HAPPIGO.IDX_DIRECTORY_AK on DW_HAPPIGO.R_DIRECTORY (ID_DIRECTORY_PARENT, DIRECTORY_NAME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+alter table DW_HAPPIGO.R_DIRECTORY
+  add primary key (ID_DIRECTORY)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+

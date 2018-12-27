@@ -1,0 +1,36 @@
+???create table DW_USER.V_PRODUCE_PACKAGEINFO
+(
+  tasknum        INTEGER,
+  export         INTEGER,
+  regioncode     VARCHAR2(32),
+  regionname     VARCHAR2(100),
+  contactaddress VARCHAR2(200),
+  sortdate       VARCHAR2(32),
+  orderdate      DATE,
+  priority       INTEGER,
+  customername   VARCHAR2(128),
+  customercode   VARCHAR2(32),
+  billcode       VARCHAR2(32),
+  cigarettecode  VARCHAR2(32),
+  cigarettename  VARCHAR2(128),
+  quantity       INTEGER,
+  allowsort      VARCHAR2(32),
+  sortseq        INTEGER,
+  machineseq     INTEGER,
+  troughnum      VARCHAR2(32),
+  ordercount     INTEGER,
+  seq            INTEGER,
+  url            VARCHAR2(200)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

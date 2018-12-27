@@ -1,0 +1,67 @@
+???create table DW_USER.OPER_GOOD_LABEL_ANALYSIS
+(
+  date_key            NUMBER,
+  channel_name        VARCHAR2(6),
+  is_new_user         CHAR(8),
+  member_level        VARCHAR2(12),
+  item_code           NUMBER(10),
+  pv                  NUMBER,
+  uv                  NUMBER,
+  car_count           NUMBER,
+  order_member_count  NUMBER,
+  order_qty           NUMBER,
+  order_amount        NUMBER,
+  return_member_count NUMBER,
+  return_qty          NUMBER,
+  return_amount       NUMBER,
+  w_insert_dt         DATE,
+  w_update_dt         DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_GOOD_LABEL_ANALYSIS
+  is '商品标签数据报表
+by yangjin
+2018-05-02';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.date_key
+  is '日期key';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.channel_name
+  is '通路名称';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.is_new_user
+  is '是否新用户';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.member_level
+  is '会员等级';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.pv
+  is 'page views';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.uv
+  is 'user views';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.car_count
+  is '加购物车次数';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.order_member_count
+  is '订购人数';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.order_qty
+  is '订购数量';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.order_amount
+  is '订购金额';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.return_member_count
+  is '拒退人数';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.return_qty
+  is '拒退数量';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.return_amount
+  is '拒退金额';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_GOOD_LABEL_ANALYSIS.w_update_dt
+  is '记录更新时间';
+

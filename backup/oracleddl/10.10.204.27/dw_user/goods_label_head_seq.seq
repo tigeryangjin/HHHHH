@@ -1,0 +1,7 @@
+???create sequence DW_USER.GOODS_LABEL_HEAD_SEQ
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 1200
+increment by 1
+cache 20;
+

@@ -1,0 +1,56 @@
+???create table DW_USER.OPER_PRODUCT_DAILY_FAV_S
+(
+  fav_time  NUMBER(10) not null,
+  item_code NUMBER(10) not null,
+  fav_count NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_PRODUCT_DAILY_FAV_S
+  is '商品运营处商品日报-收藏中间表
+by yangjin
+2018-01-24';
+comment on column DW_USER.OPER_PRODUCT_DAILY_FAV_S.fav_time
+  is '日期key';
+comment on column DW_USER.OPER_PRODUCT_DAILY_FAV_S.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_PRODUCT_DAILY_FAV_S.fav_count
+  is '收藏次数';
+create index DW_USER.OPER_PRODUCT_DAILY_FAV_S_I1 on DW_USER.OPER_PRODUCT_DAILY_FAV_S (ITEM_CODE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.OPER_PRODUCT_DAILY_FAV_S
+  add constraint OPER_PRODUCT_DAILY_FAV_S_PK primary key (FAV_TIME, ITEM_CODE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.OPER_PRODUCT_DAILY_FAV_S_PK nologging;
+

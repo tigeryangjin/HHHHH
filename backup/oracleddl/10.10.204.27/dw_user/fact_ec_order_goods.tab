@@ -1,0 +1,161 @@
+???create table DW_USER.FACT_EC_ORDER_GOODS
+(
+  rec_id             NUMBER(10) not null,
+  order_id           NUMBER(10),
+  goods_id           NUMBER(10),
+  goods_commonid     NUMBER(10),
+  erp_code           NUMBER(10),
+  supplier_id        VARCHAR2(150),
+  goods_name         VARCHAR2(600),
+  goods_price        NUMBER(10,2),
+  apportion_price    NUMBER(10,2),
+  goods_num          NUMBER(5),
+  return_state       NUMBER(3),
+  return_time        DATE,
+  goods_image        VARCHAR2(300),
+  goods_marketprice  NUMBER(10,2),
+  goods_pay_price    NUMBER(10,2),
+  tv_discount_amount NUMBER(10,2),
+  store_id           NUMBER(10),
+  buyer_id           NUMBER(10),
+  goods_type         NUMBER(2),
+  promotions_id      NUMBER(10),
+  xianshi_goods_id   NUMBER(10),
+  cps_commission     NUMBER(4,2),
+  commis_rate        NUMBER(5),
+  gc_id              NUMBER(10),
+  extra_point        NUMBER(3),
+  pml_title          VARCHAR2(60),
+  pml_id             NUMBER(10),
+  pml_discount       NUMBER(10,2),
+  third_skuid        NUMBER(20),
+  third_orderid      VARCHAR2(150),
+  wangyi_package     VARCHAR2(600),
+  hm_package         VARCHAR2(600),
+  package_process    NUMBER(3),
+  package_status     NUMBER(3),
+  package_info       VARCHAR2(1500),
+  package_error      NUMBER(3),
+  joinin_commis_rate VARCHAR2(150),
+  w_insert_dt        DATE,
+  w_update_dt        DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_ORDER_GOODS
+  is 'ec订单商品表
+by yangjin';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.rec_id
+  is '订单商品表索引id';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.order_id
+  is '订单id';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.goods_id
+  is '商品id';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.goods_commonid
+  is '公共商品编号';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.erp_code
+  is 'CRM中商品对应的SKU号';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.supplier_id
+  is '商品供应商编号';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.goods_price
+  is '商品价格';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.apportion_price
+  is '供应商分摊金额';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.goods_num
+  is '商品数量';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.return_state
+  is '后续状态 默认0   -1取消退货 1退货申请  5退货中  10退货完成';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.return_time
+  is '最后反向操作时间';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.goods_image
+  is '商品图片';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.goods_pay_price
+  is '商品实际成交价';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.tv_discount_amount
+  is 'TV直播立减金额';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.store_id
+  is '店铺ID';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.buyer_id
+  is '买家ID';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.goods_type
+  is '1默认2团购商品3限时折扣商品4组合套装5赠品6,满送商品。7,tv商品. 8新人礼商品. 9.砍价,10服务类商品';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.promotions_id
+  is '促销活动ID（团购ID/限时折扣ID/优惠套装ID）与goods_type搭配使用';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.xianshi_goods_id
+  is '限时商品编号';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.cps_commission
+  is 'cps佣金比例';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.commis_rate
+  is '佣金比例';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.gc_id
+  is '商品最底级分类ID';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.extra_point
+  is '额外积分倍数';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.pml_title
+  is '活动名称/标题';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.pml_id
+  is '活动ID';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.pml_discount
+  is '促销额';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.third_skuid
+  is '第三方商品编号';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.third_orderid
+  is '第三方订单号';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.wangyi_package
+  is '严选包裹单号';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.hm_package
+  is '河马包裹单号';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.package_process
+  is '网易包裹单号处理进度';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.package_status
+  is '网易包裹单号处理状态';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.package_info
+  is '网易包裹单错误记录';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.package_error
+  is '网易包裹单错误次数';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.joinin_commis_rate
+  is '入驻商家佣金';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_EC_ORDER_GOODS.w_update_dt
+  is '记录更新时间';
+create index DW_USER.FACT_EC_ORDER_GOODS_I1 on DW_USER.FACT_EC_ORDER_GOODS (ORDER_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.FACT_EC_ORDER_GOODS
+  add constraint FACT_EC_ORDER_GOODS_PK primary key (REC_ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.FACT_EC_ORDER_GOODS_PK nologging;
+

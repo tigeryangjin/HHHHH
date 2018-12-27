@@ -1,0 +1,33 @@
+???create table DW_USER.FACT_EC_VOUCHER_PRICE
+(
+  voucher_price_id       NUMBER(10),
+  voucher_price          NUMBER(10),
+  voucher_defaultpoints  NUMBER(10),
+  w_insert_dt            DATE,
+  w_update_dt            DATE,
+  voucher_price_describe VARCHAR2(255)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_VOUCHER_PRICE
+  is 'ec代金券面额表';
+comment on column DW_USER.FACT_EC_VOUCHER_PRICE.voucher_price_id
+  is '代金券面值编号';
+comment on column DW_USER.FACT_EC_VOUCHER_PRICE.voucher_price
+  is '代金券面值';
+comment on column DW_USER.FACT_EC_VOUCHER_PRICE.voucher_defaultpoints
+  is '代金劵默认的兑换所需积分可以为0';
+comment on column DW_USER.FACT_EC_VOUCHER_PRICE.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_EC_VOUCHER_PRICE.w_update_dt
+  is '记录更新时间';
+

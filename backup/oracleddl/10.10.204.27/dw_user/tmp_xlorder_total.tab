@@ -1,0 +1,17 @@
+???create table DW_USER.TMP_XLORDER_TOTAL
+(
+  member_key NUMBER(20),
+  leixin     CHAR(3)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

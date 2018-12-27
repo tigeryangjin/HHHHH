@@ -1,0 +1,20 @@
+???create table DW_USER.TMP_0927_ZJ
+(
+  zj_months NUMBER,
+  gc_name   VARCHAR2(20),
+  matzlt    VARCHAR2(50),
+  zcnt      NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

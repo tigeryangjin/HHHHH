@@ -1,0 +1,40 @@
+???create table DW_USER.OPER_MEMBER_SOURCE_REPORT
+(
+  month_key          VARCHAR2(24),
+  sname              CHAR(12),
+  reg_member_count   NUMBER,
+  order_member_count NUMBER,
+  order_amount       NUMBER,
+  w_insert_dt        DATE,
+  w_update_dt        DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_MEMBER_SOURCE_REPORT
+  is '新媒体中心月报-会员来源
+by yangjin
+2018-06-04';
+comment on column DW_USER.OPER_MEMBER_SOURCE_REPORT.month_key
+  is '月份key';
+comment on column DW_USER.OPER_MEMBER_SOURCE_REPORT.sname
+  is '来源';
+comment on column DW_USER.OPER_MEMBER_SOURCE_REPORT.reg_member_count
+  is '注册会员人数';
+comment on column DW_USER.OPER_MEMBER_SOURCE_REPORT.order_member_count
+  is '订购会员人数';
+comment on column DW_USER.OPER_MEMBER_SOURCE_REPORT.order_amount
+  is '订购金额';
+comment on column DW_USER.OPER_MEMBER_SOURCE_REPORT.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_MEMBER_SOURCE_REPORT.w_update_dt
+  is '记录更新时间';
+

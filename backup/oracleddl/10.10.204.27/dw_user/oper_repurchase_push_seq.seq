@@ -1,0 +1,7 @@
+???create sequence DW_USER.OPER_REPURCHASE_PUSH_SEQ
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 65241
+increment by 1
+cache 20;
+

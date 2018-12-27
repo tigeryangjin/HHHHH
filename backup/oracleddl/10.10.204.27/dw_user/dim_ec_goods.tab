@@ -1,0 +1,36 @@
+???create table DW_USER.DIM_EC_GOODS
+(
+  goods_id       NUMBER(20),
+  goods_commonid NUMBER(20),
+  item_code      NUMBER(10)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_EC_GOODS
+  is 'EC商品规格表';
+comment on column DW_USER.DIM_EC_GOODS.goods_id
+  is 'goods_id';
+create index DW_USER.GOODS_ID on DW_USER.DIM_EC_GOODS (GOODS_ID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,58 @@
+???create table DW_USER.FACTEC_ORDER_TEN_TOTAL
+(
+  date_key     NUMBER(10),
+  time_key     NUMBER(10),
+  app_name     VARCHAR2(100),
+  order_nums   NUMBER(10),
+  order_amount NUMBER(10,2),
+  qx_nums      NUMBER(10),
+  qx_amount    NUMBER(10,2),
+  item_code    NUMBER(10),
+  min_key      NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACTEC_ORDER_TEN_TOTAL
+  is '10分钟统计一次商品销售相关数据';
+comment on column DW_USER.FACTEC_ORDER_TEN_TOTAL.date_key
+  is '下单日期';
+comment on column DW_USER.FACTEC_ORDER_TEN_TOTAL.time_key
+  is '下单时段';
+comment on column DW_USER.FACTEC_ORDER_TEN_TOTAL.app_name
+  is '下单来源';
+comment on column DW_USER.FACTEC_ORDER_TEN_TOTAL.order_nums
+  is '订购数量';
+comment on column DW_USER.FACTEC_ORDER_TEN_TOTAL.order_amount
+  is '订购金额';
+comment on column DW_USER.FACTEC_ORDER_TEN_TOTAL.qx_nums
+  is '取消数量';
+comment on column DW_USER.FACTEC_ORDER_TEN_TOTAL.qx_amount
+  is '取消金额';
+comment on column DW_USER.FACTEC_ORDER_TEN_TOTAL.item_code
+  is '商品编码';
+comment on column DW_USER.FACTEC_ORDER_TEN_TOTAL.min_key
+  is '下单分钟';
+create index DW_USER.FEOTT on DW_USER.FACTEC_ORDER_TEN_TOTAL (DATE_KEY, TIME_KEY, APP_NAME, ITEM_CODE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

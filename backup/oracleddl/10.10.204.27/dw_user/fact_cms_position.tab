@@ -1,0 +1,25 @@
+???create table DW_USER.FACT_CMS_POSITION
+(
+  id         NUMBER(11),
+  key        VARCHAR2(50),
+  name       VARCHAR2(200),
+  value      VARCHAR2(100),
+  content    VARCHAR2(200),
+  link       VARCHAR2(200),
+  pic        VARCHAR2(100),
+  remark     VARCHAR2(200),
+  group_code VARCHAR2(50),
+  timestamp  NUMBER(11)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

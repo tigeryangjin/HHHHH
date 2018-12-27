@@ -1,0 +1,66 @@
+???create table DW_USER.STATS_ONLINE_PUV_MINUTE
+(
+  id               NUMBER(10),
+  statdate         NUMBER(10),
+  stathour         NUMBER(10),
+  statminute       NUMBER(10),
+  start_time       DATE,
+  end_time         DATE,
+  application_key  NUMBER(10),
+  application_name VARCHAR2(50),
+  pv               NUMBER(10),
+  uv               NUMBER(10),
+  rangepv          NUMBER(10),
+  rangeuv          NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.PUVAPP_IDX on DW_USER.STATS_ONLINE_PUV_MINUTE (APPLICATION_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.PUVID_IDX on DW_USER.STATS_ONLINE_PUV_MINUTE (ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.PUVSTART_IDX on DW_USER.STATS_ONLINE_PUV_MINUTE (STATDATE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

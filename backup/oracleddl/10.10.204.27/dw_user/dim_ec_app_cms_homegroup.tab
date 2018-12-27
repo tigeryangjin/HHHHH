@@ -1,0 +1,33 @@
+???create table DW_USER.DIM_EC_APP_CMS_HOMEGROUP
+(
+  group_id   NUMBER(10),
+  group_name VARCHAR2(200)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_EC_APP_CMS_HOMEGROUP
+  is '频道页';
+create index DW_USER.EC_GROUP_ID on DW_USER.DIM_EC_APP_CMS_HOMEGROUP (GROUP_ID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

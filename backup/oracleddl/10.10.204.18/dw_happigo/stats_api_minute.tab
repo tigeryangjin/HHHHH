@@ -1,0 +1,47 @@
+???create table DW_HAPPIGO.STATS_API_MINUTE
+(
+  id           NUMBER(10),
+  statdate     NUMBER(10),
+  stathour     NUMBER(10),
+  statminute   NUMBER(10),
+  start_time   DATE,
+  end_time     DATE,
+  exceptioncnt NUMBER(10),
+  frequency    NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_HAPPIGO.STATS_ETIME_IDX on DW_HAPPIGO.STATS_API_MINUTE (END_TIME)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_HAPPIGO.STATS_STIME_IDX on DW_HAPPIGO.STATS_API_MINUTE (START_TIME)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

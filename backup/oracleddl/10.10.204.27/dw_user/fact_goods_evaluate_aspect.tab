@@ -1,0 +1,66 @@
+???create table DW_USER.FACT_GOODS_EVALUATE_ASPECT
+(
+  id_col               NUMBER(10),
+  geval_id             NUMBER(11),
+  geval_ordergoodsid   NUMBER(11),
+  geval_goods_commonid NUMBER(11),
+  aspect_category      VARCHAR2(255),
+  aspect_term          VARCHAR2(255),
+  aspect_index         VARCHAR2(255),
+  aspect_polarity      VARCHAR2(255),
+  opinion_term         VARCHAR2(255),
+  w_insert_dt          DATE,
+  w_update_dt          DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_GOODS_EVALUATE_ASPECT
+  is '商品评价解析结果表
+data source:fact_goods_evaluate
+by yangjin
+2018-07-24';
+comment on column DW_USER.FACT_GOODS_EVALUATE_ASPECT.id_col
+  is 'ID';
+comment on column DW_USER.FACT_GOODS_EVALUATE_ASPECT.geval_id
+  is '评价ID';
+comment on column DW_USER.FACT_GOODS_EVALUATE_ASPECT.geval_ordergoodsid
+  is '订单商品表编号';
+comment on column DW_USER.FACT_GOODS_EVALUATE_ASPECT.geval_goods_commonid
+  is '商品表编号SPU';
+comment on column DW_USER.FACT_GOODS_EVALUATE_ASPECT.aspect_category
+  is '属性类别';
+comment on column DW_USER.FACT_GOODS_EVALUATE_ASPECT.aspect_term
+  is '属性词';
+comment on column DW_USER.FACT_GOODS_EVALUATE_ASPECT.aspect_index
+  is '属性词所在的起始位置，终结位置';
+comment on column DW_USER.FACT_GOODS_EVALUATE_ASPECT.aspect_polarity
+  is '属性片段极性（正、中、负）';
+comment on column DW_USER.FACT_GOODS_EVALUATE_ASPECT.opinion_term
+  is '情感词';
+comment on column DW_USER.FACT_GOODS_EVALUATE_ASPECT.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_GOODS_EVALUATE_ASPECT.w_update_dt
+  is '记录更新时间';
+create index DW_USER.FACT_GOODS_EVALUATE_A_I1 on DW_USER.FACT_GOODS_EVALUATE_ASPECT (GEVAL_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,19 @@
+???create table DW_HAPPIGO.R_PARTITION_SCHEMA
+(
+  id_partition_schema  INTEGER not null,
+  name                 VARCHAR2(255),
+  dynamic_definition   CHAR(1),
+  partitions_per_slave VARCHAR2(255)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+alter table DW_HAPPIGO.R_PARTITION_SCHEMA
+  add primary key (ID_PARTITION_SCHEMA)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+

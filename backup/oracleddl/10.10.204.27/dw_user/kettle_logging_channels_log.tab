@@ -1,0 +1,20 @@
+???create table DW_USER.KETTLE_LOGGING_CHANNELS_LOG
+(
+  id_batch             INTEGER,
+  channel_id           VARCHAR2(255),
+  log_date             DATE,
+  logging_object_type  VARCHAR2(255),
+  object_name          VARCHAR2(255),
+  object_copy          VARCHAR2(255),
+  repository_directory VARCHAR2(255),
+  filename             VARCHAR2(255),
+  object_id            VARCHAR2(255),
+  object_revision      VARCHAR2(255),
+  parent_channel_id    VARCHAR2(255),
+  root_channel_id      VARCHAR2(255)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+

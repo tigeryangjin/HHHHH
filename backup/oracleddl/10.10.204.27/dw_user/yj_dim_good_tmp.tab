@@ -1,0 +1,20 @@
+???create table DW_USER.YJ_DIM_GOOD_TMP
+(
+  item_code       NUMBER(10),
+  good_price      NUMBER(10,2),
+  low_price_line  NUMBER,
+  high_price_line NUMBER,
+  price_line      VARCHAR2(6)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

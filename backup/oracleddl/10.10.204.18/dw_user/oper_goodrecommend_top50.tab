@@ -1,0 +1,44 @@
+???create table DW_USER.OPER_GOODRECOMMEND_TOP50
+(
+  item_code        NUMBER(10),
+  sales_total      NUMBER(10),
+  posting_date_key NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_GOODRECOMMEND_TOP50
+  is '商品7日销售top50';
+create index DW_USER.FEGST_POSTING_NEW on DW_USER.OPER_GOODRECOMMEND_TOP50 (POSTING_DATE_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.FEGST_SALS_NEW on DW_USER.OPER_GOODRECOMMEND_TOP50 (SALES_TOTAL)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

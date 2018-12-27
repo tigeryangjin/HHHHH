@@ -1,0 +1,19 @@
+???create table DW_HAPPIGO.BOBO_TEST
+(
+  name  VARCHAR2(100) not null,
+  id    NUMBER(20) not null,
+  vid   VARCHAR2(100),
+  total NUMBER(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

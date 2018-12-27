@@ -1,0 +1,23 @@
+???create table DW_USER.TMP_0521
+(
+  startpoint   VARCHAR2(4),
+  endpoint     VARCHAR2(2),
+  startpoint_1 VARCHAR2(8),
+  endpoint_1   VARCHAR2(8),
+  startpoint_2 NUMBER,
+  endpoint_3   VARCHAR2(8),
+  startpoint_5 VARCHAR2(8),
+  endpoint_5   VARCHAR2(8)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

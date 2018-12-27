@@ -1,0 +1,29 @@
+???create table DW_USER.OPER_MEMBER_EC_BLACK_LIST
+(
+  id               NUMBER(20),
+  member_id        NUMBER(20),
+  user_name        VARCHAR2(200),
+  member_key       NUMBER(20),
+  phone            VARCHAR2(30),
+  levels           NUMBER(5),
+  enables          NUMBER(5),
+  expire_time      NUMBER(20),
+  remark           VARCHAR2(200),
+  create_time      NUMBER(20),
+  last_update_time NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.OPER_MEMBER_EC_BLACK_LIST
+  is 'ec这边的黑名单';
+

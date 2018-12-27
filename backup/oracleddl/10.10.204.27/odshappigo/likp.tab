@@ -1,0 +1,749 @@
+???create table ODSHAPPIGO.LIKP
+(
+  mandt            VARCHAR2(9) not null,
+  vbeln            VARCHAR2(30) not null,
+  ernam            VARCHAR2(36),
+  erzet            VARCHAR2(18),
+  erdat            VARCHAR2(24),
+  bzirk            VARCHAR2(18),
+  vstel            VARCHAR2(12),
+  vkorg            VARCHAR2(12),
+  lfart            VARCHAR2(12),
+  autlf            VARCHAR2(3),
+  kzazu            VARCHAR2(3),
+  wadat            VARCHAR2(24),
+  lddat            VARCHAR2(24),
+  tddat            VARCHAR2(24),
+  lfdat            VARCHAR2(24),
+  kodat            VARCHAR2(24),
+  ablad            VARCHAR2(75),
+  inco1            VARCHAR2(9),
+  inco2            VARCHAR2(84),
+  expkz            VARCHAR2(3),
+  route            VARCHAR2(18),
+  faksk            VARCHAR2(6),
+  lifsk            VARCHAR2(6),
+  vbtyp            VARCHAR2(3),
+  knfak            VARCHAR2(6),
+  tpqua            VARCHAR2(3),
+  tpgrp            VARCHAR2(6),
+  lprio            VARCHAR2(6),
+  vsbed            VARCHAR2(6),
+  kunnr            VARCHAR2(30),
+  kunag            VARCHAR2(30),
+  kdgrp            VARCHAR2(6),
+  stzkl            NUMBER(3,2),
+  stzzu            INTEGER,
+  btgew            NUMBER(15,3),
+  ntgew            NUMBER(15,3),
+  gewei            VARCHAR2(9),
+  volum            NUMBER(15,3),
+  voleh            VARCHAR2(9),
+  anzpk            VARCHAR2(15),
+  berot            VARCHAR2(60),
+  lfuhr            VARCHAR2(18),
+  grulg            VARCHAR2(12),
+  lstel            VARCHAR2(6),
+  tragr            VARCHAR2(12),
+  fkarv            VARCHAR2(12),
+  fkdat            VARCHAR2(24),
+  perfk            VARCHAR2(6),
+  routa            VARCHAR2(18),
+  stafo            VARCHAR2(18),
+  kalsm            VARCHAR2(18),
+  knumv            VARCHAR2(30),
+  waerk            VARCHAR2(15),
+  vkbur            VARCHAR2(12),
+  vbeak            NUMBER(6,2),
+  zukrl            VARCHAR2(120),
+  verur            VARCHAR2(105),
+  commn            VARCHAR2(15),
+  stwae            VARCHAR2(15),
+  stcur            NUMBER(9,5),
+  exnum            VARCHAR2(30),
+  aenam            VARCHAR2(36),
+  aedat            VARCHAR2(24),
+  lgnum            VARCHAR2(9),
+  lispl            VARCHAR2(3),
+  vkoiv            VARCHAR2(12),
+  vtwiv            VARCHAR2(6),
+  spaiv            VARCHAR2(6),
+  fkaiv            VARCHAR2(12),
+  pioiv            VARCHAR2(6),
+  fkdiv            VARCHAR2(24),
+  kuniv            VARCHAR2(30),
+  kkber            VARCHAR2(12),
+  knkli            VARCHAR2(30),
+  grupp            VARCHAR2(12),
+  sbgrp            VARCHAR2(9),
+  ctlpc            VARCHAR2(9),
+  cmwae            VARCHAR2(15),
+  amtbl            NUMBER(15,2),
+  bolnr            VARCHAR2(105),
+  lifnr            VARCHAR2(30),
+  traty            VARCHAR2(12),
+  traid            VARCHAR2(60),
+  cmfre            VARCHAR2(24),
+  cmngv            VARCHAR2(24),
+  xabln            VARCHAR2(30),
+  bldat            VARCHAR2(24),
+  wadat_ist        VARCHAR2(24),
+  trspg            VARCHAR2(6),
+  tpsid            VARCHAR2(15),
+  lifex            VARCHAR2(105),
+  ternr            VARCHAR2(36),
+  kalsm_ch         VARCHAR2(18),
+  klief            VARCHAR2(3),
+  kalsp            VARCHAR2(18),
+  knump            VARCHAR2(30),
+  netwr            NUMBER(15,2),
+  aulwe            VARCHAR2(30),
+  werks            VARCHAR2(12),
+  lcnum            VARCHAR2(30),
+  abssc            VARCHAR2(18),
+  kouhr            VARCHAR2(18),
+  tduhr            VARCHAR2(18),
+  lduhr            VARCHAR2(18),
+  wauhr            VARCHAR2(18),
+  lgtor            VARCHAR2(9),
+  lgbzo            VARCHAR2(30),
+  akwae            VARCHAR2(15),
+  akkur            NUMBER(9,5),
+  akprz            NUMBER(5,2),
+  proli            VARCHAR2(9),
+  xblnr            VARCHAR2(75),
+  handle           VARCHAR2(66),
+  tsegfl           VARCHAR2(3),
+  tsegtp           VARCHAR2(30),
+  tzonis           VARCHAR2(18),
+  tzonrc           VARCHAR2(18),
+  cont_dg          VARCHAR2(3),
+  verursys         VARCHAR2(30),
+  kzwab            VARCHAR2(3),
+  vlstk            VARCHAR2(3),
+  tcode            VARCHAR2(60),
+  vsart            VARCHAR2(6),
+  trmtyp           VARCHAR2(54),
+  sdabw            VARCHAR2(12),
+  vbund            VARCHAR2(18),
+  xwoff            VARCHAR2(3),
+  dirta            VARCHAR2(3),
+  prvbe            VARCHAR2(30),
+  folar            VARCHAR2(12),
+  podat            VARCHAR2(24),
+  potim            VARCHAR2(18),
+  vganz            NUMBER(10),
+  imwrk            VARCHAR2(3),
+  spe_loekz        VARCHAR2(3),
+  spe_loc_seq      VARCHAR2(9),
+  spe_acc_app_sts  VARCHAR2(3),
+  spe_shp_inf_sts  VARCHAR2(3),
+  spe_ret_canc     VARCHAR2(3),
+  spe_wauhr_ist    VARCHAR2(18),
+  spe_wazone_ist   VARCHAR2(18),
+  spe_rev_vlstk    VARCHAR2(3),
+  spe_le_scenario  VARCHAR2(3),
+  spe_orig_sys     VARCHAR2(3),
+  spe_chng_sys     VARCHAR2(3),
+  spe_georoute     VARCHAR2(30),
+  spe_georouteind  VARCHAR2(3),
+  spe_carrier_ind  VARCHAR2(3),
+  spe_gts_rel      VARCHAR2(6),
+  spe_gts_rt_cde   VARCHAR2(30),
+  spe_rel_tmstmp   NUMBER(15),
+  spe_unit_system  VARCHAR2(30),
+  spe_inv_bfr_gi   VARCHAR2(3),
+  spe_qi_status    VARCHAR2(3),
+  spe_red_ind      VARCHAR2(3),
+  sakes            VARCHAR2(3),
+  spe_lifex_type   VARCHAR2(3),
+  spe_ttype        VARCHAR2(30),
+  spe_pro_number   VARCHAR2(105),
+  loc_guid         VARCHAR2(16),
+  spe_billing_ind  VARCHAR2(3),
+  printer_profile  VARCHAR2(30),
+  msr_active       VARCHAR2(3),
+  prtnr            VARCHAR2(30),
+  stge_loc_change  VARCHAR2(3),
+  tm_ctrl_key      VARCHAR2(12),
+  dlv_split_initia VARCHAR2(3),
+  dlv_version      VARCHAR2(12),
+  "/BEV1/LULEINH"  VARCHAR2(24),
+  "/BEV1/RPFAESS"  INTEGER,
+  "/BEV1/RPKIST"   INTEGER,
+  "/BEV1/RPCONT"   INTEGER,
+  "/BEV1/RPSONST"  INTEGER,
+  "/BEV1/RPFLGNR"  VARCHAR2(15),
+  borgr_grp        VARCHAR2(105),
+  zydid            VARCHAR2(90),
+  tdlnr            VARCHAR2(30),
+  ztdlnr           VARCHAR2(30),
+  dnstu            VARCHAR2(6),
+  dnstub           VARCHAR2(150),
+  vstga            VARCHAR2(9),
+  vstgab           VARCHAR2(150),
+  codsk            VARCHAR2(3),
+  zzfpdyfs         VARCHAR2(3),
+  errsta           VARCHAR2(3),
+  jsfs             VARCHAR2(3),
+  jhdd             VARCHAR2(24),
+  zcodje           VARCHAR2(39),
+  zazone           VARCHAR2(30),
+  zlzone           VARCHAR2(30),
+  zadrnr           VARCHAR2(30),
+  to_whse          VARCHAR2(9),
+  zztelf1          VARCHAR2(20),
+  zzjs             VARCHAR2(39),
+  zbigtp           VARCHAR2(6),
+  yydid            VARCHAR2(90),
+  zvbeln_ori       VARCHAR2(30),
+  zddlx            VARCHAR2(6),
+  zshsj            VARCHAR2(6),
+  zshstat          VARCHAR2(6),
+  zshstub          VARCHAR2(765),
+  zshtdlnr         VARCHAR2(30),
+  zshydid          VARCHAR2(90),
+  kzwi1            NUMBER(13,2),
+  signi            VARCHAR2(60),
+  zshazone         VARCHAR2(30),
+  zshroute         VARCHAR2(18),
+  zzhsvbeln        VARCHAR2(30),
+  zzqrm            VARCHAR2(18),
+  extdatum         VARCHAR2(24),
+  extuzeit         VARCHAR2(18),
+  extuname         VARCHAR2(36),
+  zmodfreight_id   VARCHAR2(30),
+  zmodfreight_date VARCHAR2(24),
+  zvolum           NUMBER(15,3),
+  zkbetr           NUMBER(13,2),
+  zkbetr_net       NUMBER(13,2),
+  zcheck_flag      VARCHAR2(3),
+  sfrgr            VARCHAR2(12),
+  zorgad           VARCHAR2(30),
+  zdestad          VARCHAR2(30),
+  zresult          VARCHAR2(6),
+  zremark          VARCHAR2(300),
+  errsta2          VARCHAR2(3),
+  zzrcd            VARCHAR2(30),
+  zres1            VARCHAR2(30),
+  zres2            VARCHAR2(30),
+  zres3            VARCHAR2(30),
+  zres4            VARCHAR2(30),
+  zres5            VARCHAR2(30),
+  zres6            VARCHAR2(3),
+  zres7            VARCHAR2(3),
+  zres8            VARCHAR2(3),
+  zres9            VARCHAR2(3),
+  zres10           VARCHAR2(3),
+  timestamp        VARCHAR2(42),
+  zzljddyy         VARCHAR2(9),
+  zzhwstu          VARCHAR2(6),
+  zzztdsjz         VARCHAR2(3),
+  tdlnr_ori        VARCHAR2(30),
+  zzxxlpps         VARCHAR2(6),
+  zzorder_mode     VARCHAR2(6)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 8K
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column ODSHAPPIGO.LIKP.mandt
+  is '客户端';
+comment on column ODSHAPPIGO.LIKP.vbeln
+  is '交货';
+comment on column ODSHAPPIGO.LIKP.ernam
+  is '创建对象的人员名称';
+comment on column ODSHAPPIGO.LIKP.erzet
+  is '输入时间';
+comment on column ODSHAPPIGO.LIKP.erdat
+  is '记录的创建日期';
+comment on column ODSHAPPIGO.LIKP.bzirk
+  is '销售地区';
+comment on column ODSHAPPIGO.LIKP.vstel
+  is '装运点/接收点';
+comment on column ODSHAPPIGO.LIKP.vkorg
+  is '销售机构';
+comment on column ODSHAPPIGO.LIKP.lfart
+  is '交货类型';
+comment on column ODSHAPPIGO.LIKP.autlf
+  is '为每个销售订单定义一次性交货';
+comment on column ODSHAPPIGO.LIKP.kzazu
+  is '订单组合标识';
+comment on column ODSHAPPIGO.LIKP.wadat
+  is '计划货物移动日期';
+comment on column ODSHAPPIGO.LIKP.lddat
+  is '装载日期';
+comment on column ODSHAPPIGO.LIKP.tddat
+  is '运输计划日期';
+comment on column ODSHAPPIGO.LIKP.lfdat
+  is '交货日期';
+comment on column ODSHAPPIGO.LIKP.kodat
+  is '拣配日期';
+comment on column ODSHAPPIGO.LIKP.ablad
+  is '卸货点';
+comment on column ODSHAPPIGO.LIKP.inco1
+  is '国际贸易条款 (部分1)';
+comment on column ODSHAPPIGO.LIKP.inco2
+  is '国际贸易条件(部分2)';
+comment on column ODSHAPPIGO.LIKP.expkz
+  is '导出标识';
+comment on column ODSHAPPIGO.LIKP.route
+  is '路线';
+comment on column ODSHAPPIGO.LIKP.faksk
+  is 'SD凭证中的出具发票块';
+comment on column ODSHAPPIGO.LIKP.lifsk
+  is '交货冻结（抬头）';
+comment on column ODSHAPPIGO.LIKP.vbtyp
+  is 'SD 凭证类别';
+comment on column ODSHAPPIGO.LIKP.knfak
+  is '客户工厂日历';
+comment on column ODSHAPPIGO.LIKP.tpqua
+  is '当前未使用';
+comment on column ODSHAPPIGO.LIKP.tpgrp
+  is '当前未使用';
+comment on column ODSHAPPIGO.LIKP.lprio
+  is '交货优先权';
+comment on column ODSHAPPIGO.LIKP.vsbed
+  is '装运条件';
+comment on column ODSHAPPIGO.LIKP.kunnr
+  is '送达方';
+comment on column ODSHAPPIGO.LIKP.kunag
+  is '售达方';
+comment on column ODSHAPPIGO.LIKP.kdgrp
+  is '客户组';
+comment on column ODSHAPPIGO.LIKP.stzkl
+  is '当前未使用';
+comment on column ODSHAPPIGO.LIKP.stzzu
+  is '当前未使用';
+comment on column ODSHAPPIGO.LIKP.btgew
+  is '总重量';
+comment on column ODSHAPPIGO.LIKP.ntgew
+  is '净重量';
+comment on column ODSHAPPIGO.LIKP.gewei
+  is '重量单位';
+comment on column ODSHAPPIGO.LIKP.volum
+  is '业务量';
+comment on column ODSHAPPIGO.LIKP.voleh
+  is '体积单位';
+comment on column ODSHAPPIGO.LIKP.anzpk
+  is '交货中总的包数';
+comment on column ODSHAPPIGO.LIKP.berot
+  is '拣配项目地点';
+comment on column ODSHAPPIGO.LIKP.lfuhr
+  is '交货时间';
+comment on column ODSHAPPIGO.LIKP.grulg
+  is '交货重量组 (对组)';
+comment on column ODSHAPPIGO.LIKP.lstel
+  is '装货点';
+comment on column ODSHAPPIGO.LIKP.tragr
+  is '运输组';
+comment on column ODSHAPPIGO.LIKP.fkarv
+  is '建议与交货日期有关的出具发票凭证的出具发票类型';
+comment on column ODSHAPPIGO.LIKP.fkdat
+  is '出具发票索引和打印的出具发票日期';
+comment on column ODSHAPPIGO.LIKP.perfk
+  is '发票日期(日历识别)';
+comment on column ODSHAPPIGO.LIKP.routa
+  is '路线';
+comment on column ODSHAPPIGO.LIKP.stafo
+  is '更新组用于统计更新';
+comment on column ODSHAPPIGO.LIKP.kalsm
+  is '过程（定价、输出控制、科目、细节、成本...）';
+comment on column ODSHAPPIGO.LIKP.knumv
+  is '单据条件数';
+comment on column ODSHAPPIGO.LIKP.waerk
+  is 'SD 凭证货币';
+comment on column ODSHAPPIGO.LIKP.vkbur
+  is '销售部门';
+comment on column ODSHAPPIGO.LIKP.vbeak
+  is '全部凭证装运处理时间';
+comment on column ODSHAPPIGO.LIKP.zukrl
+  is '交货组合标准';
+comment on column ODSHAPPIGO.LIKP.verur
+  is '分散交货';
+comment on column ODSHAPPIGO.LIKP.commn
+  is 'Q-API界面的通讯号码';
+comment on column ODSHAPPIGO.LIKP.stwae
+  is '统计货币';
+comment on column ODSHAPPIGO.LIKP.stcur
+  is '统计汇率';
+comment on column ODSHAPPIGO.LIKP.exnum
+  is 'MM 和 SD 凭证中的外贸数据编号';
+comment on column ODSHAPPIGO.LIKP.aenam
+  is '对象更改人员的名称';
+comment on column ODSHAPPIGO.LIKP.aedat
+  is '更改日期';
+comment on column ODSHAPPIGO.LIKP.lgnum
+  is '仓库号/混合仓库';
+comment on column ODSHAPPIGO.LIKP.lispl
+  is '仓库内交货';
+comment on column ODSHAPPIGO.LIKP.vkoiv
+  is '用于公司间出具发票的销售组织';
+comment on column ODSHAPPIGO.LIKP.vtwiv
+  is '公司内出具发票分销渠道';
+comment on column ODSHAPPIGO.LIKP.spaiv
+  is '为公司内部出具发票的产品组';
+comment on column ODSHAPPIGO.LIKP.fkaiv
+  is '公司间出具发票类型';
+comment on column ODSHAPPIGO.LIKP.pioiv
+  is '公司间出具发票日期';
+comment on column ODSHAPPIGO.LIKP.fkdiv
+  is '公司间出具发票日期';
+comment on column ODSHAPPIGO.LIKP.kuniv
+  is '用于公司间出具发票的客户号';
+comment on column ODSHAPPIGO.LIKP.kkber
+  is '贷方控制范围';
+comment on column ODSHAPPIGO.LIKP.knkli
+  is '带有贷方限额参考的客户帐户号';
+comment on column ODSHAPPIGO.LIKP.grupp
+  is '客户信贷组';
+comment on column ODSHAPPIGO.LIKP.sbgrp
+  is '对于信贷管理的信用代表组';
+comment on column ODSHAPPIGO.LIKP.ctlpc
+  is '信贷管理: 风险种类';
+comment on column ODSHAPPIGO.LIKP.cmwae
+  is '信贷控制范围的货币关键字';
+comment on column ODSHAPPIGO.LIKP.amtbl
+  is '已批准凭证信贷值';
+comment on column ODSHAPPIGO.LIKP.bolnr
+  is '提单';
+comment on column ODSHAPPIGO.LIKP.lifnr
+  is '供应商帐户号';
+comment on column ODSHAPPIGO.LIKP.traty
+  is '运输方式类型';
+comment on column ODSHAPPIGO.LIKP.traid
+  is '运输方式ID';
+comment on column ODSHAPPIGO.LIKP.cmfre
+  is '由信用管理确定的凭证批准日期';
+comment on column ODSHAPPIGO.LIKP.cmngv
+  is '下一个日期';
+comment on column ODSHAPPIGO.LIKP.xabln
+  is '收货/发货单编号';
+comment on column ODSHAPPIGO.LIKP.bldat
+  is '凭证中的凭证日期';
+comment on column ODSHAPPIGO.LIKP.wadat_ist
+  is '实际货物移动日期';
+comment on column ODSHAPPIGO.LIKP.trspg
+  is '装运冻结原因';
+comment on column ODSHAPPIGO.LIKP.tpsid
+  is '外部运输系统标识';
+comment on column ODSHAPPIGO.LIKP.lifex
+  is '交货单的外部标识';
+comment on column ODSHAPPIGO.LIKP.ternr
+  is '订单号';
+comment on column ODSHAPPIGO.LIKP.kalsm_ch
+  is '批确定的查找过程';
+comment on column ODSHAPPIGO.LIKP.klief
+  is '修正交货';
+comment on column ODSHAPPIGO.LIKP.kalsp
+  is '发运：定价过程';
+comment on column ODSHAPPIGO.LIKP.knump
+  is '单据条件号码－定价';
+comment on column ODSHAPPIGO.LIKP.netwr
+  is '凭证货币中销售订单的净值';
+comment on column ODSHAPPIGO.LIKP.aulwe
+  is '路线计划';
+comment on column ODSHAPPIGO.LIKP.werks
+  is '交货的接收工厂';
+comment on column ODSHAPPIGO.LIKP.lcnum
+  is '财务凭证处理:内部财务凭证号';
+comment on column ODSHAPPIGO.LIKP.abssc
+  is '付款担保过程';
+comment on column ODSHAPPIGO.LIKP.kouhr
+  is '领货时间（本地时间，带工厂参照）';
+comment on column ODSHAPPIGO.LIKP.tduhr
+  is '运输计划 － 时间（本地，与装运点相关）';
+comment on column ODSHAPPIGO.LIKP.lduhr
+  is '装载时间（与装运点相关的本地时间）';
+comment on column ODSHAPPIGO.LIKP.wauhr
+  is '发货时间（本地，与工厂相关）';
+comment on column ODSHAPPIGO.LIKP.lgtor
+  is '仓库门号码';
+comment on column ODSHAPPIGO.LIKP.lgbzo
+  is '综合仓库的分段范围';
+comment on column ODSHAPPIGO.LIKP.akwae
+  is '对外贸易中信用证处理的货币关键字';
+comment on column ODSHAPPIGO.LIKP.akkur
+  is '对外贸易中信用证的汇兑率';
+comment on column ODSHAPPIGO.LIKP.akprz
+  is '外贸凭证处理的折价百分比';
+comment on column ODSHAPPIGO.LIKP.proli
+  is 'SD凭证中危险货物管理参数文件';
+comment on column ODSHAPPIGO.LIKP.xblnr
+  is '参考凭证号';
+comment on column ODSHAPPIGO.LIKP.handle
+  is 'LIKP-VBELN 的世界范围唯一关键字';
+comment on column ODSHAPPIGO.LIKP.tsegfl
+  is '时间段存在';
+comment on column ODSHAPPIGO.LIKP.tsegtp
+  is '事件组时间段交货抬头';
+comment on column ODSHAPPIGO.LIKP.tzonis
+  is '交货位置的时区';
+comment on column ODSHAPPIGO.LIKP.tzonrc
+  is '接收位置的时区';
+comment on column ODSHAPPIGO.LIKP.cont_dg
+  is '标识：含危险货物的凭证';
+comment on column ODSHAPPIGO.LIKP.verursys
+  is '分散交货：原始系统';
+comment on column ODSHAPPIGO.LIKP.kzwab
+  is '控制货物移动指示符';
+comment on column ODSHAPPIGO.LIKP.vlstk
+  is '分配状态(分散仓库处理)';
+comment on column ODSHAPPIGO.LIKP.tcode
+  is '事务代码';
+comment on column ODSHAPPIGO.LIKP.vsart
+  is '装运类型';
+comment on column ODSHAPPIGO.LIKP.trmtyp
+  is '运输方式';
+comment on column ODSHAPPIGO.LIKP.sdabw
+  is '特殊处理标记';
+comment on column ODSHAPPIGO.LIKP.vbund
+  is '公司标识';
+comment on column ODSHAPPIGO.LIKP.xwoff
+  is '开放值计算';
+comment on column ODSHAPPIGO.LIKP.dirta
+  is '(TR)生成后立即自动创建转储单';
+comment on column ODSHAPPIGO.LIKP.prvbe
+  is '产品供应范围';
+comment on column ODSHAPPIGO.LIKP.folar
+  is '交货类型';
+comment on column ODSHAPPIGO.LIKP.podat
+  is '日期 (交付证明)';
+comment on column ODSHAPPIGO.LIKP.potim
+  is '确认时间';
+comment on column ODSHAPPIGO.LIKP.imwrk
+  is '发货具有状态''在工厂中''';
+comment on column ODSHAPPIGO.LIKP.spe_loekz
+  is '凭证删除指示符';
+comment on column ODSHAPPIGO.LIKP.spe_loc_seq
+  is '退货过程中的中间位置顺序';
+comment on column ODSHAPPIGO.LIKP.spe_acc_app_sts
+  is '交货确认状况';
+comment on column ODSHAPPIGO.LIKP.spe_shp_inf_sts
+  is '装运信息状态';
+comment on column ODSHAPPIGO.LIKP.spe_ret_canc
+  is '退货：显示已取消提前装运通知的标志';
+comment on column ODSHAPPIGO.LIKP.spe_wauhr_ist
+  is '发货时间（本地，与工厂相关）';
+comment on column ODSHAPPIGO.LIKP.spe_wazone_ist
+  is '时区';
+comment on column ODSHAPPIGO.LIKP.spe_rev_vlstk
+  is '分配状态(分散仓库处理)';
+comment on column ODSHAPPIGO.LIKP.spe_le_scenario
+  is '方案后勤执行';
+comment on column ODSHAPPIGO.LIKP.spe_orig_sys
+  is '初始系统类型';
+comment on column ODSHAPPIGO.LIKP.spe_chng_sys
+  is '上一更改者的系统类型';
+comment on column ODSHAPPIGO.LIKP.spe_georoute
+  is '地理路线的描述';
+comment on column ODSHAPPIGO.LIKP.spe_georouteind
+  is '更改路线标识';
+comment on column ODSHAPPIGO.LIKP.spe_carrier_ind
+  is '承运人更改标识';
+comment on column ODSHAPPIGO.LIKP.spe_gts_rel
+  is '货物运输类型';
+comment on column ODSHAPPIGO.LIKP.spe_gts_rt_cde
+  is 'SAP 全球贸易服务的路线代码';
+comment on column ODSHAPPIGO.LIKP.spe_rel_tmstmp
+  is '下达时戳';
+comment on column ODSHAPPIGO.LIKP.spe_unit_system
+  is '计量单位系统';
+comment on column ODSHAPPIGO.LIKP.spe_inv_bfr_gi
+  is '发货前的发票创建';
+comment on column ODSHAPPIGO.LIKP.spe_qi_status
+  is '退货质量检查状况';
+comment on column ODSHAPPIGO.LIKP.spe_red_ind
+  is 'SPE 标识，如果已发生重定向';
+comment on column ODSHAPPIGO.LIKP.sakes
+  is 'SAP 全球贸易服务：交付的存储状态';
+comment on column ODSHAPPIGO.LIKP.spe_lifex_type
+  is '外部标识的类型';
+comment on column ODSHAPPIGO.LIKP.spe_ttype
+  is '运输方式';
+comment on column ODSHAPPIGO.LIKP.spe_pro_number
+  is '合作伙伴识别：进行识别码';
+comment on column ODSHAPPIGO.LIKP.loc_guid
+  is '信用证 (GUID)';
+comment on column ODSHAPPIGO.LIKP.spe_billing_ind
+  is 'EWM 开票标识';
+comment on column ODSHAPPIGO.LIKP.printer_profile
+  is '打印参数文件的描述';
+comment on column ODSHAPPIGO.LIKP.msr_active
+  is 'Advanced Returns Management 有效';
+comment on column ODSHAPPIGO.LIKP.prtnr
+  is '确认编号';
+comment on column ODSHAPPIGO.LIKP.stge_loc_change
+  is '交货存储地点的临时变更';
+comment on column ODSHAPPIGO.LIKP.dlv_split_initia
+  is '交货拆分触发器';
+comment on column ODSHAPPIGO.LIKP.dlv_version
+  is '交付版本';
+comment on column ODSHAPPIGO.LIKP."/BEV1/LULEINH"
+  is '装载单位';
+comment on column ODSHAPPIGO.LIKP."/BEV1/RPFAESS"
+  is '编号类别 1';
+comment on column ODSHAPPIGO.LIKP."/BEV1/RPKIST"
+  is '编号类别 2';
+comment on column ODSHAPPIGO.LIKP."/BEV1/RPCONT"
+  is '编号类别 3';
+comment on column ODSHAPPIGO.LIKP."/BEV1/RPSONST"
+  is '编号类别 4';
+comment on column ODSHAPPIGO.LIKP."/BEV1/RPFLGNR"
+  is '装载旅行中的顺序号';
+comment on column ODSHAPPIGO.LIKP.borgr_grp
+  is '内向交货组: 自动多层收货';
+comment on column ODSHAPPIGO.LIKP.tdlnr
+  is '转运代理的编号';
+comment on column ODSHAPPIGO.LIKP.ztdlnr
+  is '干线承运商';
+comment on column ODSHAPPIGO.LIKP.dnstu
+  is '交货单状态';
+comment on column ODSHAPPIGO.LIKP.dnstub
+  is '状态备注';
+comment on column ODSHAPPIGO.LIKP.vstga
+  is '未达原因03';
+comment on column ODSHAPPIGO.LIKP.vstgab
+  is '未达原因说明';
+comment on column ODSHAPPIGO.LIKP.codsk
+  is 'COD已收款标记';
+comment on column ODSHAPPIGO.LIKP.zzfpdyfs
+  is '打印发票标识';
+comment on column ODSHAPPIGO.LIKP.errsta
+  is '异常状态标记';
+comment on column ODSHAPPIGO.LIKP.jsfs
+  is '拒收方式';
+comment on column ODSHAPPIGO.LIKP.jhdd
+  is '计划到达日期(到达消费者的日期)';
+comment on column ODSHAPPIGO.LIKP.zcodje
+  is 'COD金额';
+comment on column ODSHAPPIGO.LIKP.zazone
+  is '离境地区';
+comment on column ODSHAPPIGO.LIKP.zlzone
+  is '发送货物的目的地运输区域';
+comment on column ODSHAPPIGO.LIKP.zadrnr
+  is '地址';
+comment on column ODSHAPPIGO.LIKP.to_whse
+  is 'WMS仓库';
+comment on column ODSHAPPIGO.LIKP.zztelf1
+  is '电话号码';
+comment on column ODSHAPPIGO.LIKP.zzjs
+  is '交货单件数:交货单行项目数量合计';
+comment on column ODSHAPPIGO.LIKP.zbigtp
+  is '大小件分类';
+comment on column ODSHAPPIGO.LIKP.yydid
+  is '原运单ID';
+comment on column ODSHAPPIGO.LIKP.zvbeln_ori
+  is '交货';
+comment on column ODSHAPPIGO.LIKP.zddlx
+  is '订单类型';
+comment on column ODSHAPPIGO.LIKP.zshsj
+  is '送货邀请时间';
+comment on column ODSHAPPIGO.LIKP.zshstat
+  is '供应商送货状态';
+comment on column ODSHAPPIGO.LIKP.zshstub
+  is '供应商送货状态说明';
+comment on column ODSHAPPIGO.LIKP.zshtdlnr
+  is '供应商送货的承运商';
+comment on column ODSHAPPIGO.LIKP.zshydid
+  is '供应商送货运单ID';
+comment on column ODSHAPPIGO.LIKP.kzwi1
+  is '从条件定价过程小计1';
+comment on column ODSHAPPIGO.LIKP.signi
+  is '装载号';
+comment on column ODSHAPPIGO.LIKP.zshazone
+  is '供应商送货发货区域';
+comment on column ODSHAPPIGO.LIKP.zshroute
+  is '供应商送货路线';
+comment on column ODSHAPPIGO.LIKP.zzhsvbeln
+  is '回收交货单号';
+comment on column ODSHAPPIGO.LIKP.zzqrm
+  is '交货单随机确认码';
+comment on column ODSHAPPIGO.LIKP.extdatum
+  is '外部系统处理日期';
+comment on column ODSHAPPIGO.LIKP.extuzeit
+  is '外部系统处理时间';
+comment on column ODSHAPPIGO.LIKP.extuname
+  is '外部系统处理人(员工ID)';
+comment on column ODSHAPPIGO.LIKP.zmodfreight_id
+  is '录入人工号';
+comment on column ODSHAPPIGO.LIKP.zmodfreight_date
+  is '修改日期';
+comment on column ODSHAPPIGO.LIKP.zvolum
+  is '业务量';
+comment on column ODSHAPPIGO.LIKP.zkbetr
+  is '金额';
+comment on column ODSHAPPIGO.LIKP.zkbetr_net
+  is '金额';
+comment on column ODSHAPPIGO.LIKP.zcheck_flag
+  is '确认标识';
+comment on column ODSHAPPIGO.LIKP.sfrgr
+  is '数据类型 4 字符';
+comment on column ODSHAPPIGO.LIKP.zorgad
+  is '车队内部代码';
+comment on column ODSHAPPIGO.LIKP.zdestad
+  is '车队内部代码';
+comment on column ODSHAPPIGO.LIKP.zresult
+  is 'IS-H：功能模块长度2的一般字段';
+comment on column ODSHAPPIGO.LIKP.zremark
+  is '文本 (100 个字符)';
+comment on column ODSHAPPIGO.LIKP.errsta2
+  is '供应商异常状态标记';
+comment on column ODSHAPPIGO.LIKP.zzrcd
+  is '车队丢失-责任车队';
+comment on column ODSHAPPIGO.LIKP.zres1
+  is '判断丢失的运输单';
+comment on column ODSHAPPIGO.LIKP.zres2
+  is '预留字段2';
+comment on column ODSHAPPIGO.LIKP.zres3
+  is '预留字段3';
+comment on column ODSHAPPIGO.LIKP.zres4
+  is '预留字段4';
+comment on column ODSHAPPIGO.LIKP.zres5
+  is '预留字段5';
+comment on column ODSHAPPIGO.LIKP.zres6
+  is '车队丢失标记';
+comment on column ODSHAPPIGO.LIKP.zres7
+  is '预留字段7';
+comment on column ODSHAPPIGO.LIKP.zres8
+  is '预留字段8';
+comment on column ODSHAPPIGO.LIKP.zres9
+  is '预留字段9';
+comment on column ODSHAPPIGO.LIKP.zres10
+  is '预留字段10';
+comment on column ODSHAPPIGO.LIKP.timestamp
+  is '时戳；过时';
+comment on column ODSHAPPIGO.LIKP.zzhwstu
+  is '海外交货状态';
+comment on column ODSHAPPIGO.LIKP.zzztdsjz
+  is '在途丢失结转';
+comment on column ODSHAPPIGO.LIKP.tdlnr_ori
+  is 'TDLNR备份字段';
+comment on column ODSHAPPIGO.LIKP.zzxxlpps
+  is '行销礼品配送要求';
+comment on column ODSHAPPIGO.LIKP.zzorder_mode
+  is '订单特殊类型';
+alter table ODSHAPPIGO.LIKP
+  add constraint PK_LIKP primary key (MANDT, VBELN)
+  using index 
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index ODSHAPPIGO.PK_LIKP nologging;
+

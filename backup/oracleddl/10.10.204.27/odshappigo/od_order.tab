@@ -1,0 +1,259 @@
+???create table ODSHAPPIGO.OD_ORDER
+(
+  merchant_no         VARCHAR2(12) not null,
+  order_type          VARCHAR2(6) not null,
+  rmsale_code         VARCHAR2(12),
+  order_origin        VARCHAR2(4) not null,
+  order_no            VARCHAR2(14) not null,
+  cust_no             VARCHAR2(12) not null,
+  order_date          DATE not null,
+  claim_flag          VARCHAR2(1),
+  receiver_seq        VARCHAR2(10) not null,
+  deal_flag           VARCHAR2(2),
+  trans_flag          VARCHAR2(1),
+  trans_id            VARCHAR2(20),
+  trans_date          DATE,
+  invoice_print_flag  VARCHAR2(2),
+  invoice_name        VARCHAR2(100),
+  group_id            VARCHAR2(12),
+  spc_type            VARCHAR2(2),
+  spc_remark          VARCHAR2(200),
+  ispay               VARCHAR2(1),
+  po_order_no         VARCHAR2(40),
+  insert_date         DATE,
+  insert_id           VARCHAR2(12),
+  valid_flag          VARCHAR2(1),
+  remark              VARCHAR2(4000),
+  recieve_addr        VARCHAR2(500),
+  transpzone          VARCHAR2(100),
+  consignee           VARCHAR2(200),
+  tel_number          VARCHAR2(30),
+  crm_order_no        VARCHAR2(40),
+  call_type           VARCHAR2(2),
+  order_tel           VARCHAR2(20),
+  tele_no             VARCHAR2(20),
+  cust_name           VARCHAR2(100),
+  distribution_flag   VARCHAR2(2) default 0,
+  distribution_no     VARCHAR2(12),
+  user_id             NUMBER,
+  deal_distribution   VARCHAR2(2) default 0,
+  order_no_supplement VARCHAR2(14),
+  order_rel_type      VARCHAR2(2),
+  order_rel_order_no  VARCHAR2(14),
+  order_rel_remark    VARCHAR2(200),
+  order_addbuy_type   VARCHAR2(2),
+  order_addbuy_remark VARCHAR2(200),
+  order_rel_flag      VARCHAR2(2) default 0,
+  order_addbuy_flag   VARCHAR2(2) default 0,
+  order_sup_flag      VARCHAR2(2) default 0,
+  declare_flag        VARCHAR2(2) default 0,
+  receiver_seq_crm    NUMBER(14),
+  order_sup_date      DATE,
+  crm_cust_no         VARCHAR2(12),
+  sub_merchant_no     VARCHAR2(12),
+  ivr_flag            VARCHAR2(2) default 0,
+  recieve_mobile      VARCHAR2(50),
+  order_mode          VARCHAR2(2) default 0,
+  cust_grade          VARCHAR2(10)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table ODSHAPPIGO.OD_ORDER
+  is '订单基础信息表';
+comment on column ODSHAPPIGO.OD_ORDER.merchant_no
+  is '商户号';
+comment on column ODSHAPPIGO.OD_ORDER.order_type
+  is '订单类型（MM01:礼品订单,MM02:普通订单,MM03:外呼订单,MM04:异品换货单,MM05:三代服务,...）';
+comment on column ODSHAPPIGO.OD_ORDER.rmsale_code
+  is '媒体渠道编号';
+comment on column ODSHAPPIGO.OD_ORDER.order_origin
+  is '订单来源';
+comment on column ODSHAPPIGO.OD_ORDER.order_no
+  is '订购编号';
+comment on column ODSHAPPIGO.OD_ORDER.cust_no
+  is '顾客编号';
+comment on column ODSHAPPIGO.OD_ORDER.order_date
+  is '订购日期';
+comment on column ODSHAPPIGO.OD_ORDER.claim_flag
+  is '订单是否全退';
+comment on column ODSHAPPIGO.OD_ORDER.receiver_seq
+  is '送货地序号';
+comment on column ODSHAPPIGO.OD_ORDER.deal_flag
+  is '异步操作阶段(0:不需异步,10:需要异步库存,20:需要异步积分,30:需要异步短信)';
+comment on column ODSHAPPIGO.OD_ORDER.trans_flag
+  is '转单标志';
+comment on column ODSHAPPIGO.OD_ORDER.trans_id
+  is '转单人';
+comment on column ODSHAPPIGO.OD_ORDER.trans_date
+  is '转单时间';
+comment on column ODSHAPPIGO.OD_ORDER.invoice_print_flag
+  is '发票打印标志(0:不打印发票,1:打印发票,2:打印汇总发票)';
+comment on column ODSHAPPIGO.OD_ORDER.invoice_name
+  is '发票姓名';
+comment on column ODSHAPPIGO.OD_ORDER.group_id
+  is '团体ID';
+comment on column ODSHAPPIGO.OD_ORDER.ispay
+  is '是否付款(0：未款付；1：已付款)';
+comment on column ODSHAPPIGO.OD_ORDER.po_order_no
+  is '外部参考订单号';
+comment on column ODSHAPPIGO.OD_ORDER.insert_date
+  is '登记时间';
+comment on column ODSHAPPIGO.OD_ORDER.insert_id
+  is '登记人';
+comment on column ODSHAPPIGO.OD_ORDER.valid_flag
+  is '有效标志';
+comment on column ODSHAPPIGO.OD_ORDER.remark
+  is '备注1';
+comment on column ODSHAPPIGO.OD_ORDER.recieve_addr
+  is '收货地址详情';
+comment on column ODSHAPPIGO.OD_ORDER.transpzone
+  is '四级地址码表编号';
+comment on column ODSHAPPIGO.OD_ORDER.consignee
+  is '收货人姓名';
+comment on column ODSHAPPIGO.OD_ORDER.tel_number
+  is '收货人电话(座机)';
+comment on column ODSHAPPIGO.OD_ORDER.crm_order_no
+  is 'CRM订单号';
+comment on column ODSHAPPIGO.OD_ORDER.call_type
+  is '电话类别10：inbound；20：outbound';
+comment on column ODSHAPPIGO.OD_ORDER.order_tel
+  is '顾客订购电话号码';
+comment on column ODSHAPPIGO.OD_ORDER.tele_no
+  is '被叫电话';
+comment on column ODSHAPPIGO.OD_ORDER.cust_name
+  is '顾客姓名';
+comment on column ODSHAPPIGO.OD_ORDER.distribution_flag
+  is '分销标识';
+comment on column ODSHAPPIGO.OD_ORDER.distribution_no
+  is '分销商编号';
+comment on column ODSHAPPIGO.OD_ORDER.user_id
+  is '用户编号uid';
+comment on column ODSHAPPIGO.OD_ORDER.deal_distribution
+  is '分销处理';
+comment on column ODSHAPPIGO.OD_ORDER.order_no_supplement
+  is '补单订购编号';
+comment on column ODSHAPPIGO.OD_ORDER.order_rel_type
+  is '关联订单类型';
+comment on column ODSHAPPIGO.OD_ORDER.order_rel_order_no
+  is '关联订单编号';
+comment on column ODSHAPPIGO.OD_ORDER.order_rel_remark
+  is '关联订单备注';
+comment on column ODSHAPPIGO.OD_ORDER.order_addbuy_type
+  is '加价购类别(0:非加价购)';
+comment on column ODSHAPPIGO.OD_ORDER.order_addbuy_remark
+  is '加价购备注';
+comment on column ODSHAPPIGO.OD_ORDER.order_rel_flag
+  is '关联订单标志';
+comment on column ODSHAPPIGO.OD_ORDER.order_addbuy_flag
+  is '加价购标志';
+comment on column ODSHAPPIGO.OD_ORDER.order_sup_flag
+  is '补单标志';
+comment on column ODSHAPPIGO.OD_ORDER.declare_flag
+  is '跨境购标志(0:否,1是)';
+comment on column ODSHAPPIGO.OD_ORDER.receiver_seq_crm
+  is '送货地序号';
+comment on column ODSHAPPIGO.OD_ORDER.order_sup_date
+  is '补单时间';
+comment on column ODSHAPPIGO.OD_ORDER.crm_cust_no
+  is 'CRM顾客编号';
+comment on column ODSHAPPIGO.OD_ORDER.sub_merchant_no
+  is '子商户';
+comment on column ODSHAPPIGO.OD_ORDER.ivr_flag
+  is 'ivr订购';
+comment on column ODSHAPPIGO.OD_ORDER.recieve_mobile
+  is '收货人电话(手机)';
+comment on column ODSHAPPIGO.OD_ORDER.order_mode
+  is '(0:普通,10 新媒体订单,20 跨境购订单)';
+comment on column ODSHAPPIGO.OD_ORDER.cust_grade
+  is '顾客等级';
+create index ODSHAPPIGO.IDX_OD_ORDER_01 on ODSHAPPIGO.OD_ORDER (ORDER_DATE)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.IDX_OD_ORDER_02 on ODSHAPPIGO.OD_ORDER (CUST_NO, ORDER_DATE)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.IDX_OD_ORDER_03 on ODSHAPPIGO.OD_ORDER (CRM_ORDER_NO)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.IDX_OD_ORDER_04 on ODSHAPPIGO.OD_ORDER (PO_ORDER_NO)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.IDX_OD_ORDER_05 on ODSHAPPIGO.OD_ORDER (ORDER_SUP_DATE)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table ODSHAPPIGO.OD_ORDER
+  add constraint PK_OD_ORDER primary key (ORDER_NO, CUST_NO)
+  using index 
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index ODSHAPPIGO.PK_OD_ORDER nologging;
+

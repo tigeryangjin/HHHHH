@@ -1,0 +1,71 @@
+???create table ODSHAPPIGO.OD_ORDER_TEMP1
+(
+  merchant_no         VARCHAR2(12),
+  order_type          VARCHAR2(6),
+  rmsale_code         VARCHAR2(12),
+  order_origin        VARCHAR2(4),
+  order_no            VARCHAR2(14),
+  cust_no             VARCHAR2(12),
+  order_date          DATE,
+  claim_flag          VARCHAR2(1),
+  receiver_seq        VARCHAR2(10),
+  deal_flag           VARCHAR2(2),
+  trans_flag          VARCHAR2(1),
+  trans_id            VARCHAR2(20),
+  trans_date          DATE,
+  invoice_print_flag  VARCHAR2(2),
+  invoice_name        VARCHAR2(100),
+  group_id            VARCHAR2(12),
+  spc_type            VARCHAR2(2),
+  spc_remark          VARCHAR2(200),
+  ispay               VARCHAR2(1),
+  po_order_no         VARCHAR2(40),
+  insert_date         DATE,
+  insert_id           VARCHAR2(12),
+  valid_flag          VARCHAR2(1),
+  remark              VARCHAR2(4000),
+  recieve_addr        VARCHAR2(1),
+  transpzone          VARCHAR2(100),
+  consignee           VARCHAR2(200),
+  tel_number          VARCHAR2(1),
+  crm_order_no        VARCHAR2(40),
+  call_type           VARCHAR2(2),
+  order_tel           VARCHAR2(1),
+  tele_no             VARCHAR2(1),
+  cust_name           VARCHAR2(100),
+  distribution_flag   VARCHAR2(2),
+  distribution_no     VARCHAR2(12),
+  user_id             NUMBER(28,7),
+  deal_distribution   VARCHAR2(2),
+  order_no_supplement VARCHAR2(14),
+  order_rel_type      VARCHAR2(2),
+  order_rel_order_no  VARCHAR2(14),
+  order_rel_remark    VARCHAR2(200),
+  order_addbuy_type   VARCHAR2(2),
+  order_addbuy_remark VARCHAR2(200),
+  order_rel_flag      VARCHAR2(2),
+  order_addbuy_flag   VARCHAR2(2),
+  order_sup_flag      VARCHAR2(2),
+  declare_flag        VARCHAR2(2),
+  receiver_seq_crm    NUMBER(14),
+  order_sup_date      DATE,
+  crm_cust_no         VARCHAR2(12),
+  sub_merchant_no     VARCHAR2(12),
+  ivr_flag            VARCHAR2(2),
+  recieve_mobile      VARCHAR2(1),
+  order_mode          VARCHAR2(2),
+  cust_grade          VARCHAR2(10)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

@@ -1,0 +1,36 @@
+???create table DW_HAPPIGO.DIM_PAGE
+(
+  page_key         NUMBER(20) not null,
+  id               NUMBER(20) not null,
+  page_name        VARCHAR2(500),
+  page_cnm         VARCHAR2(500),
+  inser_date       DATE,
+  application_key  NUMBER(20),
+  application_name VARCHAR2(500)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_HAPPIGO.DIM_PAGE.page_key
+  is '页面关键字';
+comment on column DW_HAPPIGO.DIM_PAGE.id
+  is '页面ID';
+comment on column DW_HAPPIGO.DIM_PAGE.page_name
+  is '页面名称';
+comment on column DW_HAPPIGO.DIM_PAGE.page_cnm
+  is '页面中文名称';
+comment on column DW_HAPPIGO.DIM_PAGE.inser_date
+  is '插入日期';
+comment on column DW_HAPPIGO.DIM_PAGE.application_key
+  is '应用关键字';
+comment on column DW_HAPPIGO.DIM_PAGE.application_name
+  is '应用名称';
+

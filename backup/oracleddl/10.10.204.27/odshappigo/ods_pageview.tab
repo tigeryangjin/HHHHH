@@ -1,0 +1,63 @@
+???create table ODSHAPPIGO.ODS_PAGEVIEW
+(
+  id          NUMBER(11) not null,
+  vid         VARCHAR2(1000),
+  mid         VARCHAR2(200),
+  v           VARCHAR2(3000),
+  t           NUMBER(20),
+  hmsc        VARCHAR2(200),
+  hmmd        VARCHAR2(200),
+  hmpl        VARCHAR2(200),
+  hmkw        VARCHAR2(200),
+  hmci        VARCHAR2(200),
+  url         VARCHAR2(1500),
+  query       VARCHAR2(3000),
+  agent       VARCHAR2(2000),
+  ip          VARCHAR2(500),
+  createon    DATE,
+  a           VARCHAR2(200),
+  ver         VARCHAR2(500),
+  p           VARCHAR2(500),
+  isprocessed NUMBER(2)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index ODSHAPPIGO.ISPROCESSED_IDX on ODSHAPPIGO.ODS_PAGEVIEW (ISPROCESSED)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table ODSHAPPIGO.ODS_PAGEVIEW
+  add constraint ODS_PAGEVIEW_ID primary key (ID)
+  using index 
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index ODSHAPPIGO.ODS_PAGEVIEW_ID nologging;
+

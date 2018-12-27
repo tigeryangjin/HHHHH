@@ -1,0 +1,21 @@
+???create table DW_HAPPIGO.DIM_TVLIVE
+(
+  goods_common_id NUMBER(10),
+  item_code       NUMBER(10),
+  tv_name         VARCHAR2(200),
+  start_date      NUMBER(10),
+  tv_start_time   VARCHAR2(24),
+  tv_end_time     VARCHAR2(24)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

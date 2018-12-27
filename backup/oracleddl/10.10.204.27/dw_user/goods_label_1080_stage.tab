@@ -1,0 +1,49 @@
+???create table DW_USER.GOODS_LABEL_1080_STAGE
+(
+  item_code          NUMBER(11),
+  aspect_category    VARCHAR2(255),
+  g_label_id         NUMBER(5),
+  g_label_name       VARCHAR2(57),
+  g_label_type_id    NUMBER(5),
+  eva_count          NUMBER,
+  eva_positive_count NUMBER,
+  eva_negative_count NUMBER,
+  w_insert_dt        DATE,
+  w_update_dt        DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.GOODS_LABEL_1080_STAGE
+  is '商品标签-口碑等级-中间表
+by yangjin
+2018-06-22';
+comment on column DW_USER.GOODS_LABEL_1080_STAGE.item_code
+  is '商品编码';
+comment on column DW_USER.GOODS_LABEL_1080_STAGE.aspect_category
+  is '属性类别';
+comment on column DW_USER.GOODS_LABEL_1080_STAGE.g_label_id
+  is '商品标签ID';
+comment on column DW_USER.GOODS_LABEL_1080_STAGE.g_label_name
+  is '商品标签名称';
+comment on column DW_USER.GOODS_LABEL_1080_STAGE.g_label_type_id
+  is '商品标签类型ID';
+comment on column DW_USER.GOODS_LABEL_1080_STAGE.eva_count
+  is '总评论条数';
+comment on column DW_USER.GOODS_LABEL_1080_STAGE.eva_positive_count
+  is '正面平路条数';
+comment on column DW_USER.GOODS_LABEL_1080_STAGE.eva_negative_count
+  is '负面评论条数';
+comment on column DW_USER.GOODS_LABEL_1080_STAGE.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.GOODS_LABEL_1080_STAGE.w_update_dt
+  is '记录更新时间';
+

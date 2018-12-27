@@ -1,0 +1,7 @@
+???create sequence DW_HAPPIGO.W_STATID_2S
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 900961
+increment by 1
+cache 20;
+

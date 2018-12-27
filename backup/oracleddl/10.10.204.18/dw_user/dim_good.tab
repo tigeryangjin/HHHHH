@@ -1,0 +1,127 @@
+???create table DW_USER.DIM_GOOD
+(
+  item_code        NUMBER(10),
+  goods_commonid   NUMBER(10),
+  goods_name       VARCHAR2(200),
+  gc_id            NUMBER(10),
+  gc_name          VARCHAR2(200),
+  matdl            NUMBER(10),
+  matdlt           VARCHAR2(100),
+  matzl            NUMBER(10),
+  matzlt           VARCHAR2(100),
+  matxl            NUMBER(10),
+  matxlt           VARCHAR2(100),
+  brand_id         NUMBER(10),
+  brand_name       VARCHAR2(100),
+  goods_state      NUMBER(3),
+  create_time      DATE,
+  good_price       NUMBER(10,2),
+  is_tv            NUMBER(1),
+  is_kjg           NUMBER(1),
+  md               NUMBER(10),
+  group_id         NUMBER(5),
+  group_name       VARCHAR2(50),
+  matl_group       NUMBER(10),
+  matxxlt          VARCHAR2(100),
+  row_wid          NUMBER(10),
+  w_insert_dt      DATE,
+  w_update_dt      DATE,
+  current_flg      CHAR(1),
+  good_price_level VARCHAR2(10),
+  md_name          VARCHAR2(10),
+  dxj              NUMBER(3)
+)
+tablespace BDUDATA02
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.DIM_GOOD.item_code
+  is '商品编码';
+comment on column DW_USER.DIM_GOOD.goods_commonid
+  is 'goods_common_key';
+comment on column DW_USER.DIM_GOOD.goods_name
+  is '商品名称';
+comment on column DW_USER.DIM_GOOD.matdl
+  is '物料大类编码';
+comment on column DW_USER.DIM_GOOD.matdlt
+  is '物料大类名称';
+comment on column DW_USER.DIM_GOOD.matzl
+  is '物料中类编码';
+comment on column DW_USER.DIM_GOOD.matzlt
+  is '物料中类名称';
+comment on column DW_USER.DIM_GOOD.matxl
+  is '物料小类编码';
+comment on column DW_USER.DIM_GOOD.matxlt
+  is '物料小类名称';
+comment on column DW_USER.DIM_GOOD.brand_id
+  is '品牌ID';
+comment on column DW_USER.DIM_GOOD.brand_name
+  is '品牌名称';
+comment on column DW_USER.DIM_GOOD.good_price
+  is '商品价格';
+comment on column DW_USER.DIM_GOOD.row_wid
+  is '唯一记录的代理键';
+comment on column DW_USER.DIM_GOOD.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.DIM_GOOD.w_update_dt
+  is '记录更新时间';
+comment on column DW_USER.DIM_GOOD.current_flg
+  is '当前记录是否有效（Y:有效，N:无效）';
+comment on column DW_USER.DIM_GOOD.good_price_level
+  is '消费档归类（0<LOW<低消费线<MEDIUM<高消费线<HIGH，商品在所属物料细类的价格档位）';
+create index DW_USER.DIM_GOOD_I1 on DW_USER.DIM_GOOD (GOODS_COMMONID)
+  tablespace BDUDATA02
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.DIM_GOOD_I2 on DW_USER.DIM_GOOD (MATL_GROUP)
+  tablespace BDUDATA02
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.ITEMCODE2_IDX on DW_USER.DIM_GOOD (ITEM_CODE)
+  tablespace BDUDATA02
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.MDCODE2_IDX on DW_USER.DIM_GOOD (MD)
+  tablespace BDUDATA02
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

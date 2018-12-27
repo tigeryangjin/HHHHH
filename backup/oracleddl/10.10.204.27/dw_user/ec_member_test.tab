@@ -1,0 +1,47 @@
+???create table DW_USER.EC_MEMBER_TEST
+(
+  id          NUMBER(10) not null,
+  ref_code    VARCHAR2(10),
+  user_id     NUMBER(10),
+  create_time DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.REF_CODE_IDX on DW_USER.EC_MEMBER_TEST (REF_CODE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.EC_MEMBER_TEST
+  add constraint INIT_ID_IDX primary key (ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.INIT_ID_IDX nologging;
+

@@ -1,0 +1,52 @@
+???create table DW_USER.KPI_ASMT_VEDIO_ITEM_CVR_DT
+(
+  date_key        NUMBER(10) not null,
+  order_vid_count NUMBER,
+  uv_vid_count    NUMBER,
+  w_insert_dt     DATE,
+  w_update_dt     DATE,
+  cvr             NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.KPI_ASMT_VEDIO_ITEM_CVR_DT
+  is 'KPI考核指标-微信运营部-视频购商品详情页转化率
+by yangjin
+2018-02-28';
+comment on column DW_USER.KPI_ASMT_VEDIO_ITEM_CVR_DT.date_key
+  is '月份key';
+comment on column DW_USER.KPI_ASMT_VEDIO_ITEM_CVR_DT.order_vid_count
+  is 'VID订购数';
+comment on column DW_USER.KPI_ASMT_VEDIO_ITEM_CVR_DT.uv_vid_count
+  is 'VID访问数';
+comment on column DW_USER.KPI_ASMT_VEDIO_ITEM_CVR_DT.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.KPI_ASMT_VEDIO_ITEM_CVR_DT.w_update_dt
+  is '记录更新时间';
+comment on column DW_USER.KPI_ASMT_VEDIO_ITEM_CVR_DT.cvr
+  is '转化率 (Conversion Rate)';
+alter table DW_USER.KPI_ASMT_VEDIO_ITEM_CVR_DT
+  add constraint KPI_ASMT_VEDIO_ITEM_CVR_DT_PK primary key (DATE_KEY)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.KPI_ASMT_VEDIO_ITEM_CVR_DT_PK nologging;
+

@@ -1,0 +1,21 @@
+???create table DW_USER.DIM_MINUTE
+(
+  id          NUMBER(5),
+  minute_key  NUMBER(5),
+  start_value NUMBER(5),
+  end_value   NUMBER(5),
+  name        VARCHAR2(20)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

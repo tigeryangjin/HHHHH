@@ -1,0 +1,48 @@
+???create table DW_USER.FACT_PLAY_RECORD
+(
+  id                   NUMBER(11),
+  gameid               NUMBER(11),
+  memberid             NUMBER(11),
+  memberdisplayname    VARCHAR2(100),
+  pointcost            NUMBER(11),
+  prizeid              NUMBER(11),
+  prizename            VARCHAR2(200),
+  prizetype            NUMBER(5),
+  pointsreward         VARCHAR2(50),
+  vouchercodereward    VARCHAR2(100),
+  delivery_name        VARCHAR2(100),
+  delivery_phonenumber VARCHAR2(20),
+  delivery_address     VARCHAR2(500),
+  ip                   VARCHAR2(50),
+  ip_int               NUMBER(11),
+  vid                  VARCHAR2(200),
+  isinblacklist        NUMBER(2),
+  blacklistresult      VARCHAR2(800),
+  remark               VARCHAR2(400),
+  createtime           DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.PLAY_RECORD_IDX on DW_USER.FACT_PLAY_RECORD (ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,14 @@
+???create table DW_USER.PLJSON_TESTSUITE
+(
+  suite_id   NUMBER,
+  suite_name VARCHAR2(30),
+  file_name  VARCHAR2(30),
+  passed     NUMBER,
+  failed     NUMBER,
+  total      NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+

@@ -1,0 +1,29 @@
+???create table DW_USER.DIM_EC_TVZHIBO
+(
+  tvid                NUMBER(11),
+  goods_num           NUMBER(5),
+  live_time           DATE,
+  status              NUMBER(5),
+  sync_time           NUMBER(11),
+  discount_amount_web NUMBER(10,2),
+  discount_amount_app NUMBER(10,2),
+  discount_amount_3g  NUMBER(10,2),
+  discount_amount_wx  NUMBER(10,2),
+  last_time           NUMBER(11),
+  operator_id         NUMBER(11),
+  before_time         NUMBER(11),
+  delay_time          NUMBER(11)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

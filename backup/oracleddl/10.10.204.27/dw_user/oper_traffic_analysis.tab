@@ -1,0 +1,70 @@
+???create table DW_USER.OPER_TRAFFIC_ANALYSIS
+(
+  date_key      VARCHAR2(8),
+  channel       VARCHAR2(9),
+  page_name     VARCHAR2(11),
+  all_pv        NUMBER,
+  all_uv        NUMBER,
+  all_stay_time NUMBER,
+  all_bounce_uv NUMBER,
+  new_pv        NUMBER,
+  new_uv        NUMBER,
+  new_stay_time NUMBER,
+  new_bounce_uv NUMBER,
+  old_pv        NUMBER,
+  old_uv        NUMBER,
+  old_stay_time NUMBER,
+  old_bounce_uv NUMBER,
+  w_insert_dt   DATE,
+  w_update_dt   DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_TRAFFIC_ANALYSIS
+  is '流量分析表
+by yangjin
+2018-04-16';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.date_key
+  is '日期';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.channel
+  is '渠道';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.page_name
+  is '页面名称（Dau:日活）';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.all_pv
+  is '总PV';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.all_uv
+  is '总UV';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.all_stay_time
+  is '总平均停留时长';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.all_bounce_uv
+  is '总跳失UV';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.new_pv
+  is '新客PV';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.new_uv
+  is '新客UV';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.new_stay_time
+  is '新客平均停留时长';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.new_bounce_uv
+  is '新客跳失UV';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.old_pv
+  is '老客PV';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.old_uv
+  is '老客UV';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.old_stay_time
+  is '老客平均停留时长';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.old_bounce_uv
+  is '老客跳失UV';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_TRAFFIC_ANALYSIS.w_update_dt
+  is '记录更新时间';
+

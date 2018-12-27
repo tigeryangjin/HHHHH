@@ -1,0 +1,168 @@
+???create table DW_USER.FACTEC_ORDER
+(
+  order_id            NUMBER(20),
+  member_key          NUMBER(20),
+  add_time            NUMBER(10),
+  add_time_int        NUMBER(20),
+  payment_code        VARCHAR2(100),
+  payment_time        NUMBER(10),
+  paymentchannel      VARCHAR2(100),
+  finnshed_time       NUMBER(10),
+  goods_amount        NUMBER(10,2),
+  pay_amount          NUMBER(10,2),
+  shipping_fee        NUMBER(10,2),
+  order_state         NUMBER(5),
+  integrals_amount    NUMBER(10,2),
+  order_amount        NUMBER(10,2),
+  refund_state        NUMBER(5),
+  refund_amount       NUMBER(10,2),
+  order_from          NUMBER(10),
+  app_name            VARCHAR2(100),
+  vid                 VARCHAR2(200),
+  erp_order_no        NUMBER(20),
+  order_ip            VARCHAR2(100),
+  voucher_price       NUMBER(10,2),
+  voucher_ref         VARCHAR2(100),
+  transpzone          VARCHAR2(100),
+  zone1_1             VARCHAR2(100),
+  zone1_2             VARCHAR2(100),
+  zone1_3             VARCHAR2(100),
+  zone1_4             VARCHAR2(100),
+  last_time_key       NUMBER(10),
+  follow_up_time_key  NUMBER(10),
+  follow_up_time      NUMBER(20),
+  cancel_before_state NUMBER(10),
+  goods_num           NUMBER(10),
+  last_time           NUMBER(20),
+  crm_order_no        NUMBER(20),
+  store_id            NUMBER(10),
+  store_name          VARCHAR2(50)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACTEC_ORDER
+  is 'ec订单事实表';
+comment on column DW_USER.FACTEC_ORDER.order_id
+  is 'ec订单编号';
+comment on column DW_USER.FACTEC_ORDER.member_key
+  is '用户bp';
+comment on column DW_USER.FACTEC_ORDER.add_time
+  is '下单时间';
+comment on column DW_USER.FACTEC_ORDER.add_time_int
+  is '下单时间戳';
+comment on column DW_USER.FACTEC_ORDER.payment_code
+  is '支付code';
+comment on column DW_USER.FACTEC_ORDER.payment_time
+  is '支付时间';
+comment on column DW_USER.FACTEC_ORDER.paymentchannel
+  is '支付方式';
+comment on column DW_USER.FACTEC_ORDER.finnshed_time
+  is '订单完成时间';
+comment on column DW_USER.FACTEC_ORDER.goods_amount
+  is '商品金额';
+comment on column DW_USER.FACTEC_ORDER.pay_amount
+  is '支付金额';
+comment on column DW_USER.FACTEC_ORDER.shipping_fee
+  is '运费';
+comment on column DW_USER.FACTEC_ORDER.order_state
+  is '订单状态';
+comment on column DW_USER.FACTEC_ORDER.integrals_amount
+  is '积分支付金额';
+comment on column DW_USER.FACTEC_ORDER.order_amount
+  is '订购金额';
+comment on column DW_USER.FACTEC_ORDER.refund_state
+  is '是否退款';
+comment on column DW_USER.FACTEC_ORDER.refund_amount
+  is '退款金额';
+comment on column DW_USER.FACTEC_ORDER.order_from
+  is '订单来源';
+comment on column DW_USER.FACTEC_ORDER.app_name
+  is '下来来源';
+comment on column DW_USER.FACTEC_ORDER.vid
+  is '设备号';
+comment on column DW_USER.FACTEC_ORDER.erp_order_no
+  is 'crm订单号';
+comment on column DW_USER.FACTEC_ORDER.order_ip
+  is '下单ip';
+comment on column DW_USER.FACTEC_ORDER.voucher_price
+  is '券金额';
+comment on column DW_USER.FACTEC_ORDER.voucher_ref
+  is 'EC的优惠券模板号';
+comment on column DW_USER.FACTEC_ORDER.transpzone
+  is '四级地址编号';
+comment on column DW_USER.FACTEC_ORDER.zone1_1
+  is '一级';
+comment on column DW_USER.FACTEC_ORDER.zone1_2
+  is '二级';
+comment on column DW_USER.FACTEC_ORDER.zone1_3
+  is '三级';
+comment on column DW_USER.FACTEC_ORDER.zone1_4
+  is '四级';
+comment on column DW_USER.FACTEC_ORDER.last_time_key
+  is 'log表最后时间';
+comment on column DW_USER.FACTEC_ORDER.follow_up_time_key
+  is '最后更新时间';
+comment on column DW_USER.FACTEC_ORDER.follow_up_time
+  is '更新时间';
+comment on column DW_USER.FACTEC_ORDER.cancel_before_state
+  is '1是发货前取消';
+comment on column DW_USER.FACTEC_ORDER.goods_num
+  is '商品数量';
+comment on column DW_USER.FACTEC_ORDER.last_time
+  is '处理时间';
+comment on column DW_USER.FACTEC_ORDER.crm_order_no
+  is 'CRM订单号';
+comment on column DW_USER.FACTEC_ORDER.store_id
+  is '卖家店铺ID';
+comment on column DW_USER.FACTEC_ORDER.store_name
+  is '卖家店铺名称';
+create index DW_USER.FEO_ADDTIME on DW_USER.FACTEC_ORDER (ADD_TIME, ORDER_STATE)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FEO_ORDER_ID on DW_USER.FACTEC_ORDER (ORDER_ID)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FEO_ZONE on DW_USER.FACTEC_ORDER (TRANSPZONE)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

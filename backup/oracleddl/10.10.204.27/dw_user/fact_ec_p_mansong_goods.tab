@@ -1,0 +1,55 @@
+???create table DW_USER.FACT_EC_P_MANSONG_GOODS
+(
+  id              NUMBER(10),
+  mansong_id      NUMBER(10),
+  goods_id        NUMBER(10),
+  item_code       NUMBER(10),
+  goods_commonid  NUMBER(10),
+  erp_code        NUMBER(10),
+  goods_name      VARCHAR2(600),
+  state           NUMBER(10),
+  create_user     VARCHAR2(600),
+  create_time     DATE,
+  lastupdate_time DATE,
+  w_insert_dt     DATE,
+  w_update_dt     DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_P_MANSONG_GOODS
+  is 'ec满送相关商品过滤表
+by yangjin';
+comment on column DW_USER.FACT_EC_P_MANSONG_GOODS.id
+  is 'ID号';
+comment on column DW_USER.FACT_EC_P_MANSONG_GOODS.mansong_id
+  is '满送ID';
+comment on column DW_USER.FACT_EC_P_MANSONG_GOODS.item_code
+  is '商品ID sku';
+comment on column DW_USER.FACT_EC_P_MANSONG_GOODS.goods_commonid
+  is '商品公共表id';
+comment on column DW_USER.FACT_EC_P_MANSONG_GOODS.erp_code
+  is '商品公共表id';
+comment on column DW_USER.FACT_EC_P_MANSONG_GOODS.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_EC_P_MANSONG_GOODS.state
+  is '是否有效，1:有效0:无效';
+comment on column DW_USER.FACT_EC_P_MANSONG_GOODS.create_user
+  is '添加用户';
+comment on column DW_USER.FACT_EC_P_MANSONG_GOODS.create_time
+  is '添加时间';
+comment on column DW_USER.FACT_EC_P_MANSONG_GOODS.lastupdate_time
+  is '修改时间';
+comment on column DW_USER.FACT_EC_P_MANSONG_GOODS.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_EC_P_MANSONG_GOODS.w_update_dt
+  is '记录修改时间';
+

@@ -1,0 +1,22 @@
+???create table DW_USER.FACT_LCRATE_MARKET
+(
+  create_date_key NUMBER,
+  application_key VARCHAR2(7),
+  hmmd            VARCHAR2(50),
+  lcrate          NUMBER,
+  paymount        NUMBER(10,2),
+  hitcnt          NUMBER(10),
+  viewcnt         NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

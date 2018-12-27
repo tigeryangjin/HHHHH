@@ -1,0 +1,167 @@
+???create table DW_USER.FACT_GOODS_DIM_TOTAL
+(
+  item_code                     NUMBER(10) default 0,
+  goods_common_key              NUMBER(10) default 0,
+  goods_name                    VARCHAR2(500),
+  brand_id                      NUMBER(20) default 0,
+  brand_name                    VARCHAR2(500),
+  ec_cate_id                    NUMBER(20) default 0,
+  matdl                         VARCHAR2(50),
+  matdl_key                     NUMBER(20) default 0,
+  matzl                         VARCHAR2(50),
+  matzl_key                     NUMBER(20) default 0,
+  matxl                         VARCHAR2(50),
+  matxl_key                     NUMBER(20) default 0,
+  matxxl                        VARCHAR2(50),
+  matxxl_key                    NUMBER(20) default 0,
+  group_name                    VARCHAR2(500),
+  md                            VARCHAR2(50),
+  supplier_id                   VARCHAR2(50),
+  supplier_name                 VARCHAR2(500),
+  delivery_key                  NUMBER(20) default 0,
+  zj_state                      NUMBER(20) default 0,
+  stock_nums                    NUMBER(20) default 0,
+  first_sj_time                 NUMBER(20) default 0,
+  last_sj_time                  NUMBER(20) default 0,
+  comment_total                 NUMBER(20) default 0,
+  comment_best                  NUMBER(20) default 0,
+  comment_better                NUMBER(20) default 0,
+  comment_good                  NUMBER(20) default 0,
+  effective_total               NUMBER(20) default 0,
+  cancel_total                  NUMBER(20) default 0,
+  sale_total                    NUMBER(20) default 0,
+  rejection_total               NUMBER(20) default 0,
+  rejection_cancel_total        NUMBER(20) default 0,
+  effective_order_total         NUMBER(20) default 0,
+  cancel_order_total            NUMBER(20) default 0,
+  sale_order_total              NUMBER(20) default 0,
+  rejection_order_total         NUMBER(20) default 0,
+  rejection_order_cancel_total  NUMBER(20) default 0,
+  effective_member_total        NUMBER(20) default 0,
+  cancel_member_total           NUMBER(20) default 0,
+  sale_member_total             NUMBER(20) default 0,
+  rejection_member_total        NUMBER(20) default 0,
+  rejection_member_cancel_total NUMBER(20) default 0,
+  cart_total                    NUMBER(20) default 0,
+  sc_total                      NUMBER(20) default 0,
+  pv_total                      NUMBER(20) default 0
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACT_GOODS_DIM_TOTAL
+  is '商品维度总表
+by bobo';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.item_code
+  is 'crm商品编号';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.goods_common_key
+  is 'ec商品编号';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.brand_id
+  is '品牌id';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.brand_name
+  is '品牌名称';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.ec_cate_id
+  is 'ec品类';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.matdl
+  is '物料大类';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.matdl_key
+  is '物料大类id';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.matzl
+  is '物料中类';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.matzl_key
+  is '物料中类id';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.matxl
+  is '物料小类';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.matxl_key
+  is '物料小类id';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.matxxl
+  is '物料细类';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.matxxl_key
+  is '物料细类id';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.group_name
+  is '提报组';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.md
+  is 'MD编号';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.supplier_id
+  is '供应商编号';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.supplier_name
+  is '供应商名称';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.delivery_key
+  is '发货方式  1直配送/0快乐购仓库';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.zj_state
+  is '商品是否在架';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.stock_nums
+  is '商品库存状态';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.first_sj_time
+  is '商品第一次上架时间';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.last_sj_time
+  is '商品最后一次在架时间';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.comment_total
+  is '总评价次数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.comment_best
+  is '总好评次数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.comment_better
+  is '总中评次数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.comment_good
+  is '总差评次数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.effective_total
+  is '商品有效销售数量';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.cancel_total
+  is '商品总取消数量';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.sale_total
+  is '商品总订购数量';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.rejection_total
+  is '商品总拒退数量';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.rejection_cancel_total
+  is '商品总拒退取消数量';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.effective_order_total
+  is '商品有效销售订单数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.cancel_order_total
+  is '商品总取消订单数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.sale_order_total
+  is '商品总订购订单数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.rejection_order_total
+  is '商品总拒退订单数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.rejection_order_cancel_total
+  is '商品总拒退取消订单数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.effective_member_total
+  is '商品有效订购人数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.cancel_member_total
+  is '商品总取消人数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.sale_member_total
+  is '商品总订购人数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.rejection_member_total
+  is '商品总拒退人数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.rejection_member_cancel_total
+  is '商品总拒退取消人数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.cart_total
+  is '购物车存放总次数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.sc_total
+  is '总收藏次数';
+comment on column DW_USER.FACT_GOODS_DIM_TOTAL.pv_total
+  is '总PV';
+create index DW_USER.FACT_GOODS_DIM_TOTAL on DW_USER.FACT_GOODS_DIM_TOTAL (ITEM_CODE)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

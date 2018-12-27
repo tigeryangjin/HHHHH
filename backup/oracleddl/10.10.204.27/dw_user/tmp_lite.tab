@@ -1,0 +1,19 @@
+???create table DW_USER.TMP_LITE
+(
+  liteuvcnt   NUMBER,
+  mcnt        NUMBER,
+  liteorderrs NUMBER,
+  date_key    NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

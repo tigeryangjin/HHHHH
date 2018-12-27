@@ -1,0 +1,83 @@
+???create table DW_USER.DIM_MEMBER_BASE
+(
+  member_bp         NUMBER(20),
+  register_resource VARCHAR2(20),
+  register_score    NUMBER(10) default 0,
+  tv_count          NUMBER(10) default 0,
+  tv_score          NUMBER(10) default 0,
+  web_count         NUMBER(10) default 0,
+  web_score         NUMBER(10) default 0,
+  live_count        NUMBER(10) default 0,
+  tv_good_count     NUMBER(10) default 0,
+  web_good_count    NUMBER(10) default 0,
+  ec_good_score     NUMBER(10) default 0,
+  create_date_key   NUMBER(10),
+  ch_date_key       NUMBER(10),
+  tv_good_score     NUMBER(10) default 0,
+  live_good_score   NUMBER(10) default 0
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.CH_DT_IDX on DW_USER.DIM_MEMBER_BASE (CH_DATE_KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.CR_DT_IDX on DW_USER.DIM_MEMBER_BASE (CREATE_DATE_KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.CR_RE_IDX on DW_USER.DIM_MEMBER_BASE (CREATE_DATE_KEY, REGISTER_RESOURCE)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MB_BP_IDX on DW_USER.DIM_MEMBER_BASE (MEMBER_BP)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,260 @@
+???create table DW_USER.ODS_ZBPARTNER1
+(
+  txtsh      VARCHAR2(100),
+  zbpartner  VARCHAR2(10) not null,
+  abc_class  VARCHAR2(60),
+  addr_line0 VARCHAR2(60),
+  addr_line1 VARCHAR2(60),
+  addr_line2 VARCHAR2(60),
+  addr_line3 VARCHAR2(60),
+  addr_line4 VARCHAR2(60),
+  addr_line5 VARCHAR2(60),
+  addr_line6 VARCHAR2(60),
+  addr_line7 VARCHAR2(60),
+  addr_line8 VARCHAR2(60),
+  addr_line9 VARCHAR2(60),
+  addr_short VARCHAR2(60),
+  addr_sh_s  VARCHAR2(60),
+  altitude   NUMBER(17,3),
+  apo_locno  VARCHAR2(20),
+  bbp_buyid  VARCHAR2(10),
+  bbp_f_bid  VARCHAR2(1),
+  bbp_f_comp VARCHAR2(1),
+  bbp_f_loc  VARCHAR2(1),
+  bbp_f_vend VARCHAR2(1),
+  bbp_minown VARCHAR2(1),
+  bbp_min_ex VARCHAR2(8),
+  bbp_qsdat  VARCHAR2(8),
+  bbp_qssys  VARCHAR2(4),
+  bbp_sys_vd VARCHAR2(2),
+  bbp_womown VARCHAR2(1),
+  bbp_wom_ex VARCHAR2(8),
+  bpposition VARCHAR2(2),
+  bp_actitl1 VARCHAR2(4),
+  bp_actitl2 VARCHAR2(4),
+  bp_bthname VARCHAR2(40),
+  bp_cat     VARCHAR2(1),
+  bp_cons    VARCHAR2(10),
+  bp_contact VARCHAR2(1),
+  bp_extern  VARCHAR2(20),
+  bp_fstname VARCHAR2(40),
+  bp_group   VARCHAR2(4),
+  bp_grpnam1 VARCHAR2(40),
+  bp_grpnam2 VARCHAR2(40),
+  bp_grptype VARCHAR2(4),
+  bp_guid    VARCHAR2(32),
+  bp_lstname VARCHAR2(100),
+  bp_mar_sta VARCHAR2(1),
+  bp_mdlname VARCHAR2(40),
+  bp_secname VARCHAR2(40),
+  bp_type    VARCHAR2(4),
+  building20 VARCHAR2(20),
+  changedby  VARCHAR2(12),
+  ch_at      VARCHAR2(6),
+  ch_on      VARCHAR2(8),
+  cityp_code VARCHAR2(8),
+  city_1     VARCHAR2(40),
+  city_2     VARCHAR2(40),
+  city_code  VARCHAR2(12),
+  cltv       NUMBER(17,2),
+  company    VARCHAR2(6),
+  country    VARCHAR2(3),
+  createdby  VARCHAR2(12),
+  createdon  VARCHAR2(8),
+  crea_time  VARCHAR2(6),
+  crmacstat  VARCHAR2(8),
+  crm_cpdety VARCHAR2(1),
+  crm_cpprog VARCHAR2(4),
+  crm_cpsinc VARCHAR2(4),
+  crm_cpstat VARCHAR2(4),
+  crm_cptype VARCHAR2(4),
+  crm_cussin VARCHAR2(8),
+  crm_f_codc VARCHAR2(1),
+  crm_f_comp VARCHAR2(1),
+  crm_f_cons VARCHAR2(1),
+  crm_f_cust VARCHAR2(1),
+  crm_f_pros VARCHAR2(1),
+  crm_rfmseg VARCHAR2(3),
+  crm_rfm_rr NUMBER(17,3),
+  currency   VARCHAR2(5),
+  customer   VARCHAR2(10),
+  c_credit   VARCHAR2(4),
+  c_loyalty  VARCHAR2(2),
+  c_rank     VARCHAR2(2),
+  dbduns_num VARCHAR2(9),
+  db_match   VARCHAR2(1),
+  dm_clusno  VARCHAR2(3),
+  dm_prdctd  VARCHAR2(16),
+  email_addr VARCHAR2(60),
+  fax_number VARCHAR2(30),
+  floor10    VARCHAR2(10),
+  gender     VARCHAR2(1),
+  gn_r3_ssy  VARCHAR2(2),
+  house_num1 VARCHAR2(10),
+  house_num2 VARCHAR2(10),
+  ind_code   VARCHAR2(10),
+  langu      VARCHAR2(1),
+  latitude   NUMBER(15,12),
+  legalform  VARCHAR2(2),
+  logsys     VARCHAR2(10),
+  longitude  NUMBER(15,12),
+  name_co    VARCHAR2(40),
+  name_org1  VARCHAR2(40),
+  name_org2  VARCHAR2(40),
+  name_org3  VARCHAR2(40),
+  name_org4  VARCHAR2(40),
+  nation     VARCHAR2(3),
+  orgunit    VARCHAR2(8),
+  plant      VARCHAR2(4),
+  pobox      VARCHAR2(10),
+  pobox_cty  VARCHAR2(3),
+  pobox_loc  VARCHAR2(40),
+  pobox_reg  VARCHAR2(3),
+  postalcode VARCHAR2(10),
+  postcd_box VARCHAR2(10),
+  postcd_com VARCHAR2(10),
+  postcd_gis VARCHAR2(10),
+  precisid   VARCHAR2(4),
+  region     VARCHAR2(3),
+  regio_grp  VARCHAR2(8),
+  remark     VARCHAR2(50),
+  room_num   VARCHAR2(10),
+  srcid      VARCHAR2(4),
+  srm_sth    VARCHAR2(1),
+  stabupsys0 VARCHAR2(2),
+  stabupsys1 VARCHAR2(2),
+  stabupsys2 VARCHAR2(2),
+  stabupsys3 VARCHAR2(2),
+  stabupsys4 VARCHAR2(2),
+  stabupsys5 VARCHAR2(2),
+  street60   VARCHAR2(60),
+  street_cod VARCHAR2(12),
+  str_suppl1 VARCHAR2(40),
+  str_suppl2 VARCHAR2(40),
+  str_suppl3 VARCHAR2(40),
+  str_suppl4 VARCHAR2(40),
+  taxjurcode VARCHAR2(15),
+  tel_number VARCHAR2(30),
+  time_zone  VARCHAR2(6),
+  title_sppl VARCHAR2(4),
+  transpzone VARCHAR2(10),
+  trzone     VARCHAR2(10),
+  user_name  VARCHAR2(12),
+  user_syst  VARCHAR2(10),
+  vendor     VARCHAR2(10),
+  bp_phgroup VARCHAR2(4),
+  bp_phsubgr VARCHAR2(4),
+  bp_phnbrik VARCHAR2(10),
+  bp_phsudy  VARCHAR2(5),
+  bp_phaddq  VARCHAR2(5),
+  bp_phfunc  VARCHAR2(5),
+  bp_phpos   VARCHAR2(5),
+  bp_phrpm   VARCHAR2(10),
+  cdm_scor   VARCHAR2(10),
+  cdm_risc   VARCHAR2(3),
+  addatefrom VARCHAR2(8),
+  addateto   VARCHAR2(8),
+  tel_numdis VARCHAR2(30),
+  fax_numdis VARCHAR2(30),
+  bpdatefrom VARCHAR2(8),
+  bpdateto   VARCHAR2(8),
+  crm_bilblk VARCHAR2(2),
+  crm_ordblk VARCHAR2(2),
+  crm_delblk VARCHAR2(2),
+  crm_debcrd VARCHAR2(1),
+  employee   VARCHAR2(8),
+  zzroblist  VARCHAR2(2),
+  zzrobc_by  VARCHAR2(12),
+  zzrobc_on  VARCHAR2(8),
+  zzownern   VARCHAR2(40),
+  zzowner    VARCHAR2(10),
+  zzcusrmk   VARCHAR2(200),
+  zzwebid    VARCHAR2(60),
+  zzidnum    VARCHAR2(60),
+  zzidtype   VARCHAR2(6),
+  zzage      VARCHAR2(10),
+  zzdatafrm  VARCHAR2(20),
+  zzreccust  VARCHAR2(40),
+  zzcommuid  VARCHAR2(30),
+  zzcuspass  VARCHAR2(6),
+  zzmsaleco  VARCHAR2(2),
+  zthrc011   VARCHAR2(8),
+  zbirthdt   VARCHAR2(8),
+  ztcmc017   VARCHAR2(10),
+  ztcmc018   VARCHAR2(10),
+  ztcmc019   VARCHAR2(10),
+  ztcmc020   VARCHAR2(10),
+  ztcmc031   VARCHAR2(8),
+  ztcmc034   VARCHAR2(2),
+  ztcmc035   VARCHAR2(4),
+  ztcmc032   VARCHAR2(8),
+  ztcmc047   VARCHAR2(9),
+  ztcmc048   VARCHAR2(2),
+  ztcmc049   VARCHAR2(2),
+  ztcmc016   VARCHAR2(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.CH_ON_IDX1 on DW_USER.ODS_ZBPARTNER1 (CH_ON)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.CREATEDON_IDX1 on DW_USER.ODS_ZBPARTNER1 (CREATEDON)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ZBPARTNER_IDX1 on DW_USER.ODS_ZBPARTNER1 (ZBPARTNER)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ZTHRC011_IDX on DW_USER.ODS_ZBPARTNER1 (ZTHRC011)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

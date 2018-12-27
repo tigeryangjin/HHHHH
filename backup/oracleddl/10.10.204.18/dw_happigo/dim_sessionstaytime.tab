@@ -1,0 +1,20 @@
+???create table DW_HAPPIGO.DIM_SESSIONSTAYTIME
+(
+  sessionstaytimekey NUMBER(10) not null,
+  name               VARCHAR2(20),
+  min                NUMBER(10),
+  max                NUMBER(10),
+  createtime         DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

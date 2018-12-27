@@ -1,0 +1,42 @@
+???create table DW_HAPPIGO.R_STEP_DATABASE
+(
+  id_transformation INTEGER,
+  id_step           INTEGER,
+  id_database       INTEGER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_HAPPIGO.IDX_STEP_DATABASE_LU1 on DW_HAPPIGO.R_STEP_DATABASE (ID_TRANSFORMATION)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_HAPPIGO.IDX_STEP_DATABASE_LU2 on DW_HAPPIGO.R_STEP_DATABASE (ID_DATABASE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

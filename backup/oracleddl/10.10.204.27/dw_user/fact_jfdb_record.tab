@@ -1,0 +1,27 @@
+???create table DW_USER.FACT_JFDB_RECORD
+(
+  id            NUMBER(20),
+  member_id     NUMBER(20),
+  member_bp     VARCHAR2(300),
+  project_id    NUMBER(20),
+  project_no    NUMBER(20),
+  tickets_num   NUMBER(11),
+  points_total  NUMBER(11),
+  status        NUMBER(11),
+  refund_status NUMBER(11),
+  vid           VARCHAR2(300),
+  ip            VARCHAR2(300),
+  buy_time      DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

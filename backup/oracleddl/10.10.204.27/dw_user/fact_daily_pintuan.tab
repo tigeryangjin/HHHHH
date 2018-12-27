@@ -1,0 +1,28 @@
+???create table DW_USER.FACT_DAILY_PINTUAN
+(
+  visit_date_key NUMBER(10),
+  vt_date        DATE,
+  pv             NUMBER,
+  uv             NUMBER,
+  item_code      NUMBER(11),
+  goods_name     VARCHAR2(200),
+  leixin         VARCHAR2(6),
+  payment_code   VARCHAR2(12),
+  app_name       VARCHAR2(20),
+  rs             NUMBER,
+  js             NUMBER,
+  je             NUMBER,
+  ds             NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

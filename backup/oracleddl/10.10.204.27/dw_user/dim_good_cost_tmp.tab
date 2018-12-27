@@ -1,0 +1,22 @@
+???create table DW_USER.DIM_GOOD_COST_TMP
+(
+  item_code   NUMBER(10),
+  cost_price  NUMBER(10,2),
+  report_date VARCHAR2(24),
+  valid_date  VARCHAR2(24),
+  create_date NUMBER(10),
+  sale_price  NUMBER(10,2)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

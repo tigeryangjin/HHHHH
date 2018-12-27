@@ -1,0 +1,39 @@
+???create table DW_HAPPIGO.R_STEP
+(
+  id_step           INTEGER not null,
+  id_transformation INTEGER,
+  name              VARCHAR2(255),
+  description       CLOB,
+  id_step_type      INTEGER,
+  distribute        CHAR(1),
+  copies            INTEGER,
+  gui_location_x    INTEGER,
+  gui_location_y    INTEGER,
+  gui_draw          CHAR(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table DW_HAPPIGO.R_STEP
+  add primary key (ID_STEP)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

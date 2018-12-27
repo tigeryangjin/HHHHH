@@ -1,0 +1,3 @@
+???create or replace synonym DW_USER.DIM_PAGE
+  for DW_USER.DIM_PAGE@BINEW_DW;
+

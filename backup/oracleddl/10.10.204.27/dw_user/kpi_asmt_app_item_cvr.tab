@@ -1,0 +1,35 @@
+???create table DW_USER.KPI_ASMT_APP_ITEM_CVR
+(
+  month_key   NUMBER(10),
+  gc_name     VARCHAR2(20),
+  avg_cvr     NUMBER,
+  w_insert_dt DATE,
+  w_update_dt DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.KPI_ASMT_APP_ITEM_CVR
+  is 'KPI考核指标-渠道运营部-商品详情页转化率
+by yangjin
+2018-02-26
+';
+comment on column DW_USER.KPI_ASMT_APP_ITEM_CVR.month_key
+  is '月份key';
+comment on column DW_USER.KPI_ASMT_APP_ITEM_CVR.gc_name
+  is '关联EC分类名称';
+comment on column DW_USER.KPI_ASMT_APP_ITEM_CVR.avg_cvr
+  is '转化率（Conversion Rate）日均';
+comment on column DW_USER.KPI_ASMT_APP_ITEM_CVR.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.KPI_ASMT_APP_ITEM_CVR.w_update_dt
+  is '记录修改时间';
+

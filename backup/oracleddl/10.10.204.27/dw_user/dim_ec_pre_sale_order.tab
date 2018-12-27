@@ -1,0 +1,152 @@
+???create table DW_USER.DIM_EC_PRE_SALE_ORDER
+(
+  id                    NUMBER(11) not null,
+  pre_id                NUMBER(11),
+  pre_order_sn          NUMBER(20),
+  pre_pay_sn            NUMBER(20),
+  order_id              NUMBER(11),
+  order_sn              NUMBER(20),
+  store_id              VARCHAR2(20),
+  buyer_id              NUMBER(11),
+  cust_no               VARCHAR2(20),
+  add_time              DATE,
+  expire_time           DATE,
+  payment_time          DATE,
+  pre_sale_price        NUMBER(11,2),
+  tail_price            NUMBER(11,2),
+  order_state           NUMBER(4),
+  order_remark          VARCHAR2(500),
+  refund_state          NUMBER(5),
+  paymentchannel        VARCHAR2(50),
+  delete_status         NUMBER(4),
+  app_name              VARCHAR2(50),
+  vid                   VARCHAR2(500),
+  order_ip              VARCHAR2(100),
+  update_time           DATE,
+  goods_commonid        NUMBER(11),
+  goods_id              NUMBER(11),
+  erp_code              NUMBER(11),
+  goods_name            VARCHAR2(200),
+  goods_price           NUMBER(11,2),
+  goods_num             NUMBER(11),
+  transpzone            VARCHAR2(20),
+  reciver_name          VARCHAR2(200),
+  reciver_info          VARCHAR2(1000),
+  receiver_seq          VARCHAR2(20),
+  sms_enable            NUMBER(2),
+  sms_mobile            VARCHAR2(11),
+  apppush_enable        NUMBER(2),
+  shipping_fee          NUMBER(11,2),
+  invoice_info          VARCHAR2(500),
+  discount_price        NUMBER(11,2),
+  wxpush_enable         NUMBER(2),
+  wxpush_deposit_enable NUMBER(2)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.pre_id
+  is '预售活动ID';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.pre_order_sn
+  is '定金订单编号';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.pre_pay_sn
+  is '定金支付单号';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.order_id
+  is 'ec_order表订单ID';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.order_sn
+  is 'ec_order表订单编号';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.store_id
+  is '店铺id';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.buyer_id
+  is '买家id';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.cust_no
+  is '顾客编号';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.add_time
+  is '添加时间';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.expire_time
+  is '订单未支付取消时间';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.payment_time
+  is '支付(付款)时间';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.pre_sale_price
+  is '定金金额';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.tail_price
+  is '尾款金额';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.order_state
+  is '订单状态：0(已取消)10(默认):未付款;20:已付款;30:生成尾款订单';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.order_remark
+  is '订单备注';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.refund_state
+  is '退款状态:0是无退款,1是部分退款,2是全部退款';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.paymentchannel
+  is '支付渠道，（支付宝手机:Alipay_M，支付宝网站Alipay_W，微信_WX）';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.delete_status
+  is '删除状态0未删除1放入回收站2彻底删除';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.app_name
+  is '下单来源应用名';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.vid
+  is '下单设备编号';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.order_ip
+  is '下单IP地址';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.update_time
+  is '最后更新时间';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.goods_commonid
+  is '公共商品编号';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.goods_id
+  is '商品id';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.erp_code
+  is '商品用于下单的编号';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.goods_name
+  is '商品名称';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.goods_price
+  is '商品价格';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.goods_num
+  is '商品数量';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.transpzone
+  is '四级地址编号';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.reciver_name
+  is '收货人姓名';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.reciver_info
+  is '收货人其它信息';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.receiver_seq
+  is '顾客地址编号';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.sms_enable
+  is '尾款是否短信通知，0：无须通知，1：待通知，2：通知成功，3：通知失败';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.sms_mobile
+  is '短信通知手机号码';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.apppush_enable
+  is '尾款是否推送通知，0：无须通知，1：待通知，2：通知成功，3：通知失败';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.shipping_fee
+  is '运费';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.invoice_info
+  is '发票';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.discount_price
+  is '折扣金额';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.wxpush_enable
+  is '尾款是否微信通知，0：等待，1：通知成功，2：通知失败';
+comment on column DW_USER.DIM_EC_PRE_SALE_ORDER.wxpush_deposit_enable
+  is '定金是否微信通知，0：等待，1：通知成功，2：通知失败';
+alter table DW_USER.DIM_EC_PRE_SALE_ORDER
+  add constraint EC_PRE_SA_OD_IDX primary key (ID)
+  using index 
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.EC_PRE_SA_OD_IDX nologging;
+

@@ -1,0 +1,20 @@
+???create table DW_USER.FACT_TOTAL_XINLAO
+(
+  vid             VARCHAR2(1000),
+  member_key      NUMBER(20),
+  application_key NUMBER(10),
+  leixin          VARCHAR2(4),
+  qudao           CHAR(2)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -1,0 +1,19 @@
+???create table DW_HAPPIGO.S_PARAMETERS1
+(
+  parameter_name  VARCHAR2(10),
+  parameter_value VARCHAR2(20),
+  flag            NUMBER(20),
+  flag2           NUMBER(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

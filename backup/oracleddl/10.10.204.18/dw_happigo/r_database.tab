@@ -1,0 +1,41 @@
+???create table DW_HAPPIGO.R_DATABASE
+(
+  id_database         INTEGER not null,
+  name                VARCHAR2(255),
+  id_database_type    INTEGER,
+  id_database_contype INTEGER,
+  host_name           VARCHAR2(255),
+  database_name       VARCHAR2(255),
+  port                INTEGER,
+  username            VARCHAR2(255),
+  password            VARCHAR2(255),
+  servername          VARCHAR2(255),
+  data_tbs            VARCHAR2(255),
+  index_tbs           VARCHAR2(255)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table DW_HAPPIGO.R_DATABASE
+  add primary key (ID_DATABASE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

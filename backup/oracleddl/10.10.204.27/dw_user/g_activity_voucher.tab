@@ -1,0 +1,36 @@
+???create table DW_USER.G_ACTIVITY_VOUCHER
+(
+  id_col      NUMBER(10),
+  activity_id NUMBER(10),
+  voucher_id  VARCHAR2(150),
+  voucher_key DATE,
+  create_time DATE,
+  update_time DATE,
+  w_insert_dt DATE,
+  w_update_dt DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+comment on table DW_USER.G_ACTIVITY_VOUCHER
+  is 'source:G_ACTIVITY_VOUCHER_TMP
+by yangjin
+2018-05-11';
+comment on column DW_USER.G_ACTIVITY_VOUCHER.id_col
+  is '主键';
+comment on column DW_USER.G_ACTIVITY_VOUCHER.activity_id
+  is '活动外键';
+comment on column DW_USER.G_ACTIVITY_VOUCHER.voucher_id
+  is '优惠劵id';
+comment on column DW_USER.G_ACTIVITY_VOUCHER.voucher_key
+  is '优惠劵key';
+comment on column DW_USER.G_ACTIVITY_VOUCHER.create_time
+  is '创建时间';
+comment on column DW_USER.G_ACTIVITY_VOUCHER.update_time
+  is '更新时间';
+comment on column DW_USER.G_ACTIVITY_VOUCHER.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.G_ACTIVITY_VOUCHER.w_update_dt
+  is '记录更新时间';
+

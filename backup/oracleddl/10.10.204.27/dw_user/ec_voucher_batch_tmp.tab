@@ -1,0 +1,30 @@
+???create table DW_USER.EC_VOUCHER_BATCH_TMP
+(
+  id           NUMBER(10),
+  voucher_id   VARCHAR2(300),
+  member_id    VARCHAR2(60),
+  cust_no      VARCHAR2(60),
+  state        NUMBER(10),
+  addtime      DATE,
+  remarks      VARCHAR2(600),
+  voucher_key  VARCHAR2(300),
+  out_sn       VARCHAR2(150),
+  erp_order_no VARCHAR2(150),
+  send_type    VARCHAR2(60),
+  w_insert_dt  DATE,
+  w_update_dt  DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.EC_VOUCHER_BATCH_TMP
+  is 'ec_voucher_batch中间表';
+

@@ -1,0 +1,404 @@
+???create table DW_USER.DATA_ACQUISITION_ITEM
+(
+  data_source       VARCHAR2(2),
+  period            VARCHAR2(80),
+  acq_category_name VARCHAR2(200),
+  matdlt            VARCHAR2(80),
+  matzlt            VARCHAR2(80),
+  matxlt            VARCHAR2(80),
+  acq_item_code     VARCHAR2(50),
+  acq_name          VARCHAR2(500),
+  acq_url           VARCHAR2(500),
+  acq_pic           VARCHAR2(500),
+  acq_shop_name     VARCHAR2(200),
+  acq_price         NUMBER(20,2),
+  acq_sales         NUMBER,
+  sales_amt         NUMBER(20,2),
+  insert_date       DATE default sysdate,
+  valid_flag        NVARCHAR2(1) default 1
+)
+partition by range (INSERT_DATE)
+subpartition by list (DATA_SOURCE)
+(
+  partition P1 values less than (TO_DATE(' 2017-10-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+  (
+    subpartition ZP101 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP102 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP103 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP104 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP105 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP106 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP107 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP108 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP109 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P2 values less than (TO_DATE(' 2017-11-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP201 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP202 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP203 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP204 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP205 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP206 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP207 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP208 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP209 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P3 values less than (TO_DATE(' 2017-12-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP301 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP302 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP303 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP304 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP305 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP306 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP307 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP308 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP309 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P4 values less than (TO_DATE(' 2018-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP401 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP402 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP403 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP404 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP405 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP406 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP407 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP408 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP409 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P5 values less than (TO_DATE(' 2018-02-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP501 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP502 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP503 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP504 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP505 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP506 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP507 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP508 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP509 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P6 values less than (TO_DATE(' 2018-03-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP601 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP602 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP603 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP604 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP605 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP606 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP607 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP608 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP609 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P7 values less than (TO_DATE(' 2018-04-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP701 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP703 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP704 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP705 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP706 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP707 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP708 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP709 values ('11') tablespace ACQUISITION_DATA,
+    subpartition ZP702 values ('2') tablespace ACQUISITION_DATA
+  ),
+  partition P8 values less than (TO_DATE(' 2018-05-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP801 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP802 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP803 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP804 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP805 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP806 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP807 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP808 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP809 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P9 values less than (TO_DATE(' 2018-06-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP901 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP902 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP903 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP904 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP905 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP906 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP907 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP908 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP909 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P10 values less than (TO_DATE(' 2018-07-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP1001 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP1002 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP1003 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP1004 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP1005 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP1006 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP1007 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP1008 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP1009 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P11 values less than (TO_DATE(' 2018-08-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP1101 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP1102 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP1103 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP1104 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP1105 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP1106 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP1107 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP1108 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP1109 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P12 values less than (TO_DATE(' 2018-09-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP1201 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP1202 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP1203 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP1204 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP1205 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP1206 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP1207 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP1208 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP1209 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P13 values less than (TO_DATE(' 2018-10-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP1301 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP1302 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP1303 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP1304 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP1305 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP1306 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP1307 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP1308 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP1309 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P14 values less than (TO_DATE(' 2018-11-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP1401 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP1402 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP1403 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP1404 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP1405 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP1406 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP1407 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP1408 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP1409 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P15 values less than (TO_DATE(' 2018-12-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP1501 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP1502 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP1503 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP1504 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP1505 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP1506 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP1507 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP1508 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP1509 values ('11') tablespace ACQUISITION_DATA
+  ),
+  partition P16 values less than (TO_DATE(' 2019-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace HLOG
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 8
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ZP1601 values ('1') tablespace ACQUISITION_DATA,
+    subpartition ZP1602 values ('2') tablespace ACQUISITION_DATA,
+    subpartition ZP1603 values ('3') tablespace ACQUISITION_DATA,
+    subpartition ZP1604 values ('6') tablespace ACQUISITION_DATA,
+    subpartition ZP1605 values ('7') tablespace ACQUISITION_DATA,
+    subpartition ZP1606 values ('8') tablespace ACQUISITION_DATA,
+    subpartition ZP1607 values ('9') tablespace ACQUISITION_DATA,
+    subpartition ZP1608 values ('10') tablespace ACQUISITION_DATA,
+    subpartition ZP1609 values ('11') tablespace ACQUISITION_DATA
+  )
+);
+comment on table DW_USER.DATA_ACQUISITION_ITEM
+  is '源表';
+comment on column DW_USER.DATA_ACQUISITION_ITEM.data_source
+  is '平台编码';
+comment on column DW_USER.DATA_ACQUISITION_ITEM.period
+  is '日期';
+comment on column DW_USER.DATA_ACQUISITION_ITEM.matdlt
+  is '物料大类';
+comment on column DW_USER.DATA_ACQUISITION_ITEM.matzlt
+  is '物料中类';
+comment on column DW_USER.DATA_ACQUISITION_ITEM.matxlt
+  is '物料小类';
+comment on column DW_USER.DATA_ACQUISITION_ITEM.acq_item_code
+  is '商品编码';
+comment on column DW_USER.DATA_ACQUISITION_ITEM.acq_name
+  is '商品名称';
+comment on column DW_USER.DATA_ACQUISITION_ITEM.acq_shop_name
+  is '店铺名称';
+comment on column DW_USER.DATA_ACQUISITION_ITEM.acq_price
+  is '商品价格';
+comment on column DW_USER.DATA_ACQUISITION_ITEM.acq_sales
+  is '累计销售件数';
+comment on column DW_USER.DATA_ACQUISITION_ITEM.sales_amt
+  is '累计销售金额';
+comment on column DW_USER.DATA_ACQUISITION_ITEM.insert_date
+  is '插入时间';
+create index DW_USER.DATA_ACQUISITION_ITEM_I1 on DW_USER.DATA_ACQUISITION_ITEM (PERIOD)
+  nologging  local;
+create index DW_USER.DATA_ACQUISITION_ITEM_I2 on DW_USER.DATA_ACQUISITION_ITEM (ACQ_ITEM_CODE)
+  nologging  local;
+create index DW_USER.IDX_DATA_ACQUISITION_ITEM_P1 on DW_USER.DATA_ACQUISITION_ITEM (INSERT_DATE, DATA_SOURCE, ACQ_CATEGORY_NAME)
+  nologging  local;
+create index DW_USER.IDX_DATA_ACQUISITION_ITEM_P30 on DW_USER.DATA_ACQUISITION_ITEM (INSERT_DATE, DATA_SOURCE, ACQ_NAME)
+  nologging  local;
+

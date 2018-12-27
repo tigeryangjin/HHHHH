@@ -1,0 +1,121 @@
+???create table DW_USER.FACT_PAGE_VIEW
+(
+  id                NUMBER(20),
+  page_view_key     NUMBER(20),
+  vid               VARCHAR2(1000),
+  device_key        NUMBER(20) default 0,
+  ip                VARCHAR2(500),
+  ip_geo_key        NUMBER(10),
+  ip_int            NUMBER(20),
+  url               VARCHAR2(1000),
+  page_key          NUMBER(10),
+  page_name         VARCHAR2(500),
+  page_value        VARCHAR2(3000),
+  last_page_key     NUMBER(10),
+  hmsc_key          NUMBER(10),
+  hmsc              VARCHAR2(200),
+  application_key   NUMBER(10),
+  application_name  VARCHAR2(800),
+  visit_date_key    NUMBER(10),
+  visit_date        DATE,
+  pagebegin_time    DATE,
+  pageend_time      DATE,
+  page_staytime_key NUMBER(10),
+  page_staytime     NUMBER(10),
+  member_key        NUMBER(20),
+  visit_hour_key    NUMBER(10) default 0,
+  visit_hour        NUMBER(10),
+  ver_key           NUMBER(10) default 0,
+  ver_name          VARCHAR2(200),
+  agent             VARCHAR2(1000),
+  hmmd              VARCHAR2(200),
+  hmpl              VARCHAR2(200),
+  hmkw              VARCHAR2(1000),
+  hmci              VARCHAR2(1000),
+  visit_month       NUMBER(10),
+  session_key       NUMBER(20),
+  channel_key       NUMBER(10),
+  ipgeo_key         NUMBER(10) default 0,
+  hit_is            NUMBER(1)
+)
+partition by hash (ID)
+(
+  partition PART_01
+    tablespace SDWDATA01,
+  partition PART_02
+    tablespace SDWDATA02,
+  partition PART_03
+    tablespace SDWDATA03,
+  partition PART_04
+    tablespace SDWDATA04
+);
+create index DW_USER.APPLICATION_KEY_IDX on DW_USER.FACT_PAGE_VIEW (APPLICATION_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FPV_DATETIME on DW_USER.FACT_PAGE_VIEW (VISIT_DATE, APPLICATION_KEY)
+  nologging  local;
+create index DW_USER.FPV_ID on DW_USER.FACT_PAGE_VIEW (ID)
+  nologging  local;
+create index DW_USER.MEMBER_KEY_IDX on DW_USER.FACT_PAGE_VIEW (MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEM_VT_IDX on DW_USER.FACT_PAGE_VIEW (MEMBER_KEY, VISIT_DATE)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.PAGE_IDX on DW_USER.FACT_PAGE_VIEW (PAGE_KEY)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.VISIT_DATE_KEY_IDX on DW_USER.FACT_PAGE_VIEW (VISIT_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,79 @@
+???create table DW_USER.GOODS_LABEL_HEAD
+(
+  g_label_id          NUMBER(5) not null,
+  g_label_name        VARCHAR2(50),
+  g_label_desc        VARCHAR2(200),
+  g_label_type_id     NUMBER(5),
+  is_leaf_node        NUMBER(1),
+  create_date         DATE,
+  create_user_id      VARCHAR2(50),
+  last_update_date    DATE,
+  last_update_user_id VARCHAR2(50),
+  current_flag        NUMBER(1),
+  g_label_father_id   NUMBER(5)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.GOODS_LABEL_HEAD
+  is '商品标签表
+by yangjin';
+comment on column DW_USER.GOODS_LABEL_HEAD.g_label_id
+  is '商品标签ID(goods_label_head_seq.nextval)';
+comment on column DW_USER.GOODS_LABEL_HEAD.g_label_name
+  is '商品标签名称';
+comment on column DW_USER.GOODS_LABEL_HEAD.g_label_desc
+  is '商品标签说明';
+comment on column DW_USER.GOODS_LABEL_HEAD.g_label_type_id
+  is '商品标签类型ID';
+comment on column DW_USER.GOODS_LABEL_HEAD.is_leaf_node
+  is '是否叶节点（1：是，0：否）';
+comment on column DW_USER.GOODS_LABEL_HEAD.create_date
+  is '创建日期';
+comment on column DW_USER.GOODS_LABEL_HEAD.create_user_id
+  is '创建人员ID';
+comment on column DW_USER.GOODS_LABEL_HEAD.last_update_date
+  is '最后修改日期';
+comment on column DW_USER.GOODS_LABEL_HEAD.last_update_user_id
+  is '最后修改人员ID';
+comment on column DW_USER.GOODS_LABEL_HEAD.current_flag
+  is '使用状态(1,可用，0，停用)';
+comment on column DW_USER.GOODS_LABEL_HEAD.g_label_father_id
+  is '上级商品标签ID';
+create unique index DW_USER.GOODS_LABEL_HEAD_UK on DW_USER.GOODS_LABEL_HEAD (G_LABEL_NAME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.GOODS_LABEL_HEAD
+  add constraint GOODS_LABEL_HEAD_PK primary key (G_LABEL_ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.GOODS_LABEL_HEAD_PK nologging;
+

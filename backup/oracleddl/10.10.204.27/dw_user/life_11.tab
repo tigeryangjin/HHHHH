@@ -1,0 +1,22 @@
+???create table DW_USER.LIFE_11
+(
+  gender    VARCHAR2(6),
+  city      VARCHAR2(200),
+  xinke17   NUMBER,
+  chanshi17 NUMBER,
+  ljq17     NUMBER,
+  xxq17     NUMBER,
+  hpyq17    NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

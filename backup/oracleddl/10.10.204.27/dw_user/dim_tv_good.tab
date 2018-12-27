@@ -1,0 +1,46 @@
+???create table DW_USER.DIM_TV_GOOD
+(
+  id              NUMBER(11),
+  goods_common_id NUMBER(11),
+  item_code       NUMBER(11),
+  tv_name         VARCHAR2(800),
+  tv_start_time   DATE,
+  tv_end_time     DATE,
+  p_start_time    DATE,
+  p_end_time      DATE,
+  tv_startday_key NUMBER(11),
+  is_live         VARCHAR2(10)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_TV_GOOD.id
+  is '自增id';
+comment on column DW_USER.DIM_TV_GOOD.goods_common_id
+  is '商品id spu';
+comment on column DW_USER.DIM_TV_GOOD.item_code
+  is '商品id(erp编号)';
+comment on column DW_USER.DIM_TV_GOOD.tv_name
+  is '直播节目名称';
+comment on column DW_USER.DIM_TV_GOOD.tv_start_time
+  is '直播开始时间';
+comment on column DW_USER.DIM_TV_GOOD.tv_end_time
+  is '直播结束时间';
+comment on column DW_USER.DIM_TV_GOOD.p_start_time
+  is '促销开始时间';
+comment on column DW_USER.DIM_TV_GOOD.p_end_time
+  is '促销结束时间';
+comment on column DW_USER.DIM_TV_GOOD.tv_startday_key
+  is '直播节目日期';
+comment on column DW_USER.DIM_TV_GOOD.is_live
+  is '是否为直播1为直播 0为重播';
+

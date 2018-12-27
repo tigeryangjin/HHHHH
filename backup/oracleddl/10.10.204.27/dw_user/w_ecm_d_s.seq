@@ -1,0 +1,7 @@
+???create sequence DW_USER.W_ECM_D_S
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 7962651
+increment by 1
+cache 50;
+

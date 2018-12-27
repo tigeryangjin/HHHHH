@@ -1,0 +1,48 @@
+???create table DW_USER.FACT_DAILY_LIVESCAN
+(
+  sid            NUMBER,
+  weekname       VARCHAR2(98),
+  visit_date_key NUMBER(10),
+  item_code      NUMBER(11),
+  matdlt         VARCHAR2(100),
+  tv_name        VARCHAR2(800),
+  smcs           NUMBER,
+  smrs           NUMBER,
+  dgrs           NUMBER,
+  dgsl           NUMBER,
+  dgje           NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_LIVESCAN.sid
+  is '序列号';
+comment on column DW_USER.FACT_DAILY_LIVESCAN.weekname
+  is '统计周';
+comment on column DW_USER.FACT_DAILY_LIVESCAN.visit_date_key
+  is '统计日期';
+comment on column DW_USER.FACT_DAILY_LIVESCAN.item_code
+  is '商品编号';
+comment on column DW_USER.FACT_DAILY_LIVESCAN.matdlt
+  is '大分类';
+comment on column DW_USER.FACT_DAILY_LIVESCAN.tv_name
+  is '商品名称';
+comment on column DW_USER.FACT_DAILY_LIVESCAN.smcs
+  is '扫码次数';
+comment on column DW_USER.FACT_DAILY_LIVESCAN.smrs
+  is '扫码人数';
+comment on column DW_USER.FACT_DAILY_LIVESCAN.dgrs
+  is '订购人数';
+comment on column DW_USER.FACT_DAILY_LIVESCAN.dgsl
+  is '订购数量';
+comment on column DW_USER.FACT_DAILY_LIVESCAN.dgje
+  is '订购金额';
+

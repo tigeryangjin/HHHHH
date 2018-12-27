@@ -1,0 +1,66 @@
+???create table DW_USER.DIM_ZONE
+(
+  zone1_4      VARCHAR2(40),
+  vtext1       VARCHAR2(100),
+  vtext2       VARCHAR2(100),
+  vtext3       VARCHAR2(100),
+  vtext4       VARCHAR2(100),
+  zone         NUMBER(20),
+  post_code    VARCHAR2(20),
+  town_flag    NUMBER(1),
+  county_flag  NUMBER(1),
+  city_flag    NUMBER(1),
+  capital_flag NUMBER(1)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.DZ_ZONE on DW_USER.DIM_ZONE (ZONE)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.DZ_ZONE1_4 on DW_USER.DIM_ZONE (ZONE1_4)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.DZ_ZONE_2 on DW_USER.DIM_ZONE (ZONE, VTEXT1)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

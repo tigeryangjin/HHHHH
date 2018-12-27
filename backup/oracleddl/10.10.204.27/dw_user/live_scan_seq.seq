@@ -1,0 +1,7 @@
+???create sequence DW_USER.LIVE_SCAN_SEQ
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 22801
+increment by 1
+cache 50;
+

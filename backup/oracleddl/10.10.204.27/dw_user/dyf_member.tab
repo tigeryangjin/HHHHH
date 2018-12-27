@@ -1,0 +1,24 @@
+???create table DW_USER.DYF_MEMBER
+(
+  member_key NUMBER(20),
+  source     VARCHAR2(20)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DYF_MEMBER
+  is '用于计算dyf_member_page_value的用户临时表';
+comment on column DW_USER.DYF_MEMBER.member_key
+  is '会员编号';
+comment on column DW_USER.DYF_MEMBER.source
+  is '渠道';
+

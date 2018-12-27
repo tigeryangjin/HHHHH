@@ -1,0 +1,495 @@
+???create table DW_USER.FACT_ORDER
+(
+  order_obj_id             NUMBER(20),
+  order_key                NUMBER(20),
+  ec_order_id              NUMBER(20),
+  ec_order_state           NUMBER(5) default -1,
+  globel_order_state       NUMBER(5) default -1,
+  address_key              NUMBER(10),
+  member_key               NUMBER(20),
+  member_grade_desc        VARCHAR2(200),
+  member_grade_key         NUMBER(5),
+  hmsc_key                 NUMBER(10),
+  hmsc                     VARCHAR2(200),
+  application_key          NUMBER(10),
+  application_name         VARCHAR2(200),
+  app_ver_key              NUMBER(10),
+  app_ver_name             VARCHAR2(200),
+  channel                  VARCHAR2(200),
+  channel_key              NUMBER(10),
+  sales_source_key         NUMBER(10),
+  sales_source_desc        VARCHAR2(200),
+  sales_source_second_key  NUMBER(10),
+  sales_source_second_desc VARCHAR2(200),
+  order_date_key           NUMBER(10),
+  order_date               DATE,
+  order_hour_key           NUMBER(10),
+  order_hour               NUMBER(10),
+  posting_date             DATE,
+  posting_date_key         NUMBER(10),
+  posting_hour_key         NUMBER(10),
+  posting_hour             NUMBER(10),
+  order_state              NUMBER(5) default -1,
+  cancel_state             NUMBER(5) default -1,
+  cancel_date_key          NUMBER(10),
+  cancel_date              DATE,
+  cancel_hour_key          NUMBER(5),
+  cancel_hour              NUMBER(5),
+  cancel_person            NUMBER(5) default -1,
+  payment                  NUMBER(5),
+  pay_bank                 NUMBER(5),
+  pay_code                 VARCHAR2(200),
+  pay_state                NUMBER(5) default -1,
+  pay_date_key             NUMBER(10),
+  pay_date                 DATE,
+  pay_hour_key             NUMBER(5),
+  pay_hour                 NUMBER(5),
+  exchange_goods_state     NUMBER(5) default -1,
+  exchange_goods_date_key  NUMBER(10),
+  exchange_goods_date      DATE,
+  exchange_goods_hour_key  NUMBER(5),
+  exchange_goods_hour      NUMBER(5),
+  order_amount             NUMBER(10,2) default 0.00,
+  order_nums               NUMBER(10) default 0,
+  sku_nums                 NUMBER(10) default 0,
+  spu_nums                 NUMBER(10) default 0,
+  discount_amount          NUMBER(10,2) default 0.00,
+  counpos_amount           NUMBER(10,2) default 0.00,
+  counpos_key              NUMBER(10),
+  sales_amount             NUMBER(10) default 0.00,
+  freight_amount           NUMBER(10,2) default 0.00,
+  cost_amount              NUMBER(10,2) default 0.00,
+  purchase_price           NUMBER(10,2) default 0.00,
+  pay_amount               NUMBER(10,2) default 0.00,
+  amount_paid              NUMBER(10,2) default 0.00,
+  points_amount            NUMBER(10,2) default 0.00,
+  points_total             NUMBER(10) default 0,
+  amount_advanced          NUMBER(10,2) default 0.00,
+  card_amount              NUMBER(10,2) default 0.00,
+  points_no_amount         NUMBER(10,2) default 0.00,
+  ip                       VARCHAR2(200),
+  ip_number_int            NUMBER(10) default 0,
+  ip_geo_key               NUMBER(20),
+  device_key               NUMBER(20) default -1,
+  cancel_nums              NUMBER(10),
+  cancel_date_first_key    NUMBER(10),
+  cancel_date_first        DATE,
+  cancel_date_last_key     NUMBER(10),
+  cancel_date_last         DATE,
+  exchange_goods_nums      NUMBER(10),
+  exchange_date_first_key  NUMBER(10),
+  exchange_date_first      DATE,
+  exchange_date_last_key   NUMBER(10),
+  exchange_date_last       DATE,
+  order_net_amount         NUMBER(10,2) default 0.00,
+  tax_amount               NUMBER(10,2) default 0.00,
+  profit_amount            NUMBER(10,2) default 0.00,
+  cancel_before_state      NUMBER(5) default 0,
+  pre_order_state          NUMBER(5) default -1,
+  order_desc               VARCHAR2(200),
+  update_time              NUMBER(10),
+  order_from               VARCHAR2(2)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.FACT_ORDER.order_obj_id
+  is '索引序列号，订单发生制编号';
+comment on column DW_USER.FACT_ORDER.order_key
+  is '订单编号(权责制)';
+comment on column DW_USER.FACT_ORDER.ec_order_id
+  is 'EC订单编号';
+comment on column DW_USER.FACT_ORDER.ec_order_state
+  is '1是ec订单，0不是';
+comment on column DW_USER.FACT_ORDER.globel_order_state
+  is '1是全球购订单，0不是';
+comment on column DW_USER.FACT_ORDER.address_key
+  is '收货四级地址key';
+comment on column DW_USER.FACT_ORDER.member_key
+  is '会员KEY';
+comment on column DW_USER.FACT_ORDER.member_grade_desc
+  is '会员等级标识';
+comment on column DW_USER.FACT_ORDER.member_grade_key
+  is '会员等级key';
+comment on column DW_USER.FACT_ORDER.hmsc_key
+  is '订单来源渠道KEY(DIM_HMSC)';
+comment on column DW_USER.FACT_ORDER.hmsc
+  is '订单来源渠道(DIM_HMSC)';
+comment on column DW_USER.FACT_ORDER.application_key
+  is '应用KEY';
+comment on column DW_USER.FACT_ORDER.application_name
+  is '应用名称';
+comment on column DW_USER.FACT_ORDER.app_ver_key
+  is '版本key';
+comment on column DW_USER.FACT_ORDER.app_ver_name
+  is '版本名称';
+comment on column DW_USER.FACT_ORDER.channel
+  is '销售渠道';
+comment on column DW_USER.FACT_ORDER.channel_key
+  is '销售渠道key';
+comment on column DW_USER.FACT_ORDER.sales_source_key
+  is '销售一级组织key';
+comment on column DW_USER.FACT_ORDER.sales_source_desc
+  is '销售一级组织';
+comment on column DW_USER.FACT_ORDER.sales_source_second_key
+  is '销售二级组织key';
+comment on column DW_USER.FACT_ORDER.sales_source_second_desc
+  is '销售二级组织';
+comment on column DW_USER.FACT_ORDER.order_date_key
+  is '订单时间key';
+comment on column DW_USER.FACT_ORDER.order_date
+  is '订单时间';
+comment on column DW_USER.FACT_ORDER.order_hour_key
+  is '订单时间KEY';
+comment on column DW_USER.FACT_ORDER.order_hour
+  is '小时分段';
+comment on column DW_USER.FACT_ORDER.posting_date
+  is '过账时间';
+comment on column DW_USER.FACT_ORDER.posting_date_key
+  is '过账时间key';
+comment on column DW_USER.FACT_ORDER.posting_hour_key
+  is '过账小时key';
+comment on column DW_USER.FACT_ORDER.posting_hour
+  is '过账小时';
+comment on column DW_USER.FACT_ORDER.order_state
+  is '订单状态';
+comment on column DW_USER.FACT_ORDER.cancel_state
+  is '取消状态
+(1取消，0未)
+';
+comment on column DW_USER.FACT_ORDER.cancel_date_key
+  is '取消日期key';
+comment on column DW_USER.FACT_ORDER.cancel_date
+  is '取消时间';
+comment on column DW_USER.FACT_ORDER.cancel_hour_key
+  is '取消小时key';
+comment on column DW_USER.FACT_ORDER.cancel_hour
+  is '取消小时';
+comment on column DW_USER.FACT_ORDER.cancel_person
+  is '取消人1系统，2用户';
+comment on column DW_USER.FACT_ORDER.payment
+  is '支付 (1、cod/2、在线支付)';
+comment on column DW_USER.FACT_ORDER.pay_bank
+  is '付款银行';
+comment on column DW_USER.FACT_ORDER.pay_code
+  is '付款订单号';
+comment on column DW_USER.FACT_ORDER.pay_state
+  is '支付状态
+(1支付，0未)
+';
+comment on column DW_USER.FACT_ORDER.pay_date_key
+  is '支付时间';
+comment on column DW_USER.FACT_ORDER.pay_date
+  is '支付日期';
+comment on column DW_USER.FACT_ORDER.pay_hour_key
+  is '支付小时';
+comment on column DW_USER.FACT_ORDER.pay_hour
+  is '支付小时key';
+comment on column DW_USER.FACT_ORDER.exchange_goods_state
+  is '换货状态(1换货)';
+comment on column DW_USER.FACT_ORDER.exchange_goods_date_key
+  is '换货日期key';
+comment on column DW_USER.FACT_ORDER.exchange_goods_date
+  is '换货日期';
+comment on column DW_USER.FACT_ORDER.exchange_goods_hour_key
+  is '换货时间KEY';
+comment on column DW_USER.FACT_ORDER.exchange_goods_hour
+  is '换货时间hour';
+comment on column DW_USER.FACT_ORDER.order_amount
+  is '订购金额';
+comment on column DW_USER.FACT_ORDER.order_nums
+  is '订购数量';
+comment on column DW_USER.FACT_ORDER.sku_nums
+  is '商品sku件数';
+comment on column DW_USER.FACT_ORDER.spu_nums
+  is '商品spu数量';
+comment on column DW_USER.FACT_ORDER.discount_amount
+  is '折扣金额';
+comment on column DW_USER.FACT_ORDER.counpos_amount
+  is '券金额';
+comment on column DW_USER.FACT_ORDER.counpos_key
+  is '券编号';
+comment on column DW_USER.FACT_ORDER.sales_amount
+  is '销售金额';
+comment on column DW_USER.FACT_ORDER.freight_amount
+  is '运费金额';
+comment on column DW_USER.FACT_ORDER.cost_amount
+  is '成本金额';
+comment on column DW_USER.FACT_ORDER.purchase_price
+  is '采购价格';
+comment on column DW_USER.FACT_ORDER.pay_amount
+  is '应付金额';
+comment on column DW_USER.FACT_ORDER.amount_paid
+  is '已付金额';
+comment on column DW_USER.FACT_ORDER.points_amount
+  is '积分金额';
+comment on column DW_USER.FACT_ORDER.points_total
+  is '积分数量';
+comment on column DW_USER.FACT_ORDER.amount_advanced
+  is '预付款金额';
+comment on column DW_USER.FACT_ORDER.card_amount
+  is '心意卡金额';
+comment on column DW_USER.FACT_ORDER.points_no_amount
+  is '不计积分金额';
+comment on column DW_USER.FACT_ORDER.ip
+  is 'IP地址';
+comment on column DW_USER.FACT_ORDER.ip_number_int
+  is 'IP取整';
+comment on column DW_USER.FACT_ORDER.ip_geo_key
+  is 'Ip地址key';
+comment on column DW_USER.FACT_ORDER.device_key
+  is '设备key';
+comment on column DW_USER.FACT_ORDER.cancel_nums
+  is '取消次数';
+comment on column DW_USER.FACT_ORDER.cancel_date_first_key
+  is '首次取消日期';
+comment on column DW_USER.FACT_ORDER.cancel_date_first
+  is '首次取消';
+comment on column DW_USER.FACT_ORDER.cancel_date_last_key
+  is '最后一次取消';
+comment on column DW_USER.FACT_ORDER.cancel_date_last
+  is '最后一次取消';
+comment on column DW_USER.FACT_ORDER.exchange_goods_nums
+  is '换货次数';
+comment on column DW_USER.FACT_ORDER.exchange_date_first_key
+  is '第一次换货日期';
+comment on column DW_USER.FACT_ORDER.exchange_date_first
+  is '首次换货';
+comment on column DW_USER.FACT_ORDER.exchange_date_last_key
+  is '最后一次换货';
+comment on column DW_USER.FACT_ORDER.exchange_date_last
+  is '最后一次换货';
+comment on column DW_USER.FACT_ORDER.order_net_amount
+  is '订单净订购金额';
+comment on column DW_USER.FACT_ORDER.tax_amount
+  is '税收金额';
+comment on column DW_USER.FACT_ORDER.profit_amount
+  is '毛利总金额';
+comment on column DW_USER.FACT_ORDER.cancel_before_state
+  is '1是发货前取消';
+comment on column DW_USER.FACT_ORDER.pre_order_state
+  is '1是预订购';
+comment on column DW_USER.FACT_ORDER.order_desc
+  is '订单状态';
+comment on column DW_USER.FACT_ORDER.update_time
+  is '数据更新日期';
+comment on column DW_USER.FACT_ORDER.order_from
+  is '订单来源(odshappigo.ods_order.zcrmd018)';
+create index DW_USER.CANCEL_STATE on DW_USER.FACT_ORDER (CANCEL_STATE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FO_CANCEL_DATE_KEY on DW_USER.FACT_ORDER (CANCEL_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FO_MEMBER_KEY on DW_USER.FACT_ORDER (MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FO_ORDER_STATE on DW_USER.FACT_ORDER (ORDER_STATE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FO_UPATE_TIME on DW_USER.FACT_ORDER (UPDATE_TIME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEMBER_CANCEL_KEY on DW_USER.FACT_ORDER (MEMBER_KEY, CANCEL_BEFORE_STATE, ORDER_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEMBER_ORDER_KEY on DW_USER.FACT_ORDER (MEMBER_KEY, ORDER_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ODATE on DW_USER.FACT_ORDER (ORDER_DATE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ODATE_MEM on DW_USER.FACT_ORDER (ORDER_DATE, MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ORDER_DATE_KEY on DW_USER.FACT_ORDER (ORDER_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ORDER_H_KEY on DW_USER.FACT_ORDER (ORDER_OBJ_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ORDER_KEY on DW_USER.FACT_ORDER (ORDER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ORDER_MEMBER on DW_USER.FACT_ORDER (ORDER_KEY, MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.POSTING_DATE_KEY on DW_USER.FACT_ORDER (POSTING_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.SALES_SOURCE_KEY on DW_USER.FACT_ORDER (SALES_SOURCE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.SALES_SOURCE_SECOND_KEY on DW_USER.FACT_ORDER (SALES_SOURCE_SECOND_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

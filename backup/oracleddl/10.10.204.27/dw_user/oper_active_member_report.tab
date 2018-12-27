@@ -1,0 +1,52 @@
+???create table DW_USER.OPER_ACTIVE_MEMBER_REPORT
+(
+  month_key               CHAR(6),
+  all_member_count        NUMBER,
+  new_member_count        NUMBER,
+  lost_member_count       NUMBER,
+  wake_member_count       NUMBER,
+  order_all_member_count  NUMBER,
+  order_new_member_count  NUMBER,
+  order_wake_member_count NUMBER,
+  order_keep_member_count NUMBER,
+  w_insert_dt             DATE,
+  w_update_dt             DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_ACTIVE_MEMBER_REPORT
+  is '新媒体中心月报-活跃会员池
+by yangjin
+2018-06-04';
+comment on column DW_USER.OPER_ACTIVE_MEMBER_REPORT.month_key
+  is '月份key';
+comment on column DW_USER.OPER_ACTIVE_MEMBER_REPORT.all_member_count
+  is '会员池人数';
+comment on column DW_USER.OPER_ACTIVE_MEMBER_REPORT.new_member_count
+  is '新增会员人数';
+comment on column DW_USER.OPER_ACTIVE_MEMBER_REPORT.lost_member_count
+  is '流失会员人数（三个月之前来过，二个月之前到上个月最后一天没有浏览行为-FACT_SESSION）';
+comment on column DW_USER.OPER_ACTIVE_MEMBER_REPORT.wake_member_count
+  is '唤醒会员人数（早四个月之前注册，早二个月到早三个月之前没有浏览行为，上个月有浏览行为-FACT_SESSION）';
+comment on column DW_USER.OPER_ACTIVE_MEMBER_REPORT.order_all_member_count
+  is '整体订购会员人数';
+comment on column DW_USER.OPER_ACTIVE_MEMBER_REPORT.order_new_member_count
+  is '新增订购会员人数';
+comment on column DW_USER.OPER_ACTIVE_MEMBER_REPORT.order_wake_member_count
+  is '唤醒订购会员人数（上个月之前注册，早二个月到早三个月之前没有订购，上个月订购过-FACTEC_ORDER）';
+comment on column DW_USER.OPER_ACTIVE_MEMBER_REPORT.order_keep_member_count
+  is '留存订购会员人数（上个月之前注册，早二个月到早三个月之前有订购-上个月订购过-FACTEC_ORDER）';
+comment on column DW_USER.OPER_ACTIVE_MEMBER_REPORT.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_ACTIVE_MEMBER_REPORT.w_update_dt
+  is '记录更新时间';
+

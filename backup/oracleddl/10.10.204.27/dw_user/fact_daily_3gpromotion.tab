@@ -1,0 +1,85 @@
+???create table DW_USER.FACT_DAILY_3GPROMOTION
+(
+  active_date_key NUMBER(10),
+  vid             VARCHAR2(1000),
+  level1          VARCHAR2(50),
+  level2          VARCHAR2(50),
+  plan            VARCHAR2(1000),
+  adgroup         VARCHAR2(1000),
+  keyword         VARCHAR2(1000),
+  mindate         DATE,
+  scount          NUMBER,
+  pagetotal       NUMBER,
+  timetoal        NUMBER,
+  goods_name      VARCHAR2(200),
+  goods_price     NUMBER,
+  js              NUMBER,
+  je              NUMBER,
+  cgjs            NUMBER,
+  cgje            NUMBER,
+  first_date      DATE,
+  first_level2    VARCHAR2(50),
+  member_key      NUMBER,
+  member_date     NUMBER,
+  item_code       NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_3GPROMOTION.active_date_key
+  is '开始访问时间key';
+comment on column DW_USER.FACT_DAILY_3GPROMOTION.vid
+  is '用户终端唯一标识号';
+comment on column DW_USER.FACT_DAILY_3GPROMOTION.scount
+  is '合计会话数';
+comment on column DW_USER.FACT_DAILY_3GPROMOTION.pagetotal
+  is '合计访问页面数';
+comment on column DW_USER.FACT_DAILY_3GPROMOTION.timetoal
+  is '合计访问时长';
+comment on column DW_USER.FACT_DAILY_3GPROMOTION.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_DAILY_3GPROMOTION.goods_price
+  is '商品价格';
+comment on column DW_USER.FACT_DAILY_3GPROMOTION.first_date
+  is '第一次进入的时间';
+comment on column DW_USER.FACT_DAILY_3GPROMOTION.first_level2
+  is '第一次进入的渠道';
+comment on column DW_USER.FACT_DAILY_3GPROMOTION.member_key
+  is 'MEMBER_KEY';
+comment on column DW_USER.FACT_DAILY_3GPROMOTION.member_date
+  is '会员创建日期';
+create index DW_USER.VID3G_IDX on DW_USER.FACT_DAILY_3GPROMOTION (VID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.VIDACTDATE_IDX on DW_USER.FACT_DAILY_3GPROMOTION (ACTIVE_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,33 @@
+???create table DW_USER.OPER_MEMBER_ORDER_RULE
+(
+  rule_key       NUMBER(10),
+  rule_group_key NUMBER(10),
+  rule_desc      VARCHAR2(500),
+  voucher_id     NUMBER(10),
+  voucher_key    VARCHAR2(100)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.OPER_MEMBER_ORDER_RULE
+  is '自动发券规则';
+comment on column DW_USER.OPER_MEMBER_ORDER_RULE.rule_key
+  is '规则key';
+comment on column DW_USER.OPER_MEMBER_ORDER_RULE.rule_group_key
+  is '规则组key';
+comment on column DW_USER.OPER_MEMBER_ORDER_RULE.rule_desc
+  is '规则';
+comment on column DW_USER.OPER_MEMBER_ORDER_RULE.voucher_id
+  is '券id';
+comment on column DW_USER.OPER_MEMBER_ORDER_RULE.voucher_key
+  is '券key';
+

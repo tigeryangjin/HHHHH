@@ -1,0 +1,19 @@
+???create table DW_USER.TMP_SESSION_COUNT
+(
+  member_key NUMBER(20),
+  date_key   NUMBER,
+  daycount   NUMBER,
+  times      NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

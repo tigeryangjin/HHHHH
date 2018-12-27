@@ -1,0 +1,44 @@
+???create table DW_USER.DIM_EC_GOOD_GIFT
+(
+  gift_id             NUMBER(20),
+  goods_id            NUMBER(20),
+  goods_commonid      NUMBER(20),
+  gift_goodsname      VARCHAR2(500),
+  gift_amount         NUMBER(20),
+  item_code           NUMBER(10),
+  gift_goods_id       NUMBER(20),
+  gift_goods_commonid NUMBER(20),
+  gift_item_code      NUMBER(10)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_EC_GOOD_GIFT
+  is 'ec商品赠品表';
+comment on column DW_USER.DIM_EC_GOOD_GIFT.gift_amount
+  is '赠品数量';
+comment on column DW_USER.DIM_EC_GOOD_GIFT.gift_goods_id
+  is '赠品id';
+create index DW_USER.ECGG_ITEM_CODE on DW_USER.DIM_EC_GOOD_GIFT (GIFT_ITEM_CODE)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

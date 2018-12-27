@@ -1,0 +1,30 @@
+???create table DW_USER.TMP_0607
+(
+  zmater2  NUMBER,
+  zeamc027 NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.ZMATER2_IDX on DW_USER.TMP_0607 (ZMATER2)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

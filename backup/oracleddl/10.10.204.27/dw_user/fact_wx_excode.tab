@@ -1,0 +1,33 @@
+???create table DW_USER.FACT_WX_EXCODE
+(
+  id            NUMBER(11),
+  code_id       NUMBER(11),
+  exchange_code VARCHAR2(300),
+  openid        VARCHAR2(600),
+  status        NUMBER(2),
+  create_time   NUMBER(11)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_WX_EXCODE.id
+  is '索引主键';
+comment on column DW_USER.FACT_WX_EXCODE.code_id
+  is '红包码id';
+comment on column DW_USER.FACT_WX_EXCODE.exchange_code
+  is '红包兑换码';
+comment on column DW_USER.FACT_WX_EXCODE.openid
+  is '领取人openid';
+comment on column DW_USER.FACT_WX_EXCODE.status
+  is '状态 0待处理 10 成功 20 失败';
+comment on column DW_USER.FACT_WX_EXCODE.create_time
+  is '创建时间';
+

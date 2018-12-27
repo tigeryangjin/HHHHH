@@ -1,0 +1,147 @@
+???create table DW_USER.FACT_VISITOR_REGISTER
+(
+  id              NUMBER(10),
+  vistor_key      NUMBER(20),
+  vid             VARCHAR2(1000),
+  create_date     DATE,
+  create_date_key NUMBER(10),
+  create_time_key NUMBER(10) default 0,
+  ip_geo_key      NUMBER(10),
+  hmsc_key        NUMBER(10),
+  application_key NUMBER(10),
+  ver_key         NUMBER(10) default 0,
+  first_ip        VARCHAR2(500),
+  hmsc            VARCHAR2(200),
+  create_time     NUMBER(10),
+  os              VARCHAR2(50),
+  os_key          NUMBER(10) default 0,
+  hmmd            VARCHAR2(200),
+  hmpl            VARCHAR2(200),
+  hmkw            VARCHAR2(200),
+  hmci            VARCHAR2(200),
+  member_key      NUMBER(20),
+  ip_int          NUMBER(10),
+  agent           VARCHAR2(1000),
+  ver_name        VARCHAR2(100),
+  channel_key     NUMBER(10)
+)
+partition by range (CREATE_DATE)
+(
+  partition VR1 values less than (TO_DATE(' 2016-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace FACT_PAR_DATA
+    pctfree 0
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 64K
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition VR2 values less than (TO_DATE(' 2017-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace FACT_PAR_DATA
+    pctfree 0
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 64K
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition VR3 values less than (TO_DATE(' 2018-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace FACT_PAR_DATA
+    pctfree 0
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 64K
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition VR4 values less than (TO_DATE(' 2019-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace FACT_PAR_DATA
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 64K
+      next 1M
+      minextents 1
+      maxextents unlimited
+    ),
+  partition VR5 values less than (TO_DATE(' 2020-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace FACT_PAR_DATA
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 10M
+      next 1M
+      minextents 1
+      maxextents unlimited
+    )
+);
+comment on table DW_USER.FACT_VISITOR_REGISTER
+  is '用户激活事实表';
+comment on column DW_USER.FACT_VISITOR_REGISTER.id
+  is '索引序列号';
+comment on column DW_USER.FACT_VISITOR_REGISTER.vistor_key
+  is '用户KEY';
+comment on column DW_USER.FACT_VISITOR_REGISTER.vid
+  is '用户终端唯一标识号';
+comment on column DW_USER.FACT_VISITOR_REGISTER.create_date
+  is '激活日期';
+comment on column DW_USER.FACT_VISITOR_REGISTER.create_date_key
+  is '激活日期KEY';
+comment on column DW_USER.FACT_VISITOR_REGISTER.create_time_key
+  is '激活时间KEY';
+comment on column DW_USER.FACT_VISITOR_REGISTER.ip_geo_key
+  is 'IP定位key';
+comment on column DW_USER.FACT_VISITOR_REGISTER.hmsc_key
+  is '渠道KEY';
+comment on column DW_USER.FACT_VISITOR_REGISTER.application_key
+  is '应用KEY';
+comment on column DW_USER.FACT_VISITOR_REGISTER.ver_key
+  is '版本KEY';
+comment on column DW_USER.FACT_VISITOR_REGISTER.first_ip
+  is '首次IP';
+comment on column DW_USER.FACT_VISITOR_REGISTER.hmsc
+  is '渠道';
+comment on column DW_USER.FACT_VISITOR_REGISTER.create_time
+  is '激活时间小时';
+comment on column DW_USER.FACT_VISITOR_REGISTER.os
+  is '激活客户端';
+comment on column DW_USER.FACT_VISITOR_REGISTER.os_key
+  is '激活客户端key';
+comment on column DW_USER.FACT_VISITOR_REGISTER.hmmd
+  is '推广媒介';
+comment on column DW_USER.FACT_VISITOR_REGISTER.hmpl
+  is '广告系列';
+comment on column DW_USER.FACT_VISITOR_REGISTER.hmkw
+  is '广告关键字';
+comment on column DW_USER.FACT_VISITOR_REGISTER.hmci
+  is '广告唯一编号';
+comment on column DW_USER.FACT_VISITOR_REGISTER.member_key
+  is '用户key';
+comment on column DW_USER.FACT_VISITOR_REGISTER.ip_int
+  is 'IP整数';
+comment on column DW_USER.FACT_VISITOR_REGISTER.ver_name
+  is '版本名称';
+comment on column DW_USER.FACT_VISITOR_REGISTER.channel_key
+  is '渠道';
+create index DW_USER.FACT_VISITOR_REGISTER_I1 on DW_USER.FACT_VISITOR_REGISTER (CREATE_DATE_KEY, VISTOR_KEY)
+  nologging  local;
+create index DW_USER.FACT_VISITOR_REGISTER_I2 on DW_USER.FACT_VISITOR_REGISTER (APPLICATION_KEY)
+  nologging  local;
+create index DW_USER.FACT_VISITOR_REGISTER_IP_INT on DW_USER.FACT_VISITOR_REGISTER (IP_INT)
+  nologging  local;
+create index DW_USER.FACT_VISITOR_REGISTER_VID on DW_USER.FACT_VISITOR_REGISTER (VID)
+  nologging  local;
+

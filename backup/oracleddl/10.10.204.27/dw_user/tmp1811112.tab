@@ -1,0 +1,18 @@
+???create table DW_USER.TMP1811112
+(
+  goods_common_key NUMBER(20),
+  cost_price       NUMBER,
+  js               NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

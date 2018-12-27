@@ -1,0 +1,26 @@
+???create table DW_USER.FACT_MEMBER_REGISTER1
+(
+  member_id         NUMBER(20) not null,
+  member_key        NUMBER(20) not null,
+  register_date_key NUMBER(10),
+  register_time_key NUMBER(10),
+  device_key        NUMBER(20),
+  ip_geo_key        NUMBER(10),
+  register_date     DATE,
+  media_key         NUMBER(10),
+  media             VARCHAR2(20),
+  application_key   NUMBER(10),
+  application       VARCHAR2(20),
+  hmsc_key          NUMBER(10),
+  hmsc              VARCHAR2(20),
+  register_time     NUMBER(10),
+  ch_date_key       NUMBER(10),
+  ch_time_key       NUMBER(10),
+  ch_time           NUMBER(10),
+  member_level      VARCHAR2(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+

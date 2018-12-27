@@ -1,0 +1,49 @@
+???create table DW_USER.G_ACTIVITY_GOODS_GROUP
+(
+  id_col               NUMBER(10),
+  activity_id          NUMBER(10),
+  title                VARCHAR2(150),
+  create_time          DATE,
+  update_time          DATE,
+  customed_superscript NUMBER(10),
+  image_src            VARCHAR2(300),
+  method               NUMBER(1),
+  w_insert_dt          DATE,
+  w_update_dt          DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.G_ACTIVITY_GOODS_GROUP
+  is 'source:G_ACTIVITY_GOODS_GROUP_TMP
+by yangjin
+2018-05-11';
+comment on column DW_USER.G_ACTIVITY_GOODS_GROUP.id_col
+  is '主键';
+comment on column DW_USER.G_ACTIVITY_GOODS_GROUP.activity_id
+  is '活动外键';
+comment on column DW_USER.G_ACTIVITY_GOODS_GROUP.title
+  is '分组名称';
+comment on column DW_USER.G_ACTIVITY_GOODS_GROUP.create_time
+  is '创建时间';
+comment on column DW_USER.G_ACTIVITY_GOODS_GROUP.update_time
+  is '分组更新时间';
+comment on column DW_USER.G_ACTIVITY_GOODS_GROUP.customed_superscript
+  is '1开启 0不开启 10使用自定义角标';
+comment on column DW_USER.G_ACTIVITY_GOODS_GROUP.image_src
+  is '角标图片路径';
+comment on column DW_USER.G_ACTIVITY_GOODS_GROUP.method
+  is '1:人工排位、2：销量';
+comment on column DW_USER.G_ACTIVITY_GOODS_GROUP.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.G_ACTIVITY_GOODS_GROUP.w_update_dt
+  is '记录更新时间';
+

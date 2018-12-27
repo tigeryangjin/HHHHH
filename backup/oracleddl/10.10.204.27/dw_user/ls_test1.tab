@@ -1,0 +1,21 @@
+???create table DW_USER.LS_TEST1
+(
+  s2    NUMBER,
+  sname VARCHAR2(1000),
+  s1    NUMBER,
+  s3    NUMBER,
+  s4    NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

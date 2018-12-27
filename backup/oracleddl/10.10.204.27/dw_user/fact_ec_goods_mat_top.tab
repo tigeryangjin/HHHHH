@@ -1,0 +1,30 @@
+???create table DW_USER.FACT_EC_GOODS_MAT_TOP
+(
+  item_code  NUMBER(10),
+  matxl      NUMBER(10),
+  preference NUMBER(10),
+  grade      NUMBER(5)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACT_EC_GOODS_MAT_TOP
+  is '每个物料小类用户偏好度和排名前4名的商品';
+comment on column DW_USER.FACT_EC_GOODS_MAT_TOP.item_code
+  is '商品编码';
+comment on column DW_USER.FACT_EC_GOODS_MAT_TOP.matxl
+  is '物料小类';
+comment on column DW_USER.FACT_EC_GOODS_MAT_TOP.preference
+  is '用户品类偏好度（浏览权重：1，收藏权重：3，加入购物车权重：5，订购权重：15）';
+comment on column DW_USER.FACT_EC_GOODS_MAT_TOP.grade
+  is '用户品类偏好度等级（1：1-4，2：5-9，3：10-15）';
+

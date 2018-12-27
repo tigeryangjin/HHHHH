@@ -1,0 +1,7 @@
+???create sequence DW_USER.W_STATGD1_D_S
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 70400635
+increment by 1
+cache 20;
+

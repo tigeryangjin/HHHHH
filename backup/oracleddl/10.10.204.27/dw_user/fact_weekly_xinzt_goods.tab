@@ -1,0 +1,28 @@
+???create table DW_USER.FACT_WEEKLY_XINZT_GOODS
+(
+  stats_date       DATE,
+  tongji_range     VARCHAR2(19),
+  name             VARCHAR2(200),
+  item_code        NUMBER,
+  goods_name       VARCHAR2(200),
+  application_name VARCHAR2(6),
+  goodspv          NUMBER,
+  goodsuv          NUMBER,
+  ordercnt         NUMBER,
+  orderrs          NUMBER,
+  ordernum         NUMBER,
+  order_amount     NUMBER,
+  order_rate       NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

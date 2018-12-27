@@ -1,0 +1,20 @@
+???create table DW_USER.TMP_APP_SOURCEOD
+(
+  vid          VARCHAR2(200),
+  order_id     NUMBER(20),
+  order_amount NUMBER(10,2),
+  goods_num    NUMBER(10),
+  hmsc         VARCHAR2(200)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

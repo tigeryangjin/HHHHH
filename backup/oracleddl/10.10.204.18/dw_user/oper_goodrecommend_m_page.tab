@@ -1,0 +1,65 @@
+???create table DW_USER.OPER_GOODRECOMMEND_M_PAGE
+(
+  member_key  NUMBER(20),
+  item_code   NUMBER(10),
+  pv_nums     NUMBER(20),
+  cart_nums   NUMBER(20),
+  fav_nums    NUMBER(20),
+  day_key     NUMBER(10),
+  order_nums  NUMBER(10),
+  cancel_nums NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_GOODRECOMMEND_M_PAGE
+  is '会员每天的商品关联';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_PAGE.member_key
+  is '用户编号';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_PAGE.item_code
+  is '商品编号';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_PAGE.pv_nums
+  is '浏览次数';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_PAGE.cart_nums
+  is '购物车次数';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_PAGE.fav_nums
+  is '收藏次数';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_PAGE.day_key
+  is '日期';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_PAGE.order_nums
+  is '订购件数';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_PAGE.cancel_nums
+  is '取消件数';
+create index DW_USER.FMPO_DAY_KEY on DW_USER.OPER_GOODRECOMMEND_M_PAGE (DAY_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.FMPO_MEMBER_KEY on DW_USER.OPER_GOODRECOMMEND_M_PAGE (MEMBER_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

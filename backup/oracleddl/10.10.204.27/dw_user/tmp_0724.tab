@@ -1,0 +1,20 @@
+???create table DW_USER.TMP_0724
+(
+  item_code NUMBER(10),
+  item_name VARCHAR2(200),
+  price     NUMBER,
+  num       NUMBER,
+  order_key NUMBER
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -1,0 +1,22 @@
+???create table DW_USER.ML_ONLY_TV_TMP
+(
+  member_key          NUMBER(10),
+  m_label_id          NUMBER(5),
+  m_label_type_id     NUMBER(5),
+  create_date         DATE,
+  create_user_id      VARCHAR2(50),
+  last_update_date    DATE,
+  last_update_user_id VARCHAR2(50)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -1,0 +1,21 @@
+???create table DW_USER.DIM_OS
+(
+  os_key NUMBER(10),
+  os     VARCHAR2(20),
+  os_nm  VARCHAR2(20)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_OS
+  is '客户端维度';
+

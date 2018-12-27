@@ -1,0 +1,41 @@
+???create table DW_USER.OPER_M_REGISTER
+(
+  member_key          NUMBER(20),
+  register_date_key   NUMBER(20),
+  record_date_key     NUMBER(20),
+  register_device_key NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.OPER_M_REGISTER
+  is '电商注册7天内无订购';
+comment on column DW_USER.OPER_M_REGISTER.register_date_key
+  is '电商注册日期';
+comment on column DW_USER.OPER_M_REGISTER.record_date_key
+  is '数据日期';
+comment on column DW_USER.OPER_M_REGISTER.register_device_key
+  is '注册最近一次的device_key';
+create index DW_USER.OPERMR_MEMBER_KEY on DW_USER.OPER_M_REGISTER (MEMBER_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

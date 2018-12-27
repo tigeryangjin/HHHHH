@@ -1,0 +1,24 @@
+???create table DW_USER.TMP_1210_OD
+(
+  vid             VARCHAR2(200),
+  order_ip        VARCHAR2(100),
+  add_time        NUMBER(10),
+  order_id        NUMBER(20),
+  member_key      NUMBER(20),
+  item_code       NUMBER(10),
+  ec_goods_common NUMBER(10),
+  goods_num       NUMBER(10),
+  goods_pay_price NUMBER(10,2)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

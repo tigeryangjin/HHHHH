@@ -1,0 +1,48 @@
+???create table DW_USER.FACT_ECORDER_COMMON
+(
+  order_id      NUMBER(11),
+  transpzone    VARCHAR2(20),
+  receiver_seq  VARCHAR2(10),
+  is_kjg        NUMBER(1) default 0,
+  reciver_info  VARCHAR2(1000),
+  district_name VARCHAR2(100)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.FACT_ECORDER_COMMON_I1 on DW_USER.FACT_ECORDER_COMMON (TRANSPZONE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.OD_COMMON_IDX on DW_USER.FACT_ECORDER_COMMON (ORDER_ID)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

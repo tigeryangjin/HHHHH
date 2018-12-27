@@ -1,0 +1,20 @@
+???create table BDPUSER.TMP_XX1113
+(
+  homecnt         NUMBER(20),
+  goodcnt         NUMBER(20),
+  ordercomfirmcnt NUMBER(20),
+  ordercnt        NUMBER(20),
+  ordertotcnt     NUMBER(20)
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

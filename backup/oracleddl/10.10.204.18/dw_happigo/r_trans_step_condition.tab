@@ -1,0 +1,11 @@
+???create table DW_HAPPIGO.R_TRANS_STEP_CONDITION
+(
+  id_transformation INTEGER,
+  id_step           INTEGER,
+  id_condition      INTEGER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+

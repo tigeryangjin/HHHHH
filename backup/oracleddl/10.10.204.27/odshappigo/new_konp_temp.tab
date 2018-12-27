@@ -1,0 +1,79 @@
+???create table ODSHAPPIGO.NEW_KONP_TEMP
+(
+  mandt         VARCHAR2(9),
+  knumh         VARCHAR2(30),
+  kopos         VARCHAR2(6),
+  kappl         VARCHAR2(6),
+  kschl         VARCHAR2(12),
+  knumt         VARCHAR2(30),
+  stfkz         VARCHAR2(3),
+  kzbzg         VARCHAR2(3),
+  kstbm         NUMBER(15,3),
+  konms         VARCHAR2(9),
+  kstbw         NUMBER(15,2),
+  konws         VARCHAR2(15),
+  krech         VARCHAR2(3),
+  kbetr         NUMBER(11,2),
+  konwa         VARCHAR2(15),
+  kpein         INTEGER,
+  kmein         VARCHAR2(9),
+  prsch         VARCHAR2(12),
+  kumza         INTEGER,
+  kumne         INTEGER,
+  meins         VARCHAR2(9),
+  mxwrt         NUMBER(11,2),
+  gkwrt         NUMBER(11,2),
+  pkwrt         NUMBER(15,2),
+  fkwrt         NUMBER(15,2),
+  rswrt         NUMBER(15,2),
+  kwaeh         VARCHAR2(15),
+  ukbas         NUMBER(15,2),
+  kznep         VARCHAR2(3),
+  kunnr         VARCHAR2(30),
+  lifnr         VARCHAR2(30),
+  mwsk1         VARCHAR2(6),
+  loevm_ko      VARCHAR2(3),
+  zaehk_ind     VARCHAR2(6),
+  bomat         VARCHAR2(54),
+  kbrue         NUMBER(11,2),
+  kspae         VARCHAR2(3),
+  bosta         VARCHAR2(3),
+  knuma_pi      VARCHAR2(30),
+  knuma_ag      VARCHAR2(30),
+  knuma_sq      VARCHAR2(30),
+  valtg         VARCHAR2(6),
+  valdt         VARCHAR2(24),
+  zterm         VARCHAR2(12),
+  anzauf        VARCHAR2(6),
+  mikbas        NUMBER(15,3),
+  mxkbas        NUMBER(15,3),
+  komxwrt       NUMBER(13,2),
+  klf_stg       VARCHAR2(12),
+  klf_kal       VARCHAR2(12),
+  vkkal         VARCHAR2(3),
+  aktnr         VARCHAR2(30),
+  knuma_bo      VARCHAR2(30),
+  mwsk2         VARCHAR2(6),
+  vertt         VARCHAR2(3),
+  vertn         VARCHAR2(39),
+  vbewa         VARCHAR2(12),
+  mdflg         VARCHAR2(3),
+  kfrst         VARCHAR2(3),
+  uasta         VARCHAR2(3),
+  "/BEV1/ECRTT" VARCHAR2(3),
+  "/BEV1/ECRTN" VARCHAR2(39),
+  "/BEV1/ECEWA" VARCHAR2(12)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

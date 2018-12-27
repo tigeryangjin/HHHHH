@@ -1,0 +1,59 @@
+???create table DW_USER.OPER_PRODUCT_DAILY_PUV_S
+(
+  visit_date_key NUMBER(10) not null,
+  item_code      VARCHAR2(24) not null,
+  pv             NUMBER,
+  uv             NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_PRODUCT_DAILY_PUV_S
+  is '商品运营处商品日报-PVUV中间表
+by yangjin
+2018-01-24';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PUV_S.visit_date_key
+  is '日期key';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PUV_S.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PUV_S.pv
+  is '浏览次数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PUV_S.uv
+  is '浏览人数';
+create index DW_USER.OPER_PRODUCT_DAILY_PUV_S_I1 on DW_USER.OPER_PRODUCT_DAILY_PUV_S (ITEM_CODE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.OPER_PRODUCT_DAILY_PUV_S
+  add constraint OPER_PRODUCT_DAILY_PUV_S_PK primary key (VISIT_DATE_KEY, ITEM_CODE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.OPER_PRODUCT_DAILY_PUV_S_PK nologging;
+

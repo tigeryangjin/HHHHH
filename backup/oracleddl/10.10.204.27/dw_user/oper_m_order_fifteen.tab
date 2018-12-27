@@ -1,0 +1,34 @@
+???create table DW_USER.OPER_M_ORDER_FIFTEEN
+(
+  member_key      NUMBER(20),
+  record_date_key NUMBER(20),
+  order_time      NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.OPER_M_ORDER_FIFTEEN
+  is '订购过一次，15天内无重复订购';
+create index DW_USER.OPERMOF_MEMBER_KEY on DW_USER.OPER_M_ORDER_FIFTEEN (RECORD_DATE_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

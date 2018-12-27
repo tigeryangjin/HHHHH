@@ -1,0 +1,51 @@
+???create table DW_USER.OPER_MBR_FITST_ORDER_15DAYS
+(
+  member_key          NUMBER(20),
+  record_date_key     NUMBER(20),
+  order_time          NUMBER(20),
+  actual_order_amount NUMBER(10,2),
+  amount_level        NUMBER(1),
+  insert_dt           DATE,
+  update_dt           DATE
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_MBR_FITST_ORDER_15DAYS
+  is '订购过一次，15天内无重复订购
+by yangjin';
+comment on column DW_USER.OPER_MBR_FITST_ORDER_15DAYS.member_key
+  is '会员编号';
+comment on column DW_USER.OPER_MBR_FITST_ORDER_15DAYS.record_date_key
+  is '记录日期';
+comment on column DW_USER.OPER_MBR_FITST_ORDER_15DAYS.order_time
+  is '订购日期';
+comment on column DW_USER.OPER_MBR_FITST_ORDER_15DAYS.actual_order_amount
+  is '实际订购金额';
+comment on column DW_USER.OPER_MBR_FITST_ORDER_15DAYS.amount_level
+  is '实际订购金额等级（1:100以下，2:100以上300以下，3:300以上）';
+comment on column DW_USER.OPER_MBR_FITST_ORDER_15DAYS.insert_dt
+  is '插入时间';
+comment on column DW_USER.OPER_MBR_FITST_ORDER_15DAYS.update_dt
+  is '更新时间';
+create index DW_USER.OPERMOF_MEMBER_KEY_15 on DW_USER.OPER_MBR_FITST_ORDER_15DAYS (RECORD_DATE_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

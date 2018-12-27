@@ -1,0 +1,24 @@
+???create table DW_USER.FENXI_01
+(
+  date_key   NUMBER,
+  pv         NUMBER,
+  uv         NUMBER,
+  dgrs       NUMBER,
+  dgje       NUMBER,
+  kdj        NUMBER,
+  order_rate NUMBER(10,2),
+  auth_rate  NUMBER(10,2)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

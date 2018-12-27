@@ -1,0 +1,65 @@
+???create table DW_USER.DIM_MEMBER_ZONE
+(
+  member_bp NUMBER(20) not null,
+  zone      NUMBER(20),
+  vtext1    VARCHAR2(100),
+  vtext2    VARCHAR2(100),
+  vtext3    VARCHAR2(100),
+  vtext4    VARCHAR2(100)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_MEMBER_ZONE
+  is '会员地区维度表
+by yangjin 2017-11-22';
+comment on column DW_USER.DIM_MEMBER_ZONE.member_bp
+  is '会员BP号';
+comment on column DW_USER.DIM_MEMBER_ZONE.zone
+  is '地区ID';
+comment on column DW_USER.DIM_MEMBER_ZONE.vtext1
+  is '省份';
+comment on column DW_USER.DIM_MEMBER_ZONE.vtext2
+  is '城市';
+comment on column DW_USER.DIM_MEMBER_ZONE.vtext3
+  is '区';
+comment on column DW_USER.DIM_MEMBER_ZONE.vtext4
+  is '省份+城市+区';
+create index DW_USER.DIM_MEMBER_ZONE_I1 on DW_USER.DIM_MEMBER_ZONE (ZONE)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.DIM_MEMBER_ZONE
+  add constraint DIM_MEMBER_ZONE_PK primary key (MEMBER_BP)
+  using index 
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.DIM_MEMBER_ZONE_PK nologging;
+

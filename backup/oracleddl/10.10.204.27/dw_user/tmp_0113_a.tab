@@ -1,0 +1,20 @@
+???create table DW_USER.TMP_0113_A
+(
+  application_key  NUMBER(10),
+  application_name VARCHAR2(800),
+  page_value       VARCHAR2(3000),
+  rangepv          NUMBER,
+  rangeuv          NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

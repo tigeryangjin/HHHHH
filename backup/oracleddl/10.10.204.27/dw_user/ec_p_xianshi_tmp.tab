@@ -1,0 +1,40 @@
+???create table DW_USER.EC_P_XIANSHI_TMP
+(
+  xianshi_id       NUMBER(10),
+  crm_policy_id    VARCHAR2(60),
+  xianshi_type     NUMBER(10),
+  xianshi_name     VARCHAR2(150),
+  xianshi_title    VARCHAR2(30),
+  xianshi_explain  VARCHAR2(150),
+  quota_id         NUMBER(10),
+  start_time       DATE,
+  end_time         DATE,
+  xianshi_time     DATE,
+  member_id        NUMBER(10),
+  store_id         NUMBER(10),
+  member_name      VARCHAR2(150),
+  store_name       VARCHAR2(150),
+  lower_limit      NUMBER(10),
+  state            NUMBER(10),
+  xianshi_web      NUMBER(10),
+  xianshi_3g       NUMBER(10),
+  xianshi_app      NUMBER(10),
+  xianshi_wx       NUMBER(10),
+  xianshi_schedule NUMBER(10),
+  w_insert_dt      DATE,
+  w_update_dt      DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.EC_P_XIANSHI_TMP
+  is 'ec_p_xianshi中间表';
+

@@ -1,0 +1,27 @@
+???create table DW_USER.FACT_GOODS_STOCK
+(
+  stock_id  NUMBER(11),
+  item_code NUMBER(11),
+  common_id NUMBER(11),
+  erp_code  NUMBER(11),
+  stock_num NUMBER(11),
+  add_time  DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_GOODS_STOCK.item_code
+  is '商品编码';
+comment on column DW_USER.FACT_GOODS_STOCK.common_id
+  is 'goods_common_key';
+comment on column DW_USER.FACT_GOODS_STOCK.stock_num
+  is '库存数量';
+

@@ -1,0 +1,294 @@
+???create table DW_HAPPIGO.FACT_ORDER_1
+(
+  order_obj_id             NUMBER(20),
+  order_key                NUMBER(20),
+  ec_order_id              NUMBER(20),
+  ec_order_state           NUMBER(5) default -1,
+  globel_order_state       NUMBER(5) default -1,
+  address_key              NUMBER(10),
+  member_key               NUMBER(20),
+  member_grade_desc        VARCHAR2(200),
+  member_grade_key         NUMBER(5),
+  hmsc_key                 NUMBER(10),
+  hmsc                     VARCHAR2(200),
+  application_key          NUMBER(10),
+  application_name         VARCHAR2(200),
+  app_ver_key              NUMBER(10),
+  app_ver_name             VARCHAR2(200),
+  channel                  VARCHAR2(200),
+  channel_key              NUMBER(10),
+  sales_source_key         NUMBER(10),
+  sales_source_desc        VARCHAR2(200),
+  sales_source_second_key  NUMBER(10),
+  sales_source_second_desc VARCHAR2(200),
+  order_date_key           NUMBER(10),
+  order_date               DATE,
+  order_hour_key           NUMBER(10),
+  order_hour               NUMBER(10),
+  posting_date             DATE,
+  posting_date_key         NUMBER(10),
+  posting_hour_key         NUMBER(10),
+  posting_hour             NUMBER(10),
+  order_state              NUMBER(5) default -1,
+  cancel_state             NUMBER(5) default -1,
+  cancel_date_key          NUMBER(10),
+  cancel_date              DATE,
+  cancel_hour_key          NUMBER(5),
+  cancel_hour              NUMBER(5),
+  cancel_person            NUMBER(5) default -1,
+  payment                  NUMBER(5),
+  pay_bank                 NUMBER(5),
+  pay_code                 VARCHAR2(200),
+  pay_state                NUMBER(5) default -1,
+  pay_date_key             NUMBER(10),
+  pay_date                 DATE,
+  pay_hour_key             NUMBER(5),
+  pay_hour                 NUMBER(5),
+  exchange_goods_state     NUMBER(5) default -1,
+  exchange_goods_date_key  NUMBER(10),
+  exchange_goods_date      DATE,
+  exchange_goods_hour_key  NUMBER(5),
+  exchange_goods_hour      NUMBER(5),
+  order_amount             NUMBER(10,2) default 0.00,
+  order_nums               NUMBER(10) default 0,
+  sku_nums                 NUMBER(10) default 0,
+  spu_nums                 NUMBER(10) default 0,
+  discount_amount          NUMBER(10,2) default 0.00,
+  counpos_amount           NUMBER(10,2) default 0.00,
+  counpos_key              NUMBER(10),
+  sales_amount             NUMBER(10) default 0.00,
+  freight_amount           NUMBER(10,2) default 0.00,
+  cost_amount              NUMBER(10,2) default 0.00,
+  purchase_price           NUMBER(10,2) default 0.00,
+  pay_amount               NUMBER(10,2) default 0.00,
+  amount_paid              NUMBER(10,2) default 0.00,
+  points_amount            NUMBER(10,2) default 0.00,
+  points_total             NUMBER(10) default 0,
+  amount_advanced          NUMBER(10,2) default 0.00,
+  card_amount              NUMBER(10,2) default 0.00,
+  points_no_amount         NUMBER(10,2) default 0.00,
+  ip                       VARCHAR2(200),
+  ip_number_int            NUMBER(10) default 0,
+  ip_geo_key               NUMBER(20),
+  device_key               NUMBER(20) default -1,
+  cancel_nums              NUMBER(10),
+  cancel_date_first_key    NUMBER(10),
+  cancel_date_first        DATE,
+  cancel_date_last_key     NUMBER(10),
+  cancel_date_last         DATE,
+  exchange_goods_nums      NUMBER(10),
+  exchange_date_first_key  NUMBER(10),
+  exchange_date_first      DATE,
+  exchange_date_last_key   NUMBER(10),
+  exchange_date_last       DATE,
+  order_net_amount         NUMBER(10,2) default 0.00,
+  tax_amount               NUMBER(10,2) default 0.00,
+  profit_amount            NUMBER(10,2) default 0.00,
+  cancel_before_state      NUMBER(5) default 0,
+  pre_order_state          NUMBER(5) default -1,
+  order_desc               VARCHAR2(200),
+  update_time              NUMBER(10)
+)
+partition by range (ORDER_DATE)
+subpartition by hash (MEMBER_KEY)
+(
+  partition OD2006 values less than (TO_DATE(' 2007-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace BDUDATAORDER
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 2
+      next 1
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ORDERPART1 tablespace BDUDATAORDERPART1,
+    subpartition ORDERPART2 tablespace BDUDATAORDERPART2,
+    subpartition ORDERPART3 tablespace BDUDATAORDERPART3,
+    subpartition ORDERPART4 tablespace BDUDATAORDERPART4
+  ),
+  partition OD2007 values less than (TO_DATE(' 2008-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace BDUDATAORDER
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 2
+      next 1
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ORDERPART5 tablespace BDUDATAORDERPART1,
+    subpartition ORDERPART6 tablespace BDUDATAORDERPART2,
+    subpartition ORDERPART7 tablespace BDUDATAORDERPART3,
+    subpartition ORDERPART8 tablespace BDUDATAORDERPART4
+  ),
+  partition OD2008 values less than (TO_DATE(' 2009-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace BDUDATAORDER
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 2
+      next 1
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ORDERPART9 tablespace BDUDATAORDERPART1,
+    subpartition ORDERPART10 tablespace BDUDATAORDERPART2,
+    subpartition ORDERPART11 tablespace BDUDATAORDERPART3,
+    subpartition ORDERPART12 tablespace BDUDATAORDERPART4
+  ),
+  partition OD2009 values less than (TO_DATE(' 2010-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace BDUDATAORDER
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 2
+      next 1
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ORDERPART13 tablespace BDUDATAORDERPART1,
+    subpartition ORDERPART14 tablespace BDUDATAORDERPART2,
+    subpartition ORDERPART15 tablespace BDUDATAORDERPART3,
+    subpartition ORDERPART16 tablespace BDUDATAORDERPART4
+  ),
+  partition OD2010 values less than (TO_DATE(' 2011-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace BDUDATAORDER
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 2
+      next 1
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ORDERPART17 tablespace BDUDATAORDERPART1,
+    subpartition ORDERPART18 tablespace BDUDATAORDERPART2,
+    subpartition ORDERPART19 tablespace BDUDATAORDERPART3,
+    subpartition ORDERPART20 tablespace BDUDATAORDERPART4
+  ),
+  partition OD2011 values less than (TO_DATE(' 2012-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace BDUDATAORDER
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 2
+      next 1
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ORDERPART21 tablespace BDUDATAORDERPART1,
+    subpartition ORDERPART22 tablespace BDUDATAORDERPART2,
+    subpartition ORDERPART23 tablespace BDUDATAORDERPART3,
+    subpartition ORDERPART24 tablespace BDUDATAORDERPART4
+  ),
+  partition OD2012 values less than (TO_DATE(' 2013-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace BDUDATAORDER
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 2
+      next 1
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ORDERPART25 tablespace BDUDATAORDERPART1,
+    subpartition ORDERPART26 tablespace BDUDATAORDERPART2,
+    subpartition ORDERPART27 tablespace BDUDATAORDERPART3,
+    subpartition ORDERPART28 tablespace BDUDATAORDERPART4
+  ),
+  partition OD2013 values less than (TO_DATE(' 2014-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace BDUDATAORDER
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 2
+      next 1
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ORDERPART29 tablespace BDUDATAORDERPART1,
+    subpartition ORDERPART30 tablespace BDUDATAORDERPART2,
+    subpartition ORDERPART31 tablespace BDUDATAORDERPART3,
+    subpartition ORDERPART32 tablespace BDUDATAORDERPART4
+  ),
+  partition OD2014 values less than (TO_DATE(' 2015-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace BDUDATAORDER
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 2
+      next 1
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ORDERPART33 tablespace BDUDATAORDERPART1,
+    subpartition ORDERPART34 tablespace BDUDATAORDERPART2,
+    subpartition ORDERPART35 tablespace BDUDATAORDERPART3,
+    subpartition ORDERPART36 tablespace BDUDATAORDERPART4
+  ),
+  partition OD2015 values less than (TO_DATE(' 2016-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace BDUDATAORDER
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 2
+      next 1
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ORDERPART37 tablespace BDUDATAORDERPART1,
+    subpartition ORDERPART38 tablespace BDUDATAORDERPART2,
+    subpartition ORDERPART39 tablespace BDUDATAORDERPART3,
+    subpartition ORDERPART40 tablespace BDUDATAORDERPART4
+  ),
+  partition OD2016 values less than (TO_DATE(' 2017-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))
+    tablespace BDUDATAORDER
+    pctfree 10
+    initrans 1
+    maxtrans 255
+    storage
+    (
+      initial 2
+      next 1
+      minextents 1
+      maxextents unlimited
+    )
+  (
+    subpartition ORDERPART41 tablespace BDUDATAORDERPART1,
+    subpartition ORDERPART42 tablespace BDUDATAORDERPART2,
+    subpartition ORDERPART43 tablespace BDUDATAORDERPART3,
+    subpartition ORDERPART44 tablespace BDUDATAORDERPART4
+  )
+);
+

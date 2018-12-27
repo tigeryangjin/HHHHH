@@ -1,0 +1,51 @@
+???create table DW_USER.FACT_SCAN_CODE
+(
+  id                NUMBER(20),
+  page_view_key     NUMBER(20),
+  vid               VARCHAR2(1000),
+  device_key        NUMBER(20) default 0,
+  ip                VARCHAR2(50),
+  ip_geo_key        NUMBER(10),
+  ip_int            NUMBER(20),
+  url               VARCHAR2(1000),
+  page_key          NUMBER(10),
+  page_name         VARCHAR2(500),
+  page_value        VARCHAR2(1000),
+  last_page_key     NUMBER(10),
+  hmsc_key          NUMBER(10),
+  hmsc              VARCHAR2(200),
+  application_key   NUMBER(10),
+  application_name  VARCHAR2(800),
+  visit_date_key    NUMBER(10),
+  visit_date        DATE,
+  pagebegin_time    DATE,
+  pageend_time      DATE,
+  page_staytime_key NUMBER(10),
+  page_staytime     NUMBER(10),
+  member_key        NUMBER(20),
+  visit_hour_key    NUMBER(10) default 0,
+  visit_hour        NUMBER(10),
+  ver_key           NUMBER(10) default 0,
+  ver_name          VARCHAR2(200),
+  agent             VARCHAR2(1000),
+  hmmd              VARCHAR2(200),
+  hmpl              VARCHAR2(200),
+  hmkw              VARCHAR2(200),
+  hmci              VARCHAR2(200),
+  visit_month       NUMBER(10),
+  session_key       NUMBER(20),
+  channel_key       NUMBER(10)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

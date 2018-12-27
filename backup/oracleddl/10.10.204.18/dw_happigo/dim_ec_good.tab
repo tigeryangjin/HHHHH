@@ -1,0 +1,64 @@
+???create table DW_HAPPIGO.DIM_EC_GOOD
+(
+  goods_commonid   NUMBER(10),
+  item_code        NUMBER(11),
+  goods_name       VARCHAR2(200),
+  gc_id            NUMBER(10),
+  gc_id_1          NUMBER(10),
+  gc_id_2          NUMBER(10),
+  gc_id_3          NUMBER(10),
+  gc_name          VARCHAR2(200),
+  matdl            NUMBER(11),
+  matzl            NUMBER(11),
+  matxl            NUMBER(11),
+  matkl            NUMBER(11),
+  brand_id         NUMBER(10),
+  brand_name       VARCHAR2(100),
+  goods_state      NUMBER(3),
+  goods_addtime    NUMBER(10),
+  goods_price      NUMBER(10,2),
+  goods_storage    NUMBER(10),
+  is_tv            NUMBER(3),
+  is_kjg           NUMBER(1),
+  goods_createtime DATE,
+  matdlt           VARCHAR2(100),
+  matzlt           VARCHAR2(100),
+  matxlt           VARCHAR2(100),
+  matklt           VARCHAR2(100)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_HAPPIGO.DIM_EC_KJG_IDX on DW_HAPPIGO.DIM_EC_GOOD (IS_KJG)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create unique index DW_HAPPIGO.GOODS_COMMONID_IDX on DW_HAPPIGO.DIM_EC_GOOD (GOODS_COMMONID)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

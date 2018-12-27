@@ -1,0 +1,60 @@
+???create table DW_USER.TJ_DGSX
+(
+  member_key             NUMBER(20),
+  ec_nums                NUMBER(20),
+  ec_order_amount        NUMBER(10,2),
+  ec_sku_nums            NUMBER(10),
+  ec_nums_yx             NUMBER(20),
+  ec_order_amount_yx     NUMBER(10,2),
+  ec_sku_nums_yx         NUMBER(10),
+  ec_counpos_amount_yx   NUMBER(10,2),
+  ec_discount_amount_yx  NUMBER(10,2),
+  last_cancel_date       NUMBER(10),
+  ec_last_time           NUMBER(10),
+  sales_source_last      NUMBER(10),
+  app_nums               NUMBER(20),
+  app_order_amount       NUMBER(10,2),
+  app_sku_nums           NUMBER(10),
+  app_nums_yx            NUMBER(20),
+  app_order_amount_yx    NUMBER(10,2),
+  app_sku_nums_yx        NUMBER(10),
+  app_counpos_amount_yx  NUMBER(10,2),
+  app_discount_amount_yx NUMBER(10,2)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.TJ_DGSX
+  is '订购属性';
+comment on column DW_USER.TJ_DGSX.ec_nums
+  is '电商竟订购单数';
+comment on column DW_USER.TJ_DGSX.ec_order_amount
+  is '电商净订购金额';
+comment on column DW_USER.TJ_DGSX.ec_sku_nums
+  is '电商净订购件数';
+comment on column DW_USER.TJ_DGSX.ec_nums_yx
+  is '电商有效订购单数';
+comment on column DW_USER.TJ_DGSX.ec_order_amount_yx
+  is '电商有效订购金额';
+comment on column DW_USER.TJ_DGSX.ec_sku_nums_yx
+  is '电商有效订购件数';
+comment on column DW_USER.TJ_DGSX.last_cancel_date
+  is '最后退货，或者拒收';
+comment on column DW_USER.TJ_DGSX.ec_last_time
+  is '最后订购';
+comment on column DW_USER.TJ_DGSX.sales_source_last
+  is '最后订购渠道';
+comment on column DW_USER.TJ_DGSX.app_counpos_amount_yx
+  is '有效券金额';
+comment on column DW_USER.TJ_DGSX.app_discount_amount_yx
+  is '有效折扣金额';
+

@@ -1,0 +1,40 @@
+???create table DW_USER.FACT_GOODS_PAGE_VIEW
+(
+  item_code        NUMBER(20),
+  goods_common_key NUMBER(20),
+  pv_nums          NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACT_GOODS_PAGE_VIEW
+  is '商品浏览pv统计信息';
+comment on column DW_USER.FACT_GOODS_PAGE_VIEW.item_code
+  is '商品编号';
+comment on column DW_USER.FACT_GOODS_PAGE_VIEW.goods_common_key
+  is 'ec商品编号';
+comment on column DW_USER.FACT_GOODS_PAGE_VIEW.pv_nums
+  is '商品pv浏览数量';
+create index DW_USER.GPV_ITEM_CODE on DW_USER.FACT_GOODS_PAGE_VIEW (ITEM_CODE)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

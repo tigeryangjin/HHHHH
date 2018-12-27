@@ -1,0 +1,110 @@
+???create table DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT
+(
+  goods_id           NUMBER(10),
+  item_code          NUMBER(11),
+  erp_code           NUMBER(11),
+  goods_name         VARCHAR2(200),
+  brand_name         VARCHAR2(200),
+  supplier_id        VARCHAR2(50),
+  supplier_name      VARCHAR2(100),
+  md                 NUMBER(10),
+  gc_name            VARCHAR2(200),
+  cost_price         NUMBER(10,2),
+  valid_date         NUMBER(10),
+  goods_price        NUMBER(10,2),
+  profit_rate        NUMBER(10,2),
+  profit_amount      NUMBER(10,2),
+  goods_marketprice  NUMBER(10,2),
+  report_date        NUMBER(10),
+  firstonselltime    DATE,
+  is_shipping_self   VARCHAR2(9),
+  goods_storage      NUMBER(10),
+  order_qty          NUMBER,
+  order_amount       NUMBER,
+  last_3d_order_qty  NUMBER,
+  last_7d_order_qty  NUMBER,
+  last_10d_order_qty NUMBER,
+  w_insert_dt        DATE,
+  w_update_dt        DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT
+  is '在架商品汇总表
+by yangjin
+2018-07-05';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.goods_id
+  is '商品id';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.item_code
+  is '商品编号（SPU）';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.erp_code
+  is '商品编号（SKU）';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.goods_name
+  is '商品名称';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.brand_name
+  is '品牌';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.supplier_id
+  is '供应商编号';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.supplier_name
+  is '供应商名称';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.md
+  is 'MD';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.gc_name
+  is '品类';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.cost_price
+  is '供货价';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.valid_date
+  is '供货价有效期';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.goods_price
+  is '快乐价';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.profit_rate
+  is '毛利率';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.profit_amount
+  is '毛利额';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.goods_marketprice
+  is '市场价';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.report_date
+  is '提报日期';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.firstonselltime
+  is '上架日期';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.is_shipping_self
+  is '配送方式';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.goods_storage
+  is '今日库存';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.order_qty
+  is '总订购件数';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.order_amount
+  is '总订购金额';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.last_3d_order_qty
+  is '近3天订购件数';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.last_7d_order_qty
+  is '近7天订购件数';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.last_10d_order_qty
+  is '近10天订购件数';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT.w_update_dt
+  is '记录更新时间';
+create unique index DW_USER.OPER_EC_PRODUCT_SUMMARY_RPT_I1 on DW_USER.OPER_EC_PRODUCT_SUMMARY_REPORT (GOODS_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

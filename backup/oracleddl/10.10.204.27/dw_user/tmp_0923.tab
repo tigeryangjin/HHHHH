@@ -1,0 +1,20 @@
+???create table DW_USER.TMP_0923
+(
+  member_key   NUMBER,
+  id           NUMBER,
+  cotent       VARCHAR2(200),
+  phone_number NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

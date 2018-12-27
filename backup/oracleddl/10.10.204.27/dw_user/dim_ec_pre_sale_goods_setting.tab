@@ -1,0 +1,131 @@
+???create table DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING
+(
+  id                   NUMBER(11) not null,
+  store_id             NUMBER(11),
+  goods_commonid       NUMBER(11),
+  goods_id             NUMBER(11),
+  item_code            NUMBER(11),
+  erp_code             NUMBER(11),
+  goods_name           VARCHAR2(500),
+  goods_description    VARCHAR2(500),
+  goods_price          NUMBER(11,2),
+  pre_goods_num        NUMBER(11),
+  pre_name             VARCHAR2(500),
+  pre_description      VARCHAR2(500),
+  pre_deposit          NUMBER(11,2),
+  promotion_type       NUMBER(5),
+  promotion_price      VARCHAR2(800),
+  shipping_fee         NUMBER(11,2),
+  pre_sale_start_time  DATE,
+  pre_sale_end_time    DATE,
+  tail_start_time      DATE,
+  tail_end_time        DATE,
+  shipping_time        DATE,
+  shipping_description VARCHAR2(500),
+  expire_time          NUMBER(11),
+  status               NUMBER(2),
+  sort                 NUMBER(11),
+  total                NUMBER(11),
+  fake_num             NUMBER(11),
+  each_limit           NUMBER(11),
+  giveout              NUMBER(11),
+  sms_enable           NUMBER(2),
+  apppush_enable       NUMBER(2),
+  create_time          DATE,
+  update_time          DATE,
+  wxpush_enable        NUMBER(2)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.store_id
+  is '店铺id';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.goods_commonid
+  is '商品公共表id';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.goods_id
+  is '商品id(SKU)';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.item_code
+  is '商品编号SPU';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.erp_code
+  is '商品用于下单的编号';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.goods_name
+  is '商品名称';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.goods_description
+  is '商品描述';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.goods_price
+  is '商品价格';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.pre_goods_num
+  is '预售商品数量默认1';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.pre_name
+  is '促销名称';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.pre_description
+  is '促销广告语';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.pre_deposit
+  is '定金';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.promotion_type
+  is '促销模式{1：一口价，2：阶梯价}';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.promotion_price
+  is '促销价格（一口价，N1人，M1元；满N2人，M2元），尾款=促销价格-定金';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.shipping_fee
+  is '运费';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.pre_sale_start_time
+  is '支付订单开始时间';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.pre_sale_end_time
+  is '支付订单结束时间';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.tail_start_time
+  is '尾款开始时间';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.tail_end_time
+  is '尾款结束时间（尾款订单取消时间）';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.shipping_time
+  is '发货时间';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.shipping_description
+  is '配送说明';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.expire_time
+  is '定金订单保留时间（秒）';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.status
+  is '状态1：开启，2：暂停，3：删除';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.sort
+  is '排序（从大到小）';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.total
+  is '最多参与人次';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.fake_num
+  is '虚拟人次，默认0';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.each_limit
+  is '每人参与次数,0不限';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.giveout
+  is '领取数量';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.sms_enable
+  is '尾款是否短信通知1:启用，0：不启用';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.apppush_enable
+  is '尾款是否推送通知1:启用，0：不启用';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.create_time
+  is '创建时间';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.update_time
+  is '最后修改时间';
+comment on column DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING.wxpush_enable
+  is '尾款是否微信1:启用，0：不启用';
+alter table DW_USER.DIM_EC_PRE_SALE_GOODS_SETTING
+  add constraint PRE_SALE_GD_SET_ID_IDX primary key (ID)
+  using index 
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.PRE_SALE_GD_SET_ID_IDX nologging;
+

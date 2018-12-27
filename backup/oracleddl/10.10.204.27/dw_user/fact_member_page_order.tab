@@ -1,0 +1,68 @@
+???create table DW_USER.FACT_MEMBER_PAGE_ORDER
+(
+  member_key  NUMBER(20),
+  item_code   NUMBER(10),
+  pv_nums     NUMBER(20),
+  cart_nums   NUMBER(20),
+  fav_nums    NUMBER(20),
+  day_key     NUMBER(10),
+  order_nums  NUMBER(10),
+  cancel_nums NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACT_MEMBER_PAGE_ORDER
+  is '会员每天的商品关联';
+comment on column DW_USER.FACT_MEMBER_PAGE_ORDER.member_key
+  is '用户编号';
+comment on column DW_USER.FACT_MEMBER_PAGE_ORDER.item_code
+  is '商品编号';
+comment on column DW_USER.FACT_MEMBER_PAGE_ORDER.pv_nums
+  is '浏览次数';
+comment on column DW_USER.FACT_MEMBER_PAGE_ORDER.cart_nums
+  is '购物车次数';
+comment on column DW_USER.FACT_MEMBER_PAGE_ORDER.fav_nums
+  is '收藏次数';
+comment on column DW_USER.FACT_MEMBER_PAGE_ORDER.day_key
+  is '日期';
+comment on column DW_USER.FACT_MEMBER_PAGE_ORDER.order_nums
+  is '订购件数';
+comment on column DW_USER.FACT_MEMBER_PAGE_ORDER.cancel_nums
+  is '取消件数';
+create index DW_USER.FMPO_DAY_KEY on DW_USER.FACT_MEMBER_PAGE_ORDER (DAY_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FMPO_MEMBER_KEY on DW_USER.FACT_MEMBER_PAGE_ORDER (MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

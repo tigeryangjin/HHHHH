@@ -1,0 +1,189 @@
+???create table ODSHAPPIGO.NEW_KONP
+(
+  mandt         VARCHAR2(9),
+  knumh         VARCHAR2(30),
+  kopos         VARCHAR2(6),
+  kappl         VARCHAR2(6),
+  kschl         VARCHAR2(12),
+  knumt         VARCHAR2(30),
+  stfkz         VARCHAR2(3),
+  kzbzg         VARCHAR2(3),
+  kstbm         NUMBER(15,3),
+  konms         VARCHAR2(9),
+  kstbw         NUMBER(15,2),
+  konws         VARCHAR2(15),
+  krech         VARCHAR2(3),
+  kbetr         NUMBER(11,2),
+  konwa         VARCHAR2(15),
+  kpein         INTEGER,
+  kmein         VARCHAR2(9),
+  prsch         VARCHAR2(12),
+  kumza         INTEGER,
+  kumne         INTEGER,
+  meins         VARCHAR2(9),
+  mxwrt         NUMBER(11,2),
+  gkwrt         NUMBER(11,2),
+  pkwrt         NUMBER(15,2),
+  fkwrt         NUMBER(15,2),
+  rswrt         NUMBER(15,2),
+  kwaeh         VARCHAR2(15),
+  ukbas         NUMBER(15,2),
+  kznep         VARCHAR2(3),
+  kunnr         VARCHAR2(30),
+  lifnr         VARCHAR2(30),
+  mwsk1         VARCHAR2(6),
+  loevm_ko      VARCHAR2(3),
+  zaehk_ind     VARCHAR2(6),
+  bomat         VARCHAR2(54),
+  kbrue         NUMBER(11,2),
+  kspae         VARCHAR2(3),
+  bosta         VARCHAR2(3),
+  knuma_pi      VARCHAR2(30),
+  knuma_ag      VARCHAR2(30),
+  knuma_sq      VARCHAR2(30),
+  valtg         VARCHAR2(6),
+  valdt         VARCHAR2(24),
+  zterm         VARCHAR2(12),
+  anzauf        VARCHAR2(6),
+  mikbas        NUMBER(15,3),
+  mxkbas        NUMBER(15,3),
+  komxwrt       NUMBER(13,2),
+  klf_stg       VARCHAR2(12),
+  klf_kal       VARCHAR2(12),
+  vkkal         VARCHAR2(3),
+  aktnr         VARCHAR2(30),
+  knuma_bo      VARCHAR2(30),
+  mwsk2         VARCHAR2(6),
+  vertt         VARCHAR2(3),
+  vertn         VARCHAR2(39),
+  vbewa         VARCHAR2(12),
+  mdflg         VARCHAR2(3),
+  kfrst         VARCHAR2(3),
+  uasta         VARCHAR2(3),
+  "/BEV1/ECRTT" VARCHAR2(3),
+  "/BEV1/ECRTN" VARCHAR2(39),
+  "/BEV1/ECEWA" VARCHAR2(12)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column ODSHAPPIGO.NEW_KONP.mandt
+  is '客户端';
+comment on column ODSHAPPIGO.NEW_KONP.knumh
+  is '条件记录号 ';
+comment on column ODSHAPPIGO.NEW_KONP.kopos
+  is '条件的序列号';
+comment on column ODSHAPPIGO.NEW_KONP.kappl
+  is '应用程序';
+comment on column ODSHAPPIGO.NEW_KONP.kschl
+  is '条件类型';
+comment on column ODSHAPPIGO.NEW_KONP.knumt
+  is '文本号';
+comment on column ODSHAPPIGO.NEW_KONP.stfkz
+  is '等级类型';
+comment on column ODSHAPPIGO.NEW_KONP.kzbzg
+  is '等级基值指示符';
+comment on column ODSHAPPIGO.NEW_KONP.kstbm
+  is '条件等级数量';
+comment on column ODSHAPPIGO.NEW_KONP.konms
+  is '条件等级计量单位';
+comment on column ODSHAPPIGO.NEW_KONP.kstbw
+  is '等级值';
+comment on column ODSHAPPIGO.NEW_KONP.konws
+  is '等级货币';
+comment on column ODSHAPPIGO.NEW_KONP.krech
+  is '条件计算类型';
+comment on column ODSHAPPIGO.NEW_KONP.kbetr
+  is '价格 (条件金额或百分数 ) 无等级存';
+comment on column ODSHAPPIGO.NEW_KONP.konwa
+  is '比率单位(货币或百分数)';
+comment on column ODSHAPPIGO.NEW_KONP.kpein
+  is '条件定价单位';
+comment on column ODSHAPPIGO.NEW_KONP.kmein
+  is '条件单位';
+comment on column ODSHAPPIGO.NEW_KONP.kumza
+  is '从条件单位到基准单位转换的分子 ';
+comment on column ODSHAPPIGO.NEW_KONP.kumne
+  is '从定价单位到基本单位转换的分母 ';
+comment on column ODSHAPPIGO.NEW_KONP.meins
+  is '基本计量单位';
+comment on column ODSHAPPIGO.NEW_KONP.mxwrt
+  is '条件比率/金额的下限 ';
+comment on column ODSHAPPIGO.NEW_KONP.gkwrt
+  is '条件率金额上限 ';
+comment on column ODSHAPPIGO.NEW_KONP.pkwrt
+  is '计划条件值 ';
+comment on column ODSHAPPIGO.NEW_KONP.fkwrt
+  is '累计担保折扣';
+comment on column ODSHAPPIGO.NEW_KONP.rswrt
+  is '累计的应计值 ';
+comment on column ODSHAPPIGO.NEW_KONP.kwaeh
+  is '条件货币( 对于累计字段的 )';
+comment on column ODSHAPPIGO.NEW_KONP.ukbas
+  is '计划的条件基础';
+comment on column ODSHAPPIGO.NEW_KONP.kznep
+  is '条件排除指示符 ';
+comment on column ODSHAPPIGO.NEW_KONP.kunnr
+  is '客户编号';
+comment on column ODSHAPPIGO.NEW_KONP.lifnr
+  is '供应商或债权人的帐号';
+comment on column ODSHAPPIGO.NEW_KONP.mwsk1
+  is '销售/购买税代码 ';
+comment on column ODSHAPPIGO.NEW_KONP.loevm_ko
+  is '条件项的删除指示符 ';
+comment on column ODSHAPPIGO.NEW_KONP.zaehk_ind
+  is '条件项目索引';
+comment on column ODSHAPPIGO.NEW_KONP.bomat
+  is '用于回扣结算的物料 ';
+comment on column ODSHAPPIGO.NEW_KONP.kbrue
+  is '应计金额';
+comment on column ODSHAPPIGO.NEW_KONP.kspae
+  is '回溯回扣创建';
+comment on column ODSHAPPIGO.NEW_KONP.bosta
+  is '条件记录状态(回扣)';
+comment on column ODSHAPPIGO.NEW_KONP.knuma_pi
+  is '促销';
+comment on column ODSHAPPIGO.NEW_KONP.knuma_ag
+  is '销售交易';
+comment on column ODSHAPPIGO.NEW_KONP.knuma_sq
+  is '销售报价';
+comment on column ODSHAPPIGO.NEW_KONP.valtg
+  is '附加起息日 ';
+comment on column ODSHAPPIGO.NEW_KONP.valdt
+  is '固定起息日 ';
+comment on column ODSHAPPIGO.NEW_KONP.zterm
+  is '付款条件代码';
+comment on column ODSHAPPIGO.NEW_KONP.anzauf
+  is '每一条件记录销售订单最大数';
+comment on column ODSHAPPIGO.NEW_KONP.mikbas
+  is '最小条件基值 ';
+comment on column ODSHAPPIGO.NEW_KONP.mxkbas
+  is '最大条件基值 ';
+comment on column ODSHAPPIGO.NEW_KONP.komxwrt
+  is '最大条件值 ';
+comment on column ODSHAPPIGO.NEW_KONP.klf_stg
+  is '增等级编号';
+comment on column ODSHAPPIGO.NEW_KONP.klf_kal
+  is '定价的等级编号 ';
+comment on column ODSHAPPIGO.NEW_KONP.vkkal
+  is '销售定价:与定价相关 ';
+comment on column ODSHAPPIGO.NEW_KONP.aktnr
+  is '促销';
+comment on column ODSHAPPIGO.NEW_KONP.knuma_bo
+  is '协议(后续结算)';
+comment on column ODSHAPPIGO.NEW_KONP.mdflg
+  is '指示：矩阵维护';
+comment on column ODSHAPPIGO.NEW_KONP.kfrst
+  is '批准状态';
+comment on column ODSHAPPIGO.NEW_KONP.uasta
+  is '条件的业务量比较状态 ';
+

@@ -1,0 +1,30 @@
+???create table DW_USER.KPI_ASMT_TOTAL_MONTH_BAK
+(
+  month_key               VARCHAR2(6),
+  app_mau                 NUMBER,
+  app_order_cvr           NUMBER,
+  wx_dau                  NUMBER,
+  wx_new_reg_count        NUMBER,
+  wx_non_scan_cvr         NUMBER,
+  vedio_item_cvr          NUMBER,
+  new_visit_count         NUMBER,
+  old_visit_count         NUMBER,
+  download_count          NUMBER,
+  reg_order_cvr           NUMBER,
+  repurchase_member_count NUMBER,
+  repurchase_member_per   NUMBER,
+  w_insert_dt             DATE,
+  w_update_dt             DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

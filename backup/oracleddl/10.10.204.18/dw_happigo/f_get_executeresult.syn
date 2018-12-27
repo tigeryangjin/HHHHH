@@ -1,0 +1,3 @@
+???create or replace synonym DW_HAPPIGO.F_GET_EXECUTERESULT
+  for ;
+

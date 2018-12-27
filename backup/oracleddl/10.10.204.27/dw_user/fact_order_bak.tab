@@ -1,0 +1,38 @@
+???create table DW_USER.FACT_ORDER_BAK
+(
+  order_id        VARCHAR2(50),
+  addr_id         NUMBER(11),
+  total_price     NUMBER(10,2),
+  save_price      NUMBER(10,2),
+  total_points    NUMBER(10,2),
+  member_key      NUMBER(10),
+  channel_key     NUMBER(10),
+  channel         VARCHAR2(20),
+  order_date_key  NUMBER(20),
+  order_date      DATE,
+  order_time_key  NUMBER(20),
+  order_time      NUMBER(20),
+  pay_date_key    NUMBER(20),
+  pay_date        DATE,
+  pay_time_key    NUMBER(20),
+  pay_time        NUMBER(20),
+  pay_name        VARCHAR2(50),
+  pay_status      VARCHAR2(10),
+  order_orgin     VARCHAR2(20),
+  order_key       NUMBER(11),
+  pay_type_key    NUMBER(11),
+  pay_status_key  NUMBER(11),
+  application_key NUMBER(11)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -1,0 +1,20 @@
+???create table DW_HAPPIGO.R_JOB_LOCK
+(
+  id_job_lock  INTEGER not null,
+  id_job       INTEGER,
+  id_user      INTEGER,
+  lock_message CLOB,
+  lock_date    DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+alter table DW_HAPPIGO.R_JOB_LOCK
+  add primary key (ID_JOB_LOCK)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+

@@ -1,0 +1,55 @@
+???create table DW_USER.FACT_DAILY_GOODPAGE_1
+(
+  page_key        NUMBER(10),
+  page_name       VARCHAR2(500),
+  visit_date_key  NUMBER,
+  pagepv          NUMBER,
+  pageuv          NUMBER,
+  pageavgtime     NUMBER,
+  ordercnt        NUMBER,
+  orderuv         NUMBER,
+  orderrate       NUMBER,
+  goods_num       NUMBER,
+  goods_amount    NUMBER,
+  page_value      VARCHAR2(500),
+  application_nm  VARCHAR2(18),
+  application_key NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.FDGP_IDX on DW_USER.FACT_DAILY_GOODPAGE_1 (PAGE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FDGV_IDX on DW_USER.FACT_DAILY_GOODPAGE_1 (VISIT_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,72 @@
+???create table DW_USER.DIM_VID_MEM
+(
+  vid             VARCHAR2(1000),
+  member_key      NUMBER(10),
+  create_date_key NUMBER(10),
+  application_key NUMBER(10)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.DT_MEM_IDX on DW_USER.DIM_VID_MEM (CREATE_DATE_KEY, MEMBER_KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEM_IDX on DW_USER.DIM_VID_MEM (MEMBER_KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.VID_MEM_IDX on DW_USER.DIM_VID_MEM (VID, MEMBER_KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.V_IDX on DW_USER.DIM_VID_MEM (VID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

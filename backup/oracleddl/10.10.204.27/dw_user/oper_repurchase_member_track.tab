@@ -1,0 +1,74 @@
+???create table DW_USER.OPER_REPURCHASE_MEMBER_TRACK
+(
+  row_id            NUMBER(15) not null,
+  item_code         NUMBER(20) not null,
+  member_bp         NUMBER(20) not null,
+  latest_order_date DATE,
+  repurchase_days   NUMBER,
+  on_shelf          NUMBER,
+  stock_qty         NUMBER,
+  w_insert_dt       DATE,
+  w_update_dt       DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_REPURCHASE_MEMBER_TRACK
+  is '会员订购复购商品记录表
+by yangjin
+2018-01-12';
+comment on column DW_USER.OPER_REPURCHASE_MEMBER_TRACK.row_id
+  is '表唯一索引';
+comment on column DW_USER.OPER_REPURCHASE_MEMBER_TRACK.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_REPURCHASE_MEMBER_TRACK.member_bp
+  is '会员BP号';
+comment on column DW_USER.OPER_REPURCHASE_MEMBER_TRACK.latest_order_date
+  is '最新订购日期';
+comment on column DW_USER.OPER_REPURCHASE_MEMBER_TRACK.repurchase_days
+  is '复购时长（天）';
+comment on column DW_USER.OPER_REPURCHASE_MEMBER_TRACK.on_shelf
+  is '商品是否上架（1：上架，0：下架）';
+comment on column DW_USER.OPER_REPURCHASE_MEMBER_TRACK.stock_qty
+  is '库存数量';
+comment on column DW_USER.OPER_REPURCHASE_MEMBER_TRACK.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_REPURCHASE_MEMBER_TRACK.w_update_dt
+  is '记录更新时间';
+create unique index DW_USER.OPER_REPUR_MEMBER_TRACK_UK on DW_USER.OPER_REPURCHASE_MEMBER_TRACK (ROW_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.OPER_REPURCHASE_MEMBER_TRACK
+  add constraint OPER_REPUR_MEMBER_TRACK_PK primary key (ITEM_CODE, MEMBER_BP)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.OPER_REPUR_MEMBER_TRACK_PK nologging;
+

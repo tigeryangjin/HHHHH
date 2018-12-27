@@ -1,0 +1,61 @@
+???create table DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT
+(
+  visit_date_key NUMBER(10),
+  page_value     VARCHAR2(3000),
+  item_code      NUMBER,
+  goods_name     VARCHAR2(200),
+  matdlt         VARCHAR2(100),
+  group_name     VARCHAR2(50),
+  pv             NUMBER,
+  uv             NUMBER,
+  avgnum         NUMBER,
+  goodpv         NUMBER,
+  gooduv         NUMBER,
+  goodavg        NUMBER,
+  goods_commonid NUMBER(11),
+  goodnum        NUMBER,
+  custnum        NUMBER,
+  goodmount      NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT
+  is 'by yangjin';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.visit_date_key
+  is '访问日期';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.goods_name
+  is '商品名称';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.group_name
+  is '部门提报组';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.pv
+  is '商品直播page view';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.uv
+  is '商品直播user view';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.avgnum
+  is '商品直播平均浏览时长';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.goodpv
+  is '商品页面浏览数';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.gooduv
+  is '商品页面浏览人数';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.goodavg
+  is '商品平均浏览时长';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.goods_commonid
+  is 'GOODS_COMMONID';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.goodnum
+  is '商品数量';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.custnum
+  is '订购人数';
+comment on column DW_USER.OPER_PRODUCT_PVUV_DAILY_REPORT.goodmount
+  is '订购金额';
+

@@ -1,0 +1,90 @@
+???create table DW_USER.FACT_VOUCHER
+(
+  voucher_id          NUMBER(20),
+  voucher_code        VARCHAR2(200),
+  voucher_t_id        NUMBER(20),
+  voucher_title       VARCHAR2(500),
+  voucher_desc        VARCHAR2(500),
+  start_date_key      NUMBER(10),
+  voucher_price       NUMBER(10,2),
+  voucher_limit       NUMBER(10,2),
+  member_key          NUMBER(20),
+  remark              VARCHAR2(500),
+  end_date_key        NUMBER(10),
+  voucher_active_date NUMBER(20),
+  member_id           NUMBER(10) default 0
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.FACT_VOUCHER.voucher_id
+  is '卷ID';
+comment on column DW_USER.FACT_VOUCHER.voucher_code
+  is '卷号';
+comment on column DW_USER.FACT_VOUCHER.voucher_title
+  is '卷标题';
+comment on column DW_USER.FACT_VOUCHER.voucher_desc
+  is '卷说明';
+comment on column DW_USER.FACT_VOUCHER.start_date_key
+  is '卷开始日期';
+comment on column DW_USER.FACT_VOUCHER.voucher_price
+  is '卷减免金额';
+comment on column DW_USER.FACT_VOUCHER.voucher_limit
+  is '达成用卷金额';
+comment on column DW_USER.FACT_VOUCHER.member_key
+  is 'MEMBER_KEY';
+comment on column DW_USER.FACT_VOUCHER.remark
+  is '备注';
+comment on column DW_USER.FACT_VOUCHER.end_date_key
+  is '卷结束日期';
+comment on column DW_USER.FACT_VOUCHER.voucher_active_date
+  is '卷激活日期';
+create index DW_USER.FVOUCHER_ID on DW_USER.FACT_VOUCHER (VOUCHER_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FVOUCHER_MEMBER_KEY on DW_USER.FACT_VOUCHER (MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FVOUCHER_T_ID on DW_USER.FACT_VOUCHER (VOUCHER_T_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,7 @@
+???create sequence DW_USER.OPER_MEMBER_LIKE_ITEM_SEQ
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 119329358
+increment by 1
+cache 20;
+

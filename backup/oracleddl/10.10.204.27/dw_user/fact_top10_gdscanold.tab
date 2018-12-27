@@ -1,0 +1,23 @@
+???create table DW_USER.FACT_TOP10_GDSCANOLD
+(
+  stat_date_key    CHAR(8),
+  goods_common_key NUMBER(20),
+  goods_name       VARCHAR2(200),
+  matdlt           VARCHAR2(100),
+  group_name       VARCHAR2(50),
+  isbochu          VARCHAR2(12),
+  order_nums       NUMBER,
+  orderamount      NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

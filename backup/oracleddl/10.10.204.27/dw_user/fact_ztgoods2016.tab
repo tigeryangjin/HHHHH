@@ -1,0 +1,19 @@
+???create table DW_USER.FACT_ZTGOODS2016
+(
+  goods_code  NUMBER(10),
+  session_key NUMBER(20),
+  vid         VARCHAR2(1000),
+  visit_date  DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

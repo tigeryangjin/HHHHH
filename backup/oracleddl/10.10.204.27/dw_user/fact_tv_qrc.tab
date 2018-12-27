@@ -1,0 +1,58 @@
+???create table DW_USER.FACT_TV_QRC
+(
+  vid            VARCHAR2(1000) not null,
+  visit_date_key NUMBER(10),
+  visit_date     DATE not null,
+  tv_start_time  DATE not null,
+  tv_end_time    DATE not null,
+  item_code      NUMBER(11) not null,
+  w_insert_dt    DATE,
+  w_update_dt    DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_TV_QRC
+  is 'TV商品扫码行为记录表
+by yangjin
+2018-01-31';
+comment on column DW_USER.FACT_TV_QRC.vid
+  is '设备号VID';
+comment on column DW_USER.FACT_TV_QRC.visit_date_key
+  is '浏览时间KEY';
+comment on column DW_USER.FACT_TV_QRC.visit_date
+  is '浏览时间';
+comment on column DW_USER.FACT_TV_QRC.tv_start_time
+  is 'TV播放开始时间';
+comment on column DW_USER.FACT_TV_QRC.tv_end_time
+  is 'TV播放结束时间';
+comment on column DW_USER.FACT_TV_QRC.item_code
+  is 'TV播放商品编码';
+comment on column DW_USER.FACT_TV_QRC.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_TV_QRC.w_update_dt
+  is '记录更新时间';
+alter table DW_USER.FACT_TV_QRC
+  add constraint FACT_TV_QRC_PK primary key (VID, ITEM_CODE, VISIT_DATE, TV_START_TIME, TV_END_TIME)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.FACT_TV_QRC_PK nologging;
+

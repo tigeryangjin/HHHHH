@@ -1,0 +1,42 @@
+???create table DW_HAPPIGO.FACT_DAILY_ZHUANGTI
+(
+  zt_id          NUMBER(10),
+  zt_name        VARCHAR2(100),
+  zt_start_date  NUMBER(10),
+  zt_end_date    NUMBER(10),
+  stats_date     DATE,
+  ztcl_goodsnum  NUMBER(5),
+  ztdx_goodsnum  NUMBER(5),
+  ztpv           NUMBER(10),
+  ztuv           NUMBER(10),
+  ztavgcnt       NUMBER(10,2),
+  ztavgtime      NUMBER(10,2),
+  ztordercnt     NUMBER(5),
+  ztorderrs      NUMBER(5),
+  ztzhrate       NUMBER(10,3),
+  ztorderjs      NUMBER(5),
+  ztordertot     NUMBER(10,2),
+  ztitemcode     NUMBER(10),
+  ztitemname     VARCHAR2(200),
+  ztitemprice    NUMBER(10,2),
+  ztitempv       NUMBER(10),
+  ztitemuv       NUMBER(10),
+  ztitemordercnt NUMBER(5),
+  ztitemorderjs  NUMBER(5),
+  ztitemordertot NUMBER(10,2),
+  ztitemmatdlt   VARCHAR2(100),
+  ztitembname    VARCHAR2(100),
+  ztitemistv     VARCHAR2(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

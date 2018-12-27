@@ -1,0 +1,66 @@
+???create table DW_USER.KPI_EC_TBL
+(
+  row_id      NUMBER,
+  deno        VARCHAR2(5),
+  dept        VARCHAR2(20),
+  deno_1      VARCHAR2(10),
+  dept_1      VARCHAR2(10),
+  item_no     VARCHAR2(10),
+  item        VARCHAR2(50),
+  b_date      VARCHAR2(10),
+  e_date      VARCHAR2(10),
+  item_value1 NUMBER(10,2) default 0.00,
+  item_value2 NUMBER(10,2) default 0.00,
+  item_value3 NUMBER(10,2) default 0.00,
+  insert_id   VARCHAR2(10),
+  item_type   VARCHAR2(2),
+  data_type   VARCHAR2(2),
+  note        VARCHAR2(200),
+  insert_date DATE default sysdate
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.KPI_EC_TBL.row_id
+  is '序列号';
+comment on column DW_USER.KPI_EC_TBL.deno
+  is '中心编码';
+comment on column DW_USER.KPI_EC_TBL.dept
+  is '中心';
+comment on column DW_USER.KPI_EC_TBL.deno_1
+  is '部门编码';
+comment on column DW_USER.KPI_EC_TBL.dept_1
+  is '部门';
+comment on column DW_USER.KPI_EC_TBL.item_no
+  is '指标编码';
+comment on column DW_USER.KPI_EC_TBL.item
+  is '指标名称';
+comment on column DW_USER.KPI_EC_TBL.b_date
+  is '开始日期';
+comment on column DW_USER.KPI_EC_TBL.e_date
+  is '结束日期';
+comment on column DW_USER.KPI_EC_TBL.item_value1
+  is '分子';
+comment on column DW_USER.KPI_EC_TBL.item_value2
+  is '分母';
+comment on column DW_USER.KPI_EC_TBL.item_value3
+  is '指标值';
+comment on column DW_USER.KPI_EC_TBL.insert_id
+  is '操作人';
+comment on column DW_USER.KPI_EC_TBL.item_type
+  is '报表类型';
+comment on column DW_USER.KPI_EC_TBL.data_type
+  is '数据进入类型（B:BW计算，S：手工录入,Y：业务系统导入）';
+comment on column DW_USER.KPI_EC_TBL.note
+  is '备注';
+comment on column DW_USER.KPI_EC_TBL.insert_date
+  is '插入日期';
+

@@ -1,0 +1,20 @@
+???create table DW_HAPPIGO.R_VALUE
+(
+  id_value   INTEGER not null,
+  name       VARCHAR2(255),
+  value_type VARCHAR2(255),
+  value_str  VARCHAR2(255),
+  is_null    CHAR(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+alter table DW_HAPPIGO.R_VALUE
+  add primary key (ID_VALUE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+

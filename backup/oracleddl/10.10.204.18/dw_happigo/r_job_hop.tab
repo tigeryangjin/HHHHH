@@ -1,0 +1,36 @@
+???create table DW_HAPPIGO.R_JOB_HOP
+(
+  id_job_hop            INTEGER not null,
+  id_job                INTEGER,
+  id_jobentry_copy_from INTEGER,
+  id_jobentry_copy_to   INTEGER,
+  enabled               CHAR(1),
+  evaluation            CHAR(1),
+  unconditional         CHAR(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table DW_HAPPIGO.R_JOB_HOP
+  add primary key (ID_JOB_HOP)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

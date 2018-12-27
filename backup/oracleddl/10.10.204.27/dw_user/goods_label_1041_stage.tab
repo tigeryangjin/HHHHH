@@ -1,0 +1,53 @@
+???create table DW_USER.GOODS_LABEL_1041_STAGE
+(
+  year_key    VARCHAR2(4) not null,
+  month_key   VARCHAR2(2) not null,
+  matl_group  NUMBER(10) not null,
+  qty         NUMBER,
+  w_insert_dt DATE,
+  w_update_dt DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.GOODS_LABEL_1041_STAGE
+  is '商品标签-热销季节-中间表
+by yangjin
+2018-05-24
+';
+comment on column DW_USER.GOODS_LABEL_1041_STAGE.year_key
+  is '年key';
+comment on column DW_USER.GOODS_LABEL_1041_STAGE.month_key
+  is '月key';
+comment on column DW_USER.GOODS_LABEL_1041_STAGE.matl_group
+  is '物料细类编码';
+comment on column DW_USER.GOODS_LABEL_1041_STAGE.qty
+  is '有效订购数量';
+comment on column DW_USER.GOODS_LABEL_1041_STAGE.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.GOODS_LABEL_1041_STAGE.w_update_dt
+  is '记录更新时间';
+alter table DW_USER.GOODS_LABEL_1041_STAGE
+  add constraint GOODS_LABEL_1041_STAGE_PK primary key (YEAR_KEY, MONTH_KEY, MATL_GROUP)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.GOODS_LABEL_1041_STAGE_PK nologging;
+

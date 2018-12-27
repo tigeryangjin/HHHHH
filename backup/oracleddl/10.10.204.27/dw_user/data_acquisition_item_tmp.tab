@@ -1,0 +1,54 @@
+???create table DW_USER.DATA_ACQUISITION_ITEM_TMP
+(
+  period        VARCHAR2(80),
+  matdlt        VARCHAR2(80),
+  matzlt        VARCHAR2(80),
+  matxlt        VARCHAR2(80),
+  acq_item_code VARCHAR2(50),
+  acq_name      VARCHAR2(500),
+  acq_url       VARCHAR2(500),
+  acq_pic       VARCHAR2(500),
+  acq_shop_name VARCHAR2(200),
+  acq_price     NUMBER(20,2),
+  acq_sales     NUMBER,
+  sales_amt     NUMBER(20,2)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.DATA_ACQUISITION_ITEM_TMP
+  is '从DATA_ACQUISITION_ITEM抽取的中间表，用于清洗重复数据
+by yangjin';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_TMP.period
+  is '日期';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_TMP.matdlt
+  is '物料大类编码';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_TMP.matzlt
+  is '物料中类编码';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_TMP.matxlt
+  is '物料小类编码';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_TMP.acq_item_code
+  is '商品编码';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_TMP.acq_name
+  is '商品名称';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_TMP.acq_url
+  is '商品URL地址';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_TMP.acq_pic
+  is '商品图片地址';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_TMP.acq_shop_name
+  is '店铺名称';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_TMP.acq_price
+  is '商品价格';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_TMP.acq_sales
+  is '累计销售数量';
+comment on column DW_USER.DATA_ACQUISITION_ITEM_TMP.sales_amt
+  is '累计销售金额';
+

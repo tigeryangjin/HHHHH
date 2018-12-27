@@ -1,0 +1,47 @@
+???create table DW_USER.DIM_VID_MAPPING
+(
+  seqid    NUMBER(10),
+  gvid     VARCHAR2(500),
+  wxvid    VARCHAR2(500),
+  appvid   VARCHAR2(500),
+  date_key NUMBER(10)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.GVID_IDX on DW_USER.DIM_VID_MAPPING (GVID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create unique index DW_USER.SEQID_IDX on DW_USER.DIM_VID_MAPPING (SEQID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

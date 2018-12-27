@@ -1,0 +1,82 @@
+???create table DW_USER.FACT_DAILY_GOODZAIJIA
+(
+  item_code        NUMBER(11),
+  goods_name       VARCHAR2(500),
+  gc_id_2          NUMBER(11),
+  gc_name          VARCHAR2(500),
+  goods_addtime    DATE,
+  is_tv            VARCHAR2(20),
+  brand_name       VARCHAR2(200),
+  goods_price      NUMBER(10,2),
+  matdlt           VARCHAR2(50),
+  matzlt           VARCHAR2(50),
+  matxlt           VARCHAR2(50),
+  matklt           VARCHAR2(50),
+  create_date_key  NUMBER(11),
+  is_shipping_self VARCHAR2(50),
+  store_id         NUMBER(11),
+  store_name       VARCHAR2(50),
+  insert_date      DATE default sysdate,
+  is_own_shop      NUMBER(5)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.FACT_DAILY_GOODZAIJIA.item_code
+  is '商品编码';
+comment on column DW_USER.FACT_DAILY_GOODZAIJIA.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_DAILY_GOODZAIJIA.brand_name
+  is '品牌名称';
+comment on column DW_USER.FACT_DAILY_GOODZAIJIA.goods_price
+  is '商品价格';
+comment on column DW_USER.FACT_DAILY_GOODZAIJIA.matdlt
+  is '物料大类名称';
+comment on column DW_USER.FACT_DAILY_GOODZAIJIA.matzlt
+  is '物料中类名称';
+comment on column DW_USER.FACT_DAILY_GOODZAIJIA.matxlt
+  is '物料小类名称';
+comment on column DW_USER.FACT_DAILY_GOODZAIJIA.create_date_key
+  is '创建日期';
+comment on column DW_USER.FACT_DAILY_GOODZAIJIA.is_shipping_self
+  is '是否自营';
+comment on column DW_USER.FACT_DAILY_GOODZAIJIA.store_id
+  is '店铺ID';
+comment on column DW_USER.FACT_DAILY_GOODZAIJIA.store_name
+  is '店铺名称';
+create index DW_USER.FACT_DAILY_GOODZAIJIA_I1 on DW_USER.FACT_DAILY_GOODZAIJIA (ITEM_CODE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ZJ1_IDX on DW_USER.FACT_DAILY_GOODZAIJIA (CREATE_DATE_KEY, ITEM_CODE)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

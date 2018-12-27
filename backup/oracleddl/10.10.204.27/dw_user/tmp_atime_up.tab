@@ -1,0 +1,85 @@
+???create table DW_USER.TMP_ATIME_UP
+(
+  member_key NUMBER,
+  atime      VARCHAR2(9),
+  cnt        NUMBER,
+  c_date_key NUMBER,
+  m_date_key NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.MEM_ATIME_IDX on DW_USER.TMP_ATIME_UP (MEMBER_KEY, ATIME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEM_UPCNT_IDX on DW_USER.TMP_ATIME_UP (MEMBER_KEY, CNT)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEM_UPCTIME_IDX on DW_USER.TMP_ATIME_UP (C_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEM_UPMTIME_IDX on DW_USER.TMP_ATIME_UP (M_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEM_UP_IDX on DW_USER.TMP_ATIME_UP (MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,28 @@
+???create table DW_USER.FACT_TVGOOD
+(
+  tv_startday_key  NUMBER(11),
+  tv_start_time    DATE,
+  tv_end_time      DATE,
+  item_code        NUMBER(10),
+  goods_name       VARCHAR2(500),
+  matzlt           VARCHAR2(100),
+  is_shipping_self VARCHAR2(15),
+  group_name       VARCHAR2(50),
+  zven_name        VARCHAR2(200),
+  goods_num        NUMBER,
+  ordercnt         NUMBER,
+  orderrs          NUMBER,
+  total            NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

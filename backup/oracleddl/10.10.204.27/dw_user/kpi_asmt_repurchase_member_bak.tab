@@ -1,0 +1,20 @@
+???create table DW_USER.KPI_ASMT_REPURCHASE_MEMBER_BAK
+(
+  month_key               VARCHAR2(24) not null,
+  repurchase_member_count NUMBER,
+  last_month_member_count NUMBER,
+  w_insert_dt             DATE,
+  w_update_dt             DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

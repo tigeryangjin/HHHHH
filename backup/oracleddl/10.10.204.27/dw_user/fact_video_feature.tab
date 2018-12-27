@@ -1,0 +1,42 @@
+???create table DW_USER.FACT_VIDEO_FEATURE
+(
+  id               NUMBER(20),
+  name             VARCHAR2(500),
+  video_url        VARCHAR2(500),
+  seconds          NUMBER(20),
+  ad_pic           VARCHAR2(500),
+  conner_pic       VARCHAR2(500),
+  create_time_key  NUMBER(20),
+  create_time      VARCHAR2(100),
+  publish_time_key NUMBER(20),
+  publish_time     VARCHAR2(100),
+  end_time_key     NUMBER(20),
+  end_time         VARCHAR2(100),
+  category_id      NUMBER(20),
+  category_name    VARCHAR2(500),
+  goods_category   NUMBER(20),
+  goodscate_icon   VARCHAR2(500),
+  tag_id           NUMBER(20),
+  tag_name         VARCHAR2(500),
+  screen_ratio     NUMBER(20),
+  status           NUMBER(20),
+  share_title      VARCHAR2(500),
+  share_pic        VARCHAR2(500),
+  share_content    VARCHAR2(500),
+  share_path       VARCHAR2(500),
+  watchcount       NUMBER(20),
+  likecount        NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

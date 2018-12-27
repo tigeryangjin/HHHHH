@@ -1,0 +1,30 @@
+???create table DW_HAPPIGO.DIM_OS
+(
+  os_key NUMBER(10),
+  os     VARCHAR2(20),
+  os_nm  VARCHAR2(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_HAPPIGO.DIM_OS_IDX on DW_HAPPIGO.DIM_OS (OS)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

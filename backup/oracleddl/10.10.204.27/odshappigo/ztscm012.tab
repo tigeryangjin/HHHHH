@@ -1,0 +1,79 @@
+???create table ODSHAPPIGO.ZTSCM012
+(
+  mandt     VARCHAR2(9) not null,
+  vbeln     VARCHAR2(30) not null,
+  stusn     VARCHAR2(15) not null,
+  dnstu     VARCHAR2(6),
+  dnstub    VARCHAR2(150),
+  jsfs      VARCHAR2(3),
+  failed    VARCHAR2(3),
+  lstel     VARCHAR2(6),
+  signi     VARCHAR2(60),
+  zycgd     VARCHAR2(15),
+  datum     VARCHAR2(24),
+  uzeit     VARCHAR2(18),
+  uname     VARCHAR2(36),
+  tcode     VARCHAR2(60),
+  repid     VARCHAR2(120),
+  timestamp NUMBER(15)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 8K
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column ODSHAPPIGO.ZTSCM012.mandt
+  is '客户端';
+comment on column ODSHAPPIGO.ZTSCM012.vbeln
+  is '交货';
+comment on column ODSHAPPIGO.ZTSCM012.stusn
+  is '状态记录序号';
+comment on column ODSHAPPIGO.ZTSCM012.dnstu
+  is '交货单状态';
+comment on column ODSHAPPIGO.ZTSCM012.dnstub
+  is '状态备注';
+comment on column ODSHAPPIGO.ZTSCM012.jsfs
+  is '拒收方式';
+comment on column ODSHAPPIGO.ZTSCM012.failed
+  is '尝试失败标记';
+comment on column ODSHAPPIGO.ZTSCM012.lstel
+  is '装货点';
+comment on column ODSHAPPIGO.ZTSCM012.signi
+  is '装载号';
+comment on column ODSHAPPIGO.ZTSCM012.zycgd
+  is '异常原因';
+comment on column ODSHAPPIGO.ZTSCM012.datum
+  is '日期';
+comment on column ODSHAPPIGO.ZTSCM012.uzeit
+  is '时间';
+comment on column ODSHAPPIGO.ZTSCM012.uname
+  is '用户名';
+comment on column ODSHAPPIGO.ZTSCM012.tcode
+  is '当前事务代码';
+comment on column ODSHAPPIGO.ZTSCM012.repid
+  is 'ABAP 程序：当前主程序';
+comment on column ODSHAPPIGO.ZTSCM012.timestamp
+  is '简短格式的 UTC 时戳 (YYYYMMDDhhmmss)';
+alter table ODSHAPPIGO.ZTSCM012
+  add constraint PK_ZTSCM012 primary key (MANDT, VBELN, STUSN)
+  using index 
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index ODSHAPPIGO.PK_ZTSCM012 nologging;
+

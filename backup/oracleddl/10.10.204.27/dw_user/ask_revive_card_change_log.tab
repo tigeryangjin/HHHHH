@@ -1,0 +1,57 @@
+???create table DW_USER.ASK_REVIVE_CARD_CHANGE_LOG
+(
+  card_id       NUMBER(11),
+  owner_user    NUMBER(11),
+  from_user     NUMBER(11),
+  count_current NUMBER(5),
+  change_event  VARCHAR2(50),
+  count_change  NUMBER(5),
+  card_source   VARCHAR2(200),
+  activity_id   NUMBER(10),
+  question_id   NUMBER(10),
+  remark        VARCHAR2(50),
+  add_time      DATE,
+  user_ip       VARCHAR2(50),
+  user_vid      VARCHAR2(200),
+  add_date_key  NUMBER(10)
+)
+tablespace DWDATA02
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.card_id
+  is '自动id';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.owner_user
+  is '拥有人ID';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.from_user
+  is '来源用户id';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.count_current
+  is '变更后数量';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.change_event
+  is '相关事件';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.count_change
+  is '变更数量';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.card_source
+  is '复活卡来源';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.activity_id
+  is '活动id';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.question_id
+  is '题目id';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.remark
+  is '备注';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.add_time
+  is '记录时间';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.user_ip
+  is 'IP地址';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.user_vid
+  is 'VID';
+comment on column DW_USER.ASK_REVIVE_CARD_CHANGE_LOG.add_date_key
+  is '记录天';
+

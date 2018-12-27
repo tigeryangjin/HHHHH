@@ -1,0 +1,130 @@
+???create table DW_USER.OPER_PRODUCT_DAILY_PREVIEW
+(
+  posting_date_key        NUMBER not null,
+  matdlt                  VARCHAR2(100),
+  matzlt                  VARCHAR2(100),
+  matxlt                  VARCHAR2(100),
+  item_code               NUMBER(11) not null,
+  good_name               VARCHAR2(200),
+  good_s_price            NUMBER(10,2),
+  good_c_price            NUMBER,
+  group_name              VARCHAR2(50),
+  is_ontv                 NUMBER,
+  is_shipping_self        NUMBER(5),
+  tv_order_amount         NUMBER,
+  tv_order_qty            NUMBER,
+  ds_order_amount         NUMBER,
+  ds_order_qty            NUMBER,
+  ds_profit_amount        NUMBER,
+  ds_profit_rate          NUMBER,
+  pv                      NUMBER,
+  uv                      NUMBER,
+  ds_order_member_count   NUMBER,
+  conversion_rate         NUMBER,
+  fav_count               NUMBER,
+  car_count               NUMBER,
+  low_eval_count          NUMBER,
+  med_eval_count          NUMBER,
+  high_eval_count         NUMBER,
+  ds_reject_member_count  NUMBER,
+  ds_reject_qty           NUMBER,
+  ds_reverse_member_count NUMBER,
+  ds_reverse_qty          NUMBER,
+  w_insert_dt             DATE,
+  w_update_dt             DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_PRODUCT_DAILY_PREVIEW
+  is '商品运营处商品日报-总表
+by yangjin
+2018-01-24';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.posting_date_key
+  is '日期key';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.matdlt
+  is '大类名称';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.matzlt
+  is '中类名称';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.matxlt
+  is '小类名称';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.good_name
+  is '商品名称';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.good_s_price
+  is '商品价格';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.good_c_price
+  is '商品进价';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.group_name
+  is '提报组';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.is_ontv
+  is '是否当天直播（1：是，0：否）';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.is_shipping_self
+  is '是否仓配（1：是，0：否）';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.tv_order_amount
+  is 'TV销售金额';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.tv_order_qty
+  is 'TV销售件数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.ds_order_amount
+  is '电商销售金额';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.ds_order_qty
+  is '电商销售件数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.ds_profit_amount
+  is '电商毛利额';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.ds_profit_rate
+  is '电商毛利率';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.pv
+  is '浏览人数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.uv
+  is '浏览次数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.ds_order_member_count
+  is '电商订购人数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.conversion_rate
+  is '转化率';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.fav_count
+  is '收藏次数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.car_count
+  is '加购物车次数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.low_eval_count
+  is '好评次数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.med_eval_count
+  is '中评次数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.high_eval_count
+  is '差评次数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.ds_reject_member_count
+  is '电商拒收人数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.ds_reject_qty
+  is '电商拒收件数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.ds_reverse_member_count
+  is '电商退货人数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.ds_reverse_qty
+  is '电商退货件数';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_PRODUCT_DAILY_PREVIEW.w_update_dt
+  is '记录更新时间';
+alter table DW_USER.OPER_PRODUCT_DAILY_PREVIEW
+  add constraint OPER_PRODUCT_DAILY_PREVIEW_PK primary key (POSTING_DATE_KEY, ITEM_CODE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.OPER_PRODUCT_DAILY_PREVIEW_PK nologging;
+

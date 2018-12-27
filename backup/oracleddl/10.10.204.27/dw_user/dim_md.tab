@@ -1,0 +1,19 @@
+???create table DW_USER.DIM_MD
+(
+  md_no  NUMBER(10),
+  md     VARCHAR2(10),
+  md_no2 VARCHAR2(10)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

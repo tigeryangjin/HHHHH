@@ -1,0 +1,39 @@
+???create table DW_USER.DIM_GOOD_BAK0823
+(
+  item_code      NUMBER(10),
+  goods_commonid NUMBER(10),
+  goods_name     VARCHAR2(200),
+  gc_id          NUMBER(10),
+  gc_name        VARCHAR2(200),
+  matdl          NUMBER(10),
+  matdlt         VARCHAR2(100),
+  matzl          NUMBER(10),
+  matzlt         VARCHAR2(100),
+  matxl          NUMBER(10),
+  matxlt         VARCHAR2(100),
+  brand_id       NUMBER(10),
+  brand_name     VARCHAR2(100),
+  goods_state    NUMBER(3),
+  create_time    DATE,
+  good_price     NUMBER(10,2),
+  is_tv          NUMBER(1),
+  is_kjg         NUMBER(1),
+  md             NUMBER(10),
+  group_id       NUMBER(5),
+  group_name     VARCHAR2(50),
+  matl_group     NUMBER(10),
+  matxxlt        VARCHAR2(100)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

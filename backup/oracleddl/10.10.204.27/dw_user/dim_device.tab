@@ -1,0 +1,66 @@
+???create table DW_USER.DIM_DEVICE
+(
+  id               NUMBER(20),
+  device_key       NUMBER(20),
+  device           VARCHAR2(1000),
+  create_date      DATE,
+  create_date_key  NUMBER(10),
+  first_ip         VARCHAR2(50),
+  first_ip_geo_key NUMBER(10),
+  first_ip_int     NUMBER(10),
+  last_ip          VARCHAR2(50),
+  last_ip_geo_key  NUMBER(10),
+  last_ip_int      NUMBER(10),
+  create_time      NUMBER(10),
+  create_time_key  NUMBER(10),
+  application_key  NUMBER(20),
+  ver_key          NUMBER(10),
+  hmsc_key         NUMBER(10)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_DEVICE
+  is '注册设备维表';
+comment on column DW_USER.DIM_DEVICE.id
+  is '索引序列号';
+comment on column DW_USER.DIM_DEVICE.device_key
+  is '注册设备KEY';
+comment on column DW_USER.DIM_DEVICE.device
+  is '注册设备';
+comment on column DW_USER.DIM_DEVICE.create_date
+  is '建立日期';
+comment on column DW_USER.DIM_DEVICE.create_date_key
+  is '日期维度';
+comment on column DW_USER.DIM_DEVICE.first_ip
+  is '首次登陆IP';
+comment on column DW_USER.DIM_DEVICE.first_ip_geo_key
+  is '首次登陆ip维度';
+comment on column DW_USER.DIM_DEVICE.first_ip_int
+  is '首次登陆ip整数';
+comment on column DW_USER.DIM_DEVICE.last_ip
+  is '最后浏览IP';
+comment on column DW_USER.DIM_DEVICE.last_ip_geo_key
+  is '最后浏览ip维度';
+comment on column DW_USER.DIM_DEVICE.last_ip_int
+  is '最后浏览ip整数';
+comment on column DW_USER.DIM_DEVICE.create_time
+  is '激活时间小时';
+comment on column DW_USER.DIM_DEVICE.create_time_key
+  is '激活时间KEY';
+comment on column DW_USER.DIM_DEVICE.application_key
+  is '应用KEY';
+comment on column DW_USER.DIM_DEVICE.ver_key
+  is '版本KEY';
+comment on column DW_USER.DIM_DEVICE.hmsc_key
+  is '渠道KEY';
+

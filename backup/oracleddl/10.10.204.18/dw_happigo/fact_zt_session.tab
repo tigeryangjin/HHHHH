@@ -1,0 +1,19 @@
+???create table DW_HAPPIGO.FACT_ZT_SESSION
+(
+  session_key NUMBER(20) not null,
+  start_time  DATE,
+  end_time    DATE,
+  member_key  NUMBER(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

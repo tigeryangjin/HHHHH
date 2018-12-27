@@ -1,0 +1,20 @@
+???create table DW_USER.DIM_PAGESTAYTIME
+(
+  pagestaytimekey NUMBER(10),
+  name            VARCHAR2(20),
+  mintime         NUMBER(10),
+  maxtime         NUMBER(10)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

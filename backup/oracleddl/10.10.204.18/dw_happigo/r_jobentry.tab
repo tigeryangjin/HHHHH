@@ -1,0 +1,34 @@
+???create table DW_HAPPIGO.R_JOBENTRY
+(
+  id_jobentry      INTEGER not null,
+  id_job           INTEGER,
+  id_jobentry_type INTEGER,
+  name             VARCHAR2(255),
+  description      CLOB
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table DW_HAPPIGO.R_JOBENTRY
+  add primary key (ID_JOBENTRY)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

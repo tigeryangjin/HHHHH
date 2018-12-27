@@ -1,0 +1,30 @@
+???create table DW_USER.DIM_WECHAT_TMP
+(
+  id                    NUMBER(11),
+  g_id                  VARCHAR2(20),
+  nickname              VARCHAR2(1000),
+  sex                   NUMBER(1),
+  province              VARCHAR2(200),
+  city                  VARCHAR2(200),
+  subscribe_time        NUMBER(11),
+  open_id               VARCHAR2(60),
+  status                NUMBER(1),
+  cancel_subscribe_time NUMBER(11),
+  creat_time            NUMBER(11),
+  update_time           NUMBER(11),
+  is_test_uesr          NUMBER(1),
+  last_active_time      NUMBER(11)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

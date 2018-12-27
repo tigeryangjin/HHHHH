@@ -1,0 +1,99 @@
+???create table DW_USER.FACT_WEEKLY_MARKET
+(
+  date_key     NUMBER,
+  message_uv   NUMBER,
+  message_reg  NUMBER,
+  message_od   NUMBER,
+  weikang_uv   NUMBER,
+  weikang_reg  NUMBER,
+  weikang_od   NUMBER,
+  dm_uv        NUMBER,
+  dm_reg       NUMBER,
+  dm_od        NUMBER,
+  remind_uv    NUMBER,
+  remind_reg   NUMBER,
+  remind_od    NUMBER,
+  scan_uv      NUMBER,
+  scan_reg     NUMBER,
+  scan_od      NUMBER,
+  interact_uv  NUMBER,
+  interact_reg NUMBER,
+  interact_od  NUMBER,
+  nature_uv    NUMBER,
+  nature_reg   NUMBER,
+  nature_od    NUMBER,
+  tot_uv       NUMBER,
+  tot_reg      NUMBER,
+  tot_od       NUMBER,
+  lite_uv      NUMBER,
+  lite_reg     NUMBER,
+  lite_od      NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_WEEKLY_MARKET.date_key
+  is '统计日期';
+comment on column DW_USER.FACT_WEEKLY_MARKET.message_uv
+  is '短信日活';
+comment on column DW_USER.FACT_WEEKLY_MARKET.message_reg
+  is '短信注册数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.message_od
+  is '短信订购数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.weikang_uv
+  is '微刊日活';
+comment on column DW_USER.FACT_WEEKLY_MARKET.weikang_reg
+  is '微刊注册数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.weikang_od
+  is '微刊订购数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.dm_uv
+  is 'DM单日活';
+comment on column DW_USER.FACT_WEEKLY_MARKET.dm_reg
+  is 'DM单注册数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.dm_od
+  is 'DM单订购数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.remind_uv
+  is '预约提醒日活';
+comment on column DW_USER.FACT_WEEKLY_MARKET.remind_reg
+  is '预约提醒注册数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.remind_od
+  is '预约提醒订购数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.scan_uv
+  is '扫码日活';
+comment on column DW_USER.FACT_WEEKLY_MARKET.scan_reg
+  is '扫码注册数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.scan_od
+  is '扫码订购数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.interact_uv
+  is '双屏互动日活';
+comment on column DW_USER.FACT_WEEKLY_MARKET.interact_reg
+  is '双屏互动注册数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.interact_od
+  is '双屏互动订购数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.nature_uv
+  is '自然流量日活';
+comment on column DW_USER.FACT_WEEKLY_MARKET.nature_reg
+  is '自然流量注册数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.nature_od
+  is '自然流量订购数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.tot_uv
+  is '整体日活';
+comment on column DW_USER.FACT_WEEKLY_MARKET.tot_reg
+  is '整体注册数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.tot_od
+  is '整体订购数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.lite_uv
+  is '小程序日活';
+comment on column DW_USER.FACT_WEEKLY_MARKET.lite_reg
+  is '小程序注册数';
+comment on column DW_USER.FACT_WEEKLY_MARKET.lite_od
+  is '小程序订购数';
+

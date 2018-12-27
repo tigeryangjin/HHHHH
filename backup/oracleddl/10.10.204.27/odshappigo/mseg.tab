@@ -1,0 +1,629 @@
+???create table ODSHAPPIGO.MSEG
+(
+  mandt             VARCHAR2(9),
+  mblnr             VARCHAR2(30),
+  mjahr             VARCHAR2(12),
+  zeile             VARCHAR2(12),
+  line_id           VARCHAR2(18),
+  parent_id         VARCHAR2(18),
+  line_depth        VARCHAR2(6),
+  maa_urzei         VARCHAR2(12),
+  bwart             VARCHAR2(9),
+  xauto             VARCHAR2(3),
+  matnr             VARCHAR2(54),
+  werks             VARCHAR2(12),
+  lgort             VARCHAR2(12),
+  charg             VARCHAR2(30),
+  insmk             VARCHAR2(3),
+  zusch             VARCHAR2(3),
+  zustd             VARCHAR2(3),
+  sobkz             VARCHAR2(3),
+  lifnr             VARCHAR2(30),
+  kunnr             VARCHAR2(30),
+  kdauf             VARCHAR2(30),
+  kdpos             VARCHAR2(18),
+  kdein             VARCHAR2(12),
+  plpla             VARCHAR2(30),
+  shkzg             VARCHAR2(3),
+  waers             VARCHAR2(15),
+  dmbtr             NUMBER(13,2),
+  bnbtr             NUMBER(13,2),
+  bualt             NUMBER(13,2),
+  shkum             VARCHAR2(3),
+  dmbum             NUMBER(13,2),
+  bwtar             VARCHAR2(30),
+  menge             NUMBER(13,3),
+  meins             VARCHAR2(9),
+  erfmg             NUMBER(13,3),
+  erfme             VARCHAR2(9),
+  bpmng             NUMBER(13,3),
+  bprme             VARCHAR2(9),
+  ebeln             VARCHAR2(30),
+  ebelp             VARCHAR2(15),
+  lfbja             VARCHAR2(12),
+  lfbnr             VARCHAR2(30),
+  lfpos             VARCHAR2(12),
+  sjahr             VARCHAR2(12),
+  smbln             VARCHAR2(30),
+  smblp             VARCHAR2(12),
+  elikz             VARCHAR2(3),
+  sgtxt             VARCHAR2(150),
+  equnr             VARCHAR2(54),
+  wempf             VARCHAR2(36),
+  ablad             VARCHAR2(75),
+  gsber             VARCHAR2(12),
+  kokrs             VARCHAR2(12),
+  pargb             VARCHAR2(12),
+  parbu             VARCHAR2(12),
+  kostl             VARCHAR2(30),
+  projn             VARCHAR2(48),
+  aufnr             VARCHAR2(36),
+  anln1             VARCHAR2(36),
+  anln2             VARCHAR2(12),
+  xskst             VARCHAR2(3),
+  xsauf             VARCHAR2(3),
+  xspro             VARCHAR2(3),
+  xserg             VARCHAR2(3),
+  gjahr             VARCHAR2(12),
+  xruem             VARCHAR2(3),
+  xruej             VARCHAR2(3),
+  bukrs             VARCHAR2(12),
+  belnr             VARCHAR2(30),
+  buzei             VARCHAR2(9),
+  belum             VARCHAR2(30),
+  buzum             VARCHAR2(9),
+  rsnum             VARCHAR2(30),
+  rspos             VARCHAR2(12),
+  kzear             VARCHAR2(3),
+  pbamg             NUMBER(13,3),
+  kzstr             VARCHAR2(3),
+  ummat             VARCHAR2(54),
+  umwrk             VARCHAR2(12),
+  umlgo             VARCHAR2(12),
+  umcha             VARCHAR2(30),
+  umzst             VARCHAR2(3),
+  umzus             VARCHAR2(3),
+  umbar             VARCHAR2(30),
+  umsok             VARCHAR2(3),
+  kzbew             VARCHAR2(3),
+  kzvbr             VARCHAR2(3),
+  kzzug             VARCHAR2(3),
+  weunb             VARCHAR2(3),
+  palan             NUMBER(11),
+  lgnum             VARCHAR2(9),
+  lgtyp             VARCHAR2(9),
+  lgpla             VARCHAR2(30),
+  bestq             VARCHAR2(3),
+  bwlvs             VARCHAR2(9),
+  tbnum             VARCHAR2(30),
+  tbpos             VARCHAR2(12),
+  xblvs             VARCHAR2(3),
+  vschn             VARCHAR2(3),
+  nschn             VARCHAR2(3),
+  dypla             VARCHAR2(3),
+  ubnum             VARCHAR2(30),
+  tbpri             VARCHAR2(3),
+  tanum             VARCHAR2(30),
+  weanz             VARCHAR2(9),
+  grund             VARCHAR2(12),
+  evers             VARCHAR2(6),
+  evere             VARCHAR2(6),
+  imkey             VARCHAR2(24),
+  kstrg             VARCHAR2(36),
+  paobjnr           VARCHAR2(30),
+  prctr             VARCHAR2(30),
+  ps_psp_pnr        VARCHAR2(24),
+  nplnr             VARCHAR2(36),
+  aufpl             VARCHAR2(30),
+  aplzl             VARCHAR2(24),
+  aufps             VARCHAR2(12),
+  vptnr             VARCHAR2(30),
+  fipos             VARCHAR2(42),
+  sakto             VARCHAR2(30),
+  bstmg             NUMBER(13,3),
+  bstme             VARCHAR2(9),
+  xwsbr             VARCHAR2(3),
+  emlif             VARCHAR2(30),
+  zzhg01            VARCHAR2(66),
+  zzhg02            VARCHAR2(30),
+  zzhg03            VARCHAR2(30),
+  zzhg04            VARCHAR2(30),
+  zzhg05            VARCHAR2(30),
+  zzhg06            VARCHAR2(60),
+  exbwr             NUMBER(13,2),
+  vkwrt             NUMBER(13,2),
+  aktnr             VARCHAR2(30),
+  zekkn             VARCHAR2(6),
+  vfdat             VARCHAR2(24),
+  cuobj_ch          VARCHAR2(54),
+  exvkw             NUMBER(13,2),
+  pprctr            VARCHAR2(30),
+  rsart             VARCHAR2(3),
+  geber             VARCHAR2(30),
+  fistl             VARCHAR2(48),
+  matbf             VARCHAR2(54),
+  ummab             VARCHAR2(54),
+  bustm             VARCHAR2(12),
+  bustw             VARCHAR2(12),
+  mengu             VARCHAR2(3),
+  wertu             VARCHAR2(3),
+  lbkum             NUMBER(13,3),
+  salk3             NUMBER(13,2),
+  vprsv             VARCHAR2(3),
+  fkber             VARCHAR2(48),
+  dabrbz            VARCHAR2(24),
+  vkwra             NUMBER(13,2),
+  dabrz             VARCHAR2(24),
+  xbeau             VARCHAR2(3),
+  lsmng             NUMBER(13,3),
+  lsmeh             VARCHAR2(9),
+  kzbws             VARCHAR2(3),
+  qinspst           VARCHAR2(3),
+  urzei             VARCHAR2(12),
+  j_1bexbase        NUMBER(13,2),
+  mwskz             VARCHAR2(6),
+  txjcd             VARCHAR2(45),
+  ematn             VARCHAR2(54),
+  j_1agirupd        VARCHAR2(3),
+  vkmws             VARCHAR2(6),
+  hsdat             VARCHAR2(24),
+  berkz             VARCHAR2(3),
+  mat_kdauf         VARCHAR2(30),
+  mat_kdpos         VARCHAR2(18),
+  mat_pspnr         VARCHAR2(24),
+  xwoff             VARCHAR2(3),
+  bemot             VARCHAR2(6),
+  prznr             VARCHAR2(36),
+  llief             VARCHAR2(30),
+  lstar             VARCHAR2(18),
+  xobew             VARCHAR2(3),
+  grant_nbr         VARCHAR2(60),
+  zustd_t156m       VARCHAR2(3),
+  spe_gts_stock_ty  VARCHAR2(3),
+  kblnr             VARCHAR2(30),
+  kblpos            VARCHAR2(9),
+  xmacc             VARCHAR2(3),
+  vgart_mkpf        VARCHAR2(6),
+  budat_mkpf        VARCHAR2(24),
+  cpudt_mkpf        VARCHAR2(24),
+  cputm_mkpf        VARCHAR2(18),
+  usnam_mkpf        VARCHAR2(36),
+  xblnr_mkpf        VARCHAR2(48),
+  tcode2_mkpf       VARCHAR2(60),
+  vbeln_im          VARCHAR2(30),
+  vbelp_im          VARCHAR2(18),
+  "/BEV2/ED_KZ_VER" VARCHAR2(3),
+  "/BEV2/ED_USER"   VARCHAR2(36),
+  "/BEV2/ED_AEDAT"  VARCHAR2(24),
+  "/BEV2/ED_AETIM"  VARCHAR2(18),
+  disub_owner       VARCHAR2(30),
+  oinavnw           NUMBER(13,2),
+  oicondcod         VARCHAR2(6),
+  condi             VARCHAR2(6),
+  extor             VARCHAR2(60),
+  extln             VARCHAR2(30),
+  zzlfart           VARCHAR2(12),
+  zzkunag           VARCHAR2(30),
+  zzbwart           VARCHAR2(9),
+  zzcustgrp1        VARCHAR2(9),
+  zzbsart           VARCHAR2(12)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column ODSHAPPIGO.MSEG.mandt
+  is '客户端';
+comment on column ODSHAPPIGO.MSEG.mblnr
+  is '物料凭证编号';
+comment on column ODSHAPPIGO.MSEG.mjahr
+  is '物料凭证年度';
+comment on column ODSHAPPIGO.MSEG.zeile
+  is '物料凭证中的项目';
+comment on column ODSHAPPIGO.MSEG.line_id
+  is '凭证行的唯一标识';
+comment on column ODSHAPPIGO.MSEG.parent_id
+  is '上一行的识别码';
+comment on column ODSHAPPIGO.MSEG.line_depth
+  is '凭证中行层次结构级别';
+comment on column ODSHAPPIGO.MSEG.maa_urzei
+  is '物料凭证中科目分配的原始行项目';
+comment on column ODSHAPPIGO.MSEG.bwart
+  is '移动类型（库存管理）';
+comment on column ODSHAPPIGO.MSEG.xauto
+  is '项目自动创建';
+comment on column ODSHAPPIGO.MSEG.matnr
+  is '商品';
+comment on column ODSHAPPIGO.MSEG.werks
+  is '地点';
+comment on column ODSHAPPIGO.MSEG.lgort
+  is '库存地点';
+comment on column ODSHAPPIGO.MSEG.charg
+  is '批号';
+comment on column ODSHAPPIGO.MSEG.insmk
+  is '库存类型';
+comment on column ODSHAPPIGO.MSEG.zusch
+  is '批量状态码';
+comment on column ODSHAPPIGO.MSEG.zustd
+  is '限制使用库存中的批量';
+comment on column ODSHAPPIGO.MSEG.sobkz
+  is '特殊库存标识';
+comment on column ODSHAPPIGO.MSEG.lifnr
+  is '供应商帐户号';
+comment on column ODSHAPPIGO.MSEG.kunnr
+  is '客户的帐户号';
+comment on column ODSHAPPIGO.MSEG.kdauf
+  is '销售订单数';
+comment on column ODSHAPPIGO.MSEG.kdpos
+  is '销售订单中的项目编号';
+comment on column ODSHAPPIGO.MSEG.kdein
+  is '销售订单的交货计划';
+comment on column ODSHAPPIGO.MSEG.plpla
+  is '差异的分配';
+comment on column ODSHAPPIGO.MSEG.shkzg
+  is '借方/贷方标识';
+comment on column ODSHAPPIGO.MSEG.waers
+  is '货币码';
+comment on column ODSHAPPIGO.MSEG.dmbtr
+  is '按本位币计的金额';
+comment on column ODSHAPPIGO.MSEG.bnbtr
+  is '用本币计算的交货成本';
+comment on column ODSHAPPIGO.MSEG.bualt
+  is '用可选择的价格控制的记帐的金额';
+comment on column ODSHAPPIGO.MSEG.shkum
+  is '重新评估中的借项/贷项标识';
+comment on column ODSHAPPIGO.MSEG.dmbum
+  is '上一期间返回记帐中的重估金额';
+comment on column ODSHAPPIGO.MSEG.bwtar
+  is '评估类型';
+comment on column ODSHAPPIGO.MSEG.menge
+  is '数量';
+comment on column ODSHAPPIGO.MSEG.meins
+  is '基本计量单位';
+comment on column ODSHAPPIGO.MSEG.erfmg
+  is '以输入单位计的数量';
+comment on column ODSHAPPIGO.MSEG.erfme
+  is '条目单位';
+comment on column ODSHAPPIGO.MSEG.bpmng
+  is '采购订单价格单位的数量';
+comment on column ODSHAPPIGO.MSEG.bprme
+  is '订单价格单位(采购)';
+comment on column ODSHAPPIGO.MSEG.ebeln
+  is '采购订单编号';
+comment on column ODSHAPPIGO.MSEG.ebelp
+  is '采购凭证的项目编号';
+comment on column ODSHAPPIGO.MSEG.lfbja
+  is '参考凭证会计年度';
+comment on column ODSHAPPIGO.MSEG.lfbnr
+  is '参考凭证的凭证号';
+comment on column ODSHAPPIGO.MSEG.lfpos
+  is '参考凭证项目';
+comment on column ODSHAPPIGO.MSEG.sjahr
+  is '物料凭证年度';
+comment on column ODSHAPPIGO.MSEG.smbln
+  is '物料凭证编号';
+comment on column ODSHAPPIGO.MSEG.smblp
+  is '物料凭证中的项目';
+comment on column ODSHAPPIGO.MSEG.elikz
+  is '交货已完成标识';
+comment on column ODSHAPPIGO.MSEG.sgtxt
+  is '项目文本';
+comment on column ODSHAPPIGO.MSEG.equnr
+  is '设备编号';
+comment on column ODSHAPPIGO.MSEG.wempf
+  is '收货方/运达方';
+comment on column ODSHAPPIGO.MSEG.ablad
+  is '卸货点';
+comment on column ODSHAPPIGO.MSEG.gsber
+  is '业务范围';
+comment on column ODSHAPPIGO.MSEG.kokrs
+  is '控制范围';
+comment on column ODSHAPPIGO.MSEG.pargb
+  is '贸易伙伴的业务范围';
+comment on column ODSHAPPIGO.MSEG.parbu
+  is '结算公司代码';
+comment on column ODSHAPPIGO.MSEG.kostl
+  is '成本中心';
+comment on column ODSHAPPIGO.MSEG.projn
+  is '原有:项目编号:不在使用 --> PS_POSNR';
+comment on column ODSHAPPIGO.MSEG.aufnr
+  is '订单号';
+comment on column ODSHAPPIGO.MSEG.anln1
+  is '主资产号';
+comment on column ODSHAPPIGO.MSEG.anln2
+  is '资产次级编号';
+comment on column ODSHAPPIGO.MSEG.xskst
+  is '标志: 统计记帐到成本中心';
+comment on column ODSHAPPIGO.MSEG.xsauf
+  is '标志: 统计记帐到订单';
+comment on column ODSHAPPIGO.MSEG.xspro
+  is '标志: 统计记帐到项目';
+comment on column ODSHAPPIGO.MSEG.xserg
+  is '标志: 利润分析记帐是统计性的';
+comment on column ODSHAPPIGO.MSEG.gjahr
+  is '财年';
+comment on column ODSHAPPIGO.MSEG.xruem
+  is '允许记帐到上一期间(后过账)';
+comment on column ODSHAPPIGO.MSEG.xruej
+  is '标识: 记帐到上一年';
+comment on column ODSHAPPIGO.MSEG.bukrs
+  is '公司代码';
+comment on column ODSHAPPIGO.MSEG.belnr
+  is '会计凭证编号';
+comment on column ODSHAPPIGO.MSEG.buzei
+  is '会计凭证中的行项目数';
+comment on column ODSHAPPIGO.MSEG.belum
+  is '会计凭证编号';
+comment on column ODSHAPPIGO.MSEG.buzum
+  is '会计凭证中的行项目数';
+comment on column ODSHAPPIGO.MSEG.rsnum
+  is '预留/相关需求的编号';
+comment on column ODSHAPPIGO.MSEG.rspos
+  is '预留/相关需求的项目编号';
+comment on column ODSHAPPIGO.MSEG.kzear
+  is '该预留的最后发货';
+comment on column ODSHAPPIGO.MSEG.pbamg
+  is '数量';
+comment on column ODSHAPPIGO.MSEG.kzstr
+  is '事务/事件与统计相关';
+comment on column ODSHAPPIGO.MSEG.ummat
+  is '收货/发货物料';
+comment on column ODSHAPPIGO.MSEG.umwrk
+  is '收货/发货工厂';
+comment on column ODSHAPPIGO.MSEG.umlgo
+  is '收货/发货库存地点';
+comment on column ODSHAPPIGO.MSEG.umcha
+  is '收货/发货批量';
+comment on column ODSHAPPIGO.MSEG.umzst
+  is '转储批量的状态';
+comment on column ODSHAPPIGO.MSEG.umzus
+  is '转移批量的状态代码';
+comment on column ODSHAPPIGO.MSEG.umbar
+  is '转储批次的估价类型';
+comment on column ODSHAPPIGO.MSEG.umsok
+  is '库存调拨的特殊库存标识';
+comment on column ODSHAPPIGO.MSEG.kzbew
+  is '移动标识';
+comment on column ODSHAPPIGO.MSEG.kzvbr
+  is '消耗过帐';
+comment on column ODSHAPPIGO.MSEG.kzzug
+  is '收货标识';
+comment on column ODSHAPPIGO.MSEG.weunb
+  is '收货，非评估';
+comment on column ODSHAPPIGO.MSEG.palan
+  is 'WMS 货盘数';
+comment on column ODSHAPPIGO.MSEG.lgnum
+  is '仓库号/混合仓库';
+comment on column ODSHAPPIGO.MSEG.lgtyp
+  is '仓储类型';
+comment on column ODSHAPPIGO.MSEG.lgpla
+  is '仓位';
+comment on column ODSHAPPIGO.MSEG.bestq
+  is '仓库管理系统中的库存类别';
+comment on column ODSHAPPIGO.MSEG.bwlvs
+  is '仓库管理的移动类型';
+comment on column ODSHAPPIGO.MSEG.tbnum
+  is '转移要求号';
+comment on column ODSHAPPIGO.MSEG.tbpos
+  is '转储需求项目';
+comment on column ODSHAPPIGO.MSEG.xblvs
+  is '标识: 仓库管理系统中的记帐';
+comment on column ODSHAPPIGO.MSEG.vschn
+  is '标识: 源仓储类型和仓位的中间仓储记帐';
+comment on column ODSHAPPIGO.MSEG.nschn
+  is '标识: 目的地仓储类型和仓位的中间仓储记帐';
+comment on column ODSHAPPIGO.MSEG.dypla
+  is '标识: 动态仓位';
+comment on column ODSHAPPIGO.MSEG.ubnum
+  is '过帐更改编号';
+comment on column ODSHAPPIGO.MSEG.tbpri
+  is '转储优先级';
+comment on column ODSHAPPIGO.MSEG.tanum
+  is '转储单编号';
+comment on column ODSHAPPIGO.MSEG.weanz
+  is '将打印的收货/发货单数量';
+comment on column ODSHAPPIGO.MSEG.grund
+  is '移动原因';
+comment on column ODSHAPPIGO.MSEG.evers
+  is '装运须知';
+comment on column ODSHAPPIGO.MSEG.evere
+  is '依照装运通知';
+comment on column ODSHAPPIGO.MSEG.imkey
+  is '房地产对象的内码';
+comment on column ODSHAPPIGO.MSEG.kstrg
+  is '成本对象';
+comment on column ODSHAPPIGO.MSEG.paobjnr
+  is '获利能力段编号(CO-PA)';
+comment on column ODSHAPPIGO.MSEG.prctr
+  is '利润中心';
+comment on column ODSHAPPIGO.MSEG.ps_psp_pnr
+  is '工作分解结构元素 (WBS 元素)';
+comment on column ODSHAPPIGO.MSEG.nplnr
+  is '科目分配的网络号';
+comment on column ODSHAPPIGO.MSEG.aufpl
+  is '订单中工序的工艺路线号';
+comment on column ODSHAPPIGO.MSEG.aplzl
+  is '内部计数器';
+comment on column ODSHAPPIGO.MSEG.aufps
+  is '订单项目编号';
+comment on column ODSHAPPIGO.MSEG.vptnr
+  is '合伙人帐户编号';
+comment on column ODSHAPPIGO.MSEG.fipos
+  is '承诺项目';
+comment on column ODSHAPPIGO.MSEG.sakto
+  is '总账科目编号';
+comment on column ODSHAPPIGO.MSEG.bstmg
+  is '用订货单位表示的收货数量';
+comment on column ODSHAPPIGO.MSEG.bstme
+  is '采购订单的计量单位';
+comment on column ODSHAPPIGO.MSEG.xwsbr
+  is '允许对基于GR的IV进行GR 冲销，而不管发票';
+comment on column ODSHAPPIGO.MSEG.emlif
+  is '被供应的供应商/接受供货者';
+comment on column ODSHAPPIGO.MSEG.zzhg01
+  is '运单号';
+comment on column ODSHAPPIGO.MSEG.zzhg02
+  is '销售订单';
+comment on column ODSHAPPIGO.MSEG.zzhg03
+  is '批次号';
+comment on column ODSHAPPIGO.MSEG.zzhg04
+  is '采购类型';
+comment on column ODSHAPPIGO.MSEG.zzhg05
+  is '备用1';
+comment on column ODSHAPPIGO.MSEG.zzhg06
+  is '备用2';
+comment on column ODSHAPPIGO.MSEG.exbwr
+  is '以本地货币计量的从外部输入的过帐金额';
+comment on column ODSHAPPIGO.MSEG.vkwrt
+  is '含增值税的销售价格价值';
+comment on column ODSHAPPIGO.MSEG.aktnr
+  is '促销';
+comment on column ODSHAPPIGO.MSEG.zekkn
+  is '帐户分配的顺序编号';
+comment on column ODSHAPPIGO.MSEG.vfdat
+  is '货架寿命到期日';
+comment on column ODSHAPPIGO.MSEG.cuobj_ch
+  is '批次分类的内部对象编号';
+comment on column ODSHAPPIGO.MSEG.exvkw
+  is '以本地货币表示的外部输入销售值';
+comment on column ODSHAPPIGO.MSEG.pprctr
+  is '伙伴利润中心';
+comment on column ODSHAPPIGO.MSEG.rsart
+  is '记录类型';
+comment on column ODSHAPPIGO.MSEG.geber
+  is '基金';
+comment on column ODSHAPPIGO.MSEG.fistl
+  is '基金中心';
+comment on column ODSHAPPIGO.MSEG.matbf
+  is '相关库存管理的物料';
+comment on column ODSHAPPIGO.MSEG.ummab
+  is '收货/发货物料';
+comment on column ODSHAPPIGO.MSEG.bustm
+  is '数量的记帐字串';
+comment on column ODSHAPPIGO.MSEG.bustw
+  is '价值的记帐字串';
+comment on column ODSHAPPIGO.MSEG.mengu
+  is '物料主记录中的数量更新';
+comment on column ODSHAPPIGO.MSEG.wertu
+  is '物料主记录中的值更新';
+comment on column ODSHAPPIGO.MSEG.lbkum
+  is '过帐前总计估价库存';
+comment on column ODSHAPPIGO.MSEG.salk3
+  is '过帐前总计评估的库存的价值';
+comment on column ODSHAPPIGO.MSEG.vprsv
+  is '价格控制指示符';
+comment on column ODSHAPPIGO.MSEG.fkber
+  is '功能范围';
+comment on column ODSHAPPIGO.MSEG.dabrbz
+  is '结算的参考日期';
+comment on column ODSHAPPIGO.MSEG.vkwra
+  is '排除增值税的销售价格值';
+comment on column ODSHAPPIGO.MSEG.dabrz
+  is '结算的参考日期';
+comment on column ODSHAPPIGO.MSEG.xbeau
+  is '在收货时间创建的采购订单';
+comment on column ODSHAPPIGO.MSEG.lsmng
+  is '交货单的计量单位数量';
+comment on column ODSHAPPIGO.MSEG.lsmeh
+  is '交货单的计量单位';
+comment on column ODSHAPPIGO.MSEG.kzbws
+  is '特定库存的评估';
+comment on column ODSHAPPIGO.MSEG.qinspst
+  is '货物收据检验状态';
+comment on column ODSHAPPIGO.MSEG.urzei
+  is '物料凭证中的原始行';
+comment on column ODSHAPPIGO.MSEG.j_1bexbase
+  is '文件货币的交替基数金额';
+comment on column ODSHAPPIGO.MSEG.mwskz
+  is '销售/购买税代码';
+comment on column ODSHAPPIGO.MSEG.txjcd
+  is '地区税务代码';
+comment on column ODSHAPPIGO.MSEG.ematn
+  is '按照制造商零件编号的物料编号';
+comment on column ODSHAPPIGO.MSEG.j_1agirupd
+  is '已运行出货重估';
+comment on column ODSHAPPIGO.MSEG.vkmws
+  is '销售/购买税代码';
+comment on column ODSHAPPIGO.MSEG.hsdat
+  is '生产日期';
+comment on column ODSHAPPIGO.MSEG.berkz
+  is '生产供应的物料待运标志';
+comment on column ODSHAPPIGO.MSEG.mat_kdauf
+  is '已评估销售订单库存的销售订单编号';
+comment on column ODSHAPPIGO.MSEG.mat_kdpos
+  is '评估销售订单库存的销售订单项目';
+comment on column ODSHAPPIGO.MSEG.mat_pspnr
+  is '已估价的销售定单库存 WBS 元素';
+comment on column ODSHAPPIGO.MSEG.xwoff
+  is '开放值计算';
+comment on column ODSHAPPIGO.MSEG.bemot
+  is '会计标识';
+comment on column ODSHAPPIGO.MSEG.prznr
+  is '业务处理';
+comment on column ODSHAPPIGO.MSEG.llief
+  is '商品供应商';
+comment on column ODSHAPPIGO.MSEG.lstar
+  is '活动类型';
+comment on column ODSHAPPIGO.MSEG.xobew
+  is '供应商库存评估标识';
+comment on column ODSHAPPIGO.MSEG.grant_nbr
+  is '同意';
+comment on column ODSHAPPIGO.MSEG.zustd_t156m
+  is '库存类型修改(从表T156M中读取)';
+comment on column ODSHAPPIGO.MSEG.spe_gts_stock_ty
+  is 'GTS 库存类型';
+comment on column ODSHAPPIGO.MSEG.kblnr
+  is '指定用途基金的凭证编号';
+comment on column ODSHAPPIGO.MSEG.kblpos
+  is '资金储备：凭证项';
+comment on column ODSHAPPIGO.MSEG.xmacc
+  is '多重科目分配';
+comment on column ODSHAPPIGO.MSEG.vgart_mkpf
+  is '交易/事件类型';
+comment on column ODSHAPPIGO.MSEG.budat_mkpf
+  is '凭证中的过账日期';
+comment on column ODSHAPPIGO.MSEG.cpudt_mkpf
+  is '会计凭证输入日期';
+comment on column ODSHAPPIGO.MSEG.cputm_mkpf
+  is '输入时间';
+comment on column ODSHAPPIGO.MSEG.usnam_mkpf
+  is '用户名';
+comment on column ODSHAPPIGO.MSEG.xblnr_mkpf
+  is '参考凭证编号';
+comment on column ODSHAPPIGO.MSEG.tcode2_mkpf
+  is '事务代码';
+comment on column ODSHAPPIGO.MSEG.vbeln_im
+  is '交货';
+comment on column ODSHAPPIGO.MSEG.vbelp_im
+  is '交货项目';
+comment on column ODSHAPPIGO.MSEG.disub_owner
+  is '库存拥有者';
+comment on column ODSHAPPIGO.MSEG.oinavnw
+  is '不可打折的进项税';
+comment on column ODSHAPPIGO.MSEG.oicondcod
+  is '合资企业指示器 (条件码)';
+comment on column ODSHAPPIGO.MSEG.condi
+  is '合资企业指示器 (条件码)';
+comment on column ODSHAPPIGO.MSEG.extor
+  is '外部单号';
+comment on column ODSHAPPIGO.MSEG.extln
+  is '外部行号';
+comment on column ODSHAPPIGO.MSEG.zzlfart
+  is '交货类型';
+comment on column ODSHAPPIGO.MSEG.zzkunag
+  is '渠道';
+comment on column ODSHAPPIGO.MSEG.zzbwart
+  is '原始的移动类型';
+comment on column ODSHAPPIGO.MSEG.zzcustgrp1
+  is '客户组1';
+comment on column ODSHAPPIGO.MSEG.zzbsart
+  is '订单类型（采购）';
+

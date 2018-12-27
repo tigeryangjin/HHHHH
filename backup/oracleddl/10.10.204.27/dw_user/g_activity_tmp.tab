@@ -1,0 +1,59 @@
+???create table DW_USER.G_ACTIVITY_TMP
+(
+  id_col          NUMBER(10),
+  title           VARCHAR2(150),
+  share_title     VARCHAR2(150),
+  share_desc      VARCHAR2(450),
+  share_img       VARCHAR2(600),
+  activity_name   VARCHAR2(60),
+  trace_page_name VARCHAR2(60),
+  create_time     DATE,
+  begin_time      DATE,
+  end_time        DATE,
+  from_col        VARCHAR2(30),
+  enable_col      VARCHAR2(1),
+  author_id       NUMBER(10),
+  key_source      VARCHAR2(30)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.G_ACTIVITY_TMP
+  is 'source:wzt_happigo@10.33.2.188
+by yangjin
+2018-05-10';
+comment on column DW_USER.G_ACTIVITY_TMP.id_col
+  is '主键';
+comment on column DW_USER.G_ACTIVITY_TMP.title
+  is '专题名称';
+comment on column DW_USER.G_ACTIVITY_TMP.share_title
+  is '分享标题';
+comment on column DW_USER.G_ACTIVITY_TMP.share_desc
+  is '分享描述';
+comment on column DW_USER.G_ACTIVITY_TMP.share_img
+  is '分享图片';
+comment on column DW_USER.G_ACTIVITY_TMP.activity_name
+  is '活动名称';
+comment on column DW_USER.G_ACTIVITY_TMP.trace_page_name
+  is '用户行为统计编码';
+comment on column DW_USER.G_ACTIVITY_TMP.create_time
+  is '创建时间';
+comment on column DW_USER.G_ACTIVITY_TMP.begin_time
+  is '开始时间';
+comment on column DW_USER.G_ACTIVITY_TMP.end_time
+  is '活动结束时间';
+comment on column DW_USER.G_ACTIVITY_TMP.from_col
+  is '渠道 1:APP 2:Weixin 3:3g 0没有记录';
+comment on column DW_USER.G_ACTIVITY_TMP.enable_col
+  is '是否启用 1 启用 0 不启用';
+comment on column DW_USER.G_ACTIVITY_TMP.author_id
+  is '作者Id';
+

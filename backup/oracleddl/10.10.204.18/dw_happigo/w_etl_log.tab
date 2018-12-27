@@ -1,0 +1,64 @@
+???create table DW_HAPPIGO.W_ETL_LOG
+(
+  row_id          NUMBER,
+  start_time      DATE,
+  end_time        DATE,
+  etl_duration    NUMBER(10,2),
+  proc_name       VARCHAR2(50),
+  measure_id      NUMBER(6),
+  proc_id         INTEGER,
+  table_name      VARCHAR2(50),
+  table_type      VARCHAR2(4),
+  etl_record_load INTEGER,
+  etl_record_ins  INTEGER,
+  etl_record_upd  INTEGER,
+  etl_record_del  INTEGER,
+  etl_status      VARCHAR2(30),
+  err_msg         VARCHAR2(1000),
+  err_sql         VARCHAR2(2000),
+  etl_memo        VARCHAR2(100)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_HAPPIGO.W_ETL_LOG.start_time
+  is '开始日期时间';
+comment on column DW_HAPPIGO.W_ETL_LOG.end_time
+  is '结束日期时间';
+comment on column DW_HAPPIGO.W_ETL_LOG.etl_duration
+  is '运行秒数';
+comment on column DW_HAPPIGO.W_ETL_LOG.proc_name
+  is '存储过程名称';
+comment on column DW_HAPPIGO.W_ETL_LOG.measure_id
+  is '指标ID';
+comment on column DW_HAPPIGO.W_ETL_LOG.proc_id
+  is '存储过程批次';
+comment on column DW_HAPPIGO.W_ETL_LOG.table_name
+  is '目标表名称';
+comment on column DW_HAPPIGO.W_ETL_LOG.table_type
+  is '目标表类型';
+comment on column DW_HAPPIGO.W_ETL_LOG.etl_record_load
+  is '加载记录数';
+comment on column DW_HAPPIGO.W_ETL_LOG.etl_record_ins
+  is '插入记录数';
+comment on column DW_HAPPIGO.W_ETL_LOG.etl_record_upd
+  is '更新记录数';
+comment on column DW_HAPPIGO.W_ETL_LOG.etl_record_del
+  is '删除记录数';
+comment on column DW_HAPPIGO.W_ETL_LOG.etl_status
+  is 'ETL状态';
+comment on column DW_HAPPIGO.W_ETL_LOG.err_msg
+  is '出错信息';
+comment on column DW_HAPPIGO.W_ETL_LOG.err_sql
+  is '出错语句';
+comment on column DW_HAPPIGO.W_ETL_LOG.etl_memo
+  is 'ETL执行结果描述';
+

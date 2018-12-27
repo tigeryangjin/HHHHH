@@ -1,0 +1,42 @@
+???create table DW_USER.FACT_LIVE_ROOM_PROGRAM
+(
+  id                NUMBER(20),
+  liveroom_id       NUMBER(20),
+  name              VARCHAR2(500),
+  ad_pic            VARCHAR2(500),
+  begin_time        VARCHAR2(100),
+  begin_time_key    NUMBER(20),
+  end_time          VARCHAR2(100),
+  end_time_key      NUMBER(20),
+  anchor_id         NUMBER(20),
+  anchor_name       VARCHAR2(500),
+  anchor_pic        VARCHAR2(500),
+  broadcaster       VARCHAR2(500),
+  goods_category    NUMBER(20),
+  conner_pic        VARCHAR2(500),
+  if_foreshow       NUMBER(20),
+  foreshow_time_key NUMBER(20),
+  foreshow_time     VARCHAR2(100),
+  foreshow_pic      VARCHAR2(500),
+  status            NUMBER(20),
+  screen_ratio      NUMBER(20),
+  share_title       VARCHAR2(500),
+  share_content     VARCHAR2(500),
+  share_pic         VARCHAR2(500),
+  share_path        VARCHAR2(500),
+  onlinecount       NUMBER(20),
+  likecount         NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

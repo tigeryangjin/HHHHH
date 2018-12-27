@@ -1,0 +1,59 @@
+???create table DW_USER.OPER_GOODRECOMMEND_DAYLY
+(
+  item_code        NUMBER(10),
+  goods_commonid   NUMBER(10),
+  sales_nums       NUMBER(10),
+  cancel_nums      NUMBER(10),
+  posting_date_key NUMBER(10),
+  matxl            NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_GOODRECOMMEND_DAYLY
+  is 'ec商品每日销量统计';
+comment on column DW_USER.OPER_GOODRECOMMEND_DAYLY.item_code
+  is 'crm编号';
+comment on column DW_USER.OPER_GOODRECOMMEND_DAYLY.goods_commonid
+  is 'ec编号';
+comment on column DW_USER.OPER_GOODRECOMMEND_DAYLY.sales_nums
+  is '每日销量';
+comment on column DW_USER.OPER_GOODRECOMMEND_DAYLY.cancel_nums
+  is '每日取消量';
+comment on column DW_USER.OPER_GOODRECOMMEND_DAYLY.posting_date_key
+  is '日期';
+comment on column DW_USER.OPER_GOODRECOMMEND_DAYLY.matxl
+  is '小类编号';
+create index DW_USER.FEGS_DAY_KEY_NEW on DW_USER.OPER_GOODRECOMMEND_DAYLY (POSTING_DATE_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.FEGS_ITEM_CODE_NEW on DW_USER.OPER_GOODRECOMMEND_DAYLY (ITEM_CODE)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

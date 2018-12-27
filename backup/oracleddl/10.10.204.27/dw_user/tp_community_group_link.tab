@@ -1,0 +1,62 @@
+???create table DW_USER.TP_COMMUNITY_GROUP_LINK
+(
+  link_id          NUMBER(11) not null,
+  group_id         NUMBER(11) not null,
+  group_no         VARCHAR2(50) not null,
+  sign             VARCHAR2(200) not null,
+  link_expire_time DATE not null,
+  admin_user       VARCHAR2(50) not null,
+  add_time         DATE not null,
+  token            VARCHAR2(30) not null,
+  w_insert_dt      DATE,
+  w_update_dt      DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.TP_COMMUNITY_GROUP_LINK
+  is '群分享链接表
+by yangjin
+2018-03-26';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK.link_id
+  is '索引主键';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK.group_id
+  is '所属分组';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK.group_no
+  is '群编号';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK.sign
+  is '签名';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK.link_expire_time
+  is '链接过期时间';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK.admin_user
+  is '操作人';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK.add_time
+  is '创建时间';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK.w_update_dt
+  is '记录更新时间';
+alter table DW_USER.TP_COMMUNITY_GROUP_LINK
+  add constraint TP_COMMUNITY_GROUP_LINK_PK primary key (LINK_ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.TP_COMMUNITY_GROUP_LINK_PK nologging;
+

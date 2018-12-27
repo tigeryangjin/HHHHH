@@ -1,0 +1,69 @@
+???create table DW_USER.OPER_GOODRECOMMEND_M_TOTAL
+(
+  member_key      NUMBER(20),
+  item_code       NUMBER(10),
+  pv_total        NUMBER(20),
+  cart_total      NUMBER(20),
+  fav_total       NUMBER(20),
+  order_total     NUMBER(10),
+  cancel_total    NUMBER(10),
+  user_preference NUMBER(20),
+  pl_preference   NUMBER(20),
+  update_date_key NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.OPER_GOODRECOMMEND_M_TOTAL.member_key
+  is '客户编号';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_TOTAL.item_code
+  is '商品编号';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_TOTAL.pv_total
+  is 'pv浏览数量';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_TOTAL.cart_total
+  is '购物车';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_TOTAL.fav_total
+  is '收藏';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_TOTAL.order_total
+  is '订购';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_TOTAL.cancel_total
+  is '订购取消';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_TOTAL.user_preference
+  is '用户偏好';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_TOTAL.pl_preference
+  is '用户品类偏好';
+comment on column DW_USER.OPER_GOODRECOMMEND_M_TOTAL.update_date_key
+  is '更新日期';
+create index DW_USER.FMPOT_ITEM_CODE on DW_USER.OPER_GOODRECOMMEND_M_TOTAL (ITEM_CODE)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.FMPOT_MEMBER_KEY on DW_USER.OPER_GOODRECOMMEND_M_TOTAL (MEMBER_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

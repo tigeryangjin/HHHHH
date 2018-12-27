@@ -1,0 +1,105 @@
+???create table DW_USER.FACT_SEARCH
+(
+  id               NUMBER(20) not null,
+  vid              VARCHAR2(1000),
+  member_key       NUMBER(20),
+  ip               VARCHAR2(100),
+  create_date      DATE,
+  skw              VARCHAR2(1500),
+  application_key  NUMBER(10),
+  application_name VARCHAR2(50),
+  visitor_key      NUMBER(20),
+  ip_geo_key       NUMBER(20),
+  create_date_key  NUMBER(20),
+  search_key       NUMBER(20) not null
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_SEARCH
+  is '搜索事实表';
+comment on column DW_USER.FACT_SEARCH.id
+  is 'id';
+comment on column DW_USER.FACT_SEARCH.vid
+  is '用户终端唯一标识号';
+comment on column DW_USER.FACT_SEARCH.member_key
+  is 'MEMBER_KEY';
+comment on column DW_USER.FACT_SEARCH.ip
+  is 'IP';
+comment on column DW_USER.FACT_SEARCH.create_date
+  is '创建日期';
+comment on column DW_USER.FACT_SEARCH.skw
+  is '搜索关键词';
+comment on column DW_USER.FACT_SEARCH.application_key
+  is '应用KEY';
+comment on column DW_USER.FACT_SEARCH.application_name
+  is '应用名称';
+comment on column DW_USER.FACT_SEARCH.visitor_key
+  is '用户key';
+comment on column DW_USER.FACT_SEARCH.ip_geo_key
+  is '上游页面KEY';
+comment on column DW_USER.FACT_SEARCH.create_date_key
+  is '创建日期key';
+comment on column DW_USER.FACT_SEARCH.search_key
+  is '搜索key';
+create index DW_USER.SAPP_IDX on DW_USER.FACT_SEARCH (APPLICATION_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.SEARCHDATE_IDX on DW_USER.FACT_SEARCH (CREATE_DATE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.SEARCHID_IDX on DW_USER.FACT_SEARCH (ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.SVT_IDX on DW_USER.FACT_SEARCH (VISITOR_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

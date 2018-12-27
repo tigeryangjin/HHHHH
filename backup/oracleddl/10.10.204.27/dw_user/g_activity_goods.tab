@@ -1,0 +1,94 @@
+???create table DW_USER.G_ACTIVITY_GOODS
+(
+  id_col                NUMBER(20),
+  group_id              NUMBER(10),
+  goods_name            VARCHAR2(150),
+  goods_commonid        VARCHAR2(60),
+  item_code             VARCHAR2(450),
+  goods_jingle          VARCHAR2(600),
+  goods_jingle2         VARCHAR2(600),
+  goods_reduction       VARCHAR2(150),
+  superscript_image     VARCHAR2(600),
+  goods_image           VARCHAR2(600),
+  goods_promotion_price VARCHAR2(30),
+  goods_marketprice     VARCHAR2(30),
+  goods_storage         NUMBER(10),
+  goods_state           NUMBER(10),
+  goods_sales           NUMBER(10),
+  enable_col            NUMBER(4),
+  create_time           DATE,
+  update_time           DATE,
+  sort_col              NUMBER(10),
+  sales_sort            NUMBER(10),
+  sync_status           NUMBER(1),
+  sync_time             DATE,
+  sync_enable           NUMBER(1),
+  w_insert_dt           DATE,
+  w_update_dt           DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.G_ACTIVITY_GOODS
+  is 'source:G_ACTIVITY_GOODS_TMP
+by yangjin
+2018-05-11';
+comment on column DW_USER.G_ACTIVITY_GOODS.id_col
+  is '主键';
+comment on column DW_USER.G_ACTIVITY_GOODS.group_id
+  is '活动分组id';
+comment on column DW_USER.G_ACTIVITY_GOODS.goods_name
+  is '商品名称';
+comment on column DW_USER.G_ACTIVITY_GOODS.goods_commonid
+  is '商品编号';
+comment on column DW_USER.G_ACTIVITY_GOODS.item_code
+  is '商品货号';
+comment on column DW_USER.G_ACTIVITY_GOODS.goods_jingle
+  is '商品热点1';
+comment on column DW_USER.G_ACTIVITY_GOODS.goods_jingle2
+  is '商品热点2';
+comment on column DW_USER.G_ACTIVITY_GOODS.goods_reduction
+  is '满减文案';
+comment on column DW_USER.G_ACTIVITY_GOODS.superscript_image
+  is 'EC角标路径';
+comment on column DW_USER.G_ACTIVITY_GOODS.goods_image
+  is '商品图片';
+comment on column DW_USER.G_ACTIVITY_GOODS.goods_promotion_price
+  is '商品促销价';
+comment on column DW_USER.G_ACTIVITY_GOODS.goods_marketprice
+  is '商品市场价';
+comment on column DW_USER.G_ACTIVITY_GOODS.goods_storage
+  is '商品库存';
+comment on column DW_USER.G_ACTIVITY_GOODS.goods_state
+  is '商品状态 0下架，1正常，10违规（禁售）';
+comment on column DW_USER.G_ACTIVITY_GOODS.goods_sales
+  is '活动销量';
+comment on column DW_USER.G_ACTIVITY_GOODS.enable_col
+  is '是否启用 1 启用 0 不启用';
+comment on column DW_USER.G_ACTIVITY_GOODS.create_time
+  is '创建时间';
+comment on column DW_USER.G_ACTIVITY_GOODS.update_time
+  is '更新时间';
+comment on column DW_USER.G_ACTIVITY_GOODS.sort_col
+  is '排序号，值越大越在前面';
+comment on column DW_USER.G_ACTIVITY_GOODS.sales_sort
+  is '销量排序';
+comment on column DW_USER.G_ACTIVITY_GOODS.sync_status
+  is '1:成功、0：待同步、-1：失败';
+comment on column DW_USER.G_ACTIVITY_GOODS.sync_time
+  is '同步时间';
+comment on column DW_USER.G_ACTIVITY_GOODS.sync_enable
+  is '1:同步 0 不同步';
+comment on column DW_USER.G_ACTIVITY_GOODS.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.G_ACTIVITY_GOODS.w_update_dt
+  is '记录更新时间';
+

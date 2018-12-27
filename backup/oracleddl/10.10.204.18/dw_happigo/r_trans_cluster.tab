@@ -1,0 +1,18 @@
+???create table DW_HAPPIGO.R_TRANS_CLUSTER
+(
+  id_trans_cluster  INTEGER not null,
+  id_transformation INTEGER,
+  id_cluster        INTEGER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+alter table DW_HAPPIGO.R_TRANS_CLUSTER
+  add primary key (ID_TRANS_CLUSTER)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+

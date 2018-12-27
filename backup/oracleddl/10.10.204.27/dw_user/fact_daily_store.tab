@@ -1,0 +1,87 @@
+???create table DW_USER.FACT_DAILY_STORE
+(
+  sid                NUMBER,
+  store_id           NUMBER(11),
+  store_company_name VARCHAR2(50),
+  store_name         VARCHAR2(50),
+  brand_name         VARCHAR2(100),
+  store_type         VARCHAR2(10),
+  store_time         VARCHAR2(20),
+  store_state        VARCHAR2(10),
+  sc_name            VARCHAR2(20),
+  hbp_store_id       NUMBER(11),
+  contacts_name      VARCHAR2(20),
+  contacts_phone     VARCHAR2(20),
+  totstorage         NUMBER,
+  xsjstorage         NUMBER,
+  totsjstorage       NUMBER,
+  yxamount           NUMBER,
+  bzamount           NUMBER,
+  insert_date_key    NUMBER,
+  totamount          NUMBER,
+  totbzamount        NUMBER,
+  yxjs               NUMBER,
+  bzyxjs             NUMBER,
+  totjs              NUMBER,
+  bztotjs            NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_STORE.sid
+  is '序号';
+comment on column DW_USER.FACT_DAILY_STORE.store_id
+  is '店铺编号';
+comment on column DW_USER.FACT_DAILY_STORE.store_company_name
+  is '公司名称';
+comment on column DW_USER.FACT_DAILY_STORE.store_name
+  is '店铺名称';
+comment on column DW_USER.FACT_DAILY_STORE.brand_name
+  is '品牌';
+comment on column DW_USER.FACT_DAILY_STORE.store_type
+  is '开店模式';
+comment on column DW_USER.FACT_DAILY_STORE.store_time
+  is '注册时间';
+comment on column DW_USER.FACT_DAILY_STORE.store_state
+  is '状态';
+comment on column DW_USER.FACT_DAILY_STORE.sc_name
+  is '品类';
+comment on column DW_USER.FACT_DAILY_STORE.hbp_store_id
+  is '供应商编号';
+comment on column DW_USER.FACT_DAILY_STORE.contacts_name
+  is '联系人';
+comment on column DW_USER.FACT_DAILY_STORE.contacts_phone
+  is '联系号码';
+comment on column DW_USER.FACT_DAILY_STORE.totstorage
+  is '总SKU数';
+comment on column DW_USER.FACT_DAILY_STORE.xsjstorage
+  is '本周上架SKU数';
+comment on column DW_USER.FACT_DAILY_STORE.totsjstorage
+  is '本周在架SKU 数';
+comment on column DW_USER.FACT_DAILY_STORE.yxamount
+  is '总有效销售金额';
+comment on column DW_USER.FACT_DAILY_STORE.bzamount
+  is '本周有效销售金额';
+comment on column DW_USER.FACT_DAILY_STORE.insert_date_key
+  is '记录插入日期';
+comment on column DW_USER.FACT_DAILY_STORE.totamount
+  is '总销售金额';
+comment on column DW_USER.FACT_DAILY_STORE.totbzamount
+  is '本周销售金额';
+comment on column DW_USER.FACT_DAILY_STORE.yxjs
+  is '有效销售件数';
+comment on column DW_USER.FACT_DAILY_STORE.bzyxjs
+  is '本周有效销售件数';
+comment on column DW_USER.FACT_DAILY_STORE.totjs
+  is '销售件数';
+comment on column DW_USER.FACT_DAILY_STORE.bztotjs
+  is '本周销售件数';
+

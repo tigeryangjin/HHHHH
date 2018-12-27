@@ -1,0 +1,21 @@
+???create table DW_USER.TEMP_PAGE_TOTAL
+(
+  page_key        NUMBER(10),
+  page_name       VARCHAR2(500),
+  application_key NUMBER(10),
+  totalpv         NUMBER,
+  totaluv         NUMBER,
+  page_value      VARCHAR2(1000)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

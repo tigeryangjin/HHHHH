@@ -1,0 +1,22 @@
+???create table DW_HAPPIGO.DIM_ITEMGROUP
+(
+  rel_id          NUMBER(11),
+  item_code       NUMBER(11),
+  goods_name      VARCHAR2(100),
+  sort            NUMBER(11),
+  status          NUMBER(1),
+  home_group_id   NUMBER(11),
+  goods_common_id NUMBER(11)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

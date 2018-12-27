@@ -1,0 +1,18 @@
+???create table DW_USER.DIM_SOURCE
+(
+  source_id   NUMBER(10),
+  source      VARCHAR2(20),
+  create_date DATE default sysdate
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

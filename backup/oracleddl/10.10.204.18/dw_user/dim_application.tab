@@ -1,0 +1,34 @@
+???create table DW_USER.DIM_APPLICATION
+(
+  id                   NUMBER(10),
+  application_key      NUMBER(10),
+  application_name     VARCHAR2(50),
+  create_date          DATE,
+  application__cn_name VARCHAR2(50),
+  channel_key          NUMBER(10),
+  channel_name         VARCHAR2(50)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.DA_AN on DW_USER.DIM_APPLICATION (APPLICATION_NAME)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

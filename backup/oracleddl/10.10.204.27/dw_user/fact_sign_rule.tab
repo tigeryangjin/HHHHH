@@ -1,0 +1,28 @@
+???create table DW_USER.FACT_SIGN_RULE
+(
+  id                     NUMBER(11),
+  group_id               NUMBER(11),
+  continuous_times_start NUMBER(11),
+  continuous_times_end   NUMBER(11),
+  point_reward           NUMBER(11),
+  voucher_value          NUMBER(11),
+  voucher_id             VARCHAR2(100),
+  voucher_key            VARCHAR2(100),
+  remark                 VARCHAR2(300),
+  start_time             DATE,
+  end_time               DATE,
+  enable                 NUMBER(2),
+  create_time            DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

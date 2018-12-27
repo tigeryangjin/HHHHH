@@ -1,0 +1,30 @@
+???create table DW_USER.FACT_CMS_TOPIC
+(
+  inc_id      NUMBER(11),
+  brand_name  VARCHAR2(50),
+  ad_message  VARCHAR2(100),
+  link        VARCHAR2(500),
+  link_web    VARCHAR2(500),
+  pic         VARCHAR2(500),
+  startat     NUMBER(11),
+  endat       NUMBER(11),
+  updateon    NUMBER(11),
+  status      NUMBER(1),
+  sort        NUMBER(11),
+  remark      VARCHAR2(500),
+  brand_id    NUMBER(11),
+  create_time NUMBER(11),
+  timestamp   NUMBER(11)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

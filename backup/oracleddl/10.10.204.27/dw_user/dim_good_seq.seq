@@ -1,0 +1,7 @@
+???create sequence DW_USER.DIM_GOOD_SEQ
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 132803
+increment by 1
+cache 20;
+

@@ -1,0 +1,18 @@
+???create table DW_USER.DIM_RESOURCE_2_PAGE
+(
+  page_name   VARCHAR2(50),
+  page_cnname VARCHAR2(50)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

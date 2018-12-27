@@ -1,0 +1,41 @@
+???create table DW_USER.ML_USER
+(
+  aid         NUMBER(10) not null,
+  username    VARCHAR2(32) not null,
+  password    VARCHAR2(32) not null,
+  login_time  DATE not null,
+  update_time DATE not null,
+  create_time DATE not null,
+  login_ip    VARCHAR2(15),
+  rid         NUMBER(10) default '0'
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+comment on table DW_USER.ML_USER
+  is '管理员表';
+comment on column DW_USER.ML_USER.aid
+  is '管理员表自增id即管理员id';
+comment on column DW_USER.ML_USER.username
+  is '管理员账号';
+comment on column DW_USER.ML_USER.password
+  is '管理员密码';
+comment on column DW_USER.ML_USER.login_time
+  is '登录时间';
+comment on column DW_USER.ML_USER.update_time
+  is '账户更新时间';
+comment on column DW_USER.ML_USER.create_time
+  is '账户创建时间';
+comment on column DW_USER.ML_USER.login_ip
+  is '登录ip';
+comment on column DW_USER.ML_USER.rid
+  is '角色id';
+alter table DW_USER.ML_USER
+  add constraint ML_USER_PK primary key (AID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+

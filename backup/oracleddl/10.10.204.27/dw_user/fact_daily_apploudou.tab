@@ -1,0 +1,31 @@
+???create table DW_USER.FACT_DAILY_APPLOUDOU
+(
+  visit_date_key   NUMBER(10),
+  vt_date          DATE,
+  homepv           NUMBER,
+  homeuv           NUMBER,
+  goodpv           NUMBER,
+  gooduv           NUMBER,
+  orderconfirmpv   NUMBER,
+  orderconfirmuv   NUMBER,
+  ordercnt         NUMBER,
+  ordermem         NUMBER,
+  orderyxcnt       NUMBER,
+  orderyxmem       NUMBER,
+  goodrate         NUMBER,
+  orderconfirmrate NUMBER,
+  orderrate        NUMBER,
+  orderyxrate      NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

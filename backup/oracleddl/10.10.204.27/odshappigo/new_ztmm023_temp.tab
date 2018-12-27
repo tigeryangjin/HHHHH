@@ -1,0 +1,61 @@
+???create table ODSHAPPIGO.NEW_ZTMM023_TEMP
+(
+  mandt      VARCHAR2(9),
+  pricenum   VARCHAR2(30),
+  ekorg      VARCHAR2(12),
+  lifnr      VARCHAR2(30),
+  matnr      VARCHAR2(54),
+  bukrs      VARCHAR2(12),
+  meins      VARCHAR2(9),
+  charg      VARCHAR2(30),
+  pricestat  VARCHAR2(6),
+  delflg     VARCHAR2(3),
+  zbuymt     VARCHAR2(12),
+  taxrate    VARCHAR2(30),
+  datab      VARCHAR2(24),
+  datbi      VARCHAR2(24),
+  cumtax     NUMBER(5,2),
+  pb00       NUMBER(11,2),
+  zp01       NUMBER(11,2),
+  zf06       NUMBER(11,2),
+  zeinr      VARCHAR2(54),
+  waers      VARCHAR2(15),
+  reason     VARCHAR2(6),
+  remark     VARCHAR2(600),
+  zdele      VARCHAR2(3),
+  erdat      VARCHAR2(24),
+  erzet      VARCHAR2(18),
+  ernam      VARCHAR2(36),
+  vproc      VARCHAR2(3),
+  pcount     NUMBER(10),
+  batch      VARCHAR2(3),
+  pname      VARCHAR2(36),
+  pdate      VARCHAR2(24),
+  ptime      VARCHAR2(18),
+  errno      VARCHAR2(30),
+  zmessage   VARCHAR2(600),
+  wtcode     VARCHAR2(60),
+  wrepid     VARCHAR2(120),
+  zcgjg      VARCHAR2(3),
+  zxsjg      VARCHAR2(3),
+  zp03       NUMBER(11,2),
+  zjmzzf     NUMBER(6,2),
+  zhtcgj     NUMBER(11,2),
+  zjf        VARCHAR2(3),
+  pricenum_c VARCHAR2(30),
+  salerate   VARCHAR2(30),
+  zpr1       NUMBER(11,2)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

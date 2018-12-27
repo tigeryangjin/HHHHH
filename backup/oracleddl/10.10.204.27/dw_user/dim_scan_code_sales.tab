@@ -1,0 +1,58 @@
+???create table DW_USER.DIM_SCAN_CODE_SALES
+(
+  day_key           NUMBER(10),
+  scan_code_name    VARCHAR2(200),
+  device_total      NUMBER(20),
+  wx_order_pe_nums  NUMBER(20),
+  wx_order_nums     NUMBER(20),
+  wx_order_amount   NUMBER(10,2),
+  page_name         VARCHAR2(200),
+  page_value        VARCHAR2(200),
+  m_order_pe_nums   NUMBER(20),
+  m_order_nums      NUMBER(20),
+  m_order_amount    NUMBER(10,2),
+  app_order_pe_nums NUMBER(20),
+  app_order_nums    NUMBER(20),
+  app_order_amount  NUMBER(10,2)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_SCAN_CODE_SALES.day_key
+  is '日期key';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.scan_code_name
+  is '分布码名称';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.device_total
+  is '预估激活设备数';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.wx_order_pe_nums
+  is '微信预估下单人数(净订购)';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.wx_order_nums
+  is '微信预估下单件数(净订购)';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.wx_order_amount
+  is '微信预估订购金额(净订购)';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.page_name
+  is 'p参数';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.page_value
+  is 'v参数';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.m_order_pe_nums
+  is 'M站预估下单人数(净订购)';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.m_order_nums
+  is 'M站预估下单件数(净订购)';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.m_order_amount
+  is 'M站预估订购金额(净订购)';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.app_order_pe_nums
+  is 'APP预估下单人数(净订购)';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.app_order_nums
+  is 'APP预估下单件数(净订购)';
+comment on column DW_USER.DIM_SCAN_CODE_SALES.app_order_amount
+  is 'APP预估订购金额(净订购)';
+

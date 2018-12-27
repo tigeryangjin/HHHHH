@@ -1,0 +1,70 @@
+???create table ODSHAPPIGO.ODS_BUYER
+(
+  mandt     VARCHAR2(9),
+  pernr     VARCHAR2(24),
+  zhrleadr  VARCHAR2(24),
+  ztlhrp    VARCHAR2(12),
+  matklh    VARCHAR2(27),
+  ekgrp     VARCHAR2(9),
+  zpmisn    VARCHAR2(3),
+  crdat     VARCHAR2(24),
+  crtim     VARCHAR2(18),
+  crnam     VARCHAR2(36),
+  crtcd     VARCHAR2(60),
+  crpid     VARCHAR2(120),
+  aedat     VARCHAR2(24),
+  aetim     VARCHAR2(18),
+  aenam     VARCHAR2(36),
+  aetcd     VARCHAR2(60),
+  aepid     VARCHAR2(40),
+  timestamp VARCHAR2(42)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column ODSHAPPIGO.ODS_BUYER.mandt
+  is '客户端 ';
+comment on column ODSHAPPIGO.ODS_BUYER.pernr
+  is 'Buyer';
+comment on column ODSHAPPIGO.ODS_BUYER.zhrleadr
+  is 'PM';
+comment on column ODSHAPPIGO.ODS_BUYER.ztlhrp
+  is '提报组 ';
+comment on column ODSHAPPIGO.ODS_BUYER.matklh
+  is '物料大类';
+comment on column ODSHAPPIGO.ODS_BUYER.ekgrp
+  is '采购组 ';
+comment on column ODSHAPPIGO.ODS_BUYER.zpmisn
+  is '权限标记';
+comment on column ODSHAPPIGO.ODS_BUYER.crdat
+  is '建立日期';
+comment on column ODSHAPPIGO.ODS_BUYER.crtim
+  is '创建时间';
+comment on column ODSHAPPIGO.ODS_BUYER.crnam
+  is '创建者 ';
+comment on column ODSHAPPIGO.ODS_BUYER.crtcd
+  is '创建的TCODE';
+comment on column ODSHAPPIGO.ODS_BUYER.crpid
+  is '创建记录的程序 ';
+comment on column ODSHAPPIGO.ODS_BUYER.aedat
+  is '更改日期';
+comment on column ODSHAPPIGO.ODS_BUYER.aetim
+  is '上次修改时间';
+comment on column ODSHAPPIGO.ODS_BUYER.aenam
+  is '对象更改人员的名称 ';
+comment on column ODSHAPPIGO.ODS_BUYER.aetcd
+  is '修改的TCODE';
+comment on column ODSHAPPIGO.ODS_BUYER.aepid
+  is '修改记录的程序';
+comment on column ODSHAPPIGO.ODS_BUYER.timestamp
+  is '时戳；过时 ';
+

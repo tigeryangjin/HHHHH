@@ -1,0 +1,25 @@
+???create table DW_USER.SEARCH_HIT_ANALYSIS
+(
+  id              NUMBER,
+  keyword         VARCHAR2(1500),
+  search_times    NUMBER,
+  hit_times       NUMBER,
+  status          NUMBER,
+  remark          CHAR(2),
+  create_time     DATE,
+  create_date_key NUMBER,
+  modify_time     DATE,
+  modify_date_key NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

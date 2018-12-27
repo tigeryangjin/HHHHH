@@ -1,0 +1,26 @@
+???create table DW_HAPPIGO.R_SLAVE
+(
+  id_slave        INTEGER not null,
+  name            VARCHAR2(255),
+  host_name       VARCHAR2(255),
+  port            VARCHAR2(255),
+  web_app_name    VARCHAR2(255),
+  username        VARCHAR2(255),
+  password        VARCHAR2(255),
+  proxy_host_name VARCHAR2(255),
+  proxy_port      VARCHAR2(255),
+  non_proxy_hosts VARCHAR2(255),
+  master          CHAR(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+alter table DW_HAPPIGO.R_SLAVE
+  add primary key (ID_SLAVE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+

@@ -1,0 +1,55 @@
+???create table DW_USER.DIM_COMMODITY
+(
+  id              NUMBER(10),
+  operate_type_id NUMBER(10),
+  operate_type    VARCHAR2(20),
+  l_type_code     NUMBER(10),
+  l_type          VARCHAR2(50),
+  m_type_code     NUMBER(10),
+  m_type          VARCHAR2(50),
+  s_type_code     NUMBER(10),
+  s_type          VARCHAR2(50),
+  x_type_code     NUMBER(10),
+  x_type          VARCHAR2(50),
+  is_riyong       VARCHAR2(5),
+  is_kuaixiao     VARCHAR2(5)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_COMMODITY.id
+  is '索引号';
+comment on column DW_USER.DIM_COMMODITY.operate_type_id
+  is '运营分类编号';
+comment on column DW_USER.DIM_COMMODITY.operate_type
+  is '运营分类';
+comment on column DW_USER.DIM_COMMODITY.l_type_code
+  is '大类编码';
+comment on column DW_USER.DIM_COMMODITY.l_type
+  is '大类';
+comment on column DW_USER.DIM_COMMODITY.m_type_code
+  is '中类编码';
+comment on column DW_USER.DIM_COMMODITY.m_type
+  is '中类';
+comment on column DW_USER.DIM_COMMODITY.s_type_code
+  is '小类编码';
+comment on column DW_USER.DIM_COMMODITY.s_type
+  is '小类';
+comment on column DW_USER.DIM_COMMODITY.x_type_code
+  is '细类编码';
+comment on column DW_USER.DIM_COMMODITY.x_type
+  is '细类';
+comment on column DW_USER.DIM_COMMODITY.is_riyong
+  is '是否是日用品';
+comment on column DW_USER.DIM_COMMODITY.is_kuaixiao
+  is '是否是快消品';
+

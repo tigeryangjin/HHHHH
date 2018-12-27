@@ -1,0 +1,21 @@
+???create table DW_USER.DIM_VID_HMSC
+(
+  hmsc_id        NUMBER(10),
+  hmsc_code      VARCHAR2(20),
+  hmsc_nm        VARCHAR2(30),
+  hmsc_source    VARCHAR2(30),
+  hmsc_source_id NUMBER(10)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

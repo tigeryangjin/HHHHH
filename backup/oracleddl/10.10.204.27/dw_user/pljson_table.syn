@@ -1,0 +1,3 @@
+???create or replace synonym DW_USER.PLJSON_TABLE
+  for DW_USER.PLJSON_TABLE_IMPL;
+

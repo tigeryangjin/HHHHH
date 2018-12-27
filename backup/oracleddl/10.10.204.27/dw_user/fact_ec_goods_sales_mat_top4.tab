@@ -1,0 +1,38 @@
+???create table DW_USER.FACT_EC_GOODS_SALES_MAT_TOP4
+(
+  item_code   NUMBER(10),
+  matxl       NUMBER(20),
+  sales_total NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_GOODS_SALES_MAT_TOP4
+  is '每个物料小类商品销售排名前4名';
+comment on column DW_USER.FACT_EC_GOODS_SALES_MAT_TOP4.item_code
+  is '商品编码';
+comment on column DW_USER.FACT_EC_GOODS_SALES_MAT_TOP4.matxl
+  is '物料小类';
+comment on column DW_USER.FACT_EC_GOODS_SALES_MAT_TOP4.sales_total
+  is '销售数量';
+create index DW_USER.FEGSMT4_MATXL on DW_USER.FACT_EC_GOODS_SALES_MAT_TOP4 (MATXL)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

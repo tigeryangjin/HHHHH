@@ -1,0 +1,20 @@
+???create table DW_USER.FACT_MEMBER_EC_GOODS_SALES_LS
+(
+  member_key NUMBER(20),
+  rn         NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACT_MEMBER_EC_GOODS_SALES_LS
+  is '用户维度临时数据表，用户删除数据';
+

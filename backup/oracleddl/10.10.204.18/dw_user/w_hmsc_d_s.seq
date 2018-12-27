@@ -1,0 +1,7 @@
+???create sequence DW_USER.W_HMSC_D_S
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 2322
+increment by 1
+cache 20;
+

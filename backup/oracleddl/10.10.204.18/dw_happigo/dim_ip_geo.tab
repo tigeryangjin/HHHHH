@@ -1,0 +1,49 @@
+???create table DW_HAPPIGO.DIM_IP_GEO
+(
+  ip_start    NUMBER(20),
+  ip_end      NUMBER(20),
+  ip_country  VARCHAR2(100),
+  province    VARCHAR2(100),
+  ip_city     VARCHAR2(100),
+  ip_province VARCHAR2(100),
+  startip     VARCHAR2(100),
+  endip       VARCHAR2(100),
+  postcode    VARCHAR2(50),
+  ip_geo_key  NUMBER(20) not null
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create unique index DW_HAPPIGO.IP_GEO_IDX on DW_HAPPIGO.DIM_IP_GEO (IP_GEO_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_HAPPIGO.IP_IDX on DW_HAPPIGO.DIM_IP_GEO (IP_START, IP_END)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

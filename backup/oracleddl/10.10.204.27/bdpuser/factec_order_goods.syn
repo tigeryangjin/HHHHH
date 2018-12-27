@@ -1,0 +1,3 @@
+???create or replace synonym BDPUSER.FACTEC_ORDER_GOODS
+  for ;
+

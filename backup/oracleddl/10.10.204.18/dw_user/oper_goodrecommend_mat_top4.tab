@@ -1,0 +1,32 @@
+???create table DW_USER.OPER_GOODRECOMMEND_MAT_TOP4
+(
+  item_code   NUMBER(10),
+  matxl       NUMBER(20),
+  sales_total NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_GOODRECOMMEND_MAT_TOP4
+  is '每个品类下的top4';
+create index DW_USER.FEGSMT4_MATXL_NEW on DW_USER.OPER_GOODRECOMMEND_MAT_TOP4 (MATXL)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

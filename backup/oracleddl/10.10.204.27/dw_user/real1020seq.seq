@@ -1,0 +1,7 @@
+???create sequence DW_USER.REAL1020SEQ
+minvalue 0
+maxvalue 999999999999
+start with 5053400
+increment by 1
+cache 50;
+

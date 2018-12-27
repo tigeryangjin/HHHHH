@@ -1,0 +1,19 @@
+???create table DW_USER.DIM_GDMAPPING
+(
+  good_id       NUMBER(11),
+  good_commonid NUMBER(11),
+  item_code     NUMBER(11)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

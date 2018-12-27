@@ -1,0 +1,10 @@
+???create table DW_USER.TEST1213
+(
+  id    NUMBER,
+  vname VARCHAR2(200)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+

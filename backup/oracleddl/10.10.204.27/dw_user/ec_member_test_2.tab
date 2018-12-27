@@ -1,0 +1,19 @@
+???create table DW_USER.EC_MEMBER_TEST_2
+(
+  id          NUMBER(10),
+  ref_code    VARCHAR2(10),
+  user_id     NUMBER(10),
+  create_time DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

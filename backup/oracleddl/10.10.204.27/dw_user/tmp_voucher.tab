@@ -1,0 +1,18 @@
+???create table DW_USER.TMP_VOUCHER
+(
+  voucher_t_id  NUMBER(20),
+  voucher_title VARCHAR2(500),
+  voucher_price NUMBER(10,2)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -1,0 +1,73 @@
+???create table DW_USER.FACT_DAILY_GOODPAGE
+(
+  page_key       NUMBER(10),
+  page_name      VARCHAR2(500),
+  visit_date_key NUMBER,
+  pagepv         NUMBER,
+  pageuv         NUMBER,
+  pageavgtime    NUMBER,
+  ordercnt       NUMBER,
+  orderuv        NUMBER,
+  orderrate      NUMBER,
+  goods_num      NUMBER,
+  goods_amount   NUMBER,
+  page_value     VARCHAR2(500),
+  application_nm VARCHAR2(18),
+  totaluv        NUMBER,
+  totalpv        NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_GOODPAGE.page_key
+  is '页面KEY';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.page_name
+  is '页面名称';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.visit_date_key
+  is '统计日期';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.pagepv
+  is '来源页面PV';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.pageuv
+  is '来源页面UV';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.pageavgtime
+  is '页面平均停留时长';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.ordercnt
+  is '页面订单数量';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.orderuv
+  is '页面订购人数';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.orderrate
+  is '页面订购转化率';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.goods_num
+  is '页面商品订购数量';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.goods_amount
+  is '页面商品订购金额';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.page_value
+  is '页面值';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.application_nm
+  is '应用渠道名称';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.totaluv
+  is '页面总UV';
+comment on column DW_USER.FACT_DAILY_GOODPAGE.totalpv
+  is '页面总PV';
+create index DW_USER.GOODPAGE_D_IDX on DW_USER.FACT_DAILY_GOODPAGE (VISIT_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

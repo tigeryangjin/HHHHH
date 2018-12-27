@@ -1,0 +1,130 @@
+???create table ODSHAPPIGO.ZMCHB_H
+(
+  mandt  VARCHAR2(9),
+  matnr  VARCHAR2(54),
+  werks  VARCHAR2(12),
+  lgort  VARCHAR2(12),
+  charg  VARCHAR2(30),
+  zfdate VARCHAR2(24),
+  lvorm  VARCHAR2(3),
+  ersda  VARCHAR2(24),
+  ernam  VARCHAR2(36),
+  laeda  VARCHAR2(24),
+  aenam  VARCHAR2(36),
+  lfgja  VARCHAR2(12),
+  lfmon  VARCHAR2(6),
+  sperc  VARCHAR2(3),
+  clabs  NUMBER(13,3),
+  cumlm  NUMBER(13,3),
+  cinsm  NUMBER(13,3),
+  ceinm  NUMBER(13,3),
+  cspem  NUMBER(13,3),
+  cretm  NUMBER(13,3),
+  cvmla  NUMBER(13,3),
+  cvmum  NUMBER(13,3),
+  cvmin  NUMBER(13,3),
+  cvmei  NUMBER(13,3),
+  cvmsp  NUMBER(13,3),
+  cvmre  NUMBER(13,3),
+  kzicl  VARCHAR2(9),
+  kzicq  VARCHAR2(9),
+  kzice  VARCHAR2(9),
+  kzics  VARCHAR2(9),
+  kzvcl  VARCHAR2(9),
+  kzvcq  VARCHAR2(9),
+  kzvce  VARCHAR2(9),
+  kzvcs  VARCHAR2(9),
+  herkl  VARCHAR2(9),
+  chdll  VARCHAR2(24),
+  chjin  VARCHAR2(12),
+  chrue  VARCHAR2(3)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column ODSHAPPIGO.ZMCHB_H.mandt
+  is '客户端';
+comment on column ODSHAPPIGO.ZMCHB_H.matnr
+  is '商品';
+comment on column ODSHAPPIGO.ZMCHB_H.werks
+  is '地点';
+comment on column ODSHAPPIGO.ZMCHB_H.lgort
+  is '库存地点';
+comment on column ODSHAPPIGO.ZMCHB_H.charg
+  is '批号';
+comment on column ODSHAPPIGO.ZMCHB_H.zfdate
+  is '建立日期';
+comment on column ODSHAPPIGO.ZMCHB_H.lvorm
+  is '同一批库存所有数据的删除标记';
+comment on column ODSHAPPIGO.ZMCHB_H.ersda
+  is '创建日期';
+comment on column ODSHAPPIGO.ZMCHB_H.ernam
+  is '创建对象的人员名称';
+comment on column ODSHAPPIGO.ZMCHB_H.laeda
+  is '上次更改的日期';
+comment on column ODSHAPPIGO.ZMCHB_H.aenam
+  is '对象更改人员的名称';
+comment on column ODSHAPPIGO.ZMCHB_H.lfgja
+  is '当前期间的会计年度';
+comment on column ODSHAPPIGO.ZMCHB_H.lfmon
+  is '当前期间 (记帐期间)';
+comment on column ODSHAPPIGO.ZMCHB_H.sperc
+  is '实际盘点冻结标识';
+comment on column ODSHAPPIGO.ZMCHB_H.clabs
+  is '非限制使用的估价的库存';
+comment on column ODSHAPPIGO.ZMCHB_H.cumlm
+  is '在运库存 (从一库存地到另一库存地)';
+comment on column ODSHAPPIGO.ZMCHB_H.cinsm
+  is '质量检验中的库存';
+comment on column ODSHAPPIGO.ZMCHB_H.ceinm
+  is '全部限制批次的总计库存';
+comment on column ODSHAPPIGO.ZMCHB_H.cspem
+  is '冻结的库存';
+comment on column ODSHAPPIGO.ZMCHB_H.cretm
+  is '返回冻结的库存';
+comment on column ODSHAPPIGO.ZMCHB_H.cvmla
+  is '上期的估价的非限制使用库存';
+comment on column ODSHAPPIGO.ZMCHB_H.cvmum
+  is '前一期间的中转库存';
+comment on column ODSHAPPIGO.ZMCHB_H.cvmin
+  is '前一期间的质量检验库存';
+comment on column ODSHAPPIGO.ZMCHB_H.cvmei
+  is '上期限制使用的库存';
+comment on column ODSHAPPIGO.ZMCHB_H.cvmsp
+  is '前期的冻结库存';
+comment on column ODSHAPPIGO.ZMCHB_H.cvmre
+  is '前一期间冻结的退回存货';
+comment on column ODSHAPPIGO.ZMCHB_H.kzicl
+  is '当年的库存的实际盘点标识';
+comment on column ODSHAPPIGO.ZMCHB_H.kzicq
+  is '实际盘点标识,当年的质检库存';
+comment on column ODSHAPPIGO.ZMCHB_H.kzice
+  is '限制使用库存的实际盘点标识';
+comment on column ODSHAPPIGO.ZMCHB_H.kzics
+  is '冻结库存的实际盘点标识';
+comment on column ODSHAPPIGO.ZMCHB_H.kzvcl
+  is '上一年度仓库库存实际盘点标志';
+comment on column ODSHAPPIGO.ZMCHB_H.kzvcq
+  is '前期质检库存的前期实际盘点标识';
+comment on column ODSHAPPIGO.ZMCHB_H.kzvce
+  is '限制使用库存的实际盘点标识, 前一期间';
+comment on column ODSHAPPIGO.ZMCHB_H.kzvcs
+  is '前期冻结库存的实际盘点标识';
+comment on column ODSHAPPIGO.ZMCHB_H.herkl
+  is '物料原产地国家';
+comment on column ODSHAPPIGO.ZMCHB_H.chdll
+  is '非限制使用的库存中最新实际盘点的日期';
+comment on column ODSHAPPIGO.ZMCHB_H.chjin
+  is '当前实际库存指示的财政年度';
+comment on column ODSHAPPIGO.ZMCHB_H.chrue
+  is '在最后的 MCHB 期间前，期间的 MCHBH 记录已经存在';
+

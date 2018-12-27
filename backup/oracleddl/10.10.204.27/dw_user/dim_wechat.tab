@@ -1,0 +1,79 @@
+???create table DW_USER.DIM_WECHAT
+(
+  id                    NUMBER(11),
+  g_id                  VARCHAR2(20),
+  nickname              VARCHAR2(1000),
+  sex                   NUMBER(1),
+  province              VARCHAR2(200),
+  city                  VARCHAR2(200),
+  subscribe_time        NUMBER(11),
+  open_id               VARCHAR2(60),
+  status                NUMBER(1),
+  cancel_subscribe_time NUMBER(11),
+  creat_time            NUMBER(11),
+  update_time           NUMBER(11),
+  is_test_uesr          NUMBER(1),
+  last_active_time      NUMBER(11),
+  source                VARCHAR2(500),
+  subscribe_date        DATE,
+  subscribe_scene       VARCHAR2(300)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_WECHAT.id
+  is '序列号';
+comment on column DW_USER.DIM_WECHAT.g_id
+  is '所属分组';
+comment on column DW_USER.DIM_WECHAT.nickname
+  is '昵称 URLEncoder.encode(UTF-8)转码';
+comment on column DW_USER.DIM_WECHAT.sex
+  is '1男，2女，0未知';
+comment on column DW_USER.DIM_WECHAT.province
+  is '省 URLEncoder.encode(UTF-8)转码';
+comment on column DW_USER.DIM_WECHAT.city
+  is '市 URLEncoder.encode(UTF-8)转码';
+comment on column DW_USER.DIM_WECHAT.subscribe_time
+  is '关注时间';
+comment on column DW_USER.DIM_WECHAT.open_id
+  is 'OPEN_ID';
+comment on column DW_USER.DIM_WECHAT.status
+  is '关注状态{0,1}关注，未关注';
+comment on column DW_USER.DIM_WECHAT.cancel_subscribe_time
+  is '取消关注时间';
+comment on column DW_USER.DIM_WECHAT.creat_time
+  is '创建时间';
+comment on column DW_USER.DIM_WECHAT.update_time
+  is '修改时间';
+comment on column DW_USER.DIM_WECHAT.is_test_uesr
+  is '测试用户{0,1}不是，是';
+comment on column DW_USER.DIM_WECHAT.last_active_time
+  is '活跃时间';
+comment on column DW_USER.DIM_WECHAT.source
+  is '来源';
+comment on column DW_USER.DIM_WECHAT.subscribe_date
+  is '关注time';
+comment on column DW_USER.DIM_WECHAT.subscribe_scene
+  is '返回用户关注的渠道来源';
+create index DW_USER.CHARTOPEN_IDX on DW_USER.DIM_WECHAT (OPEN_ID)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

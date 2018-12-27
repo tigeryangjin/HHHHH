@@ -1,0 +1,17 @@
+--1.
+SELECT A.OBJECT_TYPE,
+       A.OBJECT_NAME,
+       A.OWNER,
+       DBMS_METADATA.GET_DDL(A.OBJECT_TYPE, A.OBJECT_NAME, A.OWNER),
+       LENGTH(DBMS_METADATA.GET_DDL(A.OBJECT_TYPE, A.OBJECT_NAME, A.OWNER))
+  FROM ALL_OBJECTS A
+ WHERE A.OWNER IN ('BIHAPPIGO',
+                   'BI_REPORT',
+                   'DW_HAPPIGO',
+                   'DW_USER',
+                   'ODSHAPPIGO',
+                   'ORDDATA')
+   AND A.OBJECT_TYPE IN ('PACKAGE', 'PROCEDURE', 'FUNCTION')
+   AND A.OBJECT_NAME = 'YANGJIN_PKG';
+	 
+

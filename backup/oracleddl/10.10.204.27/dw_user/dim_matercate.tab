@@ -1,0 +1,92 @@
+???create table DW_USER.DIM_MATERCATE
+(
+  zmatdl   NUMBER,
+  zmatdlt  VARCHAR2(50),
+  zmatzl   NUMBER,
+  zmatzlt  VARCHAR2(50),
+  zmatxl   NUMBER,
+  zmatxlt  VARCHAR2(50),
+  zmatxxl  NUMBER,
+  zmatxxlt VARCHAR2(50)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_MATERCATE.zmatdl
+  is '物料大类编码';
+comment on column DW_USER.DIM_MATERCATE.zmatdlt
+  is '物料大类名称';
+comment on column DW_USER.DIM_MATERCATE.zmatzl
+  is '物料中类编码';
+comment on column DW_USER.DIM_MATERCATE.zmatzlt
+  is '物料中类名称';
+comment on column DW_USER.DIM_MATERCATE.zmatxl
+  is '物料小类编码';
+comment on column DW_USER.DIM_MATERCATE.zmatxlt
+  is '物料小类名称';
+comment on column DW_USER.DIM_MATERCATE.zmatxxl
+  is '物料细类编码';
+comment on column DW_USER.DIM_MATERCATE.zmatxxlt
+  is '物料细类名称';
+create index DW_USER.ZMATDL_IDX on DW_USER.DIM_MATERCATE (ZMATDL)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ZMATXL_IDX on DW_USER.DIM_MATERCATE (ZMATXL)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ZMATXXLT_IDX on DW_USER.DIM_MATERCATE (ZMATXXL)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ZMATZL_IDX on DW_USER.DIM_MATERCATE (ZMATZL)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

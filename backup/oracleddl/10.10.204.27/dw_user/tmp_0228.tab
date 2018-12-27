@@ -1,0 +1,19 @@
+???create table DW_USER.TMP_0228
+(
+  nickname VARCHAR2(500),
+  id       NUMBER(5),
+  flag     NUMBER(1),
+  openid   VARCHAR2(50)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

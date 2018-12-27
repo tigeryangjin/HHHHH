@@ -1,0 +1,47 @@
+???create table DW_USER.DIM_EC_GOODS_CLASS_SUB
+(
+  id          NUMBER(11) not null,
+  gc_id       NUMBER(11) not null,
+  name        VARCHAR2(100) not null,
+  pic         VARCHAR2(200) not null,
+  description VARCHAR2(500),
+  sort        NUMBER(11) not null,
+  status      NUMBER(3) not null,
+  w_insert_dt DATE,
+  w_update_dt DATE
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_EC_GOODS_CLASS_SUB
+  is '商品子分类表 ec
+by yangjin
+2018-03-23';
+comment on column DW_USER.DIM_EC_GOODS_CLASS_SUB.id
+  is '子分类Id，主键';
+comment on column DW_USER.DIM_EC_GOODS_CLASS_SUB.gc_id
+  is '商品分类Id';
+comment on column DW_USER.DIM_EC_GOODS_CLASS_SUB.name
+  is '子分类名称';
+comment on column DW_USER.DIM_EC_GOODS_CLASS_SUB.pic
+  is '子分类图片';
+comment on column DW_USER.DIM_EC_GOODS_CLASS_SUB.description
+  is '描述';
+comment on column DW_USER.DIM_EC_GOODS_CLASS_SUB.sort
+  is '排序';
+comment on column DW_USER.DIM_EC_GOODS_CLASS_SUB.status
+  is '0：未启用。1：启用；默认为1';
+comment on column DW_USER.DIM_EC_GOODS_CLASS_SUB.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.DIM_EC_GOODS_CLASS_SUB.w_update_dt
+  is '记录更新时间';
+

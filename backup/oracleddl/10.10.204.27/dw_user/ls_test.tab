@@ -1,0 +1,8 @@
+???create global temporary table DW_USER.LS_TEST
+(
+  ssid    NUMBER,
+  sname   VARCHAR2(200),
+  member1 NUMBER
+)
+on commit delete rows;
+

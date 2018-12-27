@@ -1,0 +1,42 @@
+???create table DW_USER.OPER_GOODS_CALLBASELINE
+(
+  day_key      NUMBER(20),
+  item_code    NUMBER(10),
+  total        NUMBER(20),
+  day_nums     NUMBER(10),
+  average_nums NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.OPER_GOODS_CALLBASELINE
+  is '前一天商品报警基线';
+comment on column DW_USER.OPER_GOODS_CALLBASELINE.day_key
+  is '计算日期';
+comment on column DW_USER.OPER_GOODS_CALLBASELINE.item_code
+  is '商品编号';
+comment on column DW_USER.OPER_GOODS_CALLBASELINE.average_nums
+  is '平均数';
+create index DW_USER.ITEM_CODEDAY_KEY on DW_USER.OPER_GOODS_CALLBASELINE (DAY_KEY, ITEM_CODE)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

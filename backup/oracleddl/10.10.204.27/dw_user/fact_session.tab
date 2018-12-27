@@ -1,0 +1,125 @@
+???create table DW_USER.FACT_SESSION
+(
+  id              NUMBER(20) not null,
+  session_key     NUMBER(20) not null,
+  vid             VARCHAR2(1000),
+  fist_ip         VARCHAR2(500),
+  page_count      NUMBER(10),
+  start_page_key  NUMBER(20),
+  left_page_key   NUMBER(20),
+  hmsc_key        NUMBER(20),
+  hmsc            VARCHAR2(200),
+  hmmd            VARCHAR2(200),
+  hmpl            VARCHAR2(200),
+  hmkw            VARCHAR2(200),
+  hmci            VARCHAR2(200),
+  application_key NUMBER(20),
+  ip_geo_key      NUMBER(20),
+  life_time       NUMBER(10),
+  life_time_key   NUMBER(20) default 0,
+  start_date_key  NUMBER(20),
+  end_date_key    NUMBER(20),
+  visitor_key     NUMBER(20) default 0,
+  start_time      DATE,
+  end_time        DATE,
+  member_key      NUMBER(20),
+  bonus_flag      NUMBER(1) default 0,
+  hour_key        NUMBER(10) default 0,
+  hour            NUMBER(10),
+  channel_key     NUMBER(10),
+  ver_key         NUMBER(10) default 0,
+  ver_name        VARCHAR2(200),
+  agent           VARCHAR2(1000)
+)
+partition by hash (ID)
+(
+  partition SESSIONP1
+    tablespace BSDUDATA00,
+  partition SESSIONP2
+    tablespace BSDUDATA01,
+  partition SESSIONP3
+    tablespace BSDUDATA02,
+  partition SESSIONP4
+    tablespace BSDUDATA03
+);
+comment on column DW_USER.FACT_SESSION.id
+  is 'w_session_f_s.nextval';
+comment on column DW_USER.FACT_SESSION.session_key
+  is 'w_session_f_s.nextval';
+comment on column DW_USER.FACT_SESSION.vid
+  is '用户终端唯一标识号';
+comment on column DW_USER.FACT_SESSION.fist_ip
+  is 'IP';
+comment on column DW_USER.FACT_SESSION.page_count
+  is '访问页面数';
+comment on column DW_USER.FACT_SESSION.start_page_key
+  is '开始访问page key';
+comment on column DW_USER.FACT_SESSION.left_page_key
+  is '离开page key';
+comment on column DW_USER.FACT_SESSION.hmsc_key
+  is '访问来源渠道KEY';
+comment on column DW_USER.FACT_SESSION.hmsc
+  is '访问来源渠道';
+comment on column DW_USER.FACT_SESSION.hmmd
+  is '推广媒介';
+comment on column DW_USER.FACT_SESSION.hmpl
+  is '广告系列';
+comment on column DW_USER.FACT_SESSION.hmkw
+  is '广告关键字';
+comment on column DW_USER.FACT_SESSION.hmci
+  is '广告唯一编号';
+comment on column DW_USER.FACT_SESSION.application_key
+  is '应用KEY';
+comment on column DW_USER.FACT_SESSION.ip_geo_key
+  is '上游页面KEY';
+comment on column DW_USER.FACT_SESSION.life_time
+  is '访问时长';
+comment on column DW_USER.FACT_SESSION.life_time_key
+  is '访问时长key（DIM_SESSIONSTAYTIME）';
+comment on column DW_USER.FACT_SESSION.start_date_key
+  is '开始访问时间key';
+comment on column DW_USER.FACT_SESSION.end_date_key
+  is '结束访问时间key';
+comment on column DW_USER.FACT_SESSION.visitor_key
+  is '用户KEY';
+comment on column DW_USER.FACT_SESSION.start_time
+  is '开始访问时间';
+comment on column DW_USER.FACT_SESSION.end_time
+  is '结束访问时间';
+comment on column DW_USER.FACT_SESSION.member_key
+  is 'MEMBER_KEY';
+comment on column DW_USER.FACT_SESSION.hour_key
+  is '访问时段key';
+comment on column DW_USER.FACT_SESSION.hour
+  is '访问时段';
+comment on column DW_USER.FACT_SESSION.channel_key
+  is '应用渠道KEY';
+comment on column DW_USER.FACT_SESSION.ver_key
+  is '版本key';
+comment on column DW_USER.FACT_SESSION.ver_name
+  is '版本名称';
+comment on column DW_USER.FACT_SESSION.agent
+  is '客户端';
+create index DW_USER.FACT_SESSION_FIST_IP on DW_USER.FACT_SESSION (FIST_IP)
+  nologging  local;
+create index DW_USER.HOUR_KEY_IDX on DW_USER.FACT_SESSION (HOUR_KEY)
+  nologging  local;
+create index DW_USER.LIFE_TIME_IDX on DW_USER.FACT_SESSION (LIFE_TIME_KEY)
+  nologging  local;
+create index DW_USER.MEMBER_IDX on DW_USER.FACT_SESSION (MEMBER_KEY)
+  nologging  local;
+create unique index DW_USER.SESSION_ID_IDX on DW_USER.FACT_SESSION (ID)
+  nologging  local;
+create index DW_USER.SESSION_KEY_IDX on DW_USER.FACT_SESSION (SESSION_KEY)
+  nologging  local;
+create index DW_USER.START_DATE_IDX on DW_USER.FACT_SESSION (START_DATE_KEY)
+  nologging  local;
+create index DW_USER.S_VISITOR_KEY_IDX on DW_USER.FACT_SESSION (VISITOR_KEY)
+  nologging  local;
+create index DW_USER.VER_KEY_IDX on DW_USER.FACT_SESSION (VER_KEY)
+  nologging  local;
+create index DW_USER.VIDETIME_IDX on DW_USER.FACT_SESSION (VID, END_TIME)
+  nologging  local;
+create index DW_USER.VID_IDX on DW_USER.FACT_SESSION (VID)
+  nologging  local;
+

@@ -1,0 +1,3 @@
+???create or replace synonym DW_USER.JSON_PRINTER
+  for DW_USER.PLJSON_PRINTER;
+

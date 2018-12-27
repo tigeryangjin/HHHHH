@@ -1,0 +1,44 @@
+???create table DW_USER.TMP_0926
+(
+  order_id       NUMBER(10),
+  order_sn       NUMBER(30),
+  pay_sn         NUMBER(30),
+  add_time       NUMBER(20),
+  payment_code   VARCHAR2(10),
+  payment_time   NUMBER(20),
+  finnshed_time  NUMBER(20),
+  goods_amount   NUMBER(10,2),
+  order_amount   NUMBER(10,2),
+  shipping_fee   NUMBER(10,2),
+  order_state    NUMBER(4),
+  refund_state   NUMBER(3),
+  refund_amount  NUMBER(10,2),
+  order_from     VARCHAR2(10),
+  shipping_type  NUMBER(2),
+  shipping_name  VARCHAR2(50),
+  shipping_code  VARCHAR2(200),
+  app_name       VARCHAR2(20),
+  vid            VARCHAR2(100),
+  erp_order_no   NUMBER(20),
+  erp_order_time NUMBER(20),
+  order_ip       VARCHAR2(50),
+  paymentchannel VARCHAR2(30),
+  cust_no        NUMBER(20),
+  is_kjg         NUMBER(1),
+  addtime        DATE,
+  store_id       NUMBER(20),
+  store_name     VARCHAR2(100),
+  order_type     NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

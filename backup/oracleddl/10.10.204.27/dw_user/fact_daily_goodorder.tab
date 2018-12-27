@@ -1,0 +1,76 @@
+???create table DW_USER.FACT_DAILY_GOODORDER
+(
+  visit_date_key  NUMBER,
+  page_key        NUMBER(10),
+  page_name       VARCHAR2(500),
+  item_code       NUMBER,
+  goods_name      VARCHAR2(200),
+  matdlt          VARCHAR2(100),
+  brand_name      VARCHAR2(100),
+  is_tv           VARCHAR2(18),
+  goods_price     NUMBER,
+  goodpv          NUMBER,
+  gooduv          NUMBER,
+  goodnum         NUMBER,
+  goodamount      NUMBER,
+  create_date_key NUMBER(10),
+  page_value      VARCHAR2(500),
+  application_nm  VARCHAR2(18)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_GOODORDER.visit_date_key
+  is '统计日期';
+comment on column DW_USER.FACT_DAILY_GOODORDER.page_key
+  is '页面KEY';
+comment on column DW_USER.FACT_DAILY_GOODORDER.page_name
+  is '页面名称';
+comment on column DW_USER.FACT_DAILY_GOODORDER.item_code
+  is '商品编号(ERP)';
+comment on column DW_USER.FACT_DAILY_GOODORDER.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_DAILY_GOODORDER.matdlt
+  is '商品物料大类';
+comment on column DW_USER.FACT_DAILY_GOODORDER.brand_name
+  is '品牌名称';
+comment on column DW_USER.FACT_DAILY_GOODORDER.is_tv
+  is '提报组';
+comment on column DW_USER.FACT_DAILY_GOODORDER.goods_price
+  is '商品单价';
+comment on column DW_USER.FACT_DAILY_GOODORDER.goodpv
+  is '商品浏览PV';
+comment on column DW_USER.FACT_DAILY_GOODORDER.gooduv
+  is '商品浏览UV';
+comment on column DW_USER.FACT_DAILY_GOODORDER.goodnum
+  is '商品订购数量';
+comment on column DW_USER.FACT_DAILY_GOODORDER.goodamount
+  is '商品订购金额';
+comment on column DW_USER.FACT_DAILY_GOODORDER.create_date_key
+  is '抽取时间戳';
+comment on column DW_USER.FACT_DAILY_GOODORDER.page_value
+  is '页面值';
+comment on column DW_USER.FACT_DAILY_GOODORDER.application_nm
+  is '应用渠道';
+create index DW_USER.GOODORDER_D_IDX on DW_USER.FACT_DAILY_GOODORDER (VISIT_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

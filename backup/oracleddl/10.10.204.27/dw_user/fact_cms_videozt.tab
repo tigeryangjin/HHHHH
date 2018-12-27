@@ -1,0 +1,31 @@
+???create table DW_USER.FACT_CMS_VIDEOZT
+(
+  id                NUMBER(11),
+  name              VARCHAR2(100),
+  pic               VARCHAR2(100),
+  url               VARCHAR2(200),
+  sort              NUMBER(11),
+  is_re             NUMBER(3),
+  remark            VARCHAR2(200),
+  create_time       NUMBER(11),
+  enable            NUMBER(3),
+  play_time         NUMBER(11),
+  video_source      VARCHAR2(200),
+  video_default_pic VARCHAR2(100),
+  prise_count       NUMBER(11),
+  pv_count          NUMBER(11),
+  uv_count          NUMBER(11),
+  timestamp         NUMBER(11)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -1,0 +1,52 @@
+???create table DW_USER.KPI_ASMT_REG_ORDER_CVR
+(
+  month_key          NUMBER(10) not null,
+  order_member_count NUMBER,
+  reg_member_count   NUMBER,
+  w_insert_dt        DATE,
+  w_update_dt        DATE,
+  cvr                NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.KPI_ASMT_REG_ORDER_CVR
+  is 'KPI考核指标-市场部-当月新注册会员净订购转化率
+by yangjin
+2018-02-28';
+comment on column DW_USER.KPI_ASMT_REG_ORDER_CVR.month_key
+  is '月份key';
+comment on column DW_USER.KPI_ASMT_REG_ORDER_CVR.order_member_count
+  is '新会员订购人数';
+comment on column DW_USER.KPI_ASMT_REG_ORDER_CVR.reg_member_count
+  is '新会员注册人数';
+comment on column DW_USER.KPI_ASMT_REG_ORDER_CVR.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.KPI_ASMT_REG_ORDER_CVR.w_update_dt
+  is '记录更新时间';
+comment on column DW_USER.KPI_ASMT_REG_ORDER_CVR.cvr
+  is '转化率 (Conversion Rate)';
+alter table DW_USER.KPI_ASMT_REG_ORDER_CVR
+  add constraint KPI_ASMT_REG_ORDER_CVR_PK primary key (MONTH_KEY)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.KPI_ASMT_REG_ORDER_CVR_PK nologging;
+

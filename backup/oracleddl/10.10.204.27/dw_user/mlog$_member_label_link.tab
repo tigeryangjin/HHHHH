@@ -1,0 +1,23 @@
+???create table DW_USER.MLOG$_MEMBER_LABEL_LINK
+(
+  row_id          NUMBER(10),
+  snaptime$$      DATE,
+  dmltype$$       VARCHAR2(1),
+  old_new$$       VARCHAR2(1),
+  change_vector$$ RAW(255),
+  xid$$           NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.MLOG$_MEMBER_LABEL_LINK
+  is 'snapshot log for master table DW_USER.MEMBER_LABEL_LINK';
+

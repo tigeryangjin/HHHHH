@@ -1,0 +1,15 @@
+???create table DW_USER.C
+(
+  id NUMBER(20)
+)
+tablespace BDUDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  );
+

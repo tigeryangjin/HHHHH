@@ -1,0 +1,952 @@
+???create table ODSHAPPIGO.LIPS
+(
+  mandt              VARCHAR2(9) not null,
+  vbeln              VARCHAR2(30) not null,
+  posnr              VARCHAR2(18) not null,
+  pstyv              VARCHAR2(12),
+  ernam              VARCHAR2(36),
+  erzet              VARCHAR2(18),
+  erdat              VARCHAR2(24),
+  matnr              VARCHAR2(54),
+  matwa              VARCHAR2(54),
+  matkl              VARCHAR2(27),
+  werks              VARCHAR2(12),
+  lgort              VARCHAR2(12),
+  charg              VARCHAR2(30),
+  lichn              VARCHAR2(45),
+  kdmat              VARCHAR2(105),
+  prodh              VARCHAR2(54),
+  lfimg              NUMBER(13,3),
+  meins              VARCHAR2(9),
+  vrkme              VARCHAR2(9),
+  umvkz              INTEGER,
+  umvkn              INTEGER,
+  ntgew              NUMBER(15,3),
+  brgew              NUMBER(15,3),
+  gewei              VARCHAR2(9),
+  volum              NUMBER(15,3),
+  voleh              VARCHAR2(9),
+  kztlf              VARCHAR2(3),
+  uebtk              VARCHAR2(3),
+  uebto              NUMBER(3,1),
+  untto              NUMBER(3,1),
+  chspl              VARCHAR2(3),
+  faksp              VARCHAR2(6),
+  mbdat              VARCHAR2(24),
+  lgmng              NUMBER(13,3),
+  arktx              VARCHAR2(120),
+  lgpbe              VARCHAR2(30),
+  vbelv              VARCHAR2(30),
+  posnv              VARCHAR2(18),
+  vbtyv              VARCHAR2(3),
+  vgsys              VARCHAR2(30),
+  vgbel              VARCHAR2(30),
+  vgpos              VARCHAR2(18),
+  upflu              VARCHAR2(3),
+  uepos              VARCHAR2(18),
+  fkrel              VARCHAR2(3),
+  ladgr              VARCHAR2(12),
+  tragr              VARCHAR2(12),
+  komkz              VARCHAR2(3),
+  lgnum              VARCHAR2(9),
+  lispl              VARCHAR2(3),
+  lgtyp              VARCHAR2(9),
+  lgpla              VARCHAR2(30),
+  bwtex              VARCHAR2(3),
+  bwart              VARCHAR2(9),
+  bwlvs              VARCHAR2(9),
+  kzdlg              VARCHAR2(3),
+  bdart              VARCHAR2(6),
+  plart              VARCHAR2(3),
+  mtart              VARCHAR2(12),
+  xchpf              VARCHAR2(3),
+  xchar              VARCHAR2(3),
+  vgref              VARCHAR2(3),
+  posar              VARCHAR2(3),
+  bwtar              VARCHAR2(30),
+  sumbd              VARCHAR2(3),
+  mtvfp              VARCHAR2(6),
+  eannr              VARCHAR2(39),
+  gsber              VARCHAR2(12),
+  vkbur              VARCHAR2(12),
+  vkgrp              VARCHAR2(9),
+  vtweg              VARCHAR2(6),
+  spart              VARCHAR2(6),
+  grkor              VARCHAR2(9),
+  fmeng              VARCHAR2(3),
+  antlf              INTEGER,
+  vbeaf              NUMBER(5,2),
+  vbeav              NUMBER(5,2),
+  stafo              VARCHAR2(18),
+  wavwr              NUMBER(13,2),
+  kzwi1              NUMBER(13,2),
+  kzwi2              NUMBER(13,2),
+  kzwi3              NUMBER(13,2),
+  kzwi4              NUMBER(13,2),
+  kzwi5              NUMBER(13,2),
+  kzwi6              NUMBER(13,2),
+  sobkz              VARCHAR2(3),
+  aedat              VARCHAR2(24),
+  ean11              VARCHAR2(54),
+  kvgr1              VARCHAR2(9),
+  kvgr2              VARCHAR2(9),
+  kvgr3              VARCHAR2(9),
+  kvgr4              VARCHAR2(9),
+  kvgr5              VARCHAR2(9),
+  mvgr1              VARCHAR2(9),
+  mvgr2              VARCHAR2(9),
+  mvgr3              VARCHAR2(9),
+  mvgr4              VARCHAR2(9),
+  mvgr5              VARCHAR2(9),
+  vpzuo              VARCHAR2(3),
+  vgtyp              VARCHAR2(3),
+  rfvgtyp            VARCHAR2(3),
+  kostl              VARCHAR2(30),
+  kokrs              VARCHAR2(12),
+  paobjnr            VARCHAR2(30),
+  prctr              VARCHAR2(30),
+  ps_psp_pnr         VARCHAR2(24),
+  aufnr              VARCHAR2(36),
+  posnr_pp           VARCHAR2(12),
+  kdauf              VARCHAR2(30),
+  kdpos              VARCHAR2(18),
+  vpmat              VARCHAR2(54),
+  vpwrk              VARCHAR2(12),
+  prbme              VARCHAR2(9),
+  knttp              VARCHAR2(3),
+  kzvbr              VARCHAR2(3),
+  fipos              VARCHAR2(42),
+  fistl              VARCHAR2(48),
+  geber              VARCHAR2(30),
+  pckpf              VARCHAR2(3),
+  bedar_lf           VARCHAR2(9),
+  cmpnt              VARCHAR2(3),
+  kcmeng             NUMBER(15,3),
+  kcbrgew            NUMBER(15,3),
+  kcntgew            NUMBER(15,3),
+  kcvolum            NUMBER(15,3),
+  uecha              VARCHAR2(18),
+  cuobj              VARCHAR2(54),
+  cuobj_ch           VARCHAR2(54),
+  anzsn              NUMBER(10),
+  serail             VARCHAR2(12),
+  kcgewei            VARCHAR2(9),
+  kcvoleh            VARCHAR2(9),
+  sernr              VARCHAR2(24),
+  abrli              VARCHAR2(12),
+  abart              VARCHAR2(3),
+  abrvw              VARCHAR2(9),
+  qplos              VARCHAR2(36),
+  qtlos              VARCHAR2(18),
+  nachl              VARCHAR2(3),
+  magrv              VARCHAR2(12),
+  objko              VARCHAR2(66),
+  objpo              VARCHAR2(66),
+  aeskd              VARCHAR2(51),
+  shkzg              VARCHAR2(3),
+  prosa              VARCHAR2(3),
+  uepvw              VARCHAR2(3),
+  empst              VARCHAR2(75),
+  abtnr              VARCHAR2(12),
+  koqui              VARCHAR2(3),
+  stadat             VARCHAR2(24),
+  aktnr              VARCHAR2(30),
+  knumh_ch           VARCHAR2(30),
+  prefe              VARCHAR2(3),
+  exart              VARCHAR2(6),
+  clint              VARCHAR2(30),
+  chmvs              VARCHAR2(9),
+  abeln              VARCHAR2(30),
+  abelp              VARCHAR2(15),
+  kzumw              VARCHAR2(3),
+  kmpmg              NUMBER(13,3),
+  aurel              VARCHAR2(3),
+  kpein              INTEGER,
+  kmein              VARCHAR2(9),
+  netpr              NUMBER(11,2),
+  netwr              NUMBER(15,2),
+  kowrr              VARCHAR2(3),
+  kzbew              VARCHAR2(3),
+  mfrgr              VARCHAR2(24),
+  chhpv              VARCHAR2(3),
+  abfor              VARCHAR2(6),
+  mbuhr              VARCHAR2(18),
+  wktnr              VARCHAR2(30),
+  wktps              VARCHAR2(18),
+  j_1bcfop           VARCHAR2(30),
+  j_1btaxlw1         VARCHAR2(9),
+  j_1btaxlw2         VARCHAR2(9),
+  j_1btxsdc          VARCHAR2(6),
+  situa              VARCHAR2(6),
+  rsnum              VARCHAR2(30),
+  rspos              VARCHAR2(12),
+  rsart              VARCHAR2(3),
+  kannr              VARCHAR2(105),
+  kzfme              VARCHAR2(3),
+  profl              VARCHAR2(9),
+  kcmengvme          NUMBER(15,3),
+  kzbws              VARCHAR2(3),
+  pspnr              VARCHAR2(24),
+  eprio              VARCHAR2(12),
+  rules              VARCHAR2(12),
+  kzbef              VARCHAR2(3),
+  mprof              VARCHAR2(12),
+  ematn              VARCHAR2(54),
+  lgbzo              VARCHAR2(30),
+  handle             VARCHAR2(66),
+  verurpos           VARCHAR2(18),
+  lifexpos           VARCHAR2(18),
+  noatp              VARCHAR2(3),
+  nopck              VARCHAR2(3),
+  rblvs              VARCHAR2(9),
+  berid              VARCHAR2(30),
+  bestq              VARCHAR2(3),
+  umbsq              VARCHAR2(3),
+  ummat              VARCHAR2(54),
+  umwrk              VARCHAR2(12),
+  umlgo              VARCHAR2(12),
+  umcha              VARCHAR2(30),
+  umbar              VARCHAR2(30),
+  umsok              VARCHAR2(3),
+  sonum              VARCHAR2(48),
+  usonu              VARCHAR2(48),
+  akkur              NUMBER(9,5),
+  akmng              VARCHAR2(3),
+  vkgru              VARCHAR2(9),
+  shkzg_um           VARCHAR2(3),
+  insmk              VARCHAR2(3),
+  kzech              VARCHAR2(3),
+  flgwm              VARCHAR2(3),
+  berkz              VARCHAR2(3),
+  hupos              VARCHAR2(3),
+  nowab              VARCHAR2(3),
+  konto              VARCHAR2(30),
+  kzear              VARCHAR2(3),
+  hsdat              VARCHAR2(24),
+  vfdat              VARCHAR2(24),
+  lfgja              VARCHAR2(12),
+  lfbnr              VARCHAR2(30),
+  lfpos              VARCHAR2(12),
+  grund              VARCHAR2(12),
+  fobwa              VARCHAR2(9),
+  dlvtp              VARCHAR2(6),
+  exbwr              NUMBER(13,2),
+  bpmng              NUMBER(13,3),
+  exvkw              NUMBER(13,2),
+  kzpod              VARCHAR2(3),
+  lfdez              VARCHAR2(3),
+  podrel             VARCHAR2(3),
+  kzuml              VARCHAR2(3),
+  fkber              VARCHAR2(48),
+  grant_nbr          VARCHAR2(60),
+  kzwso              VARCHAR2(3),
+  gmcontrol          VARCHAR2(3),
+  posting_change     VARCHAR2(3),
+  um_ps_psp_pnr      VARCHAR2(24),
+  pre_vl_etens       VARCHAR2(12),
+  spe_gen_elikz      VARCHAR2(3),
+  spe_scrap_ind      VARCHAR2(3),
+  spe_auth_number    VARCHAR2(60),
+  spe_inspout_guid   VARCHAR2(16),
+  spe_follow_up      VARCHAR2(12),
+  spe_exp_date_ext   NUMBER(15),
+  spe_exp_date_int   NUMBER(15),
+  spe_auth_complet   VARCHAR2(3),
+  ormng              NUMBER(13,3),
+  spe_atp_tmstmp     NUMBER(15),
+  spe_orig_sys       VARCHAR2(3),
+  spe_lieffz         NUMBER(15,3),
+  spe_imwrk          VARCHAR2(3),
+  spe_lifexpos2      VARCHAR2(105),
+  spe_except_code    VARCHAR2(12),
+  spe_keep_qty       NUMBER(13,3),
+  spe_alternate      VARCHAR2(120),
+  spe_mat_subst      VARCHAR2(3),
+  spe_struc          VARCHAR2(9),
+  spe_apo_qntyfac    INTEGER,
+  spe_apo_qntydiv    INTEGER,
+  spe_herkl          VARCHAR2(9),
+  spe_bxp_date_ext   NUMBER(15),
+  spe_version        VARCHAR2(12),
+  spe_compl_mvt      VARCHAR2(3),
+  j_1btaxlw4         VARCHAR2(9),
+  j_1btaxlw5         VARCHAR2(9),
+  j_1btaxlw3         VARCHAR2(9),
+  budget_pd          VARCHAR2(30),
+  kbnkz              VARCHAR2(3),
+  sitkz              VARCHAR2(3),
+  cons_order         VARCHAR2(3),
+  zxxly              VARCHAR2(30),
+  unit_id            VARCHAR2(42),
+  zwerks             VARCHAR2(12),
+  zzlifnr            VARCHAR2(30),
+  extor              VARCHAR2(60),
+  extln              VARCHAR2(30),
+  ztransf            VARCHAR2(6),
+  docmode            VARCHAR2(6),
+  zgrpid             VARCHAR2(9),
+  zordid             VARCHAR2(9),
+  zz01               VARCHAR2(51),
+  zz08               VARCHAR2(51),
+  zzkzwi1            NUMBER(13,2),
+  zzkzwi2            NUMBER(13,2),
+  zzkzwi3            NUMBER(13,2),
+  zzkzwi4            NUMBER(13,2),
+  zzkzwi5            NUMBER(13,2),
+  account_code       VARCHAR2(42),
+  account_code_birth VARCHAR2(42),
+  print_flag         VARCHAR2(3),
+  print_times        VARCHAR2(9),
+  print_last_date    VARCHAR2(24),
+  print_last_time    VARCHAR2(18),
+  print_last_id      VARCHAR2(36),
+  invoice_seq        VARCHAR2(60),
+  zres1_i            VARCHAR2(45),
+  zres2_i            VARCHAR2(30),
+  zres3_i            VARCHAR2(30),
+  zres4_i            VARCHAR2(30),
+  zres5_i            VARCHAR2(30),
+  zres6_i            VARCHAR2(3),
+  zres7_i            VARCHAR2(3),
+  zres8_i            VARCHAR2(3),
+  zres9_i            VARCHAR2(3),
+  zres10_i           VARCHAR2(3),
+  timestamp          VARCHAR2(42),
+  zzghlifnr          VARCHAR2(30)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 8K
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column ODSHAPPIGO.LIPS.mandt
+  is '客户端';
+comment on column ODSHAPPIGO.LIPS.vbeln
+  is '交货';
+comment on column ODSHAPPIGO.LIPS.posnr
+  is '交货项目';
+comment on column ODSHAPPIGO.LIPS.pstyv
+  is '交货项目类别';
+comment on column ODSHAPPIGO.LIPS.ernam
+  is '创建对象的人员名称';
+comment on column ODSHAPPIGO.LIPS.erzet
+  is '输入时间';
+comment on column ODSHAPPIGO.LIPS.erdat
+  is '记录的创建日期';
+comment on column ODSHAPPIGO.LIPS.matnr
+  is '商品';
+comment on column ODSHAPPIGO.LIPS.matwa
+  is '已输入物料';
+comment on column ODSHAPPIGO.LIPS.matkl
+  is '物料组';
+comment on column ODSHAPPIGO.LIPS.werks
+  is '地点';
+comment on column ODSHAPPIGO.LIPS.lgort
+  is '库存地点';
+comment on column ODSHAPPIGO.LIPS.charg
+  is '批号';
+comment on column ODSHAPPIGO.LIPS.lichn
+  is '供应商的批次';
+comment on column ODSHAPPIGO.LIPS.kdmat
+  is '客户物料';
+comment on column ODSHAPPIGO.LIPS.prodh
+  is '产品层次';
+comment on column ODSHAPPIGO.LIPS.lfimg
+  is '实际已交货量（按销售单位）';
+comment on column ODSHAPPIGO.LIPS.meins
+  is '基本计量单位';
+comment on column ODSHAPPIGO.LIPS.vrkme
+  is '销售单位';
+comment on column ODSHAPPIGO.LIPS.umvkz
+  is '销售数量转换成SKU的分子(因子)';
+comment on column ODSHAPPIGO.LIPS.umvkn
+  is '销售数量转换为 SKU 的值（除数）';
+comment on column ODSHAPPIGO.LIPS.ntgew
+  is '净重量';
+comment on column ODSHAPPIGO.LIPS.brgew
+  is '毛重';
+comment on column ODSHAPPIGO.LIPS.gewei
+  is '重量单位';
+comment on column ODSHAPPIGO.LIPS.volum
+  is '业务量';
+comment on column ODSHAPPIGO.LIPS.voleh
+  is '体积单位';
+comment on column ODSHAPPIGO.LIPS.kztlf
+  is '项目水平上的部分交货';
+comment on column ODSHAPPIGO.LIPS.uebtk
+  is '标识：允许未限制的过量交货';
+comment on column ODSHAPPIGO.LIPS.uebto
+  is '过量交货限度';
+comment on column ODSHAPPIGO.LIPS.untto
+  is '交货不足限度';
+comment on column ODSHAPPIGO.LIPS.chspl
+  is '被允许的批量拆分';
+comment on column ODSHAPPIGO.LIPS.faksp
+  is '冻结';
+comment on column ODSHAPPIGO.LIPS.mbdat
+  is '物料分段/有效日期';
+comment on column ODSHAPPIGO.LIPS.lgmng
+  is '以仓库保管单位级的实际交货数量';
+comment on column ODSHAPPIGO.LIPS.arktx
+  is '销售订单项目短文本';
+comment on column ODSHAPPIGO.LIPS.lgpbe
+  is '库存仓位';
+comment on column ODSHAPPIGO.LIPS.vbelv
+  is '起始凭证';
+comment on column ODSHAPPIGO.LIPS.posnv
+  is '起始项目';
+comment on column ODSHAPPIGO.LIPS.vbtyv
+  is 'SD 凭证类别';
+comment on column ODSHAPPIGO.LIPS.vgsys
+  is '在前面凭证中的逻辑系统';
+comment on column ODSHAPPIGO.LIPS.vgbel
+  is '参考单据的单据编号';
+comment on column ODSHAPPIGO.LIPS.vgpos
+  is '参考项目的项目号';
+comment on column ODSHAPPIGO.LIPS.upflu
+  is '交货登记流更新指示';
+comment on column ODSHAPPIGO.LIPS.uepos
+  is '物料单结构中的上层项目';
+comment on column ODSHAPPIGO.LIPS.fkrel
+  is ' 与出具发票相关';
+comment on column ODSHAPPIGO.LIPS.ladgr
+  is '装载组';
+comment on column ODSHAPPIGO.LIPS.tragr
+  is '运输组';
+comment on column ODSHAPPIGO.LIPS.komkz
+  is '拣配控制指示符';
+comment on column ODSHAPPIGO.LIPS.lgnum
+  is '仓库号/混合仓库';
+comment on column ODSHAPPIGO.LIPS.lispl
+  is '拆分成需要的仓库编号';
+comment on column ODSHAPPIGO.LIPS.lgtyp
+  is '仓储类型';
+comment on column ODSHAPPIGO.LIPS.lgpla
+  is '仓位';
+comment on column ODSHAPPIGO.LIPS.bwtex
+  is '指示符：分别估价';
+comment on column ODSHAPPIGO.LIPS.bwart
+  is '移动类型（库存管理）';
+comment on column ODSHAPPIGO.LIPS.bwlvs
+  is '仓库管理的移动类型';
+comment on column ODSHAPPIGO.LIPS.kzdlg
+  is '标识: 仓库管理中的动态仓位';
+comment on column ODSHAPPIGO.LIPS.bdart
+  is '需求类型';
+comment on column ODSHAPPIGO.LIPS.plart
+  is '计划类型';
+comment on column ODSHAPPIGO.LIPS.mtart
+  is '物料类型';
+comment on column ODSHAPPIGO.LIPS.xchpf
+  is '批次管理需求的标识';
+comment on column ODSHAPPIGO.LIPS.xchar
+  is '批量管理标识(内部)';
+comment on column ODSHAPPIGO.LIPS.vgref
+  is '先前凭证从参照中得出';
+comment on column ODSHAPPIGO.LIPS.posar
+  is '项目类型';
+comment on column ODSHAPPIGO.LIPS.bwtar
+  is '评估类型';
+comment on column ODSHAPPIGO.LIPS.sumbd
+  is '需求总计';
+comment on column ODSHAPPIGO.LIPS.mtvfp
+  is '可用性检查的检查组';
+comment on column ODSHAPPIGO.LIPS.eannr
+  is '欧洲物品号 (EAN) - 已过时的 !!!!!';
+comment on column ODSHAPPIGO.LIPS.gsber
+  is '业务范围';
+comment on column ODSHAPPIGO.LIPS.vkbur
+  is '销售部门';
+comment on column ODSHAPPIGO.LIPS.vkgrp
+  is '销售组';
+comment on column ODSHAPPIGO.LIPS.vtweg
+  is '分销渠道';
+comment on column ODSHAPPIGO.LIPS.spart
+  is '部门';
+comment on column ODSHAPPIGO.LIPS.grkor
+  is '交货组（所有项一起交货）';
+comment on column ODSHAPPIGO.LIPS.fmeng
+  is '数量固定';
+comment on column ODSHAPPIGO.LIPS.antlf
+  is '每个项目允许的部分交货最大数';
+comment on column ODSHAPPIGO.LIPS.vbeaf
+  is '以日计的装运处理时间(=建立时间)';
+comment on column ODSHAPPIGO.LIPS.vbeav
+  is '可变装运处理天数';
+comment on column ODSHAPPIGO.LIPS.stafo
+  is '更新组用于统计更新';
+comment on column ODSHAPPIGO.LIPS.wavwr
+  is '凭证货币中的成本';
+comment on column ODSHAPPIGO.LIPS.kzwi1
+  is '从条件定价过程小计1';
+comment on column ODSHAPPIGO.LIPS.kzwi2
+  is '从条件定价过程小计2';
+comment on column ODSHAPPIGO.LIPS.kzwi3
+  is '从条件定价过程小计3';
+comment on column ODSHAPPIGO.LIPS.kzwi4
+  is '从条件定价过程小计4';
+comment on column ODSHAPPIGO.LIPS.kzwi5
+  is '从条件定价过程小计5';
+comment on column ODSHAPPIGO.LIPS.kzwi6
+  is '从条件定价过程小计6';
+comment on column ODSHAPPIGO.LIPS.sobkz
+  is '特殊库存标识';
+comment on column ODSHAPPIGO.LIPS.aedat
+  is '更改日期';
+comment on column ODSHAPPIGO.LIPS.ean11
+  is '国际文件号(EAN/UPC)';
+comment on column ODSHAPPIGO.LIPS.kvgr1
+  is '预留客户组';
+comment on column ODSHAPPIGO.LIPS.kvgr2
+  is '客户组 2';
+comment on column ODSHAPPIGO.LIPS.kvgr3
+  is '客户组 3';
+comment on column ODSHAPPIGO.LIPS.kvgr4
+  is '客户组 4';
+comment on column ODSHAPPIGO.LIPS.kvgr5
+  is '客户组 5';
+comment on column ODSHAPPIGO.LIPS.mvgr1
+  is '物料组1';
+comment on column ODSHAPPIGO.LIPS.mvgr2
+  is '物料组2';
+comment on column ODSHAPPIGO.LIPS.mvgr3
+  is '物料组3';
+comment on column ODSHAPPIGO.LIPS.mvgr4
+  is '物料组4';
+comment on column ODSHAPPIGO.LIPS.mvgr5
+  is '物料组5';
+comment on column ODSHAPPIGO.LIPS.vpzuo
+  is '分配标识符';
+comment on column ODSHAPPIGO.LIPS.vgtyp
+  is 'SD 凭证类别';
+comment on column ODSHAPPIGO.LIPS.rfvgtyp
+  is '中心系统中前项凭证类型';
+comment on column ODSHAPPIGO.LIPS.kostl
+  is '成本中心';
+comment on column ODSHAPPIGO.LIPS.kokrs
+  is '控制范围';
+comment on column ODSHAPPIGO.LIPS.paobjnr
+  is '获利能力段编号(CO-PA)';
+comment on column ODSHAPPIGO.LIPS.prctr
+  is '利润中心';
+comment on column ODSHAPPIGO.LIPS.ps_psp_pnr
+  is '工作分解结构元素 (WBS 元素)';
+comment on column ODSHAPPIGO.LIPS.aufnr
+  is '订单号';
+comment on column ODSHAPPIGO.LIPS.posnr_pp
+  is '订单项目编号';
+comment on column ODSHAPPIGO.LIPS.kdauf
+  is '销售订单数';
+comment on column ODSHAPPIGO.LIPS.kdpos
+  is '销售订单中的项目编号';
+comment on column ODSHAPPIGO.LIPS.vpmat
+  is '计划物料';
+comment on column ODSHAPPIGO.LIPS.vpwrk
+  is '计划工厂';
+comment on column ODSHAPPIGO.LIPS.prbme
+  is '产品组的基本计量单位';
+comment on column ODSHAPPIGO.LIPS.knttp
+  is '科目分配类别';
+comment on column ODSHAPPIGO.LIPS.kzvbr
+  is '消耗过帐';
+comment on column ODSHAPPIGO.LIPS.fipos
+  is '承诺项目';
+comment on column ODSHAPPIGO.LIPS.fistl
+  is '基金中心';
+comment on column ODSHAPPIGO.LIPS.geber
+  is '基金';
+comment on column ODSHAPPIGO.LIPS.pckpf
+  is '包装控制';
+comment on column ODSHAPPIGO.LIPS.bedar_lf
+  is '需求分类';
+comment on column ODSHAPPIGO.LIPS.cmpnt
+  is '标识：有效信贷功能/信贷相关中的项目';
+comment on column ODSHAPPIGO.LIPS.kcmeng
+  is '所有分裂项目的累计批数量(以库存单位计)';
+comment on column ODSHAPPIGO.LIPS.kcbrgew
+  is '所有批量拆分项的累计总重';
+comment on column ODSHAPPIGO.LIPS.kcntgew
+  is '所有批分裂项目的累计净重量';
+comment on column ODSHAPPIGO.LIPS.kcvolum
+  is '所有批拆分项目的累计体积';
+comment on column ODSHAPPIGO.LIPS.uecha
+  is '批次拆分项目的上层项目';
+comment on column ODSHAPPIGO.LIPS.cuobj
+  is 'SD变式处理的内部对象编号';
+comment on column ODSHAPPIGO.LIPS.cuobj_ch
+  is '批次分类的内部对象编号';
+comment on column ODSHAPPIGO.LIPS.anzsn
+  is '序列号数目';
+comment on column ODSHAPPIGO.LIPS.serail
+  is '序列号参数文件';
+comment on column ODSHAPPIGO.LIPS.kcgewei
+  is '重量单位';
+comment on column ODSHAPPIGO.LIPS.kcvoleh
+  is '体积单位';
+comment on column ODSHAPPIGO.LIPS.sernr
+  is 'BOM展开号';
+comment on column ODSHAPPIGO.LIPS.abrli
+  is '内部交货计划号';
+comment on column ODSHAPPIGO.LIPS.abart
+  is '审批类型';
+comment on column ODSHAPPIGO.LIPS.abrvw
+  is '使用标识';
+comment on column ODSHAPPIGO.LIPS.qplos
+  is '检验批编号';
+comment on column ODSHAPPIGO.LIPS.qtlos
+  is '部分批量编号';
+comment on column ODSHAPPIGO.LIPS.nachl
+  is '客户未过帐收货';
+comment on column ODSHAPPIGO.LIPS.magrv
+  is '物料组: 包装物料';
+comment on column ODSHAPPIGO.LIPS.objko
+  is '抬头层对象编号';
+comment on column ODSHAPPIGO.LIPS.objpo
+  is '项目层对象编号';
+comment on column ODSHAPPIGO.LIPS.aeskd
+  is '客户工程修改状态';
+comment on column ODSHAPPIGO.LIPS.shkzg
+  is '退货项目';
+comment on column ODSHAPPIGO.LIPS.prosa
+  is '物料确定ID';
+comment on column ODSHAPPIGO.LIPS.uepvw
+  is '高层项目使用的ID';
+comment on column ODSHAPPIGO.LIPS.empst
+  is '收货点';
+comment on column ODSHAPPIGO.LIPS.abtnr
+  is '部门编号';
+comment on column ODSHAPPIGO.LIPS.koqui
+  is '拣配需要确认';
+comment on column ODSHAPPIGO.LIPS.stadat
+  is '统计日期';
+comment on column ODSHAPPIGO.LIPS.aktnr
+  is '促销';
+comment on column ODSHAPPIGO.LIPS.knumh_ch
+  is '批确定中条件记录的编号';
+comment on column ODSHAPPIGO.LIPS.prefe
+  is '进/出口中优惠指示符';
+comment on column ODSHAPPIGO.LIPS.exart
+  is '外贸业务交易类型';
+comment on column ODSHAPPIGO.LIPS.clint
+  is '内部分类号';
+comment on column ODSHAPPIGO.LIPS.chmvs
+  is '批     : 退出到数量建议';
+comment on column ODSHAPPIGO.LIPS.abeln
+  is '分配表编号';
+comment on column ODSHAPPIGO.LIPS.abelp
+  is '分配表项目号';
+comment on column ODSHAPPIGO.LIPS.kzumw
+  is '环境相关';
+comment on column ODSHAPPIGO.LIPS.kmpmg
+  is '组件数量';
+comment on column ODSHAPPIGO.LIPS.aurel
+  is '与分配表相关';
+comment on column ODSHAPPIGO.LIPS.kpein
+  is '条件定价单位';
+comment on column ODSHAPPIGO.LIPS.kmein
+  is '条件单位';
+comment on column ODSHAPPIGO.LIPS.netpr
+  is '净价';
+comment on column ODSHAPPIGO.LIPS.netwr
+  is '凭证货币计量的净价值';
+comment on column ODSHAPPIGO.LIPS.kowrr
+  is '统计值';
+comment on column ODSHAPPIGO.LIPS.kzbew
+  is '移动标识';
+comment on column ODSHAPPIGO.LIPS.mfrgr
+  is '物料运输组';
+comment on column ODSHAPPIGO.LIPS.chhpv
+  is '包装累积批次/活动类型项';
+comment on column ODSHAPPIGO.LIPS.abfor
+  is '付款担保的表格';
+comment on column ODSHAPPIGO.LIPS.mbuhr
+  is '物料准备时间（本地，与工厂相关）';
+comment on column ODSHAPPIGO.LIPS.wktnr
+  is '价值合同编号';
+comment on column ODSHAPPIGO.LIPS.wktps
+  is '价值合同项目';
+comment on column ODSHAPPIGO.LIPS.j_1bcfop
+  is 'CFOP 编码和扩展';
+comment on column ODSHAPPIGO.LIPS.j_1btaxlw1
+  is '税法: ICMS';
+comment on column ODSHAPPIGO.LIPS.j_1btaxlw2
+  is '税法: IPI';
+comment on column ODSHAPPIGO.LIPS.j_1btxsdc
+  is 'SD的税码';
+comment on column ODSHAPPIGO.LIPS.situa
+  is '状况指示符';
+comment on column ODSHAPPIGO.LIPS.rsnum
+  is '预留/相关需求的编号';
+comment on column ODSHAPPIGO.LIPS.rspos
+  is '预留/相关需求的项目编号';
+comment on column ODSHAPPIGO.LIPS.rsart
+  is '记录类型';
+comment on column ODSHAPPIGO.LIPS.kannr
+  is '看板/顺序编号';
+comment on column ODSHAPPIGO.LIPS.kzfme
+  is 'ID: 为完成一事务的前导计量单位';
+comment on column ODSHAPPIGO.LIPS.profl
+  is '危险货物标识参数文件';
+comment on column ODSHAPPIGO.LIPS.kcmengvme
+  is '所有分裂项目的累计批数量(以销售单位)';
+comment on column ODSHAPPIGO.LIPS.kzbws
+  is '特定库存的评估';
+comment on column ODSHAPPIGO.LIPS.pspnr
+  is '项目定义 (内部)';
+comment on column ODSHAPPIGO.LIPS.eprio
+  is '库存的领料顺序组';
+comment on column ODSHAPPIGO.LIPS.rules
+  is '库存确定规则';
+comment on column ODSHAPPIGO.LIPS.kzbef
+  is '库存管理活动的标记';
+comment on column ODSHAPPIGO.LIPS.mprof
+  is '制造商部件参数文件';
+comment on column ODSHAPPIGO.LIPS.ematn
+  is '按照制造商零件编号的物料编号';
+comment on column ODSHAPPIGO.LIPS.lgbzo
+  is '综合仓库的分段范围';
+comment on column ODSHAPPIGO.LIPS.handle
+  is 'LIPS-VBELN & LIPS_POSNR 的世界范围唯一关键字';
+comment on column ODSHAPPIGO.LIPS.verurpos
+  is '分散交货：原始项目';
+comment on column ODSHAPPIGO.LIPS.lifexpos
+  is '外部项目号';
+comment on column ODSHAPPIGO.LIPS.noatp
+  is '指示符：可用性检验无效';
+comment on column ODSHAPPIGO.LIPS.nopck
+  is '指示符：无相关提货';
+comment on column ODSHAPPIGO.LIPS.rblvs
+  is '来自物料移动的 WM 的参考移动类型';
+comment on column ODSHAPPIGO.LIPS.berid
+  is 'MRP 范围';
+comment on column ODSHAPPIGO.LIPS.bestq
+  is '仓库管理系统中的库存类别';
+comment on column ODSHAPPIGO.LIPS.umbsq
+  is '仓库管理系统中的库存类别';
+comment on column ODSHAPPIGO.LIPS.ummat
+  is '收货/发货物料';
+comment on column ODSHAPPIGO.LIPS.umwrk
+  is '收货/发货工厂';
+comment on column ODSHAPPIGO.LIPS.umlgo
+  is '收货/发货库存地点';
+comment on column ODSHAPPIGO.LIPS.umcha
+  is '收货/发货批量';
+comment on column ODSHAPPIGO.LIPS.umbar
+  is '转储批次的估价类型';
+comment on column ODSHAPPIGO.LIPS.umsok
+  is '库存调拨的特殊库存标识';
+comment on column ODSHAPPIGO.LIPS.sonum
+  is '特殊库存编号';
+comment on column ODSHAPPIGO.LIPS.usonu
+  is '特殊库存编号';
+comment on column ODSHAPPIGO.LIPS.akkur
+  is '对外贸易中信用证的汇兑率';
+comment on column ODSHAPPIGO.LIPS.akmng
+  is '凭证处理中算术运算的当前数量字段';
+comment on column ODSHAPPIGO.LIPS.vkgru
+  is '修理处理: 项目分类';
+comment on column ODSHAPPIGO.LIPS.shkzg_um
+  is '指示符：主过帐中的 UNMAT';
+comment on column ODSHAPPIGO.LIPS.insmk
+  is '库存类型';
+comment on column ODSHAPPIGO.LIPS.kzech
+  is '在生产/处理订单中批量输入的确定';
+comment on column ODSHAPPIGO.LIPS.flgwm
+  is '标识: 从前一文档复制目标存储数据';
+comment on column ODSHAPPIGO.LIPS.berkz
+  is '生产供应的物料待运标志';
+comment on column ODSHAPPIGO.LIPS.hupos
+  is '标识: 交货项目是 HU 项目';
+comment on column ODSHAPPIGO.LIPS.nowab
+  is '标识: 项目与货物移动不相关';
+comment on column ODSHAPPIGO.LIPS.konto
+  is '总账科目编号';
+comment on column ODSHAPPIGO.LIPS.kzear
+  is '该预留的最后发货';
+comment on column ODSHAPPIGO.LIPS.hsdat
+  is '生产日期';
+comment on column ODSHAPPIGO.LIPS.vfdat
+  is '货架寿命到期日';
+comment on column ODSHAPPIGO.LIPS.lfgja
+  is '当前期间的会计年度';
+comment on column ODSHAPPIGO.LIPS.lfbnr
+  is '参考凭证的凭证号';
+comment on column ODSHAPPIGO.LIPS.lfpos
+  is '参考凭证项目';
+comment on column ODSHAPPIGO.LIPS.grund
+  is '货物移动原因';
+comment on column ODSHAPPIGO.LIPS.fobwa
+  is '后续移动类型';
+comment on column ODSHAPPIGO.LIPS.dlvtp
+  is '交货目录';
+comment on column ODSHAPPIGO.LIPS.exbwr
+  is '以本地货币计量的从外部输入的过帐金额';
+comment on column ODSHAPPIGO.LIPS.bpmng
+  is '采购订单价格单位的数量';
+comment on column ODSHAPPIGO.LIPS.exvkw
+  is '以本地货币表示的外部输入销售值';
+comment on column ODSHAPPIGO.LIPS.kzpod
+  is 'POD 标识 (相关、验证、确认)';
+comment on column ODSHAPPIGO.LIPS.lfdez
+  is '与 WMS 分销无关';
+comment on column ODSHAPPIGO.LIPS.podrel
+  is 'POD 控制 (交付核证)';
+comment on column ODSHAPPIGO.LIPS.kzuml
+  is '库存转储/转帐';
+comment on column ODSHAPPIGO.LIPS.fkber
+  is '功能范围';
+comment on column ODSHAPPIGO.LIPS.grant_nbr
+  is '同意';
+comment on column ODSHAPPIGO.LIPS.kzwso
+  is '计量单位使用';
+comment on column ODSHAPPIGO.LIPS.gmcontrol
+  is '货物移动控制';
+comment on column ODSHAPPIGO.LIPS.posting_change
+  is '货物移动控制: HU';
+comment on column ODSHAPPIGO.LIPS.um_ps_psp_pnr
+  is '接受/发货(WBS要素)';
+comment on column ODSHAPPIGO.LIPS.pre_vl_etens
+  is '供应商确认的顺序编号';
+comment on column ODSHAPPIGO.LIPS.spe_gen_elikz
+  is '交货已完成标识';
+comment on column ODSHAPPIGO.LIPS.spe_scrap_ind
+  is 'EWM 处理的废品标识';
+comment on column ODSHAPPIGO.LIPS.spe_auth_number
+  is '退货物料授权编号';
+comment on column ODSHAPPIGO.LIPS.spe_inspout_guid
+  is '检验：由 EWM 设置的检验结果 GUID';
+comment on column ODSHAPPIGO.LIPS.spe_follow_up
+  is '缺省后继作业代码';
+comment on column ODSHAPPIGO.LIPS.spe_exp_date_ext
+  is '退货有效期终止日期';
+comment on column ODSHAPPIGO.LIPS.spe_exp_date_int
+  is '退货发货内部有效性期间的结束日期';
+comment on column ODSHAPPIGO.LIPS.spe_auth_complet
+  is 'RMA 完成指示器';
+comment on column ODSHAPPIGO.LIPS.ormng
+  is '交货项目的原始数量';
+comment on column ODSHAPPIGO.LIPS.spe_atp_tmstmp
+  is 'ATP 时戳';
+comment on column ODSHAPPIGO.LIPS.spe_orig_sys
+  is '初始系统类型';
+comment on column ODSHAPPIGO.LIPS.spe_lieffz
+  is '计划协议累积数量 - 供应商的观点';
+comment on column ODSHAPPIGO.LIPS.spe_lifexpos2
+  is '外部项目标识符';
+comment on column ODSHAPPIGO.LIPS.spe_except_code
+  is '数量差异的例外代码库';
+comment on column ODSHAPPIGO.LIPS.spe_keep_qty
+  is 'EWM 中废品处理的保留数量';
+comment on column ODSHAPPIGO.LIPS.spe_alternate
+  is '替换产品编号';
+comment on column ODSHAPPIGO.LIPS.spe_mat_subst
+  is '物料替代的原因';
+comment on column ODSHAPPIGO.LIPS.spe_apo_qntyfac
+  is '计量单位转换的商的分子';
+comment on column ODSHAPPIGO.LIPS.spe_apo_qntydiv
+  is '计量单位转换的商的分母';
+comment on column ODSHAPPIGO.LIPS.spe_herkl
+  is '物料原产地国家';
+comment on column ODSHAPPIGO.LIPS.spe_bxp_date_ext
+  is '退货交付有效期间的开始日期';
+comment on column ODSHAPPIGO.LIPS.spe_version
+  is '确认时的交货版本';
+comment on column ODSHAPPIGO.LIPS.spe_compl_mvt
+  is '记帐的差异之后完成货物移动';
+comment on column ODSHAPPIGO.LIPS.budget_pd
+  is 'FM：预算期间';
+comment on column ODSHAPPIGO.LIPS.kbnkz
+  is '看板标识';
+comment on column ODSHAPPIGO.LIPS.sitkz
+  is '发货估算在运库存的说明';
+comment on column ODSHAPPIGO.LIPS.cons_order
+  is '寄售的采购清单';
+comment on column ODSHAPPIGO.LIPS.zxxly
+  is '信息来源(科目组为A100的客户)';
+comment on column ODSHAPPIGO.LIPS.unit_id
+  is '单元编号';
+comment on column ODSHAPPIGO.LIPS.zwerks
+  is '发货地点';
+comment on column ODSHAPPIGO.LIPS.zzlifnr
+  is '寄售商品的供应商';
+comment on column ODSHAPPIGO.LIPS.extor
+  is '外部单号';
+comment on column ODSHAPPIGO.LIPS.extln
+  is '外部行号';
+comment on column ODSHAPPIGO.LIPS.ztransf
+  is '特种配送标记';
+comment on column ODSHAPPIGO.LIPS.docmode
+  is '单据处理模式(公司间交易)';
+comment on column ODSHAPPIGO.LIPS.zgrpid
+  is '货主订单商品组序号';
+comment on column ODSHAPPIGO.LIPS.zordid
+  is '货主订单处理序号';
+comment on column ODSHAPPIGO.LIPS.zz01
+  is 'COD - 现金';
+comment on column ODSHAPPIGO.LIPS.zz08
+  is 'COD - POS支付';
+comment on column ODSHAPPIGO.LIPS.zzkzwi1
+  is '小计1：订单金额';
+comment on column ODSHAPPIGO.LIPS.zzkzwi2
+  is '小计2：订单金额净值';
+comment on column ODSHAPPIGO.LIPS.zzkzwi3
+  is '小计3：订单总金额';
+comment on column ODSHAPPIGO.LIPS.zzkzwi4
+  is '小计4：消费税';
+comment on column ODSHAPPIGO.LIPS.zzkzwi5
+  is '小计5：营业税';
+comment on column ODSHAPPIGO.LIPS.account_code
+  is '账单编号';
+comment on column ODSHAPPIGO.LIPS.account_code_birth
+  is '初始账单号';
+comment on column ODSHAPPIGO.LIPS.print_flag
+  is '打印标记';
+comment on column ODSHAPPIGO.LIPS.print_last_id
+  is '最后打印人';
+comment on column ODSHAPPIGO.LIPS.zres1_i
+  is '商品有效期';
+comment on column ODSHAPPIGO.LIPS.zres2_i
+  is '预留字段2';
+comment on column ODSHAPPIGO.LIPS.zres3_i
+  is '预留字段3';
+comment on column ODSHAPPIGO.LIPS.zres4_i
+  is '预留字段4';
+comment on column ODSHAPPIGO.LIPS.zres5_i
+  is '预留字段5';
+comment on column ODSHAPPIGO.LIPS.zres6_i
+  is '预留字段6';
+comment on column ODSHAPPIGO.LIPS.zres7_i
+  is '预留字段7';
+comment on column ODSHAPPIGO.LIPS.zres8_i
+  is '预留字段8';
+comment on column ODSHAPPIGO.LIPS.zres9_i
+  is '预留字段9';
+comment on column ODSHAPPIGO.LIPS.zres10_i
+  is '预留字段10';
+comment on column ODSHAPPIGO.LIPS.timestamp
+  is '时戳；过时';
+comment on column ODSHAPPIGO.LIPS.zzghlifnr
+  is '实际供货供应商';
+alter table ODSHAPPIGO.LIPS
+  add constraint PK_LIPS primary key (MANDT, VBELN, POSNR)
+  using index 
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index ODSHAPPIGO.PK_LIPS nologging;
+

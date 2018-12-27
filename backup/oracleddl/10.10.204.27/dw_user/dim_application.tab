@@ -1,0 +1,31 @@
+???create table DW_USER.DIM_APPLICATION
+(
+  id                   NUMBER(10),
+  application_key      NUMBER(10),
+  application_name     VARCHAR2(50),
+  create_date          DATE,
+  application__cn_name VARCHAR2(50),
+  channel_key          NUMBER(10),
+  channel_name         VARCHAR2(50)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_APPLICATION
+  is '应用维表';
+comment on column DW_USER.DIM_APPLICATION.application_key
+  is '应用KEY';
+comment on column DW_USER.DIM_APPLICATION.application_name
+  is '应用';
+comment on column DW_USER.DIM_APPLICATION.create_date
+  is '建立时间';
+

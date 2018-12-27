@@ -1,0 +1,24 @@
+???create table DW_USER.OPER_GOODS_EMAIL
+(
+  item_code      NUMBER(20),
+  date_key       NUMBER(20),
+  goods_name     VARCHAR2(1000),
+  today_total    NUMBER(10),
+  yestoday_total NUMBER(10),
+  cod_total      NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.OPER_GOODS_EMAIL
+  is '邮件记录';
+

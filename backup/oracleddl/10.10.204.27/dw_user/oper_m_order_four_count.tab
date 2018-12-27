@@ -1,0 +1,21 @@
+???create table DW_USER.OPER_M_ORDER_FOUR_COUNT
+(
+  member_key      NUMBER(20),
+  last_order_time NUMBER(10),
+  record_date_key NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.OPER_M_ORDER_FOUR_COUNT
+  is '20160614后有过有效订购，且2.0订购总次数等于4次的会员';
+

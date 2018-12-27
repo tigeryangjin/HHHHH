@@ -1,0 +1,63 @@
+???create table DW_USER.OPER_NM_PROMOTION_ITEM_REPORT
+(
+  add_time                 DATE,
+  promotion_name           VARCHAR2(150),
+  promotion_type           VARCHAR2(20),
+  promotion_source         VARCHAR2(12),
+  promotion_no             VARCHAR2(60),
+  pathway                  VARCHAR2(6),
+  item_code                NUMBER(10),
+  item_name                VARCHAR2(600),
+  sales_qty                NUMBER(5),
+  sales_amount             NUMBER,
+  company_apportion_amount NUMBER,
+  supp_apportion_amount    NUMBER,
+  supplier_id              VARCHAR2(150),
+  total_apportion_amount   NUMBER,
+  order_sn                 VARCHAR2(40)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_NM_PROMOTION_ITEM_REPORT
+  is '新媒体中心促销报表（商品级别）
+by yangjin 2017-09-19';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.add_time
+  is '订购日期';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.promotion_name
+  is '促销名称/券名称';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.promotion_type
+  is '促销类型';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.promotion_source
+  is '促销来源';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.promotion_no
+  is '促销编码';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.pathway
+  is '通路';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.item_name
+  is '商品名称';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.sales_qty
+  is '有效订购件数';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.sales_amount
+  is '有效订购金额';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.company_apportion_amount
+  is '公司让利金额';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.supp_apportion_amount
+  is '供应商让利金额';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.supplier_id
+  is '供应商编码';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.total_apportion_amount
+  is '促销总成本';
+comment on column DW_USER.OPER_NM_PROMOTION_ITEM_REPORT.order_sn
+  is '订单编号';
+

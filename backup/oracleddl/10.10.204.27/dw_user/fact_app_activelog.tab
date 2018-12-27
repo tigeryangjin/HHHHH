@@ -1,0 +1,66 @@
+???create table DW_USER.FACT_APP_ACTIVELOG
+(
+  logid          NUMBER(20),
+  idfa           VARCHAR2(100),
+  vid            VARCHAR2(100),
+  appname        VARCHAR2(50),
+  dtype          VARCHAR2(20),
+  create_time    DATE,
+  mapping_status NUMBER(2),
+  mapping_to     NUMBER(20),
+  mapping_time   DATE,
+  push_status    NUMBER(2),
+  push_message   VARCHAR2(100),
+  source         VARCHAR2(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.IDFA_IDX on DW_USER.FACT_APP_ACTIVELOG (IDFA)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.LOGID_IDX on DW_USER.FACT_APP_ACTIVELOG (LOGID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.VID_MAP_IDX on DW_USER.FACT_APP_ACTIVELOG (VID, MAPPING_STATUS)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,31 @@
+???create table DW_USER.DYF_MEMBER_PAGE_VALUE
+(
+  member_key NUMBER(20),
+  vid        VARCHAR2(200),
+  date_key   NUMBER(20),
+  source     VARCHAR2(20),
+  nums       NUMBER(20)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DYF_MEMBER_PAGE_VALUE.member_key
+  is '会员编号';
+comment on column DW_USER.DYF_MEMBER_PAGE_VALUE.vid
+  is '设备编号';
+comment on column DW_USER.DYF_MEMBER_PAGE_VALUE.date_key
+  is '产生日期';
+comment on column DW_USER.DYF_MEMBER_PAGE_VALUE.source
+  is '渠道';
+comment on column DW_USER.DYF_MEMBER_PAGE_VALUE.nums
+  is '数量';
+

@@ -1,0 +1,22 @@
+???create table DW_USER.TMP_MEMBER_SCORE2
+(
+  member_key     NUMBER(20),
+  livecount      NUMBER,
+  ec_goods_count NUMBER,
+  tv_goods_count NUMBER,
+  livescore      NUMBER,
+  ec_goods_score NUMBER,
+  tv_goods_score NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

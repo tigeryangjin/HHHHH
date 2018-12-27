@@ -1,0 +1,73 @@
+???create table DW_USER.FACT_ECMEMBER
+(
+  member_id         NUMBER(11),
+  member_crmbp      NUMBER(20),
+  member_time       NUMBER(10),
+  register_appname  VARCHAR2(20),
+  member_createtime DATE,
+  black_flag        NUMBER(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.FACT_ECMEMBER_I1 on DW_USER.FACT_ECMEMBER (MEMBER_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEMBER_BK_IDX on DW_USER.FACT_ECMEMBER (BLACK_FLAG)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEMBER_CRMBP_IDX on DW_USER.FACT_ECMEMBER (MEMBER_CRMBP)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEMBER_TIME_IDX on DW_USER.FACT_ECMEMBER (MEMBER_TIME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

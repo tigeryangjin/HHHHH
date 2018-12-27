@@ -1,0 +1,21 @@
+???create table DW_HAPPIGO.S_PARAMETERS2
+(
+  pname VARCHAR2(40),
+  ptype NUMBER(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_HAPPIGO.S_PARAMETERS2.pname
+  is '过程名称';
+comment on column DW_HAPPIGO.S_PARAMETERS2.ptype
+  is '增量加载标示';
+

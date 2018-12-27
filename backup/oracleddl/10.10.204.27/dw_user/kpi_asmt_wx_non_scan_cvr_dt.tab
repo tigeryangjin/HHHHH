@@ -1,0 +1,52 @@
+???create table DW_USER.KPI_ASMT_WX_NON_SCAN_CVR_DT
+(
+  date_key           NUMBER(10) not null,
+  order_vid_count    NUMBER,
+  non_scan_vid_count NUMBER,
+  cvr                NUMBER,
+  w_insert_dt        DATE,
+  w_update_dt        DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.KPI_ASMT_WX_NON_SCAN_CVR_DT
+  is 'KPI考核指标-微信运营部-非扫码人数净订购转化率
+by yangjin
+2018-03-05';
+comment on column DW_USER.KPI_ASMT_WX_NON_SCAN_CVR_DT.date_key
+  is '日期key';
+comment on column DW_USER.KPI_ASMT_WX_NON_SCAN_CVR_DT.order_vid_count
+  is '订购设备数量';
+comment on column DW_USER.KPI_ASMT_WX_NON_SCAN_CVR_DT.non_scan_vid_count
+  is '非扫码设备数量';
+comment on column DW_USER.KPI_ASMT_WX_NON_SCAN_CVR_DT.cvr
+  is '转化率 (Conversion Rate)';
+comment on column DW_USER.KPI_ASMT_WX_NON_SCAN_CVR_DT.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.KPI_ASMT_WX_NON_SCAN_CVR_DT.w_update_dt
+  is '记录更新时间';
+alter table DW_USER.KPI_ASMT_WX_NON_SCAN_CVR_DT
+  add constraint KPI_ASMT_WX_NON_SCAN_CVR_DT_PK primary key (DATE_KEY)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.KPI_ASMT_WX_NON_SCAN_CVR_DT_PK nologging;
+

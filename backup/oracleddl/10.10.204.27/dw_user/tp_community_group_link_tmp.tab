@@ -1,0 +1,41 @@
+???create table DW_USER.TP_COMMUNITY_GROUP_LINK_TMP
+(
+  link_id          NUMBER(11) not null,
+  group_id         NUMBER(11) not null,
+  group_no         VARCHAR2(50) not null,
+  sign             VARCHAR2(200) not null,
+  link_expire_time DATE not null,
+  admin_user       VARCHAR2(50) not null,
+  add_time         DATE not null,
+  token            VARCHAR2(30) not null
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.TP_COMMUNITY_GROUP_LINK_TMP
+  is '群分享链接表-中间表
+by yangjin
+2018-03-26';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK_TMP.link_id
+  is '索引主键';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK_TMP.group_id
+  is '所属分组';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK_TMP.group_no
+  is '群编号';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK_TMP.sign
+  is '签名';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK_TMP.link_expire_time
+  is '链接过期时间';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK_TMP.admin_user
+  is '操作人';
+comment on column DW_USER.TP_COMMUNITY_GROUP_LINK_TMP.add_time
+  is '创建时间';
+

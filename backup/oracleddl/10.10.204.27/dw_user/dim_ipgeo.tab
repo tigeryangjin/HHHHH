@@ -1,0 +1,69 @@
+???create table DW_USER.DIM_IPGEO
+(
+  id          NUMBER(10),
+  ip_geo_key  NUMBER(10),
+  ip_start    NUMBER(10),
+  ip_end      NUMBER(10),
+  ip_country  VARCHAR2(50),
+  ip_province VARCHAR2(50),
+  ip_city     VARCHAR2(50),
+  startip     VARCHAR2(50),
+  endip       VARCHAR2(50)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_IPGEO
+  is 'IP定位维表';
+comment on column DW_USER.DIM_IPGEO.ip_geo_key
+  is 'IP定位KEY';
+comment on column DW_USER.DIM_IPGEO.ip_start
+  is '启始IP';
+comment on column DW_USER.DIM_IPGEO.ip_end
+  is '截至IP';
+comment on column DW_USER.DIM_IPGEO.ip_country
+  is '国家定位';
+comment on column DW_USER.DIM_IPGEO.ip_province
+  is '省份定位';
+comment on column DW_USER.DIM_IPGEO.ip_city
+  is '市定位';
+comment on column DW_USER.DIM_IPGEO.startip
+  is '起始IP';
+comment on column DW_USER.DIM_IPGEO.endip
+  is '结束IP';
+create unique index DW_USER.IP_GEO_KEY on DW_USER.DIM_IPGEO (IP_GEO_KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.IP_IDX on DW_USER.DIM_IPGEO (IP_START, IP_END)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

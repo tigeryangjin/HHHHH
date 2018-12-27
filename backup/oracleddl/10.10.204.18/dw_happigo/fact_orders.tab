@@ -1,0 +1,38 @@
+???create table DW_HAPPIGO.FACT_ORDERS
+(
+  id                   NUMBER(11) not null,
+  order_number         VARCHAR2(50),
+  member_key           VARCHAR2(50),
+  session_key          NUMBER(20),
+  hmsr_key             NUMBER(20),
+  application_key      NUMBER(20),
+  device_key           NUMBER(20),
+  order_status_key     NUMBER(10),
+  payment_status_key   NUMBER(10),
+  payment_status       VARCHAR2(50),
+  goods_count          NUMBER(10),
+  goods_unit_count     NUMBER(10),
+  total_price_key      NUMBER(10),
+  total_price          NUMBER(10,2),
+  price_discount_key   NUMBER(10),
+  price_discount       NUMBER(10,2),
+  total_points_key     NUMBER(10),
+  total_points         NUMBER(10,2),
+  shipping_address_key NUMBER(11),
+  payment_mode_key     NUMBER(11),
+  create_time          DATE,
+  creat_date_key       NUMBER(20),
+  iscancle             NUMBER(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

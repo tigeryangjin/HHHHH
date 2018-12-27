@@ -1,0 +1,49 @@
+???create table DW_USER.OPER_DAU_ORDER_201703
+(
+  date_key           NUMBER(10),
+  is_new_user        CHAR(8),
+  is_scan            VARCHAR2(8),
+  channel_name       VARCHAR2(6),
+  dau                NUMBER,
+  order_member_count NUMBER,
+  order_amount       NUMBER,
+  order_qty          NUMBER,
+  order_count        NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_DAU_ORDER_201703
+  is 'by yangjin
+2018-03-16';
+comment on column DW_USER.OPER_DAU_ORDER_201703.date_key
+  is '日期';
+comment on column DW_USER.OPER_DAU_ORDER_201703.is_new_user
+  is '新老客
+';
+comment on column DW_USER.OPER_DAU_ORDER_201703.is_scan
+  is '扫码用户';
+comment on column DW_USER.OPER_DAU_ORDER_201703.channel_name
+  is '通路业务分类';
+comment on column DW_USER.OPER_DAU_ORDER_201703.dau
+  is '日活
+';
+comment on column DW_USER.OPER_DAU_ORDER_201703.order_member_count
+  is '订购人数';
+comment on column DW_USER.OPER_DAU_ORDER_201703.order_amount
+  is '订购金额';
+comment on column DW_USER.OPER_DAU_ORDER_201703.order_qty
+  is '订购件数
+';
+comment on column DW_USER.OPER_DAU_ORDER_201703.order_count
+  is '订购单数
+';
+

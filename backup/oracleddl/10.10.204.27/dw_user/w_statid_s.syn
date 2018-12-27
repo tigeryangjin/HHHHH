@@ -1,0 +1,3 @@
+???create or replace synonym DW_USER.W_STATID_S
+  for DW_HAPPIGO.W_STATID_S@BIODS_LINK;
+

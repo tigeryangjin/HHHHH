@@ -1,0 +1,552 @@
+???create table ODSHAPPIGO.ODS_ZMATERIAL
+(
+  zmaterial      VARCHAR2(18) not null,
+  txtmd          VARCHAR2(200) not null,
+  af_color       VARCHAR2(5),
+  af_fcoco       VARCHAR2(5),
+  af_gender      VARCHAR2(2),
+  af_grid        VARCHAR2(18),
+  af_style       VARCHAR2(18),
+  apo_prod       VARCHAR2(40),
+  base_uom       VARCHAR2(3),
+  basic_matl     VARCHAR2(14),
+  bbp_prod       VARCHAR2(32),
+  competitor     VARCHAR2(10),
+  cont_unit      VARCHAR2(3),
+  createdon      VARCHAR2(8),
+  crm_prod       VARCHAR2(32),
+  division       VARCHAR2(2),
+  eanupc         VARCHAR2(18),
+  extmatlgrp     VARCHAR2(18),
+  gross_cont     NUMBER(17,3),
+  gross_wt       NUMBER(17,3),
+  hc_agent1      VARCHAR2(20),
+  hc_agent2      VARCHAR2(20),
+  hc_agent3      VARCHAR2(20),
+  hc_anesind     VARCHAR2(1),
+  hc_apprtyp     VARCHAR2(2),
+  hc_atccode     VARCHAR2(20),
+  hc_atcmtyp     VARCHAR2(3),
+  hc_catind1     VARCHAR2(1),
+  hc_catind2     VARCHAR2(1),
+  hc_catind3     VARCHAR2(1),
+  hc_hazmind     VARCHAR2(1),
+  hc_impmind     VARCHAR2(1),
+  height         NUMBER(17,3),
+  ind_sector     VARCHAR2(1),
+  lenght         NUMBER(17,3),
+  loc_currcy     VARCHAR2(5),
+  logsys         VARCHAR2(10),
+  manufactor     VARCHAR2(10),
+  manu_matnr     VARCHAR2(40),
+  matl_cat       VARCHAR2(2),
+  matl_group     VARCHAR2(9),
+  matl_type      VARCHAR2(4),
+  msa_usage      VARCHAR2(10),
+  net_cont       NUMBER(17,3),
+  net_weight     NUMBER(17,3),
+  po_unit        VARCHAR2(3),
+  prod_hier      VARCHAR2(18),
+  rpa_wgh1       VARCHAR2(9),
+  rpa_wgh2       VARCHAR2(9),
+  rpa_wgh3       VARCHAR2(9),
+  rpa_wgh4       VARCHAR2(9),
+  rtplcst        NUMBER(17,2),
+  rt_color       VARCHAR2(18),
+  rt_confmat     VARCHAR2(18),
+  rt_fashgrd     VARCHAR2(4),
+  rt_mdrelst     VARCHAR2(1),
+  rt_prband      VARCHAR2(2),
+  rt_prrule      VARCHAR2(1),
+  rt_searoll     VARCHAR2(2),
+  rt_season      VARCHAR2(4),
+  rt_seasyr      VARCHAR2(4),
+  rt_seayr       VARCHAR2(4),
+  rt_size        VARCHAR2(18),
+  rt_sups        VARCHAR2(1),
+  size_dim       VARCHAR2(32),
+  std_descr      VARCHAR2(18),
+  uccertifty     VARCHAR2(2),
+  ucconstcla     VARCHAR2(8),
+  ucfuncclas     VARCHAR2(8),
+  unit_dim       VARCHAR2(3),
+  unit_of_wt     VARCHAR2(3),
+  volume         NUMBER(17,3),
+  volumeunit     VARCHAR2(3),
+  width          NUMBER(17,3),
+  df_dgnr        VARCHAR2(18),
+  df_profile     VARCHAR2(3),
+  rf_size2       VARCHAR2(18),
+  rf_bndid       VARCHAR2(4),
+  rf_frechar     VARCHAR2(18),
+  rt_colrnge     VARCHAR2(30),
+  rt_sizrnge     VARCHAR2(30),
+  prod_id        VARCHAR2(40),
+  zmatzl         VARCHAR2(9),
+  zmatdl         VARCHAR2(9),
+  zmatxl         VARCHAR2(9),
+  zpart8         VARCHAR2(1),
+  zpart7         VARCHAR2(1),
+  zpart6         VARCHAR2(1),
+  zpart5         VARCHAR2(1),
+  zpart4         VARCHAR2(5),
+  zpart3         VARCHAR2(1),
+  zpart2         VARCHAR2(1),
+  zpart1         VARCHAR2(1),
+  zmedv          VARCHAR2(8),
+  zetime         VARCHAR2(6),
+  zstime         VARCHAR2(6),
+  zopenb         VARCHAR2(1),
+  zreturn        VARCHAR2(1),
+  zexpens        VARCHAR2(2),
+  zsingle        VARCHAR2(1),
+  zappr          VARCHAR2(1),
+  zdxj           VARCHAR2(2),
+  zdeare         VARCHAR2(2),
+  zdecon         VARCHAR2(1),
+  zdiret         VARCHAR2(1),
+  zexch          VARCHAR2(1),
+  zivruse        VARCHAR2(1),
+  zopenc         VARCHAR2(1),
+  zinvpr         VARCHAR2(1),
+  zsigngb        VARCHAR2(2),
+  zicomf         VARCHAR2(1),
+  zpktyp         VARCHAR2(3),
+  zcoldc         VARCHAR2(2),
+  ztpsers        VARCHAR2(1),
+  zvalid         VARCHAR2(1),
+  country        VARCHAR2(3),
+  ztragr         VARCHAR2(4),
+  zmhdrz         NUMBER(17,3),
+  zmhdhb         NUMBER(17,3),
+  zihivi         VARCHAR2(1),
+  zmstae         VARCHAR2(2),
+  zmstav         VARCHAR2(2),
+  zrf_bndid      VARCHAR2(4),
+  zlvoma         VARCHAR2(1),
+  zmater1        VARCHAR2(18),
+  zmater2        VARCHAR2(18),
+  zmater3        VARCHAR2(18),
+  zvendor        VARCHAR2(10),
+  zeamc009       VARCHAR2(8),
+  zfsdat         VARCHAR2(8),
+  currency       VARCHAR2(5),
+  zmmfist01      NUMBER(17,2),
+  zmmfist02      INTEGER,
+  zmmhigh01      NUMBER(17,2),
+  zmmhigh02      INTEGER,
+  zmmlow01       NUMBER(17,2),
+  zmmlow02       INTEGER,
+  zmmfstc01      VARCHAR2(20),
+  zmmfstc02      VARCHAR2(20),
+  zmmhghc01      VARCHAR2(20),
+  zmmhghc02      VARCHAR2(20),
+  zmmlowc01      VARCHAR2(20),
+  zmmlowc02      VARCHAR2(20),
+  zfsjdat        VARCHAR2(8),
+  zeamc027       VARCHAR2(8),
+  zmatcata       VARCHAR2(10),
+  zmatjjg        VARCHAR2(2),
+  zvenre         VARCHAR2(10),
+  ztransf        VARCHAR2(2),
+  zeamcoma       VARCHAR2(8),
+  zexctax        VARCHAR2(2),
+  zaddtax        VARCHAR2(2),
+  zmmmdely       VARCHAR2(2),
+  ztlhrp         VARCHAR2(4),
+  matl_group_txt VARCHAR2(100),
+  zmatdl_txt     VARCHAR2(100),
+  zmatzl_txt     VARCHAR2(100),
+  zmatxl_txt     VARCHAR2(100),
+  md_name        VARCHAR2(100)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmaterial
+  is '商品';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.af_color
+  is 'AFS 基本字段“颜色” ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.af_fcoco
+  is 'AFS 织品目录代码';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.af_gender
+  is 'AFS 目标组 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.af_grid
+  is 'AFS 网格';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.af_style
+  is 'AFS 样式';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.apo_prod
+  is '产品';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.base_uom
+  is '基本计量单位';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.basic_matl
+  is '基本物料';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.bbp_prod
+  is '产品';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.competitor
+  is '竞争者 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.cont_unit
+  is '容量单位';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.createdon
+  is '记录建立日期';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.crm_prod
+  is '产品';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.division
+  is '部门';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.eanupc
+  is '欧洲商品代码/通用产品代码';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.extmatlgrp
+  is '外部物料组 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.gross_cont
+  is '总容量 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.gross_wt
+  is '毛重';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.hc_agent1
+  is '有效成分 1（主要有效成分）';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.hc_agent2
+  is '有效成分 2';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.hc_agent3
+  is '有效成分 3';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.hc_anesind
+  is '麻醉标识';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.hc_apprtyp
+  is '批准类型';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.hc_atccode
+  is '解剖治疗化学代码';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.hc_atcmtyp
+  is '解剖治疗化学代码的医疗类别 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.hc_catind1
+  is '目录 1 标识';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.hc_catind2
+  is '目录 2 标识';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.hc_catind3
+  is '目录 3 标识';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.hc_hazmind
+  is '有害物质标识';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.hc_impmind
+  is '导入物料标识';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.height
+  is '高度';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.ind_sector
+  is '行业领域';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.lenght
+  is '长度';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.loc_currcy
+  is '本币';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.logsys
+  is '源系统 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.manufactor
+  is '制造商';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.manu_matnr
+  is '厂商制造件编号';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.matl_cat
+  is '物料类别';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.matl_group
+  is '物料组 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.matl_type
+  is '物料类型';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.msa_usage
+  is '用途 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.net_cont
+  is '净容量';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.net_weight
+  is '项目净重';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.po_unit
+  is '订单单位';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.prod_hier
+  is '产品层次结构';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rpa_wgh1
+  is '物料组层次级别 1';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rpa_wgh2
+  is '物料组层次级别 2';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rpa_wgh3
+  is '物料组层次级别 3';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rpa_wgh4
+  is '物料组层次级别 4';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rtplcst
+  is '计划采购价格';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_color
+  is '颜色';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_confmat
+  is '跨工厂配置物料 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_fashgrd
+  is '时装等级';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_mdrelst
+  is '主数据批准状态';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_prband
+  is '价格幅度类别';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_prrule
+  is '采购规则';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_searoll
+  is '集合';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_season
+  is '季节类别';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_seasyr
+  is '季度年 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_seayr
+  is '季度年 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_size
+  is '大小';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_sups
+  is '货源';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.size_dim
+  is '大小/维度';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.std_descr
+  is '标准描述（例如 DIN） ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.uccertifty
+  is '证明类型';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.ucconstcla
+  is '建筑种类';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.ucfuncclas
+  is '功能类别';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.unit_dim
+  is '长度/宽度/高度的量纲单位 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.unit_of_wt
+  is '重量单位';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.volume
+  is '数量';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.volumeunit
+  is '容量单位';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.width
+  is '宽度';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rf_size2
+  is '大小 2';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rf_bndid
+  is '商标';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rf_frechar
+  is '常规分析特征';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_colrnge
+  is '颜色特征范围';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.rt_sizrnge
+  is '规格特征范围';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.prod_id
+  is '产品标识';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmatzl
+  is '物料中类';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmatdl
+  is '物料大类';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmatxl
+  is '物料小类';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zpart8
+  is '生成快乐券标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zpart7
+  is '绿色通道标记';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zpart6
+  is '全检标记';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zpart5
+  is '易燃易爆品标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zpart4
+  is '锂电池标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zpart3
+  is '危险品标记';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zpart2
+  is '异味品标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zpart1
+  is '易碎品标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmedv
+  is '销售状态截止日期';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zetime
+  is '销售状态截止时间 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zstime
+  is '销售状态起始时间 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zopenb
+  is '送货时内包装可拆封标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zreturn
+  is '货标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zexpens
+  is '贵品标识';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zsingle
+  is '允许单卖标记';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zappr
+  is '享受十天鉴赏期标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zdxj
+  is '大小件 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zdeare
+  is '全网局网配送 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zdecon
+  is '卡单标记';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zdiret
+  is '直接回收确定标记';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zexch
+  is '交换可能标记';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zivruse
+  is '是否IVR标记';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zopenc
+  is '商品不享受价格折扣标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zinvpr
+  is '发票打印标记';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zsigngb
+  is '商品结算区分';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zicomf
+  is '计入销售商品标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zpktyp
+  is '包装类型';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zcoldc
+  is '冷链标识';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.ztpsers
+  is '跟踪序列号（串码）标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zvalid
+  is '有效期管理标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.country
+  is '国家代码';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.ztragr
+  is '运输组 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmhdrz
+  is '剩余货架寿命';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmhdhb
+  is '总货架寿命';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zihivi
+  is '新品标记';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmstae
+  is '采购状态 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmstav
+  is '销售状态 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zrf_bndid
+  is '商标';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zlvoma
+  is '删除标记';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmater1
+  is '对应主机品号';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmater2
+  is '对应关联母品';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmater3
+  is '商品合并编号';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zvendor
+  is '供应商 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zeamc009
+  is '播放日期';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zfsdat
+  is '首次TV销售时间 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.currency
+  is '货币码';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmfist01
+  is '商品首次直播业绩（有效）';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmfist02
+  is '商品首次直播时长';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmhigh01
+  is '历史最高分钟产值对应业绩 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmhigh02
+  is '历史最高分钟产值对应时长';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmlow01
+  is '历史最低分钟产值对应业绩';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmlow02
+  is '历史最低分钟产值对应时长 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmfstc01
+  is '商品首次直播业绩（有效）';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmfstc02
+  is '商品首次直播时长';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmhghc01
+  is '历史最高分钟产值对应业绩 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmhghc02
+  is '历史最高分钟产值对应时长 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmlowc01
+  is '历史最低分钟产值对应业绩 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmlowc02
+  is '历史最低分钟产值对应时长 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zfsjdat
+  is '全通路首次净订购日期';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zeamc027
+  is '员工-MD';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmatcata
+  is '供应商合作品类 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmatjjg
+  is '是否加价购 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zvenre
+  is '供应商直接回收标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.ztransf
+  is '特种配送标记 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zeamcoma
+  is 'MA';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zexctax
+  is '消费税税率 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zaddtax
+  is '增值税税率';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmmmdely
+  is '商品配送标签 ';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.ztlhrp
+  is '提报组';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.matl_group_txt
+  is '物料细类名称';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmatdl_txt
+  is '物料大类名称';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmatzl_txt
+  is '物料中类名称';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.zmatxl_txt
+  is '物料小类名称';
+comment on column ODSHAPPIGO.ODS_ZMATERIAL.md_name
+  is '员工-MD名称';
+create index ODSHAPPIGO.CREATEDON2 on ODSHAPPIGO.ODS_ZMATERIAL (CREATEDON)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.GOODS_ERP_CODE2 on ODSHAPPIGO.ODS_ZMATERIAL (EANUPC)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.GOODS_ITEM_CODE2 on ODSHAPPIGO.ODS_ZMATERIAL (ZMATER2)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.GOODS_KEY2 on ODSHAPPIGO.ODS_ZMATERIAL (ZMATERIAL)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.MD_KEY2 on ODSHAPPIGO.ODS_ZMATERIAL (ZEAMC027)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

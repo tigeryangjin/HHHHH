@@ -1,0 +1,58 @@
+???create table DW_USER.DATA_ACQUISITION_MONTH_TOPN
+(
+  year_month      VARCHAR2(24),
+  matdlt          VARCHAR2(80),
+  matzlt          VARCHAR2(80),
+  matxlt          VARCHAR2(80),
+  sales_qty_top_n NUMBER,
+  acq_item_code   VARCHAR2(50),
+  acq_name        VARCHAR2(500),
+  acq_url         VARCHAR2(500),
+  acq_pic         VARCHAR2(500),
+  acq_shop_name   VARCHAR2(200),
+  acq_price       NUMBER(20,2),
+  sales_qty       NUMBER,
+  sales_amt       NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DATA_ACQUISITION_MONTH_TOPN
+  is 'DATA_ACQUISITION_ITEM月销售排行
+by yangjin';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.year_month
+  is '年月（格式：YYYYMM）';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.matdlt
+  is '物料大类名称';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.matzlt
+  is '物料中类名称';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.matxlt
+  is '物料小类名称';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.sales_qty_top_n
+  is '销售数量排名';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.acq_item_code
+  is '商品编码';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.acq_name
+  is '商品名称';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.acq_url
+  is '商品URL地址';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.acq_pic
+  is '商品图片地址';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.acq_shop_name
+  is '店铺名称';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.acq_price
+  is '商品售价';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.sales_qty
+  is '销售数量';
+comment on column DW_USER.DATA_ACQUISITION_MONTH_TOPN.sales_amt
+  is '销售金额';
+

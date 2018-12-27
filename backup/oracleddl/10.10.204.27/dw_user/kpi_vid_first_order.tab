@@ -1,0 +1,46 @@
+???create table DW_USER.KPI_VID_FIRST_ORDER
+(
+  vid                  VARCHAR2(300) not null,
+  first_order_date_key VARCHAR2(8),
+  w_insert_dt          DATE,
+  w_update_dt          DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.KPI_VID_FIRST_ORDER
+  is 'KPI设备首次订购日期
+by yangjin
+2018-03-06';
+comment on column DW_USER.KPI_VID_FIRST_ORDER.vid
+  is '用户终端唯一标识号';
+comment on column DW_USER.KPI_VID_FIRST_ORDER.first_order_date_key
+  is '首次订购日期';
+comment on column DW_USER.KPI_VID_FIRST_ORDER.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.KPI_VID_FIRST_ORDER.w_update_dt
+  is '记录更新时间';
+alter table DW_USER.KPI_VID_FIRST_ORDER
+  add constraint KPI_VID_FIRST_ORDER_PK primary key (VID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.KPI_VID_FIRST_ORDER_PK nologging;
+

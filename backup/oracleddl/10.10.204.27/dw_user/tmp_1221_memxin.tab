@@ -1,0 +1,28 @@
+???create table DW_USER.TMP_1221_MEMXIN
+(
+  member_crmbp NUMBER(20)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.MEMXIN_1221_IDX on DW_USER.TMP_1221_MEMXIN (MEMBER_CRMBP)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

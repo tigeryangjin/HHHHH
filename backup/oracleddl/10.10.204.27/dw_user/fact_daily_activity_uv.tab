@@ -1,0 +1,23 @@
+???create table DW_USER.FACT_DAILY_ACTIVITY_UV
+(
+  visit_date_key  NUMBER(10),
+  name            VARCHAR2(200),
+  goods_common_id NUMBER(10),
+  goods_name      VARCHAR2(200),
+  application_key NUMBER(10),
+  zttype          CHAR(10),
+  goodspv         NUMBER,
+  goodsuv         NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

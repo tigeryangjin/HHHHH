@@ -1,0 +1,26 @@
+???create table DW_USER.DIM_MEMBER_ORDER_TOTAL
+(
+  member_key      NUMBER(20),
+  order_total     NUMBER(10),
+  order_last_time NUMBER(10),
+  state           NUMBER(5) default 0
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_MEMBER_ORDER_TOTAL.member_key
+  is '用户会员编号';
+comment on column DW_USER.DIM_MEMBER_ORDER_TOTAL.order_total
+  is '有效订购次数';
+comment on column DW_USER.DIM_MEMBER_ORDER_TOTAL.order_last_time
+  is '最近一次有效订购';
+

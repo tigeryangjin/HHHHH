@@ -1,0 +1,70 @@
+???create table DW_USER.DIM_MINUTE_OF_DAY
+(
+  row_wid        NUMBER(10) not null,
+  am_pm_str      VARCHAR2(30 CHAR),
+  hh12mi_str     VARCHAR2(30 CHAR),
+  hh24mi_str     VARCHAR2(30 CHAR),
+  hour_12_num    NUMBER(2),
+  hour_24_num    NUMBER(2),
+  minute_num     NUMBER(2),
+  half_hour_num  NUMBER(1),
+  qtr_hour_num   NUMBER(1),
+  time_session   VARCHAR2(30 CHAR),
+  w_insert_dt    DATE,
+  w_update_dt    DATE,
+  integration_id VARCHAR2(80 CHAR)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_MINUTE_OF_DAY.row_wid
+  is '用于唯一识别记录的代理键。';
+comment on column DW_USER.DIM_MINUTE_OF_DAY.am_pm_str
+  is '12小时制，AM或者PM';
+comment on column DW_USER.DIM_MINUTE_OF_DAY.hh12mi_str
+  is '12小时制';
+comment on column DW_USER.DIM_MINUTE_OF_DAY.hh24mi_str
+  is '24小时制';
+comment on column DW_USER.DIM_MINUTE_OF_DAY.hour_12_num
+  is '12小时制小时数';
+comment on column DW_USER.DIM_MINUTE_OF_DAY.hour_24_num
+  is '24小时制小时数';
+comment on column DW_USER.DIM_MINUTE_OF_DAY.minute_num
+  is '分钟数';
+comment on column DW_USER.DIM_MINUTE_OF_DAY.half_hour_num
+  is '1：上半小时，2：下半小时';
+comment on column DW_USER.DIM_MINUTE_OF_DAY.qtr_hour_num
+  is '1/4小时数';
+comment on column DW_USER.DIM_MINUTE_OF_DAY.time_session
+  is '分6个大时段（AFTERNOON,DAWN,EVENING ,MORNING,NIGHT,NOON）';
+comment on column DW_USER.DIM_MINUTE_OF_DAY.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.DIM_MINUTE_OF_DAY.w_update_dt
+  is '记录更新时间';
+comment on column DW_USER.DIM_MINUTE_OF_DAY.integration_id
+  is '唯一标识符（复合键）';
+alter table DW_USER.DIM_MINUTE_OF_DAY
+  add constraint PK_W_MINUTE_OF_DAY_D primary key (ROW_WID)
+  using index 
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.PK_W_MINUTE_OF_DAY_D nologging;
+

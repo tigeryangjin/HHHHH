@@ -1,0 +1,37 @@
+???create table DW_USER.FACT_TBL_JDTCLICKLOG
+(
+  logid         NUMBER(20),
+  muid          VARCHAR2(40),
+  click_time    DATE,
+  appid         VARCHAR2(40),
+  click_id      VARCHAR2(50),
+  app_type      VARCHAR2(20),
+  advertiser_id VARCHAR2(20),
+  create_time   DATE,
+  ip            VARCHAR2(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.GDT_CLICK_IDX on DW_USER.FACT_TBL_JDTCLICKLOG (LOGID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

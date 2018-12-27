@@ -1,0 +1,7 @@
+???create sequence DW_USER.FACT_GOODS_EVALUATE_ASPECT_SEQ
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 149601
+increment by 1
+cache 20;
+

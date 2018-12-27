@@ -1,0 +1,41 @@
+???create table DW_USER.EC_GOODS_TAGS_TMP
+(
+  goods_tag_id   NUMBER(10),
+  item_code      NUMBER(10),
+  goods_commonid NUMBER(10),
+  tag_id         NUMBER(10),
+  state          NUMBER(3),
+  add_time       DATE,
+  edit_time      DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.EC_GOODS_TAGS_TMP
+  is 'ec商品标签对应表-中间表
+source:happigo_ec
+by yangjin
+2018-05-15';
+comment on column DW_USER.EC_GOODS_TAGS_TMP.goods_tag_id
+  is '自增ID';
+comment on column DW_USER.EC_GOODS_TAGS_TMP.item_code
+  is '商品编号';
+comment on column DW_USER.EC_GOODS_TAGS_TMP.goods_commonid
+  is '平台货号';
+comment on column DW_USER.EC_GOODS_TAGS_TMP.tag_id
+  is '标签ID';
+comment on column DW_USER.EC_GOODS_TAGS_TMP.state
+  is '对应状态（1有效，0无效），默认有效';
+comment on column DW_USER.EC_GOODS_TAGS_TMP.add_time
+  is '添加时间';
+comment on column DW_USER.EC_GOODS_TAGS_TMP.edit_time
+  is '修改时间';
+

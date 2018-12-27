@@ -1,0 +1,58 @@
+???create table DW_USER.OPER_ITEM_RECOMMEND_AR
+(
+  date_key         NUMBER,
+  item_code_s      NUMBER,
+  item_code_r      NUMBER,
+  group_id         NUMBER,
+  recommend_rank   NUMBER,
+  pv_freq          NUMBER,
+  fav_freq         NUMBER,
+  car_freq         NUMBER,
+  order_net_qty    NUMBER,
+  recommend_weight NUMBER,
+  member_count     NUMBER,
+  w_insert_dt      DATE,
+  w_update_dt      DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_ITEM_RECOMMEND_AR
+  is '商品推荐-关联分析Association Rules
+数据来源：OPER_MEMBER_LIKE_BASE
+yangjin 2018-01-09';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.date_key
+  is '日期key';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.item_code_s
+  is '订购的商品编码';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.item_code_r
+  is '推荐的商品编码';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.group_id
+  is '商品提报组ID(1000:TV提报组,2000:电商提报组,2100:京东商品提报,3000:道格提报组,3100:未知,5000:芒果生活提报组,6000:外呼提报组,7000:全球购提报组)';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.recommend_rank
+  is '推荐次序';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.pv_freq
+  is '推荐商品浏览频次';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.fav_freq
+  is '推荐商品收藏频次';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.car_freq
+  is '推荐商品加购物车频次';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.order_net_qty
+  is '推荐商品净销售数量';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.recommend_weight
+  is '推荐权重（PV_FREQ*5+FAV_FREQ*3+CAR_FREQ*5+ORDER_NET_QTY*4）';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.member_count
+  is '购买推荐商品的会员人数';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_ITEM_RECOMMEND_AR.w_update_dt
+  is '记录修改时间';
+

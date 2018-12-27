@@ -1,0 +1,57 @@
+???create table DW_USER.OPER_REPURCHASE_PUSH
+(
+  row_id        NUMBER not null,
+  member_bp     NUMBER(20),
+  item_code     NUMBER(20),
+  push_date_key NUMBER(10),
+  on_shelf      NUMBER,
+  stock_qty     NUMBER,
+  w_insert_dt   DATE,
+  w_update_dt   DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_REPURCHASE_PUSH
+  is '会员复购推送表
+by yangjin';
+comment on column DW_USER.OPER_REPURCHASE_PUSH.row_id
+  is '表唯一索引';
+comment on column DW_USER.OPER_REPURCHASE_PUSH.member_bp
+  is '会员BP号';
+comment on column DW_USER.OPER_REPURCHASE_PUSH.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_REPURCHASE_PUSH.push_date_key
+  is '推送日期';
+comment on column DW_USER.OPER_REPURCHASE_PUSH.on_shelf
+  is '商品是否上架（1：上架，0：下架）';
+comment on column DW_USER.OPER_REPURCHASE_PUSH.stock_qty
+  is '库存数量';
+comment on column DW_USER.OPER_REPURCHASE_PUSH.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_REPURCHASE_PUSH.w_update_dt
+  is '记录更新时间';
+alter table DW_USER.OPER_REPURCHASE_PUSH
+  add constraint OPER_REPURCHASE_PUSH_PK primary key (ROW_ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.OPER_REPURCHASE_PUSH_PK nologging;
+

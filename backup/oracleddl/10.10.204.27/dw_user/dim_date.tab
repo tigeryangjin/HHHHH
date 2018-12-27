@@ -1,0 +1,52 @@
+???create table DW_USER.DIM_DATE
+(
+  id            NUMBER(10),
+  date_key      NUMBER(10),
+  cal_year      NUMBER(10),
+  cal_qtr       NUMBER(10),
+  cal_months    NUMBER(10),
+  cal_week      NUMBER(10),
+  cal_day       NUMBER(10),
+  day_name      VARCHAR2(30),
+  day_of_week   NUMBER(10),
+  day_of_months NUMBER(10),
+  day_of_year   NUMBER(10),
+  datekey       VARCHAR2(10)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_DATE
+  is '日期维表';
+comment on column DW_USER.DIM_DATE.id
+  is '索引序列号';
+comment on column DW_USER.DIM_DATE.date_key
+  is '日期KEY';
+comment on column DW_USER.DIM_DATE.cal_year
+  is '年份';
+comment on column DW_USER.DIM_DATE.cal_qtr
+  is '季度';
+comment on column DW_USER.DIM_DATE.cal_months
+  is '月份';
+comment on column DW_USER.DIM_DATE.cal_week
+  is '周';
+comment on column DW_USER.DIM_DATE.cal_day
+  is '天';
+comment on column DW_USER.DIM_DATE.day_name
+  is '英文星期';
+comment on column DW_USER.DIM_DATE.day_of_week
+  is '数字星期';
+comment on column DW_USER.DIM_DATE.day_of_months
+  is '数字月份';
+comment on column DW_USER.DIM_DATE.day_of_year
+  is '数字年份';
+

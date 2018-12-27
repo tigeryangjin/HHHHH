@@ -1,0 +1,7 @@
+???create sequence ODSHAPPIGO.SEQ_ZTCM_VISIT_PAGE_VIEW
+minvalue 1
+maxvalue 9999999999
+start with 190397495
+increment by 1
+cache 20;
+

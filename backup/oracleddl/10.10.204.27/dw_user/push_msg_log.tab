@@ -1,0 +1,107 @@
+???create table DW_USER.PUSH_MSG_LOG
+(
+  id             NUMBER(10) not null,
+  task_id        NUMBER(10),
+  task_type      NUMBER(2),
+  send_member    VARCHAR2(100),
+  member_bp      NUMBER(20),
+  push_state     NUMBER(2),
+  push_message   VARCHAR2(4000),
+  result_message VARCHAR2(1000),
+  create_time    DATE,
+  start_time     DATE,
+  end_time       DATE,
+  push_delay     NUMBER(10),
+  push_thread_id NUMBER(10),
+  remark         VARCHAR2(100),
+  w_insert_dt    DATE,
+  w_update_dt    DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.PUSH_MSG_LOG
+  is '消息推送记录表-从push_msg_log_tmp同步过来
+by yangjin 2017-11-21';
+comment on column DW_USER.PUSH_MSG_LOG.id
+  is '自增编码';
+comment on column DW_USER.PUSH_MSG_LOG.task_id
+  is '通知模版ID';
+comment on column DW_USER.PUSH_MSG_LOG.task_type
+  is '通知类型,1：微信推送(openid)，2：短信推送(mobile)，3：APP推送(member_bp)';
+comment on column DW_USER.PUSH_MSG_LOG.send_member
+  is '发送用户';
+comment on column DW_USER.PUSH_MSG_LOG.member_bp
+  is '会员BP号';
+comment on column DW_USER.PUSH_MSG_LOG.push_state
+  is '通知状态,0:待推送，5:推送中，10成功，-10失败';
+comment on column DW_USER.PUSH_MSG_LOG.push_message
+  is '推送内容';
+comment on column DW_USER.PUSH_MSG_LOG.result_message
+  is '推送结果';
+comment on column DW_USER.PUSH_MSG_LOG.create_time
+  is '添加时间';
+comment on column DW_USER.PUSH_MSG_LOG.start_time
+  is '推送开始时间';
+comment on column DW_USER.PUSH_MSG_LOG.end_time
+  is '推送结束时间';
+comment on column DW_USER.PUSH_MSG_LOG.push_delay
+  is '推送线程数,毫秒';
+comment on column DW_USER.PUSH_MSG_LOG.push_thread_id
+  is '推送线程数';
+comment on column DW_USER.PUSH_MSG_LOG.remark
+  is '备注';
+comment on column DW_USER.PUSH_MSG_LOG.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.PUSH_MSG_LOG.w_update_dt
+  is '记录更新时间';
+create index DW_USER.PUSH_MSG_LOG_I2 on DW_USER.PUSH_MSG_LOG (CREATE_TIME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.PUSH_MSG_LOG_I3 on DW_USER.PUSH_MSG_LOG (MEMBER_BP, TASK_TYPE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.PUSH_MSG_LOG
+  add constraint PUSH_MSG_LOG_PK primary key (ID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.PUSH_MSG_LOG_PK nologging;
+

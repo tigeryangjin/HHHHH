@@ -1,0 +1,47 @@
+???create table DW_USER.DIM_MAPPING_MEM
+(
+  member_key      NUMBER(10),
+  vid             VARCHAR2(1000),
+  open_id         VARCHAR2(500),
+  create_date_key NUMBER(10),
+  push_id         VARCHAR2(150)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.DIM_MAPPING_MEM_I1 on DW_USER.DIM_MAPPING_MEM (OPEN_ID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MAPPING_IDX on DW_USER.DIM_MAPPING_MEM (MEMBER_KEY, VID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

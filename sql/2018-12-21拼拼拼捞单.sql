@@ -1,0 +1,349 @@
+/*
+ORDER_TYPE:2预付尾款订单即为拼拼拼定义
+
+拼拼拼会员：订购过拼拼拼的会员。
+拼拼拼新会员：首单订购是拼拼拼商品的用户。
+拼拼拼老会员：拼拼拼会员-拼拼拼新会员
+
+9/10-12/20：拼拼拼有效订购总金额，时段内新媒体总业绩有效订购金额。拼拼拼有效订购件数，新媒体总有效订购件数。
+9/10-12/20：拼拼拼新会员有效订购人数、拼拼拼老会员有效订购人数、新媒体新会员有效订购人数、新媒体老会员有效订购人数
+9/10-9/30  拼拼拼日活-订购转化率、拼拼拼时段内复购率（时间段内买两次及以上拼拼拼商品算复购）、人均拼拼拼订购频次（时段内拼拼拼有效订购次数/拼拼拼有效订购人数）、人均订购频次（时段内包涵拼拼拼商品和常规商品 又掉订购次数/拼拼拼有效订购人数）
+10/1-10/31
+拼拼拼日活-订购转化率、拼拼拼时段内复购率（时间段内买两次及以上拼拼拼商品算复购）、人均拼拼拼订购频次（时段内拼拼拼有效订购次数/拼拼拼有效订购人数）、人均订购频次（时段内包涵拼拼拼商品和常规商品 又掉订购次数/拼拼拼有效订购人数）
+11/1-11/30
+拼拼拼日活-订购转化率、拼拼拼时段内复购率（时间段内买两次及以上拼拼拼商品算复购）、人均拼拼拼订购频次（时段内拼拼拼有效订购次数/拼拼拼有效订购人数）、人均订购频次（时段内包涵拼拼拼商品和常规商品 又掉订购次数/拼拼拼有效订购人数）
+12/1-12/20
+拼拼拼日活-订购转化率、拼拼拼时段内复购率（时间段内买两次及以上拼拼拼商品算复购）、人均拼拼拼订购频次（时段内拼拼拼有效订购次数/拼拼拼有效订购人数）、人均订购频次（时段内包涵拼拼拼商品和常规商品 又掉订购次数/拼拼拼有效订购人数）
+*/
+
+--1.9/10-12/20：拼拼拼有效订购总金额，时段内新媒体总业绩有效订购金额。拼拼拼有效订购件数，新媒体总有效订购件数。
+SELECT SUM(Z.ALL_ORDER_QTY) 总有效订购件数,
+       SUM(Z.ALL_ORDER_AMOUNT) 总业绩有效订购金额,
+       SUM(Z.PPP_ORDER_QTY) 拼拼拼有效订购件数,
+       SUM(Z.PPP_ORDER_AMOUNT) 拼拼拼有效订购总金额
+  FROM (SELECT A.ORDER_ID,
+               B.GOODS_COMMONID,
+               B.GOODS_NUM ALL_ORDER_QTY,
+               B.GOODS_PRICE * B.GOODS_NUM ALL_ORDER_AMOUNT,
+               CASE
+                 WHEN A.ORDER_TYPE = 2 THEN
+                  B.GOODS_NUM
+                 ELSE
+                  0
+               END PPP_ORDER_QTY,
+               CASE
+                 WHEN A.ORDER_TYPE = 2 THEN
+                  B.GOODS_PRICE * B.GOODS_NUM
+                 ELSE
+                  0
+               END PPP_ORDER_AMOUNT
+          FROM FACT_EC_ORDER_2 A, FACT_EC_ORDER_GOODS B
+         WHERE A.ORDER_ID = B.ORDER_ID
+           AND A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+         '2018-12-21'
+           AND A.ORDER_STATE >= 20) Z;
+
+--2.9/10-12/20：拼拼拼新会员有效订购人数、拼拼拼老会员有效订购人数、新媒体新会员有效订购人数、新媒体老会员有效订购人数
+--2.1新老会员临时表
+DROP TABLE YANGJIN.MEMBER_NEW_OLD;
+CREATE TABLE YANGJIN.MEMBER_NEW_OLD AS
+  SELECT C.MEMBER_BP,
+         C.ORDER_ID   FIRST_ORDER_ID,
+         C.ADD_TIME   FIRST_ORDER_DATE,
+         C.ORDER_TYPE FIRST_ORDER_TYPE
+    FROM (SELECT TO_NUMBER(B.CUST_NO) MEMBER_BP,
+                 B.ORDER_ID,
+                 TO_NUMBER(TO_CHAR(B.ADD_TIME, 'YYYYMMDD')) ADD_TIME,
+                 B.ORDER_TYPE,
+                 RANK() OVER(PARTITION BY B.CUST_NO ORDER BY B.ORDER_ID) RN
+            FROM FACT_EC_ORDER_2 B
+           WHERE B.ORDER_STATE >= 20) C
+   WHERE C.RN = 1;
+--2.2.拼拼拼新会员有效订购人数、拼拼拼老会员有效订购人数
+SELECT D.MEMBER_TYPE, COUNT(DISTINCT D.MEMBER_BP) MEMBER_CNT
+  FROM (SELECT B.ORDER_ID,
+               B.ORDER_DATE,
+               B.MEMBER_BP,
+               B.ORDER_TYPE,
+               CASE
+                 WHEN C.FIRST_ORDER_TYPE = 2 THEN
+                  'NEW_PPP_MEMBER'
+                 ELSE
+                  'OLD_PPP_MEMBER'
+               END MEMBER_TYPE
+          FROM (SELECT A.ORDER_ID,
+                       TO_CHAR(A.ADD_TIME, 'YYYYMMDD') ORDER_DATE,
+                       TO_NUMBER(A.CUST_NO) MEMBER_BP,
+                       A.ORDER_TYPE
+                  FROM FACT_EC_ORDER_2 A
+                 WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+                 '2018-12-21'
+                   AND A.ORDER_STATE >= 20
+                   AND A.ORDER_TYPE = 2) B,
+               YANGJIN.MEMBER_NEW_OLD C
+         WHERE B.MEMBER_BP = C.MEMBER_BP) D
+ GROUP BY D.MEMBER_TYPE;
+
+--2.3.新媒体新会员有效订购人数
+SELECT COUNT(A.MEMBER_BP)
+  FROM YANGJIN.MEMBER_NEW_OLD A
+ WHERE A.FIRST_ORDER_DATE BETWEEN 20180910 AND 20181220;
+
+--2.4.新媒体老会员有效订购人数
+SELECT COUNT(DISTINCT A.CUST_NO) - 33750
+  FROM FACT_EC_ORDER_2 A
+ WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+ '2018-12-21'
+   AND A.ORDER_STATE >= 20;
+
+--3.
+/*
+9/10-9/30
+拼拼拼日活-订购转化率、
+拼拼拼时段内复购率（时间段内买两次及以上拼拼拼商品算复购）、
+人均订购频次（时段内有效订购次数/有效订购人数）
+参与拼拼拼的人均订购频次（时间段内订过一次拼拼拼商品的用户的订购次数/订过一次拼拼拼商品的用户的人数）
+*/
+--3.1.拼拼拼日活-订购转化率
+--3.1.1.日活
+SELECT COUNT(DISTINCT A.VID), COUNT(DISTINCT A.MEMBER_KEY)
+  FROM FACT_PAGE_VIEW A
+ WHERE A.VISIT_DATE_KEY BETWEEN 20180910 AND 20180930
+   AND A.PAGE_NAME = 'KFZT'
+   AND A.PAGE_VALUE = 'juhuasuan0901apppc';
+--3.1.2.订购
+SELECT COUNT(DISTINCT A.CUST_NO)
+  FROM FACT_EC_ORDER_2 A
+ WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE '2018-09-30'
+   AND A.ORDER_STATE >= 20
+   AND A.ORDER_TYPE = 2;
+
+--3.2.拼拼拼时段内复购率（时间段内买两次及以上拼拼拼商品算复购）
+--3.2.1.订购两次及以上拼拼拼商品人数
+SELECT COUNT(B.CUST_NO)
+  FROM (SELECT A.CUST_NO, COUNT(A.ORDER_ID) ORDER_CNT
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+         '2018-09-30'
+           AND A.ORDER_STATE >= 20
+           AND A.ORDER_TYPE = 2
+         GROUP BY A.CUST_NO) B
+ WHERE B.ORDER_CNT >= 2;
+
+--3.3.人均拼拼拼订购频次（时段内拼拼拼有效订购次数/拼拼拼有效订购人数）
+SELECT COUNT(A.ORDER_ID) ORDER_CNT, COUNT(DISTINCT A.CUST_NO) MEMBER_CNT
+  FROM FACT_EC_ORDER_2 A
+ WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE '2018-09-30'
+   AND A.ORDER_STATE >= 20
+   AND A.ORDER_TYPE = 2;
+
+--3.4.人均订购频次（时段内有效订购次数/有效订购人数）
+SELECT COUNT(A.ORDER_ID) ORDER_CNT, COUNT(DISTINCT A.CUST_NO) MEMBER_CNT
+  FROM FACT_EC_ORDER_2 A
+ WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+ '2018-09-30'
+   AND A.ORDER_STATE >= 20;
+
+--3.5.参与拼拼拼的人均订购频次（时间段内订过一次拼拼拼商品的用户的订购次数/订过一次拼拼拼商品的用户的人数）
+SELECT COUNT(C.ORDER_ID) ORDER_CNT, COUNT(DISTINCT C.MEMBER_BP) MEMBER_CNT
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE '2018-09-30'
+           AND A.ORDER_STATE >= 20
+           AND EXISTS
+         (SELECT 1
+                  FROM FACT_EC_ORDER_2 B
+                 WHERE A.CUST_NO = B.CUST_NO
+                   AND B.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+                 '2018-09-30'
+                   AND B.ORDER_STATE >= 20
+                   AND B.ORDER_TYPE = 2)) C;
+
+--4.10/1-10/31
+/*
+拼拼拼日活-订购转化率、
+拼拼拼时段内复购率（时间段内买两次及以上拼拼拼商品算复购）、
+人均拼拼拼订购频次（时段内拼拼拼有效订购次数/拼拼拼有效订购人数）、
+参与拼拼拼的人均订购频次（时间段内订过一次拼拼拼商品的用户的订购次数/订过一次拼拼拼商品的用户的人数）
+*/
+--4.1.拼拼拼日活-订购转化率
+--4.1.1.日活
+SELECT COUNT(DISTINCT A.VID), COUNT(DISTINCT A.MEMBER_KEY)
+  FROM FACT_PAGE_VIEW A
+ WHERE A.VISIT_DATE_KEY BETWEEN 20181001 AND 20181031
+   AND A.PAGE_NAME = 'KFZT'
+   AND A.PAGE_VALUE = 'juhuasuan0901apppc';
+--4.1.2.订购
+SELECT COUNT(DISTINCT A.CUST_NO)
+  FROM FACT_EC_ORDER_2 A
+ WHERE A.ADD_TIME BETWEEN DATE '2018-10-01' AND DATE '2018-10-31'
+   AND A.ORDER_STATE >= 20
+   AND A.ORDER_TYPE = 2;
+
+--4.2.拼拼拼时段内复购率（时间段内买两次及以上拼拼拼商品算复购）
+--4.2.1.订购两次及以上拼拼拼商品人数
+SELECT COUNT(B.CUST_NO)
+  FROM (SELECT A.CUST_NO, COUNT(A.ORDER_ID) ORDER_CNT
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-10-01' AND DATE
+         '2018-10-31'
+           AND A.ORDER_STATE >= 20
+           AND A.ORDER_TYPE = 2
+         GROUP BY A.CUST_NO) B
+ WHERE B.ORDER_CNT >= 2;
+
+--4.3.人均拼拼拼订购频次（时段内拼拼拼有效订购次数/拼拼拼有效订购人数）
+SELECT COUNT(A.ORDER_ID) ORDER_CNT, COUNT(DISTINCT A.CUST_NO) MEMBER_CNT
+  FROM FACT_EC_ORDER_2 A
+ WHERE A.ADD_TIME BETWEEN DATE '2018-10-01' AND DATE '2018-10-31'
+   AND A.ORDER_STATE >= 20
+   AND A.ORDER_TYPE = 2;
+
+--4.4.人均订购频次（时段内有效订购次数/有效订购人数）
+SELECT COUNT(A.ORDER_ID) ORDER_CNT, COUNT(DISTINCT A.CUST_NO) MEMBER_CNT
+  FROM FACT_EC_ORDER_2 A
+ WHERE A.ADD_TIME BETWEEN DATE '2018-10-01' AND DATE
+ '2018-10-31'
+   AND A.ORDER_STATE >= 20;
+
+--4.5.参与拼拼拼的人均订购频次（时间段内订过一次拼拼拼商品的用户的订购次数/订过一次拼拼拼商品的用户的人数）
+SELECT COUNT(C.ORDER_ID) ORDER_CNT, COUNT(DISTINCT C.MEMBER_BP) MEMBER_CNT
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-10-01' AND DATE '2018-10-31'
+           AND A.ORDER_STATE >= 20
+           AND EXISTS
+         (SELECT 1
+                  FROM FACT_EC_ORDER_2 B
+                 WHERE A.CUST_NO = B.CUST_NO
+                   AND B.ADD_TIME BETWEEN DATE '2018-10-01' AND DATE
+                 '2018-10-31'
+                   AND B.ORDER_STATE >= 20
+                   AND B.ORDER_TYPE = 2)) C;
+
+--5.11/1-11/30
+/*
+拼拼拼日活-订购转化率、
+拼拼拼时段内复购率（时间段内买两次及以上拼拼拼商品算复购）、
+人均拼拼拼订购频次（时段内拼拼拼有效订购次数/拼拼拼有效订购人数）、
+参与拼拼拼的人均订购频次（时间段内订过一次拼拼拼商品的用户的订购次数/订过一次拼拼拼商品的用户的人数）
+*/
+--5.1.拼拼拼日活-订购转化率
+--5.1.1.日活
+SELECT COUNT(DISTINCT A.VID), COUNT(DISTINCT A.MEMBER_KEY)
+  FROM FACT_PAGE_VIEW A
+ WHERE A.VISIT_DATE_KEY BETWEEN 20181101 AND 20181130
+   AND A.PAGE_NAME = 'KFZT'
+   AND A.PAGE_VALUE = 'juhuasuan0901apppc';
+--5.1.2.订购
+SELECT COUNT(DISTINCT A.CUST_NO)
+  FROM FACT_PT_ORDER A
+ WHERE A.ADD_TIME BETWEEN 20181101 AND 20181130
+   AND A.ORDER_STATE >= 20;
+
+--5.2.拼拼拼时段内复购率（时间段内买两次及以上拼拼拼商品算复购）
+--5.2.1.订购两次及以上拼拼拼商品人数
+SELECT COUNT(B.CUST_NO)
+  FROM (SELECT A.CUST_NO, COUNT(A.ORDER_ID) ORDER_CNT
+          FROM FACT_PT_ORDER A
+         WHERE A.ADD_TIME BETWEEN 20181101 AND 20181130
+           AND A.ORDER_STATE >= 20
+         GROUP BY A.CUST_NO) B
+ WHERE B.ORDER_CNT >= 2;
+
+--5.3.人均拼拼拼订购频次（时段内拼拼拼有效订购次数/拼拼拼有效订购人数）
+SELECT COUNT(A.ORDER_ID) ORDER_CNT, COUNT(DISTINCT A.CUST_NO) MEMBER_CNT
+  FROM FACT_PT_ORDER A
+ WHERE A.ADD_TIME BETWEEN 20181101 AND 20181130
+   AND A.ORDER_STATE >= 20;
+
+--5.4.人均订购频次（时段内有效订购次数/有效订购人数）
+SELECT COUNT(A.ORDER_ID) ORDER_CNT, COUNT(DISTINCT A.CUST_NO) MEMBER_CNT
+  FROM FACT_EC_ORDER_2 A
+ WHERE A.ADD_TIME BETWEEN DATE '2018-11-01' AND DATE
+ '2018-11-30'
+   AND A.ORDER_STATE >= 20;
+
+--5.5.参与拼拼拼的人均订购频次（时间段内订过一次拼拼拼商品的用户的订购次数/订过一次拼拼拼商品的用户的人数）
+SELECT COUNT(C.ORDER_ID) ORDER_CNT, COUNT(DISTINCT C.MEMBER_BP) MEMBER_CNT
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-11-01' AND DATE '2018-11-30'
+           AND A.ORDER_STATE >= 20
+           AND EXISTS
+         (SELECT 1
+                  FROM FACT_PT_ORDER B
+                 WHERE A.CUST_NO = B.CUST_NO
+                   AND B.ADD_TIME BETWEEN 20181101 AND 20181130
+                   AND B.ORDER_STATE >= 20)) C;
+
+--6.12/1-12/20
+/*
+拼拼拼日活-订购转化率、
+拼拼拼时段内复购率（时间段内买两次及以上拼拼拼商品算复购）、
+人均拼拼拼订购频次（时段内拼拼拼有效订购次数/拼拼拼有效订购人数）、
+参与拼拼拼的人均订购频次（时间段内订过一次拼拼拼商品的用户的订购次数/订过一次拼拼拼商品的用户的人数）
+*/
+--6.1.拼拼拼日活-订购转化率
+--6.1.1.日活
+SELECT COUNT(DISTINCT A.VID), COUNT(DISTINCT A.MEMBER_KEY)
+  FROM FACT_PAGE_VIEW A
+ WHERE A.VISIT_DATE_KEY BETWEEN 20181201 AND 20181220
+   AND A.PAGE_NAME = 'KFZT'
+   AND A.PAGE_VALUE = 'juhuasuan0901apppc';
+--6.1.2.订购
+SELECT COUNT(DISTINCT A.CUST_NO)
+  FROM FACT_PT_ORDER A
+ WHERE A.ADD_TIME BETWEEN 20181201 AND 20181220
+   AND A.ORDER_STATE >= 20;
+
+--6.2.拼拼拼时段内复购率（时间段内买两次及以上拼拼拼商品算复购）
+--6.2.1.订购两次及以上拼拼拼商品人数
+SELECT COUNT(B.CUST_NO)
+  FROM (SELECT A.CUST_NO, COUNT(A.ORDER_ID) ORDER_CNT
+          FROM FACT_PT_ORDER A
+         WHERE A.ADD_TIME BETWEEN 20181201 AND 20181220
+           AND A.ORDER_STATE >= 20
+         GROUP BY A.CUST_NO) B
+ WHERE B.ORDER_CNT >= 2;
+
+--6.3.人均拼拼拼订购频次（时段内拼拼拼有效订购次数/拼拼拼有效订购人数）
+SELECT COUNT(A.ORDER_ID) ORDER_CNT, COUNT(DISTINCT A.CUST_NO) MEMBER_CNT
+  FROM FACT_PT_ORDER A
+ WHERE A.ADD_TIME BETWEEN 20181201 AND 20181220
+   AND A.ORDER_STATE >= 20;
+
+--6.4.人均订购频次（时段内有效订购次数/有效订购人数）
+SELECT COUNT(A.ORDER_ID) ORDER_CNT, COUNT(DISTINCT A.CUST_NO) MEMBER_CNT
+  FROM FACT_EC_ORDER_2 A
+ WHERE A.ADD_TIME BETWEEN DATE '2018-12-01' AND DATE
+ '2018-12-21'
+   AND A.ORDER_STATE >= 20;
+
+--6.5.参与拼拼拼的人均订购频次（时间段内订过一次拼拼拼商品的用户的订购次数/订过一次拼拼拼商品的用户的人数）
+SELECT COUNT(C.ORDER_ID) ORDER_CNT, COUNT(DISTINCT C.MEMBER_BP) MEMBER_CNT
+  FROM (SELECT TO_NUMBER(A.CUST_NO) MEMBER_BP, A.ORDER_ID
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-12-01' AND DATE '2018-12-21'
+           AND A.ORDER_STATE >= 20
+           AND EXISTS
+         (SELECT 1
+                  FROM FACT_PT_ORDER B
+                 WHERE A.CUST_NO = B.CUST_NO
+                   AND B.ADD_TIME BETWEEN 20181201 AND 20181220
+                   AND B.ORDER_STATE >= 20)) C;
+
+--tmp
+SELECT 57773 + 33749 FROM DUAL;
+
+SELECT COUNT(DISTINCT B.MEMBER_BP)
+  FROM (SELECT A.ORDER_ID,
+               TO_CHAR(A.ADD_TIME, 'YYYYMMDD') ORDER_DATE,
+               TO_NUMBER(A.CUST_NO) MEMBER_BP,
+               A.ORDER_TYPE
+          FROM FACT_EC_ORDER_2 A
+         WHERE A.ADD_TIME BETWEEN DATE '2018-09-10' AND DATE
+         '2018-12-21'
+           AND A.ORDER_STATE >= 20) B;
+
+SELECT * FROM YANGJIN.MEMBER_NEW_OLD;

@@ -1,0 +1,27 @@
+???create table DW_USER.FACT_SEARCH_APP
+(
+  id               NUMBER(20) not null,
+  vid              VARCHAR2(1000),
+  member_key       NUMBER(20),
+  ip               VARCHAR2(100),
+  create_date      DATE,
+  skw              VARCHAR2(1500),
+  application_key  NUMBER(10),
+  application_name VARCHAR2(50),
+  visitor_key      NUMBER(20),
+  ip_geo_key       NUMBER(20),
+  create_date_key  NUMBER(20),
+  search_key       NUMBER(20) not null
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -1,0 +1,18 @@
+???create table DW_USER.TMP_SAOMAFX
+(
+  device_key     NUMBER(20),
+  leixin         CHAR(3),
+  visit_date_key NUMBER(10)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

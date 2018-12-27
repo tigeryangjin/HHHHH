@@ -1,0 +1,54 @@
+???create table DW_USER.FACT_WEEK_GOODS_PVUV
+(
+  weeknm     VARCHAR2(98),
+  goods_code NUMBER,
+  goods_name VARCHAR2(200),
+  goodspv    NUMBER,
+  goodsuv    NUMBER,
+  threegpv   NUMBER,
+  threeguv   NUMBER,
+  pcpv       NUMBER,
+  pcuv       NUMBER,
+  wxpv       NUMBER,
+  wxuv       NUMBER,
+  apppv      NUMBER,
+  appuv      NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.weeknm
+  is '周度';
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.goods_code
+  is '商品编号';
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.goodspv
+  is '总PV';
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.goodsuv
+  is '总UV';
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.threegpv
+  is '3GPV';
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.threeguv
+  is '3GUV';
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.pcpv
+  is 'PCPV';
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.pcuv
+  is 'PCUV';
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.wxpv
+  is '微信PV';
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.wxuv
+  is '微信UV';
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.apppv
+  is 'APPUV';
+comment on column DW_USER.FACT_WEEK_GOODS_PVUV.appuv
+  is 'APPPV';
+

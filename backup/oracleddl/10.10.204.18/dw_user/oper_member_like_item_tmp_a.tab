@@ -1,0 +1,57 @@
+???create table DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A
+(
+  posting_date_key  NUMBER,
+  member_key        NUMBER,
+  item_code         NUMBER,
+  matxl             NUMBER(10),
+  pv_freq           NUMBER,
+  fav_freq          NUMBER,
+  car_freq          NUMBER,
+  order_net_qty     NUMBER,
+  pv_weight         NUMBER,
+  fav_weight        NUMBER,
+  car_weight        NUMBER,
+  order_weight      NUMBER,
+  total_item_weight NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A
+  is '会员喜欢的商品中间表（统计最近活跃的15天）
+by yangjin';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.posting_date_key
+  is '业务日期';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.member_key
+  is '会员BP号';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.matxl
+  is '物料小类编码';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.pv_freq
+  is '浏览频次';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.fav_freq
+  is '收藏频次';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.car_freq
+  is '加购物车频次';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.order_net_qty
+  is '净销售数量';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.pv_weight
+  is '浏览权重（浏览频次*1）';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.fav_weight
+  is '收藏权重（收藏频次*3）';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.car_weight
+  is '加购物车权重（加购物车频次*5）';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.order_weight
+  is '订购权重（净销售数量*15）';
+comment on column DW_USER.OPER_MEMBER_LIKE_ITEM_TMP_A.total_item_weight
+  is '商品合计权重（浏览权重+收藏权重+加购物车权重-订购权重）';
+

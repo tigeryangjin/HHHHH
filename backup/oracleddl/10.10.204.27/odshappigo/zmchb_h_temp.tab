@@ -1,0 +1,54 @@
+???create table ODSHAPPIGO.ZMCHB_H_TEMP
+(
+  mandt  VARCHAR2(9),
+  matnr  VARCHAR2(54),
+  werks  VARCHAR2(12),
+  lgort  VARCHAR2(12),
+  charg  VARCHAR2(30),
+  zfdate VARCHAR2(24),
+  lvorm  VARCHAR2(3),
+  ersda  VARCHAR2(24),
+  ernam  VARCHAR2(36),
+  laeda  VARCHAR2(24),
+  aenam  VARCHAR2(36),
+  lfgja  VARCHAR2(12),
+  lfmon  VARCHAR2(6),
+  sperc  VARCHAR2(3),
+  clabs  NUMBER(13,3),
+  cumlm  NUMBER(13,3),
+  cinsm  NUMBER(13,3),
+  ceinm  NUMBER(13,3),
+  cspem  NUMBER(13,3),
+  cretm  NUMBER(13,3),
+  cvmla  NUMBER(13,3),
+  cvmum  NUMBER(13,3),
+  cvmin  NUMBER(13,3),
+  cvmei  NUMBER(13,3),
+  cvmsp  NUMBER(13,3),
+  cvmre  NUMBER(13,3),
+  kzicl  VARCHAR2(9),
+  kzicq  VARCHAR2(9),
+  kzice  VARCHAR2(9),
+  kzics  VARCHAR2(9),
+  kzvcl  VARCHAR2(9),
+  kzvcq  VARCHAR2(9),
+  kzvce  VARCHAR2(9),
+  kzvcs  VARCHAR2(9),
+  herkl  VARCHAR2(9),
+  chdll  VARCHAR2(24),
+  chjin  VARCHAR2(12),
+  chrue  VARCHAR2(3)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

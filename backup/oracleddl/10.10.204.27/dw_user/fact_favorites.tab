@@ -1,0 +1,54 @@
+???create table DW_USER.FACT_FAVORITES
+(
+  id        NUMBER(10),
+  member_id NUMBER(10),
+  fav_id    NUMBER(10),
+  fav_type  VARCHAR2(50),
+  fav_time  NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_FAVORITES.member_id
+  is 'member_key';
+comment on column DW_USER.FACT_FAVORITES.fav_id
+  is '收藏ID';
+comment on column DW_USER.FACT_FAVORITES.fav_type
+  is '收藏类型';
+comment on column DW_USER.FACT_FAVORITES.fav_time
+  is '收藏时间';
+create index DW_USER.FACT_FAVORITES_I1 on DW_USER.FACT_FAVORITES (FAV_TIME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FAV_ID_IDX on DW_USER.FACT_FAVORITES (ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

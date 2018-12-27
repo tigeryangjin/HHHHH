@@ -1,0 +1,40 @@
+???create table DW_USER.DIM_REGISTER_SOURCE
+(
+  id              NUMBER(10),
+  source_key      NUMBER(10),
+  media_key       NUMBER(10),
+  media           VARCHAR2(10),
+  application_key NUMBER(10),
+  application     VARCHAR2(20),
+  hmsc_key        NUMBER(10),
+  hmsc            VARCHAR2(20)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_REGISTER_SOURCE.id
+  is '索引序列号';
+comment on column DW_USER.DIM_REGISTER_SOURCE.source_key
+  is '来源KEY';
+comment on column DW_USER.DIM_REGISTER_SOURCE.media_key
+  is '通路KEY';
+comment on column DW_USER.DIM_REGISTER_SOURCE.media
+  is '通路(TV,电商,外呼)';
+comment on column DW_USER.DIM_REGISTER_SOURCE.application_key
+  is '子通路KEY';
+comment on column DW_USER.DIM_REGISTER_SOURCE.application
+  is '子通路(ios,android,微信,PC,3G)';
+comment on column DW_USER.DIM_REGISTER_SOURCE.hmsc_key
+  is '渠道KEY';
+comment on column DW_USER.DIM_REGISTER_SOURCE.hmsc
+  is '渠道(苹果应用，百度等)';
+

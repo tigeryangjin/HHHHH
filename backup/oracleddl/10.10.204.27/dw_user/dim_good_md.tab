@@ -1,0 +1,32 @@
+???create table DW_USER.DIM_GOOD_MD
+(
+  item_code   NUMBER(10),
+  md          NUMBER(10),
+  insert_date DATE default sysdate
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.DIM_GOOD_MD_I1 on DW_USER.DIM_GOOD_MD (ITEM_CODE)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

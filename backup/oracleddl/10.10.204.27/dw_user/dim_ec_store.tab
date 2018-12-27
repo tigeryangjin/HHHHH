@@ -1,0 +1,39 @@
+???create table DW_USER.DIM_EC_STORE
+(
+  store_id           NUMBER(11),
+  store_company_name VARCHAR2(50),
+  store_name         VARCHAR2(50),
+  store_type         VARCHAR2(10),
+  store_time         VARCHAR2(20),
+  store_state        VARCHAR2(10),
+  sc_name            VARCHAR2(20),
+  hbp_store_id       NUMBER(11),
+  contacts_name      VARCHAR2(20),
+  contacts_phone     VARCHAR2(20)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.STID_IDX on DW_USER.DIM_EC_STORE (STORE_ID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

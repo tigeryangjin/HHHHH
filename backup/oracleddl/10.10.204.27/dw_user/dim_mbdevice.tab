@@ -1,0 +1,43 @@
+???create table DW_USER.DIM_MBDEVICE
+(
+  id              NUMBER(11),
+  bp              VARCHAR2(100),
+  vid             VARCHAR2(500),
+  mid             VARCHAR2(100),
+  ostype          VARCHAR2(20),
+  baidu_userid    VARCHAR2(100),
+  baidu_channelid VARCHAR2(100),
+  appname         VARCHAR2(100),
+  appversion      VARCHAR2(100),
+  firstlogintime  DATE,
+  lastlogintime   DATE,
+  mac             VARCHAR2(2000),
+  idfa            VARCHAR2(2000),
+  imei            VARCHAR2(2000)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.MAPPING2_IDX on DW_USER.DIM_MBDEVICE (BP, VID)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

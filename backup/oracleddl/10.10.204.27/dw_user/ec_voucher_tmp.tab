@@ -1,0 +1,54 @@
+???create table DW_USER.EC_VOUCHER_TMP
+(
+  voucher_id              NUMBER(10),
+  voucher_code            VARCHAR2(100),
+  voucher_t_id            NUMBER(10),
+  voucher_title           VARCHAR2(150),
+  voucher_desc            VARCHAR2(800),
+  voucher_start_date      DATE,
+  voucher_end_date        DATE,
+  voucher_price           NUMBER(10),
+  voucher_limit           NUMBER(10,2),
+  voucher_store_id        NUMBER(10),
+  voucher_state           NUMBER(3),
+  voucher_active_date     DATE,
+  voucher_type            NUMBER(3),
+  voucher_owner_id        NUMBER(10),
+  voucher_owner_name      VARCHAR2(150),
+  voucher_order_id        NUMBER(10),
+  voucher_add_ip          VARCHAR2(60),
+  voucher_add_vid         VARCHAR2(300),
+  voucher_add_application VARCHAR2(60),
+  coupon_tv_id            VARCHAR2(60),
+  coupon_tv_code          VARCHAR2(120),
+  voucher_remark          VARCHAR2(600),
+  w_insert_dt             DATE,
+  w_update_dt             DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.EC_VOUCHER_TMP
+  is 'ec_voucher_tmp中间表';
+create unique index DW_USER.EC_VOUCHER_TMP_I1 on DW_USER.EC_VOUCHER_TMP (VOUCHER_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

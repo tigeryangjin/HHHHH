@@ -1,0 +1,27 @@
+???create table DW_USER.FACT_DAILY_PINTUAN_TJ
+(
+  vt_date   DATE,
+  uv        NUMBER,
+  pv        NUMBER,
+  ptje      NUMBER,
+  ptds      NUMBER,
+  orderrate NUMBER,
+  ptzxds    NUMBER,
+  ptcodeds  NUMBER,
+  pttvds    NUMBER,
+  ptxmtds   NUMBER,
+  ptzxrate  NUMBER,
+  ptxmtrate NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

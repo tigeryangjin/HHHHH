@@ -1,0 +1,32 @@
+???create table ODSHAPPIGO.ZTSCM012_TEMP
+(
+  mandt     VARCHAR2(9),
+  vbeln     VARCHAR2(30),
+  stusn     VARCHAR2(15),
+  dnstu     VARCHAR2(6),
+  dnstub    VARCHAR2(150),
+  jsfs      VARCHAR2(3),
+  failed    VARCHAR2(3),
+  lstel     VARCHAR2(6),
+  signi     VARCHAR2(60),
+  zycgd     VARCHAR2(15),
+  datum     VARCHAR2(24),
+  uzeit     VARCHAR2(18),
+  uname     VARCHAR2(36),
+  tcode     VARCHAR2(60),
+  repid     VARCHAR2(120),
+  timestamp NUMBER(15)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

@@ -1,0 +1,69 @@
+???create table DW_USER.FACT_EC_GOODS_SALES_MAT_TOP
+(
+  item_code        NUMBER(10),
+  matxl            NUMBER(20),
+  sales_total      NUMBER(20),
+  posting_date_key NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACT_EC_GOODS_SALES_MAT_TOP
+  is '商品订购分类top';
+comment on column DW_USER.FACT_EC_GOODS_SALES_MAT_TOP.item_code
+  is '商品编码';
+comment on column DW_USER.FACT_EC_GOODS_SALES_MAT_TOP.matxl
+  is '物料小类编码';
+comment on column DW_USER.FACT_EC_GOODS_SALES_MAT_TOP.sales_total
+  is '合计销售数量';
+comment on column DW_USER.FACT_EC_GOODS_SALES_MAT_TOP.posting_date_key
+  is '过账日期';
+create index DW_USER.FEGSM_ITEM_CODE on DW_USER.FACT_EC_GOODS_SALES_MAT_TOP (ITEM_CODE)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FEGSM_MATXL on DW_USER.FACT_EC_GOODS_SALES_MAT_TOP (MATXL)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FEGSM_POSTING_KEY on DW_USER.FACT_EC_GOODS_SALES_MAT_TOP (POSTING_DATE_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

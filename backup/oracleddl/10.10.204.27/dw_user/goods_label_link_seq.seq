@@ -1,0 +1,7 @@
+???create sequence DW_USER.GOODS_LABEL_LINK_SEQ
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 73448841
+increment by 1
+cache 20;
+

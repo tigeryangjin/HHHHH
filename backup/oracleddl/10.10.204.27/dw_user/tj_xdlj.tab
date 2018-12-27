@@ -1,0 +1,37 @@
+???create table DW_USER.TJ_XDLJ
+(
+  member_key       NUMBER(20),
+  tv_first_date    NUMBER(20),
+  tv_nums          NUMBER(20),
+  ec_first_date    NUMBER(20),
+  ec_nums          NUMBER(20),
+  app_first_date   NUMBER(20),
+  app_nums         NUMBER(20),
+  appwx_first_date NUMBER(20),
+  wx_nums          NUMBER(20),
+  pc_first_date    NUMBER(20),
+  pc_nums          NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.TJ_XDLJ
+  is '下单逻辑';
+comment on column DW_USER.TJ_XDLJ.tv_first_date
+  is 'tv第一次下单时间';
+comment on column DW_USER.TJ_XDLJ.tv_nums
+  is 'tv下单次数';
+comment on column DW_USER.TJ_XDLJ.ec_first_date
+  is '电商第一次下单时间';
+comment on column DW_USER.TJ_XDLJ.ec_nums
+  is '电商下单次数';
+

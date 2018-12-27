@@ -1,0 +1,27 @@
+???create table DW_USER.FACT_ZT_ORDERGOOD2
+(
+  order_id        NUMBER(10),
+  goods_num       NUMBER(5),
+  goods_pay_price NUMBER(10,2),
+  vid             VARCHAR2(100),
+  goods_commonid  NUMBER(11),
+  goods_name      VARCHAR2(200),
+  cust_no         NUMBER(20),
+  addtime         DATE,
+  add_time        NUMBER(20),
+  matdlt          VARCHAR2(100),
+  brand_name      VARCHAR2(100),
+  is_tv           VARCHAR2(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

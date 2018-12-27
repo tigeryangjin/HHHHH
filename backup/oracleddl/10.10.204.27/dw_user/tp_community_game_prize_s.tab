@@ -1,0 +1,65 @@
+???create table DW_USER.TP_COMMUNITY_GAME_PRIZE_S
+(
+  id              NUMBER(11),
+  gameid          NUMBER(11),
+  probability     NUMBER(10),
+  prizename       VARCHAR2(100),
+  rewardmessage   VARCHAR2(100),
+  prizetype       NUMBER(4),
+  pointsreward    NUMBER(11),
+  voucherid       VARCHAR2(50),
+  vouchersend_key VARCHAR2(50),
+  createtime      DATE,
+  prizenum        NUMBER(11),
+  imgurl          VARCHAR2(255),
+  is_del          NUMBER(1),
+  position        NUMBER(4),
+  w_insert_dt     DATE,
+  w_update_dt     DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.TP_COMMUNITY_GAME_PRIZE_S
+  is '奖品表
+by yangjin
+2018-03-27';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.id
+  is '自增ID';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.gameid
+  is '游戏编号';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.probability
+  is '中奖概率，单位万分之一';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.prizename
+  is '奖品名称';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.rewardmessage
+  is '中奖提示语';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.prizetype
+  is '0-再来一次;10-未中奖;20-优惠券;21-积分;30-实物奖品';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.pointsreward
+  is '奖励的积分数';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.voucherid
+  is '优惠券ID';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.vouchersend_key
+  is '优惠券Key';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.createtime
+  is '创建时间';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.prizenum
+  is '奖品数量';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.imgurl
+  is '图片地址';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.position
+  is '排序';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.TP_COMMUNITY_GAME_PRIZE_S.w_update_dt
+  is '记录更新时间';
+

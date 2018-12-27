@@ -1,0 +1,25 @@
+???create table DW_HAPPIGO.R_LOG
+(
+  id_log          INTEGER not null,
+  name            VARCHAR2(255),
+  id_loglevel     INTEGER,
+  logtype         VARCHAR2(255),
+  filename        VARCHAR2(255),
+  fileextention   VARCHAR2(255),
+  add_date        CHAR(1),
+  add_time        CHAR(1),
+  id_database_log INTEGER,
+  table_name_log  VARCHAR2(255)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+alter table DW_HAPPIGO.R_LOG
+  add primary key (ID_LOG)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+

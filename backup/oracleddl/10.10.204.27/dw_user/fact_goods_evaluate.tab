@@ -1,0 +1,164 @@
+???create table DW_USER.FACT_GOODS_EVALUATE
+(
+  geval_id                       NUMBER(20),
+  geval_orderid                  NUMBER(20),
+  geval_orderno                  NUMBER(20),
+  geval_ordergoodsid             NUMBER(20),
+  geval_goods_commonid           NUMBER(20),
+  item_code                      NUMBER(20),
+  geval_goodsname                VARCHAR2(1000),
+  geval_goodsprice               NUMBER(10,2),
+  geval_goodsimage               VARCHAR2(1000),
+  geval_scores                   NUMBER(5),
+  geval_shipping_scores          NUMBER(5),
+  geval_delivery_scores          NUMBER(5),
+  geval_content                  VARCHAR2(1000),
+  geval_isanonymous              NUMBER(5),
+  geval_storeid                  NUMBER(20),
+  geval_storename                VARCHAR2(1000),
+  geval_addtime                  NUMBER(20),
+  geval_addtime_key              NUMBER(20),
+  geval_member_key               NUMBER(20),
+  geval_frommembername           VARCHAR2(200),
+  geval_state                    NUMBER(5),
+  geval_remark                   VARCHAR2(1000),
+  geval_explain                  VARCHAR2(1000),
+  geval_image                    VARCHAR2(3000),
+  geval_createby                 NUMBER(20),
+  give_points                    NUMBER(20),
+  give_state                     NUMBER(20),
+  geval_explain_time             NUMBER(20),
+  geval_explain_member_key       NUMBER(20),
+  geval_state_time               NUMBER(20),
+  geval_state_member             VARCHAR2(200),
+  geval_sentiment_polarity       NUMBER(10),
+  geval_sentiment_polarity_inten NUMBER(20,19),
+  geval_sentiment_polarity_iaspe CLOB,
+  w_insert_dt                    DATE,
+  w_update_dt                    DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_GOODS_EVALUATE
+  is '商品评论';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_id
+  is '评价ID';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_orderid
+  is '订单表自增ID';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_orderno
+  is '订单编号';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_ordergoodsid
+  is '订单商品表编号(fact_ec_order_goods.rec_id)';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_goods_commonid
+  is '商品表编号SPU ';
+comment on column DW_USER.FACT_GOODS_EVALUATE.item_code
+  is 'item_code';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_goodsname
+  is '商品名称';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_goodsprice
+  is '商品价格';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_goodsimage
+  is '商品图片';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_scores
+  is '1-5分 商品描述评分';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_shipping_scores
+  is '物流评分';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_delivery_scores
+  is '发货速度评分';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_content
+  is '信誉评价内容';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_isanonymous
+  is '0表示不是 1表示是匿名评价';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_storeid
+  is '店铺编号';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_storename
+  is '店铺名称';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_addtime
+  is '评价时间';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_addtime_key
+  is '评价时间';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_member_key
+  is '评价人编号';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_frommembername
+  is '评价人名称';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_state
+  is '评价信息的状态(0为待审核，1为审核未通过，2审核通过)';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_remark
+  is '管理员对评价的处理备注';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_explain
+  is '解释内容';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_image
+  is '晒单图片';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_createby
+  is '来源：0：旧平台导入，1：用户发布，2：商家录入';
+comment on column DW_USER.FACT_GOODS_EVALUATE.give_points
+  is '赠送积分';
+comment on column DW_USER.FACT_GOODS_EVALUATE.give_state
+  is '积分发送状态（0未发，1成功，2失败）';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_explain_time
+  is '回复时间';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_explain_member_key
+  is '回复人';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_state_time
+  is '审核时间';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_state_member
+  is '审核人';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_sentiment_polarity
+  is 'geval_sentiment_polarity(情感积极性，0：待分析，-1：负，1：中，2：正,-100：错误)';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_sentiment_polarity_inten
+  is 'geval_sentiment_polarity_intensity(情感程度,取值范围[-1,1]，越大代表越正向，越小代表越负向，接近0代表中性)';
+comment on column DW_USER.FACT_GOODS_EVALUATE.geval_sentiment_polarity_iaspe
+  is 'geval_sentiment_polarity_iaspectitem(情感词)';
+comment on column DW_USER.FACT_GOODS_EVALUATE.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_GOODS_EVALUATE.w_update_dt
+  is '记录更新时间';
+create index DW_USER.FACT_GOODS_EVALUATE_I1 on DW_USER.FACT_GOODS_EVALUATE (GEVAL_ADDTIME_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create unique index DW_USER.GEVAL_GEVAL_ID on DW_USER.FACT_GOODS_EVALUATE (GEVAL_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.GEVAL_ITEM_CODE on DW_USER.FACT_GOODS_EVALUATE (ITEM_CODE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

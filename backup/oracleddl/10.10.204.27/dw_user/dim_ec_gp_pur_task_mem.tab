@@ -1,0 +1,91 @@
+???create table DW_USER.DIM_EC_GP_PUR_TASK_MEM
+(
+  id              NUMBER(11) not null,
+  rule_id         NUMBER(11),
+  task_id         NUMBER(11),
+  is_creator      NUMBER(2),
+  member_id       NUMBER(11),
+  member_name     VARCHAR2(100),
+  member_truename VARCHAR2(500),
+  member_avatar   VARCHAR2(200),
+  order_sn        NUMBER(20),
+  goods_commonid  NUMBER(11),
+  goods_id        NUMBER(11),
+  join_state      NUMBER(2),
+  expire_time     DATE,
+  add_time        DATE,
+  update_time     DATE,
+  ip              VARCHAR2(100),
+  vid             VARCHAR2(100),
+  app_name        VARCHAR2(20),
+  reward_status   NUMBER(2),
+  ramark          VARCHAR2(100)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.id
+  is '自增编码';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.rule_id
+  is '配置表ID';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.task_id
+  is '任务ID';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.is_creator
+  is '是否为创建者,1：创建者，0：参与者';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.member_id
+  is 'EC用户ID';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.member_name
+  is '用户名';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.member_truename
+  is '会员昵称';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.member_avatar
+  is '会员头像';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.order_sn
+  is '订单SN';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.goods_commonid
+  is 'spu';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.goods_id
+  is 'sku';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.join_state
+  is '参与状态';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.expire_time
+  is '过期时间，与订单有效期一致';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.add_time
+  is '添加时间';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.update_time
+  is '修改时间';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.ip
+  is '添加IP';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.vid
+  is '添加VID';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.app_name
+  is '通路';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.reward_status
+  is '失败发券奖励状态';
+comment on column DW_USER.DIM_EC_GP_PUR_TASK_MEM.ramark
+  is '备注';
+alter table DW_USER.DIM_EC_GP_PUR_TASK_MEM
+  add constraint TASK_MEM_IDX primary key (ID)
+  using index 
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.TASK_MEM_IDX nologging;
+

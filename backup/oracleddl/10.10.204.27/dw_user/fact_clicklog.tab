@@ -1,0 +1,36 @@
+???create table DW_USER.FACT_CLICKLOG
+(
+  logid       NUMBER(20),
+  appid       VARCHAR2(40),
+  deviceid    VARCHAR2(50),
+  source      VARCHAR2(30),
+  event_time  DATE,
+  openudid    VARCHAR2(60),
+  idfa        VARCHAR2(60),
+  create_time DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.CLICKLOG_IDX on DW_USER.FACT_CLICKLOG (LOGID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

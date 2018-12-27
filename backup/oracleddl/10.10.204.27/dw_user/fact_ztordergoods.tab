@@ -1,0 +1,25 @@
+???create table DW_USER.FACT_ZTORDERGOODS
+(
+  zt_type_name    VARCHAR2(50),
+  zt_id           NUMBER(10),
+  session_key     NUMBER(20),
+  vid             VARCHAR2(1000),
+  visit_date      DATE,
+  order_id        NUMBER(10),
+  goods_commonid  NUMBER(10),
+  goods_name      VARCHAR2(200),
+  goods_num       NUMBER(10),
+  goods_pay_price NUMBER(10,2)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

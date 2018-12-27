@@ -1,0 +1,85 @@
+???create table DW_USER.OPER_PRODUCT_DAILY_REPORT_BAK
+(
+  posting_date_key             NUMBER(10),
+  sales_source_name            VARCHAR2(200),
+  sales_source_second_name     VARCHAR2(200),
+  own_account                  VARCHAR2(9),
+  brand_name                   VARCHAR2(100),
+  tran_type                    VARCHAR2(20),
+  tran_type_name               VARCHAR2(12),
+  item_or_gift                 VARCHAR2(6),
+  matdlt                       VARCHAR2(100),
+  matzlt                       VARCHAR2(100),
+  matxlt                       VARCHAR2(100),
+  md_person                    NUMBER(10),
+  item_code                    NUMBER(10),
+  goods_key                    NUMBER(20),
+  goods_name                   VARCHAR2(200),
+  total_order_amount           NUMBER(10,2),
+  net_order_amount             NUMBER(10,2),
+  effective_order_amount       NUMBER(10,2),
+  cancel_order_amount          NUMBER(10,2),
+  reverse_order_amount         NUMBER(10,2),
+  reject_order_amount          NUMBER(10,2),
+  cancel_reverse_amount        NUMBER(10,2),
+  cancel_reject_amount         NUMBER(10,2),
+  total_sales_amount           NUMBER(10,2),
+  net_sales_amount             NUMBER(10,2),
+  effective_sales_amount       NUMBER(10,2),
+  total_order_member_count     NUMBER(10,2),
+  net_order_member_count       NUMBER(10,2),
+  effective_order_member_count NUMBER(10,2),
+  cancel_order_member_count    NUMBER(10,2),
+  reverse_member_count         NUMBER(10,2),
+  reject_member_count          NUMBER(10,2),
+  cancel_reverse_member_count  NUMBER(10,2),
+  cancel_reject_member_count   NUMBER(10,2),
+  total_order_count            NUMBER(10,2),
+  net_order_count              NUMBER(10,2),
+  effective_order_count        NUMBER(10,2),
+  cancel_order_count           NUMBER(10,2),
+  reverse_count                NUMBER(10,2),
+  reject_count                 NUMBER(10,2),
+  cancel_reverse_count         NUMBER(10,2),
+  cancel_reject_count          NUMBER(10,2),
+  gross_profit_amount          NUMBER(10,2),
+  net_profit_amount            NUMBER(10,2),
+  effective_profit_amount      NUMBER(10,2),
+  gross_profit_rate            NUMBER(10,2),
+  net_profit_rate              NUMBER(10,2),
+  effective_profit_rate        NUMBER(10,2),
+  total_order_qty              NUMBER(10,2),
+  net_order_qty                NUMBER(10,2),
+  effective_order_qty          NUMBER(10,2),
+  cancel_order_qty             NUMBER(10,2),
+  reverse_qty                  NUMBER(10,2),
+  reject_qty                   NUMBER(10,2),
+  cancel_reverse_qty           NUMBER(10,2),
+  cancel_reject_qty            NUMBER(10,2),
+  net_order_cust_price         NUMBER(10,2),
+  effective_order_cust_price   NUMBER(10,2),
+  net_order_unit_price         NUMBER(10,2),
+  effective_order_unit_price   NUMBER(10,2),
+  total_purchase_amount        NUMBER(10,2),
+  net_purchase_amount          NUMBER(10,2),
+  effective_purchase_amount    NUMBER(10,2),
+  profit_amount                NUMBER(10,2),
+  coupons_amount               NUMBER(10,2),
+  freight_amount               NUMBER(10,2),
+  product_avg_price            NUMBER(10,2),
+  reject_amount                NUMBER(10,2),
+  live_or_replay               VARCHAR2(10),
+  row_id                       NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

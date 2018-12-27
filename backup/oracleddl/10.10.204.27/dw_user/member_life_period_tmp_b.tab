@@ -1,0 +1,48 @@
+???create table DW_USER.MEMBER_LIFE_PERIOD_TMP_B
+(
+  posting_date_key NUMBER(10),
+  member_key       NUMBER(20),
+  order_key        NUMBER(20),
+  order_state      NUMBER(5)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.MEMBER_LIFE_PERIOD_TMP_B
+  is '会员生命周期标签临时表
+by yangjin';
+create index DW_USER.MEMBER_LIFE_PERIOD_TMP_B_I1 on DW_USER.MEMBER_LIFE_PERIOD_TMP_B (MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEMBER_LIFE_PERIOD_TMP_B_I2 on DW_USER.MEMBER_LIFE_PERIOD_TMP_B (POSTING_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

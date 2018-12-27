@@ -1,0 +1,29 @@
+???create table DW_USER.KETTLE_STEP_LOG
+(
+  id_batch       INTEGER,
+  channel_id     VARCHAR2(255),
+  log_date       DATE,
+  transname      VARCHAR2(255),
+  stepname       VARCHAR2(255),
+  step_copy      INTEGER,
+  lines_read     INTEGER,
+  lines_written  INTEGER,
+  lines_updated  INTEGER,
+  lines_input    INTEGER,
+  lines_output   INTEGER,
+  lines_rejected INTEGER,
+  errors         INTEGER,
+  log_field      CLOB
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -1,0 +1,25 @@
+???create table DW_USER.FACT_DAILY_DCZT
+(
+  visit_date_key NUMBER,
+  title          VARCHAR2(150),
+  application_nm VARCHAR2(6),
+  pageuv         NUMBER,
+  orderuv        NUMBER,
+  ordercnt       NUMBER,
+  goods_num      NUMBER,
+  goods_amount   NUMBER,
+  order_rate     NUMBER,
+  pageavgtime    NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -1,0 +1,41 @@
+???create table DW_USER.SD_SCANCODE_ORDER
+(
+  order_key    NUMBER(20),
+  order_ip     VARCHAR2(50),
+  add_time     DATE,
+  app_name     VARCHAR2(50),
+  add_time_key NUMBER(10),
+  order_id     NUMBER(20)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.SD_SCANCODE_ORDER
+  is '扫码数据订购结果统计';
+comment on column DW_USER.SD_SCANCODE_ORDER.order_key
+  is 'erp订单号';
+comment on column DW_USER.SD_SCANCODE_ORDER.order_id
+  is 'ec订单编号';
+create index DW_USER.SSDSCO_ADD_TIME on DW_USER.SD_SCANCODE_ORDER (ADD_TIME_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

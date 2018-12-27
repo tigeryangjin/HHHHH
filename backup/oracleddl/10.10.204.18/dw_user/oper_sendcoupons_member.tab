@@ -1,0 +1,121 @@
+???create table DW_USER.OPER_SENDCOUPONS_MEMBER
+(
+  member_key               NUMBER(20),
+  register_time            NUMBER(10),
+  register_record_date_key NUMBER(10),
+  register_state           NUMBER(5) default 0,
+  register_voucher_time    NUMBER(10),
+  register_device_key      NUMBER(20),
+  fifteen_order_time       NUMBER(10),
+  fifteen_record_date_key  NUMBER(10),
+  fifteen_state            NUMBER(5) default 0,
+  fifteen_voucher_time     NUMBER(10),
+  thirty_order_time        NUMBER(10),
+  thirty_record_date_key   NUMBER(10),
+  thirty_state             NUMBER(10) default 0,
+  thirty_voucher_time      NUMBER(10),
+  d850_order_time          NUMBER(10),
+  d850_record_date_key     NUMBER(10),
+  d850_state               NUMBER(5) default 0,
+  d850_voucher_time        NUMBER(10),
+  d2600_order_time         NUMBER(10),
+  d2600_record_date_key    NUMBER(10),
+  d2600_state              NUMBER(5) default 0,
+  d2600_voucher_time       NUMBER(10),
+  four_order_time          NUMBER(10),
+  four_record_date_key     NUMBER(10),
+  four_state               NUMBER(10) default 0,
+  four_voucher_time        NUMBER(10),
+  reverse_order_time       NUMBER(10),
+  reverse_record_date_key  NUMBER(10),
+  reverse_state            NUMBER(5) default 0,
+  reverse_voucher_time     NUMBER(10),
+  no60_order_time          NUMBER(10),
+  no60_record_date_key     NUMBER(10),
+  no60_state               NUMBER(5) default 0,
+  no60_voucher_time        NUMBER(10),
+  three199_order_time      NUMBER(10),
+  three199_record_date_key NUMBER(10),
+  three199_state           NUMBER(5) default 0,
+  three199_voucher_time    NUMBER(10),
+  ten199_order_time        NUMBER(10),
+  ten199_record_date_key   NUMBER(10),
+  ten199_state             NUMBER(5) default 0,
+  ten199_voucher_time      NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_SENDCOUPONS_MEMBER
+  is '订购汇总数据';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.register_time
+  is '用户注册时间';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.register_record_date_key
+  is '7天无订购统计时间';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.register_state
+  is '是否发券';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.register_voucher_time
+  is '发券时间';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.register_device_key
+  is '第一次登录设备key';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.fifteen_order_time
+  is '一次订购，且15天后无订购';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.fifteen_record_date_key
+  is '一次订购，且15天后无订购数据订购';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.fifteen_state
+  is '一次订购，且15天后无订购是否发券';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.fifteen_voucher_time
+  is '发券时间';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.thirty_order_time
+  is '两次订购，且第二次订购30天内无订购';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.thirty_record_date_key
+  is '两次订购，且第二次订购30天内无订购订购时间';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.thirty_state
+  is '两次订购，且第二次订购30天内无订购是否发券';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.thirty_voucher_time
+  is '发券时间';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.d850_order_time
+  is '大于等于850小于1000的用户';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.d850_record_date_key
+  is '获取时间';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.d850_state
+  is '发券状态';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.d850_voucher_time
+  is '发券时间';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.d2600_order_time
+  is '大于等于2600小于3000的用户';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.four_order_time
+  is '订购等于4次的用户';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.four_record_date_key
+  is '获取时间';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.reverse_order_time
+  is '退货发生日期';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.reverse_record_date_key
+  is '获取时间';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.no60_order_time
+  is '有效订购大于等于2且最后一次订购后60天内无订购';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.three199_order_time
+  is '计算之日7天前倒数30天内有效订购金额大于等于199的总计有3次以上的会员';
+comment on column DW_USER.OPER_SENDCOUPONS_MEMBER.ten199_order_time
+  is '取计算之日7天前倒数自然年内有效订购金额大于等于199的次数大于等于10的用户';
+create index DW_USER.OPER_MEMBER_NEW on DW_USER.OPER_SENDCOUPONS_MEMBER (MEMBER_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

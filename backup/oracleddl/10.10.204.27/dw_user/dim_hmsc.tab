@@ -1,0 +1,45 @@
+???create table DW_USER.DIM_HMSC
+(
+  id          NUMBER(10),
+  hmsc_key    NUMBER(10),
+  hmsc        VARCHAR2(200),
+  hmmd        VARCHAR2(50),
+  insert_date DATE,
+  hmpl        VARCHAR2(10)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_HMSC
+  is '渠道维表';
+comment on column DW_USER.DIM_HMSC.hmsc_key
+  is '渠道KEY';
+comment on column DW_USER.DIM_HMSC.hmsc
+  is '渠道代码';
+comment on column DW_USER.DIM_HMSC.hmmd
+  is '渠道名称';
+comment on column DW_USER.DIM_HMSC.insert_date
+  is '建立时间';
+create index DW_USER.HMSC_IDX on DW_USER.DIM_HMSC (HMSC)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

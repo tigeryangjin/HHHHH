@@ -1,0 +1,28 @@
+???create table DW_USER.FACT_DAILY_MAMA
+(
+  activityid      NUMBER,
+  activityname    CHAR(23),
+  member_key      NUMBER(20),
+  member_level    VARCHAR2(20),
+  order_id        NUMBER(20),
+  erp_order_no    NUMBER(20),
+  add_time        DATE,
+  item_code       NUMBER(10),
+  goods_name      VARCHAR2(500),
+  goods_num       NUMBER(10),
+  goods_pay_price NUMBER(10,2),
+  voucher_price   NUMBER(10,2),
+  vouchername     VARCHAR2(500)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

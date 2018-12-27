@@ -1,0 +1,24 @@
+???create table DW_USER.FACT_DAILY_CPSAOMA
+(
+  visit_date_key NUMBER(10),
+  vt_date        DATE,
+  pv             NUMBER,
+  uv             NUMBER,
+  smuvcnt        NUMBER,
+  sm_orderrs     NUMBER,
+  smyj           NUMBER,
+  smcnt          NUMBER,
+  smrate         NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

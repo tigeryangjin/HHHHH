@@ -1,0 +1,3 @@
+???create or replace synonym DW_USER.ODS_SHOPPINGCAR
+  for ODSHAPPIGO.ODS_SHOPPINGCAR@BIODS_LINK;
+

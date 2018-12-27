@@ -1,0 +1,505 @@
+???create table DW_USER.FACT_GOODS_SALES_REVERSE
+(
+  sales_goods_id           NUMBER(20),
+  order_key                NUMBER(20),
+  order_h_key              NUMBER(20),
+  ec_order_id              NUMBER(20) default -1,
+  ec_order_state           NUMBER(5) default -1,
+  device_key               NUMBER(20) default -1,
+  globel_order_state       NUMBER(5) default -1,
+  address_key              NUMBER(10),
+  member_key               NUMBER(20),
+  member_grade_desc        VARCHAR2(100),
+  member_grade_key         NUMBER(10) default -1,
+  goods_key                NUMBER(20),
+  goods_common_key         NUMBER(20),
+  tran_type                NUMBER(5) default 1,
+  tran_desc                VARCHAR2(20),
+  materiel_big_key         NUMBER(20),
+  materiel_middle_key      NUMBER(20),
+  materiel_small_key       NUMBER(20),
+  category_key             NUMBER(20),
+  ec_category_key          NUMBER(20),
+  brand_key                NUMBER(20),
+  live_state               NUMBER(5) default 0,
+  replay_state             NUMBER(5) default 0,
+  window_id                VARCHAR2(20),
+  ec_goods_state           NUMBER(5) default -1,
+  tv_goods_state           NUMBER(5) default -1,
+  group_state              NUMBER(5) default -1,
+  purchasing_key           NUMBER(10) default -1,
+  purchasing               VARCHAR2(200),
+  md_person                NUMBER(10) default -1,
+  supplier_key             NUMBER(10) default -1,
+  supplier_title           VARCHAR2(500),
+  unit_price               NUMBER(10,2) default 0.00,
+  discount_price           NUMBER(10,2) default 0.00,
+  bargain_price            NUMBER(10,2) default 0.00,
+  nums                     NUMBER(10) default 0,
+  cost_price               NUMBER(10,2) default 0.00,
+  purchase_price           NUMBER(10,2) default 0.00,
+  coupons_key              NUMBER(10),
+  sales_amount             NUMBER(10,2) default 0.00,
+  coupons                  VARCHAR2(200),
+  coupons_price            NUMBER(10,2) default 0.00,
+  points_reward            NUMBER(10) default 0,
+  order_amount             NUMBER(10,2) default 0.00,
+  order_net_amount         NUMBER(10,2) default 0.00,
+  tax_amount               NUMBER(10,2) default 0.00,
+  pay_amount               NUMBER(10,2) default 0.00,
+  amount_paid              NUMBER(10,2) default 0.00,
+  purchase_amount          NUMBER(10,2) default 0.00,
+  profit_amount            NUMBER(10,2) default 0.00,
+  amount_advanced          NUMBER(10,2) default 0.00,
+  card_amount              NUMBER(10,2) default 0.00,
+  points_no_amount         NUMBER(10,2) default 0.00,
+  freight_amount           NUMBER(10,2) default 0.00,
+  points_total             NUMBER(10) default 0,
+  points_amount            NUMBER(10,3) default 0.000,
+  sales_source_key         NUMBER(10) default -1,
+  sales_source_desc        VARCHAR2(20),
+  sales_source_second_key  NUMBER(10) default -1,
+  sales_source_second_desc VARCHAR2(20),
+  order_date_key           NUMBER(10),
+  order_date               DATE,
+  order_hour_key           NUMBER(5),
+  order_hour               NUMBER(5),
+  order_type               NUMBER(5) default -1,
+  cancel_type              NUMBER(5) default -1,
+  exchange_type            NUMBER(5) default -1,
+  posting_date             DATE,
+  posting_date_key         NUMBER(10),
+  posting_hour_key         NUMBER(5),
+  posting_hour             NUMBER(5),
+  cancel_state             NUMBER(5) default -1,
+  cancel_date_key          NUMBER(10),
+  cancel_date              DATE,
+  cancel_hour_key          NUMBER(5),
+  cancel_hour              NUMBER(5),
+  cancel_person            NUMBER(5) default -1,
+  pay_state                NUMBER(5) default -1,
+  pay_date_key             NUMBER(10),
+  pay_date                 DATE,
+  pay_hour_key             NUMBER(5),
+  pay_hour                 NUMBER(5),
+  cancel_reason            NUMBER(5),
+  exchange_reason          NUMBER(5),
+  one_reason               VARCHAR2(200),
+  two_reason               VARCHAR2(200),
+  reject_return            NUMBER(5),
+  update_time              NUMBER(10),
+  order_from               VARCHAR2(2)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.order_key
+  is '订单key(权责制)';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.order_h_key
+  is '订单编号(发生制)';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.ec_order_id
+  is 'Ec订单编号';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.ec_order_state
+  is '是否ec订单';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.device_key
+  is '设备key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.globel_order_state
+  is '是否全球购订单(1是)';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.address_key
+  is '订购四级地址key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.member_key
+  is '会员key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.member_grade_desc
+  is '会员等级描述';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.member_grade_key
+  is '会员等级key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.goods_key
+  is '商品key(sku)';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.goods_common_key
+  is '商品spu(key)';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.tran_type
+  is '商品交易类型(0主品，1赠品)';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.tran_desc
+  is '商品交易类型描述';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.materiel_big_key
+  is '一级物料';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.materiel_middle_key
+  is '二级物料';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.materiel_small_key
+  is '三级物料';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.category_key
+  is 'crm商品分类key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.ec_category_key
+  is 'Ec商品分类key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.brand_key
+  is '商品品牌key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.live_state
+  is '是否是直播（1是直播）';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.replay_state
+  is '是否是重播
+（1是重播）';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.window_id
+  is '橱窗标识';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.ec_goods_state
+  is '电商商品(1是)';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.tv_goods_state
+  is 'TV商品(1是)';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.group_state
+  is '是否团购(1是)';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.purchasing_key
+  is '提报组key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.purchasing
+  is '提报组';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.md_person
+  is 'Md编号';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.supplier_key
+  is '供应商编号';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.supplier_title
+  is '供应商名称';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.unit_price
+  is '商品单价';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.discount_price
+  is '单个商品促销金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.bargain_price
+  is '单个商品成交价格';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.nums
+  is '订购数量';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.cost_price
+  is '单个商品成本金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.purchase_price
+  is '单个商品采购价格';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.coupons_key
+  is '优惠券编号';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.sales_amount
+  is '售价总金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.coupons
+  is '券编号';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.coupons_price
+  is '券金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.points_reward
+  is '奖励积分数';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.order_amount
+  is '订购总金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.order_net_amount
+  is '订购净金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.tax_amount
+  is '税收金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.pay_amount
+  is '应付总金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.amount_paid
+  is '已付金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.purchase_amount
+  is '采购总金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.profit_amount
+  is '毛利总金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.amount_advanced
+  is '预付款金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.card_amount
+  is '心意卡金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.points_no_amount
+  is '不记积分金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.freight_amount
+  is '运费金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.points_total
+  is '使用积分数';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.points_amount
+  is '积分使用金额';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.sales_source_key
+  is '销售一级组织key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.sales_source_desc
+  is '销售一级组织';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.sales_source_second_key
+  is '销售二级组织key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.sales_source_second_desc
+  is '销售二级组织';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.order_date_key
+  is '原单订购时间key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.order_date
+  is '原单订购时间';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.order_hour_key
+  is '原单订购时间KEY';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.order_hour
+  is '原单订购时间';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.order_type
+  is '退货还是换货0退货，1换货';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.cancel_type
+  is '退货类型';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.exchange_type
+  is '换货类型';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.posting_date
+  is '过账时间';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.posting_date_key
+  is '过账时间key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.posting_hour_key
+  is '过账时间key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.posting_hour
+  is '过账时间';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.cancel_state
+  is '1退货取消，0未';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.cancel_date_key
+  is '退货取消日期key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.cancel_date
+  is '退货取消日期';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.cancel_hour_key
+  is '退货取消时间key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.cancel_hour
+  is '退货取消时间';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.cancel_person
+  is '取消人1系统，2用户';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.pay_state
+  is '支付状态
+(1支付，0未)
+';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.pay_date_key
+  is '支付日期key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.pay_date
+  is '支付日期';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.pay_hour_key
+  is '支付时间key';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.pay_hour
+  is '支付时间';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.cancel_reason
+  is '退货原因(10:上门收回,20:车队退回,30:顾客寄回,40:指定回寄快乐购,60:换货)';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.exchange_reason
+  is '换货原因';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.one_reason
+  is '一级原因';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.two_reason
+  is '二级原因';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.reject_return
+  is '20拒收10上门30回寄';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.update_time
+  is '数据更新日期';
+comment on column DW_USER.FACT_GOODS_SALES_REVERSE.order_from
+  is '订单来源(odshappigo.ods_order.zcrmd018)';
+create index DW_USER.FGSR_CANCEL_DATE on DW_USER.FACT_GOODS_SALES_REVERSE (CANCEL_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_GOODS_COMMON_KEY on DW_USER.FACT_GOODS_SALES_REVERSE (GOODS_COMMON_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_GOODS_KEY on DW_USER.FACT_GOODS_SALES_REVERSE (GOODS_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_MAT_BIG on DW_USER.FACT_GOODS_SALES_REVERSE (MATERIEL_BIG_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_MAT_MID on DW_USER.FACT_GOODS_SALES_REVERSE (MATERIEL_MIDDLE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_MAT_SML on DW_USER.FACT_GOODS_SALES_REVERSE (MATERIEL_SMALL_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_MEMBER_GRATE_KEY on DW_USER.FACT_GOODS_SALES_REVERSE (MEMBER_GRADE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_MEMBER_KEY on DW_USER.FACT_GOODS_SALES_REVERSE (MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_ORDER_DATE_KEY on DW_USER.FACT_GOODS_SALES_REVERSE (ORDER_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_ORDER_H_KEY on DW_USER.FACT_GOODS_SALES_REVERSE (ORDER_H_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_ORDER_KEY on DW_USER.FACT_GOODS_SALES_REVERSE (ORDER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_POSTING_DATE_KEY on DW_USER.FACT_GOODS_SALES_REVERSE (POSTING_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_REJECT_RETURN on DW_USER.FACT_GOODS_SALES_REVERSE (REJECT_RETURN)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_SALES_SOURCE on DW_USER.FACT_GOODS_SALES_REVERSE (SALES_SOURCE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_SALES_SOURCE_S on DW_USER.FACT_GOODS_SALES_REVERSE (SALES_SOURCE_SECOND_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_TRAN_TYPE on DW_USER.FACT_GOODS_SALES_REVERSE (TRAN_TYPE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FGSR_UPDATE_TIME on DW_USER.FACT_GOODS_SALES_REVERSE (UPDATE_TIME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

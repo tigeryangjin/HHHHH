@@ -1,0 +1,23 @@
+???create table DW_USER.FACT_DAILY_APPSOURCE
+(
+  start_date_key NUMBER(20),
+  vt_date        DATE,
+  leixin         CHAR(6),
+  uv             NUMBER,
+  pv             NUMBER,
+  orderrs        NUMBER,
+  ordertot       NUMBER,
+  orderrate      NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

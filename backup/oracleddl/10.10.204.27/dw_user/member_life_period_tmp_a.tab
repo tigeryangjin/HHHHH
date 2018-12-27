@@ -1,0 +1,32 @@
+???create table DW_USER.MEMBER_LIFE_PERIOD_TMP_A
+(
+  member_bp NUMBER(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.MEMBER_LIFE_PERIOD_TMP_A
+  is '会员生命周期标签临时表
+by yangjin';
+create unique index DW_USER.MEMBER_LIFE_PERIOD_TMP_A_I1 on DW_USER.MEMBER_LIFE_PERIOD_TMP_A (MEMBER_BP)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

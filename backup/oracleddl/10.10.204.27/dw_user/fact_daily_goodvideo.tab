@@ -1,0 +1,57 @@
+???create table DW_USER.FACT_DAILY_GOODVIDEO
+(
+  statsdate  NUMBER,
+  item_code  NUMBER,
+  goods_name VARCHAR2(200),
+  matdlt     VARCHAR2(100),
+  group_name VARCHAR2(50),
+  pv         NUMBER,
+  uv         NUMBER,
+  avgnum     NUMBER,
+  goodpv     NUMBER,
+  gooduv     NUMBER,
+  goodavg    NUMBER,
+  goodnum    NUMBER,
+  custnum    NUMBER,
+  goodmount  NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.statsdate
+  is '日期';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.item_code
+  is '商品编号';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.matdlt
+  is '物料大类';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.group_name
+  is '提报组';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.pv
+  is '商品视频PV';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.uv
+  is '商品视频UV';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.avgnum
+  is '商品视频平均浏览时间';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.goodpv
+  is '商品PV';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.gooduv
+  is '商品UV';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.goodavg
+  is '商品平均浏览时间';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.goodnum
+  is '订购数量';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.custnum
+  is '订购人数';
+comment on column DW_USER.FACT_DAILY_GOODVIDEO.goodmount
+  is '订购金额';
+

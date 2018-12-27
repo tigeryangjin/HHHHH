@@ -1,0 +1,30 @@
+???create table DW_USER.FACT_DAILY_ZHUANGTINEW_GOODS
+(
+  visit_date       DATE,
+  visit_date_key   NUMBER(10),
+  name             VARCHAR2(200),
+  zttype           CHAR(10),
+  goods_common_id  NUMBER(10),
+  item_code        NUMBER,
+  goods_name       VARCHAR2(200),
+  application_name VARCHAR2(6),
+  goodspv          NUMBER,
+  goodsuv          NUMBER,
+  ordercnt         NUMBER,
+  orderrs          NUMBER,
+  ordernum         NUMBER,
+  order_amount     NUMBER,
+  orderrate        NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

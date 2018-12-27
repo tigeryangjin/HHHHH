@@ -1,0 +1,48 @@
+???create table DW_USER.OPER_MEMBER_MBLEVEL_DCGOOD
+(
+  row_wid     NUMBER(10),
+  post_date   DATE,
+  member_key  NUMBER(20),
+  w_insert_dt DATE,
+  w_update_dt DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_MEMBER_MBLEVEL_DCGOOD
+  is '1、针对每日新增绑定的会员等级折扣商品，自动匹配出近1月内加车和浏览的纪录，针对此部分会员发送短信；
+2、7日内进行用户剔重，不做重复发送。
+3、短信于隔日9点发送。    DIM_MBLEVEL_DCGOOD
+by yangjin';
+comment on column DW_USER.OPER_MEMBER_MBLEVEL_DCGOOD.row_wid
+  is '唯一代理主键';
+comment on column DW_USER.OPER_MEMBER_MBLEVEL_DCGOOD.post_date
+  is '发送日期';
+comment on column DW_USER.OPER_MEMBER_MBLEVEL_DCGOOD.member_key
+  is 'member_key';
+comment on column DW_USER.OPER_MEMBER_MBLEVEL_DCGOOD.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_MEMBER_MBLEVEL_DCGOOD.w_update_dt
+  is '记录更新时间';
+create index DW_USER.OPER_MEMBER_MBLEVEL_DCGOOD_I1 on DW_USER.OPER_MEMBER_MBLEVEL_DCGOOD (MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

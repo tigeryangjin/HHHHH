@@ -1,0 +1,55 @@
+???create table DW_HAPPIGO.R_TRANSFORMATION
+(
+  id_transformation    INTEGER not null,
+  id_directory         INTEGER,
+  name                 VARCHAR2(255),
+  description          CLOB,
+  extended_description CLOB,
+  trans_version        VARCHAR2(255),
+  trans_status         INTEGER,
+  id_step_read         INTEGER,
+  id_step_write        INTEGER,
+  id_step_input        INTEGER,
+  id_step_output       INTEGER,
+  id_step_update       INTEGER,
+  id_database_log      INTEGER,
+  table_name_log       VARCHAR2(255),
+  use_batchid          CHAR(1),
+  use_logfield         CHAR(1),
+  id_database_maxdate  INTEGER,
+  table_name_maxdate   VARCHAR2(255),
+  field_name_maxdate   VARCHAR2(255),
+  offset_maxdate       NUMBER(12,2),
+  diff_maxdate         NUMBER(12,2),
+  created_user         VARCHAR2(255),
+  created_date         DATE,
+  modified_user        VARCHAR2(255),
+  modified_date        DATE,
+  size_rowset          INTEGER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table DW_HAPPIGO.R_TRANSFORMATION
+  add primary key (ID_TRANSFORMATION)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

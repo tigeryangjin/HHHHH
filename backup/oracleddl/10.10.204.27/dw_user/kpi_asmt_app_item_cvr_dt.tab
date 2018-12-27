@@ -1,0 +1,41 @@
+???create table DW_USER.KPI_ASMT_APP_ITEM_CVR_DT
+(
+  date_key    NUMBER(10),
+  gc_name     VARCHAR2(20),
+  visit_count NUMBER,
+  order_count NUMBER,
+  w_insert_dt DATE,
+  w_update_dt DATE,
+  cvr         NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.KPI_ASMT_APP_ITEM_CVR_DT
+  is 'KPI考核指标-渠道运营部-商品详情页转化率-中间表
+by yangjin
+2018-02-26
+';
+comment on column DW_USER.KPI_ASMT_APP_ITEM_CVR_DT.date_key
+  is '日期key';
+comment on column DW_USER.KPI_ASMT_APP_ITEM_CVR_DT.gc_name
+  is '关联EC分类名称';
+comment on column DW_USER.KPI_ASMT_APP_ITEM_CVR_DT.visit_count
+  is '访问数';
+comment on column DW_USER.KPI_ASMT_APP_ITEM_CVR_DT.order_count
+  is '订购数';
+comment on column DW_USER.KPI_ASMT_APP_ITEM_CVR_DT.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.KPI_ASMT_APP_ITEM_CVR_DT.w_update_dt
+  is '记录修改时间';
+comment on column DW_USER.KPI_ASMT_APP_ITEM_CVR_DT.cvr
+  is '转化率（Conversion Rate）';
+

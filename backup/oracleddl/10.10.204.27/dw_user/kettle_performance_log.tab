@@ -1,0 +1,23 @@
+???create table DW_USER.KETTLE_PERFORMANCE_LOG
+(
+  id_batch           INTEGER,
+  seq_nr             INTEGER,
+  logdate            DATE,
+  transname          VARCHAR2(255),
+  stepname           VARCHAR2(255),
+  step_copy          INTEGER,
+  lines_read         INTEGER,
+  lines_written      INTEGER,
+  lines_updated      INTEGER,
+  lines_input        INTEGER,
+  lines_output       INTEGER,
+  lines_rejected     INTEGER,
+  errors             INTEGER,
+  input_buffer_rows  INTEGER,
+  output_buffer_rows INTEGER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+

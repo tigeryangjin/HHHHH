@@ -1,0 +1,129 @@
+???create table ODSHAPPIGO.NEW_ZTMM023
+(
+  mandt      VARCHAR2(9),
+  pricenum   VARCHAR2(30),
+  ekorg      VARCHAR2(12),
+  lifnr      VARCHAR2(30),
+  matnr      VARCHAR2(54),
+  bukrs      VARCHAR2(12),
+  meins      VARCHAR2(9),
+  charg      VARCHAR2(30),
+  pricestat  VARCHAR2(6),
+  delflg     VARCHAR2(3),
+  zbuymt     VARCHAR2(12),
+  taxrate    VARCHAR2(30),
+  datab      VARCHAR2(24),
+  datbi      VARCHAR2(24),
+  cumtax     NUMBER(5,2),
+  pb00       NUMBER(11,2),
+  zp01       NUMBER(11,2),
+  zf06       NUMBER(11,2),
+  zeinr      VARCHAR2(54),
+  waers      VARCHAR2(15),
+  reason     VARCHAR2(6),
+  remark     VARCHAR2(600),
+  zdele      VARCHAR2(3),
+  erdat      VARCHAR2(24),
+  erzet      VARCHAR2(18),
+  ernam      VARCHAR2(36),
+  vproc      VARCHAR2(3),
+  pcount     NUMBER(10),
+  batch      VARCHAR2(3),
+  pname      VARCHAR2(36),
+  pdate      VARCHAR2(24),
+  ptime      VARCHAR2(18),
+  errno      VARCHAR2(30),
+  zmessage   VARCHAR2(600),
+  wtcode     VARCHAR2(60),
+  wrepid     VARCHAR2(120),
+  zcgjg      VARCHAR2(3),
+  zxsjg      VARCHAR2(3),
+  zp03       NUMBER(11,2),
+  zjmzzf     NUMBER(6,2),
+  zhtcgj     NUMBER(11,2),
+  zjf        VARCHAR2(3),
+  pricenum_c VARCHAR2(30),
+  salerate   VARCHAR2(30),
+  zpr1       NUMBER(11,2)
+)
+tablespace DB_LOGISTICS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column ODSHAPPIGO.NEW_ZTMM023.mandt
+  is '客户端 ';
+comment on column ODSHAPPIGO.NEW_ZTMM023.pricenum
+  is '价格提报编号';
+comment on column ODSHAPPIGO.NEW_ZTMM023.ekorg
+  is '采购组织';
+comment on column ODSHAPPIGO.NEW_ZTMM023.lifnr
+  is '供应商或债权人的帐号';
+comment on column ODSHAPPIGO.NEW_ZTMM023.matnr
+  is '商品';
+comment on column ODSHAPPIGO.NEW_ZTMM023.bukrs
+  is '公司代码';
+comment on column ODSHAPPIGO.NEW_ZTMM023.meins
+  is '基本计量单位';
+comment on column ODSHAPPIGO.NEW_ZTMM023.charg
+  is '批号';
+comment on column ODSHAPPIGO.NEW_ZTMM023.pricestat
+  is '价格状态 ';
+comment on column ODSHAPPIGO.NEW_ZTMM023.delflg
+  is '终止价格标记';
+comment on column ODSHAPPIGO.NEW_ZTMM023.zbuymt
+  is '买入方式';
+comment on column ODSHAPPIGO.NEW_ZTMM023.taxrate
+  is '税率';
+comment on column ODSHAPPIGO.NEW_ZTMM023.datab
+  is '条件记录有效起始日 ';
+comment on column ODSHAPPIGO.NEW_ZTMM023.datbi
+  is '条件记录有效截止日期';
+comment on column ODSHAPPIGO.NEW_ZTMM023.cumtax
+  is '消费税 ';
+comment on column ODSHAPPIGO.NEW_ZTMM023.pb00
+  is '采购价 ';
+comment on column ODSHAPPIGO.NEW_ZTMM023.zp01
+  is '销售价';
+comment on column ODSHAPPIGO.NEW_ZTMM023.zf06
+  is '积分';
+comment on column ODSHAPPIGO.NEW_ZTMM023.zeinr
+  is '商品提报编号ID';
+comment on column ODSHAPPIGO.NEW_ZTMM023.waers
+  is '货币码 ';
+comment on column ODSHAPPIGO.NEW_ZTMM023.reason
+  is '原因';
+comment on column ODSHAPPIGO.NEW_ZTMM023.remark
+  is '备注';
+comment on column ODSHAPPIGO.NEW_ZTMM023.zdele
+  is '删除标识';
+comment on column ODSHAPPIGO.NEW_ZTMM023.erdat
+  is '记录的创建日期 ';
+comment on column ODSHAPPIGO.NEW_ZTMM023.erzet
+  is '输入时间';
+comment on column ODSHAPPIGO.NEW_ZTMM023.ernam
+  is '创建对象的人员名称 ';
+comment on column ODSHAPPIGO.NEW_ZTMM023.vproc
+  is '处理状态 ';
+comment on column ODSHAPPIGO.NEW_ZTMM023.pcount
+  is '处理的次数 ';
+comment on column ODSHAPPIGO.NEW_ZTMM023.batch
+  is '在后台运行程序 ';
+comment on column ODSHAPPIGO.NEW_ZTMM023.pname
+  is '执行用户';
+comment on column ODSHAPPIGO.NEW_ZTMM023.pdate
+  is '处理日期';
+comment on column ODSHAPPIGO.NEW_ZTMM023.ptime
+  is '处理时间';
+comment on column ODSHAPPIGO.NEW_ZTMM023.errno
+  is '错误日志号 ';
+comment on column ODSHAPPIGO.NEW_ZTMM023.zmessage
+  is '错误消息';
+

@@ -1,0 +1,45 @@
+???create table DW_USER.FACT_WEEK_STATS
+(
+  visit_date_key   NUMBER(10),
+  application_name VARCHAR2(13),
+  uvcnt            NUMBER,
+  ipcnt            NUMBER,
+  newvtcount       NUMBER,
+  pvcnt            NUMBER,
+  avgpv            NUMBER,
+  avglife_time     NUMBER,
+  newvtrate        VARCHAR2(41),
+  bonusrate        VARCHAR2(41)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_WEEK_STATS.visit_date_key
+  is '统计日期';
+comment on column DW_USER.FACT_WEEK_STATS.application_name
+  is '应用名称';
+comment on column DW_USER.FACT_WEEK_STATS.uvcnt
+  is 'UV数量';
+comment on column DW_USER.FACT_WEEK_STATS.ipcnt
+  is 'IP数量';
+comment on column DW_USER.FACT_WEEK_STATS.newvtcount
+  is '新访客数量';
+comment on column DW_USER.FACT_WEEK_STATS.pvcnt
+  is 'PV数量';
+comment on column DW_USER.FACT_WEEK_STATS.avgpv
+  is '平均PV';
+comment on column DW_USER.FACT_WEEK_STATS.avglife_time
+  is '平均访问时长';
+comment on column DW_USER.FACT_WEEK_STATS.newvtrate
+  is '新访客率';
+comment on column DW_USER.FACT_WEEK_STATS.bonusrate
+  is '跳出率';
+

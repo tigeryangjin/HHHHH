@@ -1,0 +1,26 @@
+???create table ODSHAPPIGO.ODS_KPI
+(
+  dept        VARCHAR2(200),
+  item        VARCHAR2(200),
+  proc_date   VARCHAR2(8),
+  item_value1 NUMBER(17,2),
+  item_value2 NUMBER(17,2),
+  item_value3 NUMBER(17,2),
+  insert_id   VARCHAR2(20),
+  item_type   VARCHAR2(20),
+  dept_1      VARCHAR2(200),
+  note        VARCHAR2(200)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

@@ -1,0 +1,7 @@
+???create sequence DW_USER.W_STATID_S
+minvalue 6410616
+maxvalue 9999999999999999999999999999
+start with 12938011
+increment by 1
+cache 20;
+

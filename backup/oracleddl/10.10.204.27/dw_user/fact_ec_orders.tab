@@ -1,0 +1,89 @@
+???create table DW_USER.FACT_EC_ORDERS
+(
+  order_id                   NUMBER(10),
+  order_sn                   NUMBER(30),
+  pay_sn                     NUMBER(30),
+  add_time                   NUMBER(20),
+  payment_code               VARCHAR2(10),
+  payment_time               NUMBER(20),
+  finnshed_time              NUMBER(20),
+  goods_amount               NUMBER(10,2),
+  order_amount               NUMBER(10,2),
+  shipping_fee               NUMBER(10,2),
+  order_state                NUMBER(4),
+  refund_state               NUMBER(3),
+  refund_amount              NUMBER(10,2),
+  order_from                 VARCHAR2(10),
+  shipping_type              NUMBER(2),
+  shipping_name              VARCHAR2(50),
+  shipping_code              VARCHAR2(200),
+  app_name                   VARCHAR2(20),
+  vid                        VARCHAR2(100),
+  erp_order_no               NUMBER(20),
+  erp_order_time             NUMBER(20),
+  order_ip                   VARCHAR2(20),
+  paymentchannel             VARCHAR2(30),
+  cust_no                    NUMBER(20),
+  is_kjg                     NUMBER(1),
+  addtime                    DATE,
+  voucher_price              NUMBER(10,2),
+  voucher_ref                NUMBER(10),
+  voucher_code               VARCHAR2(200),
+  dcissue_seq                VARCHAR2(200),
+  transpzone                 NUMBER(10),
+  integrals_amount           NUMBER(10,2),
+  integrals_sum              NUMBER(10),
+  discount_mansong_amount    NUMBER(10,2),
+  discount_paymentway_amount NUMBER(10,2)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_EC_ORDERS.goods_amount
+  is '商品金额';
+comment on column DW_USER.FACT_EC_ORDERS.order_amount
+  is '订购金额';
+comment on column DW_USER.FACT_EC_ORDERS.shipping_fee
+  is '运费';
+comment on column DW_USER.FACT_EC_ORDERS.vid
+  is '设备号';
+comment on column DW_USER.FACT_EC_ORDERS.erp_order_no
+  is 'erp订单编号';
+comment on column DW_USER.FACT_EC_ORDERS.erp_order_time
+  is 'erp接收时间';
+comment on column DW_USER.FACT_EC_ORDERS.order_ip
+  is '下单IP';
+comment on column DW_USER.FACT_EC_ORDERS.paymentchannel
+  is '支付渠道';
+comment on column DW_USER.FACT_EC_ORDERS.cust_no
+  is 'bp号';
+comment on column DW_USER.FACT_EC_ORDERS.is_kjg
+  is '是否是跨境购';
+comment on column DW_USER.FACT_EC_ORDERS.addtime
+  is '添加时间';
+comment on column DW_USER.FACT_EC_ORDERS.voucher_price
+  is '优惠券金额';
+comment on column DW_USER.FACT_EC_ORDERS.voucher_ref
+  is 'ec券编号';
+comment on column DW_USER.FACT_EC_ORDERS.voucher_code
+  is 'ec券code';
+comment on column DW_USER.FACT_EC_ORDERS.dcissue_seq
+  is 'crm券编号';
+comment on column DW_USER.FACT_EC_ORDERS.transpzone
+  is '四级地址编号';
+comment on column DW_USER.FACT_EC_ORDERS.integrals_amount
+  is '积分金额';
+comment on column DW_USER.FACT_EC_ORDERS.integrals_sum
+  is '积分数量';
+comment on column DW_USER.FACT_EC_ORDERS.discount_mansong_amount
+  is '满送优惠金额';
+comment on column DW_USER.FACT_EC_ORDERS.discount_paymentway_amount
+  is '支付优惠金额';
+

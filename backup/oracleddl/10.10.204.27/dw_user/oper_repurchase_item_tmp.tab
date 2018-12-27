@@ -1,0 +1,24 @@
+???create table DW_USER.OPER_REPURCHASE_ITEM_TMP
+(
+  item_code       NUMBER(10) not null,
+  repurchase_days NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_REPURCHASE_ITEM_TMP
+  is '会员复购商品临时表（导入用）
+by yangjin';
+comment on column DW_USER.OPER_REPURCHASE_ITEM_TMP.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_REPURCHASE_ITEM_TMP.repurchase_days
+  is '复购时长（天）';
+

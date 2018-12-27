@@ -1,0 +1,37 @@
+???create table DW_USER.FACT_ECGOODS_STOCK
+(
+  item_code   NUMBER(10),
+  goods_stock NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.FACT_ECGOODS_STOCK
+  is 'ec商品库存';
+comment on column DW_USER.FACT_ECGOODS_STOCK.item_code
+  is '商品编码';
+comment on column DW_USER.FACT_ECGOODS_STOCK.goods_stock
+  is '库存数量';
+create index DW_USER.ECSTOCKITEM_CODE on DW_USER.FACT_ECGOODS_STOCK (ITEM_CODE)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

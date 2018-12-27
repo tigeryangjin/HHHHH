@@ -1,0 +1,102 @@
+???create table DW_USER.LS_MEMBER_ORDER
+(
+  member_key          NUMBER(20),
+  register_date_key   NUMBER(10),
+  media               VARCHAR2(200),
+  order_first         NUMBER(20),
+  order_last          NUMBER(20),
+  order_cancel_date   NUMBER(20),
+  order_num           NUMBER(20),
+  order_cancel_num    NUMBER(20),
+  order_cancel_amount NUMBER(10,2),
+  order_amount        NUMBER(10,2),
+  order_one_date      NUMBER(10),
+  order_one_amount    NUMBER(10,2),
+  order_one_source    NUMBER(10),
+  order_two_date      NUMBER(10),
+  order_two_amount    NUMBER(10,2),
+  order_two_source    NUMBER(10),
+  order_three_date    NUMBER(10),
+  order_three_amount  NUMBER(10,2),
+  order_three_source  NUMBER(10),
+  order_four_date     NUMBER(10),
+  order_four_amount   NUMBER(10,2),
+  order_four_source   NUMBER(10),
+  four_average_day    NUMBER(10,2),
+  order_ec_num        NUMBER(20),
+  status              NUMBER(5) default 0
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.LS_MEMBER_ORDER.member_key
+  is '会员编号';
+comment on column DW_USER.LS_MEMBER_ORDER.register_date_key
+  is '注册时间';
+comment on column DW_USER.LS_MEMBER_ORDER.media
+  is '会员注册渠道';
+comment on column DW_USER.LS_MEMBER_ORDER.order_first
+  is '第一次有效订购时间（全通路）';
+comment on column DW_USER.LS_MEMBER_ORDER.order_last
+  is '最后一次有效订购时间（全通路）';
+comment on column DW_USER.LS_MEMBER_ORDER.order_cancel_date
+  is '最后一笔退单时间（全通路）';
+comment on column DW_USER.LS_MEMBER_ORDER.order_num
+  is '有效订购次数（全通路）';
+comment on column DW_USER.LS_MEMBER_ORDER.order_cancel_num
+  is '有效退货次数-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_cancel_amount
+  is '有效退货金额-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_amount
+  is '有效订购金额-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_one_date
+  is '第一次有效订购时间-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_one_amount
+  is '第一次有效订购金额-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_one_source
+  is '第一次有效订购渠道-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_two_date
+  is '第二次有效订购时间-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_two_amount
+  is '第二次有效订购金额-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_two_source
+  is '第二次有效订购渠道-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_three_date
+  is '第三次有效订购时间-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_three_amount
+  is '第三次有效订购金额-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_three_source
+  is '第三次有效订购渠道-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_four_date
+  is '第四次有效订购时间-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_four_amount
+  is '第四次有效订购金额-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_four_source
+  is '第四次有效订购渠道-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.four_average_day
+  is '四次以后平均订购周期-电商';
+comment on column DW_USER.LS_MEMBER_ORDER.order_ec_num
+  is '有效订购次数（电商）';
+create index DW_USER.LMO_MEMBER_KEY on DW_USER.LS_MEMBER_ORDER (MEMBER_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

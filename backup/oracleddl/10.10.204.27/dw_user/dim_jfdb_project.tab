@@ -1,0 +1,38 @@
+???create table DW_USER.DIM_JFDB_PROJECT
+(
+  id                   NUMBER(20),
+  no                   NUMBER(20),
+  product_id           NUMBER(20),
+  product_spu          VARCHAR2(255),
+  product_name         VARCHAR2(600),
+  product_type         NUMBER(11),
+  points_a_ticket      NUMBER(11),
+  min_a_member         NUMBER(11),
+  max_a_member         NUMBER(11),
+  tickets_total        NUMBER(11),
+  tickets_sold         NUMBER(11),
+  begin_time           DATE,
+  end_time             DATE,
+  create_time          DATE,
+  calculation_factor_a NUMBER(20),
+  calculation_factor_b NUMBER(20),
+  factor_a_remark      VARCHAR2(255),
+  factor_b_remark      VARCHAR2(255),
+  original_factor_b    VARCHAR2(255),
+  lottery_time         DATE,
+  status               NUMBER(11),
+  refund_status        NUMBER(11)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

@@ -1,0 +1,69 @@
+???create table DW_USER.STATS_ONLINE_GOOD2_MINUTE
+(
+  id               NUMBER(10),
+  statdate         NUMBER(10),
+  stathour         NUMBER(10),
+  statminute       NUMBER(10),
+  start_time       DATE,
+  end_time         DATE,
+  application_key  NUMBER(10),
+  application_name VARCHAR2(50),
+  good_code        NUMBER(10),
+  good_name        VARCHAR2(500),
+  page_name        VARCHAR2(500),
+  page_value       VARCHAR2(1000),
+  pv               NUMBER(10),
+  uv               NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.GOOD2APP_IDX on DW_USER.STATS_ONLINE_GOOD2_MINUTE (APPLICATION_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.GOOD2ID_IDX on DW_USER.STATS_ONLINE_GOOD2_MINUTE (ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.GOOD2START_IDX on DW_USER.STATS_ONLINE_GOOD2_MINUTE (STATDATE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

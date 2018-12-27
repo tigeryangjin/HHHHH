@@ -1,0 +1,151 @@
+???create table DW_USER.FACT_VISITOR_ACTIVE
+(
+  visitor_key      NUMBER(20),
+  vid              VARCHAR2(1000),
+  ip               VARCHAR2(500),
+  application_key  NUMBER(10),
+  application_name VARCHAR2(500),
+  active_date_key  NUMBER(10),
+  active_date      DATE,
+  level1           VARCHAR2(50),
+  level2           VARCHAR2(50),
+  os               VARCHAR2(50),
+  ver_key          NUMBER(10),
+  ver_name         VARCHAR2(500),
+  url              VARCHAR2(1000),
+  keyword          VARCHAR2(1000),
+  plan             VARCHAR2(1000),
+  adgroup          VARCHAR2(1000),
+  active_hour_key  NUMBER(10),
+  member_key       NUMBER(10) default 0
+)
+tablespace DWDATA02
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.FACT_VISITOR_ACTIVE.visitor_key
+  is '用户终端唯一标识key';
+comment on column DW_USER.FACT_VISITOR_ACTIVE.vid
+  is '用户终端唯一标识号';
+comment on column DW_USER.FACT_VISITOR_ACTIVE.ip
+  is 'IP';
+comment on column DW_USER.FACT_VISITOR_ACTIVE.application_key
+  is '应用KEY';
+comment on column DW_USER.FACT_VISITOR_ACTIVE.application_name
+  is '应用名称';
+comment on column DW_USER.FACT_VISITOR_ACTIVE.active_date_key
+  is '访问时间key';
+comment on column DW_USER.FACT_VISITOR_ACTIVE.active_date
+  is '访问时间';
+comment on column DW_USER.FACT_VISITOR_ACTIVE.os
+  is '终端操作系统';
+comment on column DW_USER.FACT_VISITOR_ACTIVE.ver_key
+  is '版本key';
+comment on column DW_USER.FACT_VISITOR_ACTIVE.ver_name
+  is '版本号';
+comment on column DW_USER.FACT_VISITOR_ACTIVE.url
+  is 'URL';
+comment on column DW_USER.FACT_VISITOR_ACTIVE.keyword
+  is '关键词';
+comment on column DW_USER.FACT_VISITOR_ACTIVE.active_hour_key
+  is '访问时段';
+create index DW_USER.ACTIVE_APP_IDX on DW_USER.FACT_VISITOR_ACTIVE (APPLICATION_KEY)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ACTIVE_DATE_IDX on DW_USER.FACT_VISITOR_ACTIVE (ACTIVE_DATE_KEY)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ACTIVE_LEVEL1_IDX on DW_USER.FACT_VISITOR_ACTIVE (LEVEL1)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ACTIVE_UNION_IDX on DW_USER.FACT_VISITOR_ACTIVE (VISITOR_KEY, APPLICATION_KEY, LEVEL1, VER_KEY)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ACTIVE_VER_IDX on DW_USER.FACT_VISITOR_ACTIVE (VER_KEY)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ACTIVE_VID_IDX on DW_USER.FACT_VISITOR_ACTIVE (VID)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ACTIVE_VK_IDX on DW_USER.FACT_VISITOR_ACTIVE (VISITOR_KEY)
+  tablespace BIINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

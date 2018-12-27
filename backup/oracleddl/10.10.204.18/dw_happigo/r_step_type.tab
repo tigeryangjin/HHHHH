@@ -1,0 +1,33 @@
+???create table DW_HAPPIGO.R_STEP_TYPE
+(
+  id_step_type INTEGER not null,
+  code         VARCHAR2(255),
+  description  VARCHAR2(255),
+  helptext     VARCHAR2(255)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table DW_HAPPIGO.R_STEP_TYPE
+  add primary key (ID_STEP_TYPE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

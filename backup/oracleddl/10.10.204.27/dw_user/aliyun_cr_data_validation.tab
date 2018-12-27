@@ -1,0 +1,19 @@
+???create table DW_USER.ALIYUN_CR_DATA_VALIDATION
+(
+  user_id     VARCHAR2(40),
+  item_id     VARCHAR2(40),
+  active_type NUMBER,
+  active_date VARCHAR2(40)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

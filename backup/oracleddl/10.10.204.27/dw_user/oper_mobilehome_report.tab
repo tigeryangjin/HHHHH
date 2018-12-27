@@ -1,0 +1,61 @@
+???create table DW_USER.OPER_MOBILEHOME_REPORT
+(
+  visit_date  DATE not null,
+  uv          NUMBER,
+  zc          NUMBER,
+  zd          NUMBER,
+  yxrs        NUMBER,
+  yxds        NUMBER,
+  yxje        NUMBER,
+  w_insert_dt DATE,
+  w_update_dt DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_MOBILEHOME_REPORT
+  is '移动和包报表
+by yangjin
+2018-07-24';
+comment on column DW_USER.OPER_MOBILEHOME_REPORT.visit_date
+  is '日期';
+comment on column DW_USER.OPER_MOBILEHOME_REPORT.uv
+  is '进入人数';
+comment on column DW_USER.OPER_MOBILEHOME_REPORT.zc
+  is '注册人数';
+comment on column DW_USER.OPER_MOBILEHOME_REPORT.zd
+  is '总订购人数';
+comment on column DW_USER.OPER_MOBILEHOME_REPORT.yxrs
+  is '有效订购人数';
+comment on column DW_USER.OPER_MOBILEHOME_REPORT.yxds
+  is '有效订购单数';
+comment on column DW_USER.OPER_MOBILEHOME_REPORT.yxje
+  is '有效订购金额';
+comment on column DW_USER.OPER_MOBILEHOME_REPORT.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_MOBILEHOME_REPORT.w_update_dt
+  is '记录更新时间';
+alter table DW_USER.OPER_MOBILEHOME_REPORT
+  add constraint OPER_MOBILEHOME_REPORT_PK primary key (VISIT_DATE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.OPER_MOBILEHOME_REPORT_PK nologging;
+

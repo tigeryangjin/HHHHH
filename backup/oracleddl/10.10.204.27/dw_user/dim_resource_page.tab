@@ -1,0 +1,50 @@
+???create table DW_USER.DIM_RESOURCE_PAGE
+(
+  resource_page       VARCHAR2(20),
+  page_name           VARCHAR2(50),
+  page_cnnm           VARCHAR2(200),
+  first_cfg_resource  VARCHAR2(3),
+  second_cfg_resource VARCHAR2(3),
+  rule_ctl_resource   VARCHAR2(3),
+  non_cfg_resource    VARCHAR2(3)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_RESOURCE_PAGE.resource_page
+  is '所属资源页面';
+comment on column DW_USER.DIM_RESOURCE_PAGE.page_name
+  is 'page_name';
+comment on column DW_USER.DIM_RESOURCE_PAGE.page_cnnm
+  is '页面名称';
+comment on column DW_USER.DIM_RESOURCE_PAGE.first_cfg_resource
+  is '是否一级可配置资源位';
+comment on column DW_USER.DIM_RESOURCE_PAGE.second_cfg_resource
+  is '是否二级可配置资源位';
+comment on column DW_USER.DIM_RESOURCE_PAGE.rule_ctl_resource
+  is '计算规则控制资源位';
+comment on column DW_USER.DIM_RESOURCE_PAGE.non_cfg_resource
+  is '不可配置资源位';
+create index DW_USER.PAGE_NAME_IDX on DW_USER.DIM_RESOURCE_PAGE (PAGE_NAME)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

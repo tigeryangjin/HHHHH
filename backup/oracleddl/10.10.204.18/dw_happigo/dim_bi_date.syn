@@ -1,0 +1,3 @@
+???create or replace synonym DW_HAPPIGO.DIM_BI_DATE
+  for ;
+

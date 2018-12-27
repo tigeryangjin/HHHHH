@@ -1,0 +1,21 @@
+???create table DW_USER.TMP_APP_DG
+(
+  member_bp     NUMBER(20),
+  member_level  VARCHAR2(20),
+  member_agenda VARCHAR2(3),
+  member_age    NUMBER(10),
+  city          VARCHAR2(100),
+  cnt           NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

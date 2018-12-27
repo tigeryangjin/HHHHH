@@ -1,0 +1,29 @@
+???create table ODSHAPPIGO.ODS_ORDER_PAY
+(
+  id                 NUMBER(20),
+  order_no_bak       VARCHAR2(20),
+  order_no           VARCHAR2(50),
+  order_date         DATE,
+  pay_name           VARCHAR2(50),
+  pay_status         VARCHAR2(10),
+  modify_status_time DATE,
+  bank_id            VARCHAR2(50),
+  pay_date_key       NUMBER(20),
+  hour               NUMBER(20),
+  hour_key           NUMBER(20),
+  pay_type_key       NUMBER(11),
+  pay_status_key     NUMBER(11)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

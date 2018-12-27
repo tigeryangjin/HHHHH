@@ -1,0 +1,278 @@
+???create table DW_USER.DIM_MEMBER
+(
+  member_bp                NUMBER(20),
+  member_level             VARCHAR2(20),
+  member_age               NUMBER(10),
+  member_agenda            VARCHAR2(3),
+  member_zone              NUMBER(10),
+  first_active_date_key    NUMBER(10) default 0,
+  first_active_vid         VARCHAR2(1000),
+  end_active_date_key      NUMBER(10) default 0,
+  end_active_vid           VARCHAR2(1000),
+  active_days              NUMBER(10) default 0,
+  active_times             NUMBER(10) default 0,
+  member_insert_date       VARCHAR2(20),
+  create_date_key          NUMBER(10),
+  ch_date_key              NUMBER(10),
+  pc_last_date_key         NUMBER(10),
+  wx_last_date_key         NUMBER(10),
+  app_last_date_key        NUMBER(10),
+  avg_active_cycle         NUMBER(10),
+  register_resource        VARCHAR2(20),
+  first_order_source_key   NUMBER(10),
+  first_order_date_key     NUMBER(10),
+  last_order_source_key    NUMBER(10),
+  last_order_date_key      NUMBER(10),
+  valid_orderamount        NUMBER(15,2) default 0,
+  valid_ordercount         NUMBER(10,2) default 0,
+  max_unit_price           NUMBER(10,2),
+  tv_order_count           NUMBER(10) default 0,
+  ob_order_count           NUMBER(10) default 0,
+  web_order_count          NUMBER(10) default 0,
+  firstw__order_source_key NUMBER(10),
+  firstw_order_date_key    NUMBER(10),
+  lastw_order_source_key   NUMBER(10),
+  lastw_order_date_key     NUMBER(10),
+  validw_orderamount       NUMBER(10) default 0,
+  validw_ordercount        NUMBER(10) default 0,
+  maxw_unit_price          NUMBER(10),
+  app_order_count          NUMBER(10) default 0,
+  pc_order_count           NUMBER(10) default 0,
+  wx_order_count           NUMBER(10) default 0,
+  last_return_date_key     NUMBER(10),
+  last_refuse_date_key     NUMBER(10),
+  last_comp_date_key       NUMBER(10),
+  cancer_count             NUMBER(10) default 0,
+  refuse_count             NUMBER(10) default 0,
+  return_count             NUMBER(10) default 0,
+  comp_count               NUMBER(10),
+  tv_alive_count           NUMBER(10) default 0,
+  tv_nonalive_count        NUMBER(10) default 0,
+  self_count               NUMBER(10),
+  wap_last_date_key        NUMBER(10),
+  wap_order_count          NUMBER(10),
+  member_last_zone         NUMBER(10),
+  flag                     NUMBER(1) default 0,
+  clv_type                 VARCHAR2(20),
+  clv_type_w               VARCHAR2(20),
+  modify_date              DATE,
+  clv_chgdate_key          NUMBER(10)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_MEMBER.member_bp
+  is '用户BP号';
+comment on column DW_USER.DIM_MEMBER.member_level
+  is '会员等级';
+comment on column DW_USER.DIM_MEMBER.member_age
+  is '会员年龄';
+comment on column DW_USER.DIM_MEMBER.member_agenda
+  is '会员性别(1:男,2:女)';
+comment on column DW_USER.DIM_MEMBER.member_zone
+  is '会员常用地址';
+comment on column DW_USER.DIM_MEMBER.first_active_date_key
+  is '第一次活跃时间';
+comment on column DW_USER.DIM_MEMBER.first_active_vid
+  is '第一次活跃VID';
+comment on column DW_USER.DIM_MEMBER.end_active_date_key
+  is '最近一次活跃时间';
+comment on column DW_USER.DIM_MEMBER.end_active_vid
+  is '最近一次活跃VID';
+comment on column DW_USER.DIM_MEMBER.active_days
+  is '活跃天数';
+comment on column DW_USER.DIM_MEMBER.active_times
+  is '活跃次数';
+comment on column DW_USER.DIM_MEMBER.member_insert_date
+  is '会员录入日期';
+comment on column DW_USER.DIM_MEMBER.create_date_key
+  is '会员生成日期';
+comment on column DW_USER.DIM_MEMBER.ch_date_key
+  is '会员修改日期';
+comment on column DW_USER.DIM_MEMBER.pc_last_date_key
+  is 'PC最近一次活跃时间';
+comment on column DW_USER.DIM_MEMBER.wx_last_date_key
+  is 'WX最近一次活跃时间';
+comment on column DW_USER.DIM_MEMBER.app_last_date_key
+  is 'APP最近一次活跃时间';
+comment on column DW_USER.DIM_MEMBER.avg_active_cycle
+  is '平均活跃周期';
+comment on column DW_USER.DIM_MEMBER.register_resource
+  is '注册来源';
+comment on column DW_USER.DIM_MEMBER.first_order_source_key
+  is '会员首单来源销售渠道key';
+comment on column DW_USER.DIM_MEMBER.first_order_date_key
+  is '会员首单时间key';
+comment on column DW_USER.DIM_MEMBER.last_order_source_key
+  is '会员最近订单来源销售渠道key';
+comment on column DW_USER.DIM_MEMBER.last_order_date_key
+  is '会员最近订单时间key';
+comment on column DW_USER.DIM_MEMBER.valid_orderamount
+  is '有效订购总金额';
+comment on column DW_USER.DIM_MEMBER.valid_ordercount
+  is '有效订单总数';
+comment on column DW_USER.DIM_MEMBER.max_unit_price
+  is '最大有效订购单价';
+comment on column DW_USER.DIM_MEMBER.tv_order_count
+  is 'TV订单数';
+comment on column DW_USER.DIM_MEMBER.ob_order_count
+  is '外呼订单数';
+comment on column DW_USER.DIM_MEMBER.web_order_count
+  is '电商订单数';
+comment on column DW_USER.DIM_MEMBER.firstw__order_source_key
+  is '会员首单来源销售渠道key(电商)';
+comment on column DW_USER.DIM_MEMBER.firstw_order_date_key
+  is '会员首单时间key(电商)';
+comment on column DW_USER.DIM_MEMBER.lastw_order_source_key
+  is '会员最近订单来源销售渠道key(电商)';
+comment on column DW_USER.DIM_MEMBER.lastw_order_date_key
+  is '会员最近订单时间key(电商)';
+comment on column DW_USER.DIM_MEMBER.validw_orderamount
+  is '有效订购总金额(电商)';
+comment on column DW_USER.DIM_MEMBER.validw_ordercount
+  is '有效订单总数(电商)';
+comment on column DW_USER.DIM_MEMBER.maxw_unit_price
+  is '最大有效订购单价(电商)';
+comment on column DW_USER.DIM_MEMBER.app_order_count
+  is 'app订单数';
+comment on column DW_USER.DIM_MEMBER.pc_order_count
+  is 'pc订单数';
+comment on column DW_USER.DIM_MEMBER.wx_order_count
+  is '微信订单数';
+comment on column DW_USER.DIM_MEMBER.last_return_date_key
+  is '最近退货时间';
+comment on column DW_USER.DIM_MEMBER.last_refuse_date_key
+  is '最近拒收时间';
+comment on column DW_USER.DIM_MEMBER.last_comp_date_key
+  is '最近客诉时间';
+comment on column DW_USER.DIM_MEMBER.cancer_count
+  is '取消次数';
+comment on column DW_USER.DIM_MEMBER.refuse_count
+  is '拒收次数';
+comment on column DW_USER.DIM_MEMBER.return_count
+  is '退货次数';
+comment on column DW_USER.DIM_MEMBER.comp_count
+  is '投诉次数';
+comment on column DW_USER.DIM_MEMBER.tv_alive_count
+  is 'TV播出商品有效订购次数';
+comment on column DW_USER.DIM_MEMBER.tv_nonalive_count
+  is 'TV非播出商品有效订购次数';
+comment on column DW_USER.DIM_MEMBER.self_count
+  is '自营商品有效订购次数';
+comment on column DW_USER.DIM_MEMBER.wap_last_date_key
+  is 'wap最近一次活跃时间';
+comment on column DW_USER.DIM_MEMBER.wap_order_count
+  is 'wap订单数';
+comment on column DW_USER.DIM_MEMBER.member_last_zone
+  is '会员最近下单地址';
+comment on column DW_USER.DIM_MEMBER.flag
+  is '处理标识';
+comment on column DW_USER.DIM_MEMBER.clv_type
+  is 'CLV属性';
+comment on column DW_USER.DIM_MEMBER.clv_type_w
+  is '电商CLV属性';
+comment on column DW_USER.DIM_MEMBER.modify_date
+  is '变更时间';
+comment on column DW_USER.DIM_MEMBER.clv_chgdate_key
+  is 'CLV变更时间';
+create index DW_USER.CLV_CHG_IDX on DW_USER.DIM_MEMBER (CLV_CHGDATE_KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.DIMEM_CDATE_IDX on DW_USER.DIM_MEMBER (CREATE_DATE_KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.DIMEM_CHDATE_IDX on DW_USER.DIM_MEMBER (CH_DATE_KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FIRST_ACTIVE_IDX on DW_USER.DIM_MEMBER (FIRST_ACTIVE_DATE_KEY)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FLAG_BLACK_IDX on DW_USER.DIM_MEMBER (FLAG)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEMBER_BP_IDX on DW_USER.DIM_MEMBER (MEMBER_BP)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.MEM_INS_IDX on DW_USER.DIM_MEMBER (MEMBER_INSERT_DATE)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

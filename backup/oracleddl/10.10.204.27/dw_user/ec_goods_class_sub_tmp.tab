@@ -1,0 +1,40 @@
+???create table DW_USER.EC_GOODS_CLASS_SUB_TMP
+(
+  id          NUMBER(11) not null,
+  gc_id       NUMBER(11) not null,
+  name        VARCHAR2(100) not null,
+  pic         VARCHAR2(200) not null,
+  description VARCHAR2(500),
+  sort        NUMBER(11) not null,
+  status      NUMBER(3) not null
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.EC_GOODS_CLASS_SUB_TMP
+  is '商品子分类表中间表 ec
+by yangjin
+2018-03-23';
+comment on column DW_USER.EC_GOODS_CLASS_SUB_TMP.id
+  is '子分类Id，主键';
+comment on column DW_USER.EC_GOODS_CLASS_SUB_TMP.gc_id
+  is '商品分类Id';
+comment on column DW_USER.EC_GOODS_CLASS_SUB_TMP.name
+  is '子分类名称';
+comment on column DW_USER.EC_GOODS_CLASS_SUB_TMP.pic
+  is '子分类图片';
+comment on column DW_USER.EC_GOODS_CLASS_SUB_TMP.description
+  is '描述';
+comment on column DW_USER.EC_GOODS_CLASS_SUB_TMP.sort
+  is '排序';
+comment on column DW_USER.EC_GOODS_CLASS_SUB_TMP.status
+  is '0：未启用。1：启用；默认为1';
+

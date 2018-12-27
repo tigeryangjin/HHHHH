@@ -1,0 +1,31 @@
+???create table DW_USER.CR_DATA_BASE
+(
+  user_id     VARCHAR2(40),
+  item_id     VARCHAR2(40),
+  active_type NUMBER,
+  active_date VARCHAR2(40)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.CR_DATA_BASE
+  is '商品推荐基础表(commondity recommendation)
+by yangjin
+2018-01-07';
+comment on column DW_USER.CR_DATA_BASE.user_id
+  is 'member bp';
+comment on column DW_USER.CR_DATA_BASE.item_id
+  is '商品编码';
+comment on column DW_USER.CR_DATA_BASE.active_type
+  is '购物行为（0表示点击，1表示购买，2表示收藏，3表示购物车）';
+comment on column DW_USER.CR_DATA_BASE.active_date
+  is '购物时间';
+

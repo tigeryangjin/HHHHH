@@ -1,0 +1,22 @@
+???create table DW_USER.TMP_0509_2
+(
+  resource_page       VARCHAR2(20),
+  page_name           VARCHAR2(50),
+  page_cnnm           VARCHAR2(50),
+  first_cfg_resource  VARCHAR2(3),
+  second_cfg_resource VARCHAR2(3),
+  rule_ctl_resource   VARCHAR2(3),
+  non_cfg_resource    VARCHAR2(3)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

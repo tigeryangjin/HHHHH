@@ -1,0 +1,27 @@
+???create table DW_USER.TMP_1220
+(
+  flsppv   NUMBER(10),
+  soupv    NUMBER(10),
+  grzxpv   NUMBER(10),
+  spgpv    NUMBER(10),
+  xsqpv    NUMBER(10),
+  date_key NUMBER(10),
+  dayuv    NUMBER(10),
+  qdpv     NUMBER(10),
+  ztpv     NUMBER(10),
+  hypv     NUMBER(10),
+  jfpv     NUMBER(10)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

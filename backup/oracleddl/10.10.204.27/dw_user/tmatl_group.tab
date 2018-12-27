@@ -1,0 +1,19 @@
+???create table DW_USER.TMATL_GROUP
+(
+  matl_group VARCHAR2(9),
+  langu      VARCHAR2(1),
+  txtsh      VARCHAR2(50)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

@@ -1,0 +1,29 @@
+???create table DW_USER.FACT_MONTHLY_TOPIC_GOODS
+(
+  stats_date      DATE,
+  tongji_range    VARCHAR2(19),
+  zt_name         VARCHAR2(200),
+  item_code       NUMBER,
+  goods_name      VARCHAR2(200),
+  matdlt          VARCHAR2(100),
+  brand_name      VARCHAR2(100),
+  is_tv           VARCHAR2(18),
+  goods_price     NUMBER,
+  application_nm  VARCHAR2(18),
+  monthgoodpv     NUMBER,
+  monthgooduv     NUMBER,
+  monthgoodnum    NUMBER,
+  monthgoodamount NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

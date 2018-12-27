@@ -1,0 +1,39 @@
+???create table DW_USER.OPER_MBR_THIRD_ORDER_30DAYS
+(
+  member_key          NUMBER(20),
+  record_date_key     NUMBER,
+  order_time          NUMBER,
+  actual_order_amount NUMBER,
+  amount_level        NUMBER,
+  insert_dt           DATE,
+  update_dt           DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_MBR_THIRD_ORDER_30DAYS
+  is '有效订购3次，30天内无重复订购
+by yangjin';
+comment on column DW_USER.OPER_MBR_THIRD_ORDER_30DAYS.member_key
+  is 'MEMBER_KEY';
+comment on column DW_USER.OPER_MBR_THIRD_ORDER_30DAYS.record_date_key
+  is '记录日期';
+comment on column DW_USER.OPER_MBR_THIRD_ORDER_30DAYS.order_time
+  is '最后订购日期';
+comment on column DW_USER.OPER_MBR_THIRD_ORDER_30DAYS.actual_order_amount
+  is '实际订购金额';
+comment on column DW_USER.OPER_MBR_THIRD_ORDER_30DAYS.amount_level
+  is '金额等级（1：100~189，2：189~800，3：800以上）';
+comment on column DW_USER.OPER_MBR_THIRD_ORDER_30DAYS.insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_MBR_THIRD_ORDER_30DAYS.update_dt
+  is '记录修改时间';
+

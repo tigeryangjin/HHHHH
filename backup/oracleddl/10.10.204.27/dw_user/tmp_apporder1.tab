@@ -1,0 +1,22 @@
+???create table DW_USER.TMP_APPORDER1
+(
+  member_key   NUMBER(20),
+  add_time     NUMBER(10),
+  add_time_int NUMBER(20),
+  crm_order_no NUMBER(20),
+  payment_code VARCHAR2(100),
+  item_code    NUMBER(10),
+  goods_name   VARCHAR2(500)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

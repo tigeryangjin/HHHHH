@@ -1,0 +1,87 @@
+???create table DW_USER.STATS_ONLINE_ACT_MINUTE
+(
+  id               NUMBER(10),
+  application_key  NUMBER(10),
+  statdate         NUMBER(10),
+  stathour         NUMBER(10),
+  statminute       NUMBER(10),
+  start_time       DATE,
+  end_time         DATE,
+  onlinevisitor    NUMBER(10),
+  frequency        NUMBER(10),
+  application_name VARCHAR2(50),
+  onlinepv         NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.STATS_ONLINE_ACT_MINUTE.id
+  is 'ID';
+comment on column DW_USER.STATS_ONLINE_ACT_MINUTE.application_key
+  is '应用KEY';
+comment on column DW_USER.STATS_ONLINE_ACT_MINUTE.statdate
+  is '统计日期';
+comment on column DW_USER.STATS_ONLINE_ACT_MINUTE.stathour
+  is '统计小时';
+comment on column DW_USER.STATS_ONLINE_ACT_MINUTE.statminute
+  is '统计分钟';
+comment on column DW_USER.STATS_ONLINE_ACT_MINUTE.start_time
+  is '区段启始时间';
+comment on column DW_USER.STATS_ONLINE_ACT_MINUTE.end_time
+  is '区段结束时间';
+comment on column DW_USER.STATS_ONLINE_ACT_MINUTE.onlinevisitor
+  is '区间在线用户数';
+comment on column DW_USER.STATS_ONLINE_ACT_MINUTE.frequency
+  is '统计频率';
+comment on column DW_USER.STATS_ONLINE_ACT_MINUTE.application_name
+  is '应用名称';
+comment on column DW_USER.STATS_ONLINE_ACT_MINUTE.onlinepv
+  is '区间PV';
+create index DW_USER.STATAPP_IDX on DW_USER.STATS_ONLINE_ACT_MINUTE (APPLICATION_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.STATID_IDX on DW_USER.STATS_ONLINE_ACT_MINUTE (ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.STATSTART_IDX on DW_USER.STATS_ONLINE_ACT_MINUTE (STATDATE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

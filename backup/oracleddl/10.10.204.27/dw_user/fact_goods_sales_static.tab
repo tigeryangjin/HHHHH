@@ -1,0 +1,31 @@
+???create table DW_USER.FACT_GOODS_SALES_STATIC
+(
+  item_code   NUMBER(10),
+  day_one     NUMBER(10,2) default 0,
+  day_seven   NUMBER(10,2) default 0,
+  day_fifteen NUMBER(10,2) default 0,
+  day_month   NUMBER(10,2) default 0
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.FACT_GOODS_SALES_STATIC.item_code
+  is '商品编码（spu）';
+comment on column DW_USER.FACT_GOODS_SALES_STATIC.day_one
+  is '前一天购买平均数';
+comment on column DW_USER.FACT_GOODS_SALES_STATIC.day_seven
+  is '7天购买平均数';
+comment on column DW_USER.FACT_GOODS_SALES_STATIC.day_fifteen
+  is '15天购买平均数';
+comment on column DW_USER.FACT_GOODS_SALES_STATIC.day_month
+  is '1月平均购买数';
+

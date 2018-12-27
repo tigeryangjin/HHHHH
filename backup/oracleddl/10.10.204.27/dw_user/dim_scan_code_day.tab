@@ -1,0 +1,40 @@
+???create table DW_USER.DIM_SCAN_CODE_DAY
+(
+  day_key        NUMBER(10),
+  hour_key       NUMBER(10),
+  scan_code_name VARCHAR2(200),
+  uv_total       NUMBER(20),
+  pv_total       NUMBER(20),
+  page_name      VARCHAR2(200),
+  page_value     VARCHAR2(200),
+  uv_total_day   NUMBER(20)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_SCAN_CODE_DAY.day_key
+  is '日期';
+comment on column DW_USER.DIM_SCAN_CODE_DAY.hour_key
+  is '小时key';
+comment on column DW_USER.DIM_SCAN_CODE_DAY.scan_code_name
+  is '分布码名称';
+comment on column DW_USER.DIM_SCAN_CODE_DAY.uv_total
+  is '扫码人数';
+comment on column DW_USER.DIM_SCAN_CODE_DAY.pv_total
+  is '扫码次数';
+comment on column DW_USER.DIM_SCAN_CODE_DAY.page_name
+  is 'p参数';
+comment on column DW_USER.DIM_SCAN_CODE_DAY.page_value
+  is 'V参数';
+comment on column DW_USER.DIM_SCAN_CODE_DAY.uv_total_day
+  is '当天uv总数';
+

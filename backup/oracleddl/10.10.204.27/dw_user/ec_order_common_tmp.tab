@@ -1,0 +1,47 @@
+???create table DW_USER.EC_ORDER_COMMON_TMP
+(
+  order_id            NUMBER(11),
+  store_id            NUMBER(10),
+  shipping_time       DATE,
+  shipping_express_id NUMBER(10),
+  evaluation_time     DATE,
+  evalseller_state    NUMBER(10),
+  evalseller_time     NUMBER(10),
+  order_message       VARCHAR2(3000),
+  order_pointscount   NUMBER(11),
+  voucher_name        VARCHAR2(90),
+  voucher_price       NUMBER(11),
+  voucher_desc        VARCHAR2(150),
+  voucher_start_date  DATE,
+  voucher_end_date    DATE,
+  voucher_ref         VARCHAR2(100),
+  dcissue_seq         VARCHAR2(100),
+  voucher_code        VARCHAR2(100),
+  deliver_explain     VARCHAR2(2000),
+  daddress_id         VARCHAR2(30),
+  transpzone          VARCHAR2(30),
+  reciver_name        VARCHAR2(150),
+  reciver_info        VARCHAR2(1500),
+  reciver_province_id NUMBER(10),
+  reciver_city_id     NUMBER(10),
+  invoice_info        VARCHAR2(1500),
+  promotion_info      VARCHAR2(1500),
+  dlyo_pickup_code    VARCHAR2(12),
+  receiver_seq        VARCHAR2(30),
+  w_insert_dt         DATE,
+  w_update_dt         DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.EC_ORDER_COMMON_TMP
+  is 'ec_order_common中间表';
+

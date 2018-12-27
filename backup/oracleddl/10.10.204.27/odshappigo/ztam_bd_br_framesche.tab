@@ -1,0 +1,49 @@
+???create table ODSHAPPIGO.ZTAM_BD_BR_FRAMESCHE
+(
+  prog_id     VARCHAR2(33),
+  cnnum       VARCHAR2(6),
+  prog_code   VARCHAR2(18),
+  bd_date     DATE,
+  b_date      VARCHAR2(8),
+  b_time      VARCHAR2(6),
+  e_date      VARCHAR2(8),
+  e_time      VARCHAR2(6),
+  prog_time   NUMBER(10),
+  sub_title   VARCHAR2(120),
+  p_name      VARCHAR2(240),
+  onair_yn    VARCHAR2(3),
+  live_yn     VARCHAR2(6),
+  qstart_date VARCHAR2(8),
+  qstart_time VARCHAR2(6),
+  qend_date   VARCHAR2(8),
+  qend_time   VARCHAR2(6),
+  real_time   NUMBER(10),
+  target_amt  NUMBER(15,2),
+  target_camt NUMBER(15,2),
+  amt_unit    VARCHAR2(15),
+  mpd         VARCHAR2(24),
+  psflg       VARCHAR2(3),
+  ref_per     NUMBER(6,2),
+  valid_flag  VARCHAR2(3),
+  crdat       VARCHAR2(8),
+  crtim       VARCHAR2(6),
+  crnam       VARCHAR2(36),
+  aedat       VARCHAR2(8),
+  aetim       VARCHAR2(6),
+  aenam       VARCHAR2(36),
+  matdl       VARCHAR2(27),
+  outflag     VARCHAR2(2)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

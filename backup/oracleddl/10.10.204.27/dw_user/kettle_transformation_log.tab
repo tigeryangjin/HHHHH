@@ -1,0 +1,61 @@
+???create table DW_USER.KETTLE_TRANSFORMATION_LOG
+(
+  id_batch         INTEGER,
+  channel_id       VARCHAR2(255),
+  transname        VARCHAR2(255),
+  status           VARCHAR2(15),
+  lines_read       INTEGER,
+  lines_written    INTEGER,
+  lines_updated    INTEGER,
+  lines_input      INTEGER,
+  lines_output     INTEGER,
+  lines_rejected   INTEGER,
+  errors           INTEGER,
+  startdate        DATE,
+  enddate          DATE,
+  logdate          DATE,
+  depdate          DATE,
+  replaydate       DATE,
+  log_field        CLOB,
+  executing_server VARCHAR2(255),
+  executing_user   VARCHAR2(255),
+  client           VARCHAR2(255)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.KETTLE_TRANSFORMATION_LOG_I1 on DW_USER.KETTLE_TRANSFORMATION_LOG (ID_BATCH)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.KETTLE_TRANSFORMATION_LOG_I2 on DW_USER.KETTLE_TRANSFORMATION_LOG (ERRORS, STATUS, TRANSNAME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

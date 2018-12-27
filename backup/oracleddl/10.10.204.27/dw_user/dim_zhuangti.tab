@@ -1,0 +1,23 @@
+???create table DW_USER.DIM_ZHUANGTI
+(
+  zt_id        NUMBER(8),
+  zt_name      VARCHAR2(200),
+  add_date_key NUMBER(8),
+  zttypeid     NUMBER(1),
+  zttypenm     VARCHAR2(20),
+  end_date_key NUMBER(8),
+  key          VARCHAR2(100)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

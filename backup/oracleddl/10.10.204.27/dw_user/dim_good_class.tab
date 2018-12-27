@@ -1,0 +1,42 @@
+???create table DW_USER.DIM_GOOD_CLASS
+(
+  matdl   NUMBER(10),
+  matdlt  VARCHAR2(50),
+  matzl   NUMBER(10),
+  matzlt  VARCHAR2(20),
+  matxl   NUMBER(10),
+  matxlt  VARCHAR2(50),
+  matkl   NUMBER(10),
+  matklt  VARCHAR2(50),
+  gc_id   NUMBER(10),
+  gc_name VARCHAR2(20),
+  md      VARCHAR2(20),
+  exc     VARCHAR2(20),
+  des     VARCHAR2(20)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.MATKL_IDX on DW_USER.DIM_GOOD_CLASS (MATKL)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

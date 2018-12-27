@@ -1,0 +1,32 @@
+???create table DW_USER.EC_APP_CMS_ZT
+(
+  id                  NUMBER(20),
+  name                VARCHAR2(500),
+  pic                 VARCHAR2(500),
+  pic_detail          VARCHAR2(500),
+  pic_detail_web      VARCHAR2(500),
+  description         VARCHAR2(500),
+  start_time          NUMBER(20),
+  expire_time         NUMBER(20),
+  left_time_displayed NUMBER(5),
+  url                 VARCHAR2(200),
+  url_web             VARCHAR2(200),
+  sort                NUMBER(10),
+  remark              VARCHAR2(200),
+  creat_time          NUMBER(10),
+  enable              NUMBER(5),
+  is_auto             NUMBER(5)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

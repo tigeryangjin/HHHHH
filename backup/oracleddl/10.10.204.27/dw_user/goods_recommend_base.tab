@@ -1,0 +1,19 @@
+???create table DW_USER.GOODS_RECOMMEND_BASE
+(
+  order_date NUMBER(10),
+  order_no   NUMBER(20),
+  member_bp  NUMBER(20),
+  item_code  NUMBER(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

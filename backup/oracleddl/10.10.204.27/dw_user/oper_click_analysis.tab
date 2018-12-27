@@ -1,0 +1,55 @@
+???create table DW_USER.OPER_CLICK_ANALYSIS
+(
+  date_key    VARCHAR2(8),
+  channel     VARCHAR2(9),
+  page_name   VARCHAR2(22),
+  page_value  VARCHAR2(20),
+  all_pv      NUMBER,
+  all_uv      NUMBER,
+  new_pv      NUMBER,
+  new_uv      NUMBER,
+  old_pv      NUMBER,
+  old_uv      NUMBER,
+  w_insert_dt DATE,
+  w_update_dt DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_CLICK_ANALYSIS
+  is '点击分析报表
+by yangjin
+2018-04-17';
+comment on column DW_USER.OPER_CLICK_ANALYSIS.date_key
+  is '日期';
+comment on column DW_USER.OPER_CLICK_ANALYSIS.channel
+  is '渠道';
+comment on column DW_USER.OPER_CLICK_ANALYSIS.page_name
+  is '页面名称';
+comment on column DW_USER.OPER_CLICK_ANALYSIS.page_value
+  is '页面值';
+comment on column DW_USER.OPER_CLICK_ANALYSIS.all_pv
+  is '总PV';
+comment on column DW_USER.OPER_CLICK_ANALYSIS.all_uv
+  is '总UV';
+comment on column DW_USER.OPER_CLICK_ANALYSIS.new_pv
+  is '新客PV';
+comment on column DW_USER.OPER_CLICK_ANALYSIS.new_uv
+  is '新客UV';
+comment on column DW_USER.OPER_CLICK_ANALYSIS.old_pv
+  is '老客PV';
+comment on column DW_USER.OPER_CLICK_ANALYSIS.old_uv
+  is '老客UV';
+comment on column DW_USER.OPER_CLICK_ANALYSIS.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_CLICK_ANALYSIS.w_update_dt
+  is '记录更新时间';
+

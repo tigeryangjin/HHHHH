@@ -1,0 +1,21 @@
+???create table DW_USER.OPER_M_ORDER_THIRTY
+(
+  member_key      NUMBER(20),
+  record_date_key NUMBER(10),
+  order_time      NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.OPER_M_ORDER_THIRTY
+  is '有效订购次数=2，且在第二次订购后30天内无订购';
+

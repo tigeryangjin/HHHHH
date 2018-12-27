@@ -1,0 +1,73 @@
+???create table ODSHAPPIGO.ODS_ORDERPAY_TEMP
+(
+  zpayc001   VARCHAR2(50),
+  zpayc006   VARCHAR2(10),
+  recordmode VARCHAR2(10),
+  crmpostdat VARCHAR2(20),
+  zpayc021   VARCHAR2(50),
+  zpayc024   VARCHAR2(50),
+  crm_prctyp VARCHAR2(10),
+  crm_obj_id VARCHAR2(20),
+  ztcrmc04   VARCHAR2(20),
+  crm_endcst VARCHAR2(20),
+  zpayc004   VARCHAR2(10),
+  zpayc005   VARCHAR2(10),
+  zpayc007   VARCHAR2(10),
+  zpayc008   VARCHAR2(10),
+  zpayc009   VARCHAR2(10),
+  zpayc010   VARCHAR2(10),
+  zpayc011   VARCHAR2(20),
+  zpayc012   VARCHAR2(10),
+  zpayc013   VARCHAR2(20),
+  zpayc014   VARCHAR2(10),
+  zpayc015   VARCHAR2(20),
+  zpayc016   VARCHAR2(10),
+  zpayc017   VARCHAR2(10),
+  zpayc018   VARCHAR2(20),
+  zpayc019   VARCHAR2(10),
+  zpayc020   VARCHAR2(30),
+  zpayc022   VARCHAR2(30),
+  zpayc023   VARCHAR2(10),
+  zpayk001   NUMBER(20,2),
+  zpayk002   NUMBER(20,3),
+  zpayk003   NUMBER(20,2),
+  zpayk004   NUMBER(20,2),
+  zpayk005   NUMBER(20,2),
+  zpayk006   NUMBER(20,3),
+  zpayk007   NUMBER(20,2),
+  zpayc035   VARCHAR2(20),
+  zpayc025   VARCHAR2(10),
+  zpayc026   VARCHAR2(10),
+  zpayc027   VARCHAR2(10),
+  zpayc028   VARCHAR2(20),
+  zpayc029   VARCHAR2(10),
+  zpayc032   VARCHAR2(10),
+  zpayc033   VARCHAR2(20),
+  ztcmc016   VARCHAR2(20),
+  zkunnr_l1  VARCHAR2(20),
+  zkunnr_l2  VARCHAR2(20),
+  zcrmd001   VARCHAR2(10),
+  ztcmc020   VARCHAR2(20),
+  zcrmd015   VARCHAR2(5),
+  zcrmd016   VARCHAR2(5),
+  zcrmd017   VARCHAR2(10),
+  zcrmd018   VARCHAR2(5),
+  currency   VARCHAR2(10),
+  zpayk008   NUMBER(20,2),
+  crm_stsma  VARCHAR2(20),
+  zesdc113   VARCHAR2(20),
+  zcrmd199   VARCHAR2(10)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

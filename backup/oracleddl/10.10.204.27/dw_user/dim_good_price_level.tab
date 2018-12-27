@@ -1,0 +1,41 @@
+???create table DW_USER.DIM_GOOD_PRICE_LEVEL
+(
+  matl_group      NUMBER(10),
+  high_price_line NUMBER,
+  low_price_line  NUMBER
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.DIM_GOOD_PRICE_LEVEL
+  is '物料细类的价格线分布(中间表)
+by yangjin 2017-08-31';
+comment on column DW_USER.DIM_GOOD_PRICE_LEVEL.matl_group
+  is '物料细类编码';
+comment on column DW_USER.DIM_GOOD_PRICE_LEVEL.high_price_line
+  is '高消费线';
+comment on column DW_USER.DIM_GOOD_PRICE_LEVEL.low_price_line
+  is '低消费线';
+create index DW_USER.DIM_GOOD_PRICE_LEVEL_I1 on DW_USER.DIM_GOOD_PRICE_LEVEL (MATL_GROUP)
+  tablespace DIM_INDEX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

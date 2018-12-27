@@ -1,0 +1,32 @@
+???create table DW_USER.GOODS_LABEL_1059_STAGE
+(
+  item_code   NUMBER(11),
+  cvr         NUMBER,
+  cvr_level   VARCHAR2(20),
+  w_insert_dt DATE,
+  w_update_dt DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.GOODS_LABEL_1059_STAGE
+  is '商品标签-转化情况-中间表
+by yangjin
+2018-05-29';
+comment on column DW_USER.GOODS_LABEL_1059_STAGE.item_code
+  is '商品编码';
+comment on column DW_USER.GOODS_LABEL_1059_STAGE.cvr
+  is '转化率';
+comment on column DW_USER.GOODS_LABEL_1059_STAGE.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.GOODS_LABEL_1059_STAGE.w_update_dt
+  is '记录更新时间';
+

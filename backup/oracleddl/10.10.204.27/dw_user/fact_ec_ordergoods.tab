@@ -1,0 +1,67 @@
+???create table DW_USER.FACT_EC_ORDERGOODS
+(
+  order_id        NUMBER(11),
+  goods_commonid  NUMBER(11),
+  erp_code        NUMBER(11),
+  goods_pay_price NUMBER(10,2),
+  goods_num       NUMBER(5),
+  is_kjg          NUMBER(1),
+  createtime      DATE,
+  pml_title       VARCHAR2(50),
+  pml_id          NUMBER(11),
+  pml_discount    NUMBER(10,2),
+  goods_name      VARCHAR2(200)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_EC_ORDERGOODS.goods_num
+  is '商品数量';
+create index DW_USER.DGGOOD_CID_IDX on DW_USER.FACT_EC_ORDERGOODS (GOODS_COMMONID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ORDERGOODSKJG_IDX on DW_USER.FACT_EC_ORDERGOODS (IS_KJG)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.ORDERGOODS_IDX on DW_USER.FACT_EC_ORDERGOODS (ORDER_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

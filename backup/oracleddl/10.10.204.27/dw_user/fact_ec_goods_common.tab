@@ -1,0 +1,440 @@
+???create table DW_USER.FACT_EC_GOODS_COMMON
+(
+  goods_commonid            NUMBER(10) not null,
+  item_code                 NUMBER(10),
+  goods_name                VARCHAR2(200),
+  goods_jingle              VARCHAR2(600),
+  goods_jingle2             VARCHAR2(150),
+  goods_short_desc          VARCHAR2(600),
+  gc_id                     NUMBER(10),
+  gc_id_1                   NUMBER(10),
+  gc_id_2                   NUMBER(10),
+  gc_id_3                   NUMBER(10),
+  gc_name                   VARCHAR2(200),
+  gc_sub_id                 NUMBER(10),
+  matdl                     NUMBER(10),
+  matzl                     NUMBER(10),
+  matxl                     NUMBER(10),
+  matkl                     NUMBER(10),
+  store_id                  NUMBER(10),
+  store_name                VARCHAR2(50),
+  spec_name                 VARCHAR2(255),
+  spec_value                VARCHAR2(2000),
+  brand_id                  NUMBER(10),
+  brand_name                VARCHAR2(100),
+  type_id                   NUMBER(10),
+  goods_image               VARCHAR2(100),
+  goods_animation           VARCHAR2(200),
+  goods_videourl            VARCHAR2(200),
+  goods_attr                VARCHAR2(200),
+  goods_body                VARCHAR2(2000),
+  mobile_body               VARCHAR2(2000),
+  goods_state               NUMBER(10),
+  goods_stateremark         VARCHAR2(255),
+  goods_verify              NUMBER(10),
+  goods_verifyremark        VARCHAR2(255),
+  goods_lock                NUMBER(10),
+  goods_addtime             DATE,
+  goods_selltime            DATE,
+  goods_specname            VARCHAR2(200),
+  goods_price               NUMBER(10,2),
+  goods_marketprice         NUMBER(10,2),
+  goods_costprice           NUMBER(10,2),
+  goods_discount            NUMBER(10,4),
+  goods_promotion_price     NUMBER(10,2),
+  goods_promotion_price_app NUMBER(10,2),
+  goods_promotion_price_wx  NUMBER(10,2),
+  goods_promotion_price_3g  NUMBER(10,2),
+  goods_serial              VARCHAR2(200),
+  goods_storage             NUMBER(10),
+  goods_storage_alarm       NUMBER(10),
+  transport_id              NUMBER(10),
+  transport_title           VARCHAR2(60),
+  goods_commend             NUMBER(10),
+  goods_freight             NUMBER(10,2),
+  goods_vat                 NUMBER(10),
+  areaid_1                  NUMBER(10),
+  areaid_2                  NUMBER(10),
+  goods_stcids              VARCHAR2(255),
+  plateid_top               NUMBER(10),
+  plateid_bottom            NUMBER(10),
+  is_virtual                NUMBER(10),
+  virtual_indate            NUMBER(10),
+  virtual_limit             NUMBER(10),
+  virtual_invalid_refund    NUMBER(10),
+  is_fcode                  NUMBER(10),
+  is_appoint                NUMBER(10),
+  appoint_satedate          NUMBER(10),
+  is_presell                NUMBER(10),
+  presell_deliverdate       NUMBER(10),
+  is_own_shop               NUMBER(10),
+  is_tv                     NUMBER(10),
+  is_add_cart               NUMBER(10),
+  retention_time            NUMBER(10),
+  supplier_id               VARCHAR2(50),
+  supplier_name             VARCHAR2(50),
+  is_live_promotion         NUMBER(3),
+  is_allow_offline          NUMBER(3),
+  is_allow_point            NUMBER(3),
+  is_allow_voucher          NUMBER(3),
+  is_allow_paypromotion     NUMBER(3),
+  paypromotion_amount       NUMBER(10,2),
+  is_allow_bankpromotion    NUMBER(3),
+  goods_salenum             NUMBER(10),
+  goods_pop                 NUMBER(10),
+  gift_num                  NUMBER(10),
+  is_valuables              NUMBER(3),
+  is_big                    NUMBER(3),
+  give_points               NUMBER(10),
+  is_shipping_self          NUMBER(3),
+  is_new_member_gift        NUMBER(3),
+  is_allow_return           NUMBER(3),
+  is_appreciation           NUMBER(3),
+  goods_weight              NUMBER(6,2),
+  is_reserved               NUMBER(3),
+  pv_total                  NUMBER(10),
+  uv_total                  NUMBER(10),
+  salenum_d1                NUMBER(10),
+  salenum_d7                NUMBER(10),
+  salenum_d30               NUMBER(10),
+  salenum_d90               NUMBER(10),
+  collect_total             NUMBER(10),
+  evaluation_total          NUMBER(10),
+  search_key                VARCHAR2(800),
+  superscript_id            NUMBER(11),
+  extra_point               NUMBER(3),
+  is_reservation_delivery   NUMBER(3),
+  goods_reminder            VARCHAR2(500),
+  goods_service             VARCHAR2(500),
+  goods_service_ids         VARCHAR2(50),
+  firstonselltime           DATE,
+  newgoodsrate              NUMBER(3),
+  fastbuyenable             NUMBER(3),
+  customer_service          VARCHAR2(1000),
+  physical_inventory        NUMBER(3),
+  use_date                  DATE,
+  extra_gift                NUMBER(3),
+  ztlhrp                    VARCHAR2(20),
+  zt_pic                    VARCHAR2(500),
+  zt_url                    VARCHAR2(1000),
+  pml_id                    NUMBER(10),
+  pml_title                 VARCHAR2(60),
+  pml_max_promotion         NUMBER(10,2),
+  pml_promotion             VARCHAR2(500),
+  pml_enable                NUMBER(3),
+  live_image                VARCHAR2(100),
+  is_group_purchase         NUMBER(10),
+  commission_rule           VARCHAR2(20),
+  commission_rate           NUMBER(10,4),
+  delay_days                NUMBER(10),
+  w_insert_dt               DATE,
+  w_update_dt               DATE,
+  goods_short_name          VARCHAR2(60),
+  jd_url                    VARCHAR2(1000),
+  tmall_url                 VARCHAR2(1000),
+  other_tags                VARCHAR2(600)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_GOODS_COMMON
+  is '商品公共内容表
+MySql:happigo_ec
+yangjin 2018-01-08';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_commonid
+  is '商品公共表id';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.item_code
+  is '商品编号';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_jingle
+  is '商品广告词';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_short_desc
+  is '商品短描述';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.gc_id
+  is '商品分类';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.gc_id_1
+  is '一级分类id';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.gc_id_2
+  is '二级分类id';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.gc_id_3
+  is '三级分类id';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.gc_name
+  is '商品分类';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.gc_sub_id
+  is '商品分类子分类Id';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.matdl
+  is 'erp分类-大类';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.matzl
+  is 'erp分类-中类';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.matxl
+  is 'erp分类-小类';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.matkl
+  is 'erp分类-细类';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.store_id
+  is '店铺id';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.store_name
+  is '店铺名称';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.spec_name
+  is '规格名称';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.spec_value
+  is '规格值';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.brand_id
+  is '品牌id';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.brand_name
+  is '品牌名称';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.type_id
+  is '类型id';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_image
+  is '商品主图';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_animation
+  is '商品动画地址';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_videourl
+  is '商品视频地址';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_attr
+  is '商品属性';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_body
+  is '商品内容';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.mobile_body
+  is '手机端商品描述';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_state
+  is '商品状态 0下架，1正常，10违规（禁售）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_stateremark
+  is '违规原因';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_verify
+  is '商品审核 1通过，0未通过，10审核中';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_verifyremark
+  is '审核失败原因';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_lock
+  is '商品锁定 0未锁，1已锁';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_addtime
+  is '商品添加时间';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_selltime
+  is '上架时间';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_specname
+  is '规格名称序列化（下标为规格id）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_price
+  is '商品价格';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_marketprice
+  is '市场价';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_costprice
+  is '成本价';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_discount
+  is '折扣';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_promotion_price
+  is '该商品下各SKU的最低网站促销价';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_promotion_price_app
+  is '该商品下各SKU的最低APP促销价';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_promotion_price_wx
+  is '该商品下各SKU的最低WX促销价';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_promotion_price_3g
+  is '该商品下各SKU的最低3G促销价';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_serial
+  is '商家编号';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_storage
+  is '商品总库存';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_storage_alarm
+  is '库存报警值';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.transport_id
+  is '运费模板';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.transport_title
+  is '运费模板名称';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_commend
+  is '商品推荐 1是，0否，默认为0';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_freight
+  is '运费 0为免运费';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_vat
+  is '是否开具增值税发票 1是，0否';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.areaid_1
+  is '一级地区id';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.areaid_2
+  is '二级地区id';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_stcids
+  is '店铺分类id 首尾用,隔开';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.plateid_top
+  is '顶部关联板式';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.plateid_bottom
+  is '底部关联板式';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_virtual
+  is '是否为虚拟商品 1是，0否';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.virtual_indate
+  is '虚拟商品有效期';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.virtual_limit
+  is '虚拟商品购买上限';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.virtual_invalid_refund
+  is '是否允许过期退款， 1是，0否';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_fcode
+  is '是否为F码商品 1是，0否';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_appoint
+  is '是否是预约商品 1是，0否';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.appoint_satedate
+  is '预约商品出售时间';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_presell
+  is '是否是预售商品 1是，0否';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.presell_deliverdate
+  is '预售商品发货时间';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_own_shop
+  is '是否为平台自营';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_tv
+  is '是否为TV商品 1是，0否';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_add_cart
+  is '是否允许加入购物车 1是，0否';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.retention_time
+  is '该商品购买后，订单的最长保留时间，默认半小时';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.supplier_id
+  is '供应商编号';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.supplier_name
+  is '供应商名称';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_live_promotion
+  is '是否享受TV直播的促销（1是，0否）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_allow_offline
+  is '是否允许货到付款（1是，0否）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_allow_point
+  is '是否允许使用积分(1是，0否)';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_allow_voucher
+  is '是否允许使用优惠券(1是，0否)';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_allow_paypromotion
+  is '是否享受支付促销(1是，0否)';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.paypromotion_amount
+  is '支付立减金额';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_allow_bankpromotion
+  is '是否享受银行促销(1是，0否)';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_salenum
+  is '销售数量';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_pop
+  is '人气值';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.gift_num
+  is '该商品下各SKU的最大的赠品数量';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_valuables
+  is '是否为贵品（1是 0否）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_big
+  is '是否为大件（1是 0否）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.give_points
+  is '赠送积分';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_shipping_self
+  is '0供应商配送   1（自有车队或四通一达配送）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_new_member_gift
+  is '是否为新人礼（1是，0否）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_allow_return
+  is '是否允许退货（1是0否）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_appreciation
+  is '是否允许十天鉴赏（0否，1是）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_weight
+  is '重量，单位kg';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_reserved
+  is '是否取预留库存（1是，0否）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.pv_total
+  is 'PV总数';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.uv_total
+  is 'UV总数';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.salenum_d1
+  is '昨日销售数量';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.salenum_d7
+  is '最近7天销售数量';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.salenum_d30
+  is '最近30天销售数量';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.salenum_d90
+  is '最近90天销售数量';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.collect_total
+  is '收藏数';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.evaluation_total
+  is '评价总数';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.search_key
+  is '搜索关键词';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.superscript_id
+  is '角标ID';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.extra_point
+  is '额外积分倍数';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_reservation_delivery
+  is '商品是否支持预约收货时间';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_reminder
+  is '商品温馨提示';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_service
+  is '商品服务项';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_service_ids
+  is '商品服务项ID集合';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.firstonselltime
+  is '首次上架时间';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.newgoodsrate
+  is '新品指数等级（0,1,2,3）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.fastbuyenable
+  is '是否启用快速购买支持（自动选择默认规格，购买数量1）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.customer_service
+  is '售后服务（APP第三个页面内容）序列化存储';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.physical_inventory
+  is '是否有实物库存（0无，1有）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.use_date
+  is '编号正式采用时间';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.extra_gift
+  is '是否有额外赠送（1是，0否）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.ztlhrp
+  is '提报组(5000:芒果生活)';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.pml_id
+  is '等级减活动商品ID';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.pml_title
+  is '活动名称/标题';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.pml_max_promotion
+  is '最大促销额';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.pml_promotion
+  is '促销额';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.pml_enable
+  is '等级减开关，0关闭 1开启';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.live_image
+  is '直播商品图片（暂用于移动端首页直播模块）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.is_group_purchase
+  is '是否为拼团商品,1：是，0,：否';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.commission_rule
+  is '佣金规则(standard,recommend,manual,none)';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.commission_rate
+  is '佣金比';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.delay_days
+  is '可延迟发货天数（0为不可延迟发货）';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.w_update_dt
+  is '记录更新时间';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.goods_short_name
+  is '商品短名称';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.jd_url
+  is '京东链接';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.tmall_url
+  is '天猫链接';
+comment on column DW_USER.FACT_EC_GOODS_COMMON.other_tags
+  is '其他标签';
+create unique index DW_USER.FACT_EC_GOODS_COMMON_I1 on DW_USER.FACT_EC_GOODS_COMMON (ITEM_CODE)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.FACT_EC_GOODS_COMMON
+  add constraint FACT_EC_GOODS_COMMON_PK primary key (GOODS_COMMONID)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.FACT_EC_GOODS_COMMON_PK nologging;
+

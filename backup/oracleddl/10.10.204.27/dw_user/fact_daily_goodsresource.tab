@@ -1,0 +1,37 @@
+???create table DW_USER.FACT_DAILY_GOODSRESOURCE
+(
+  date_key  NUMBER,
+  item_code NUMBER,
+  item_name VARCHAR2(200),
+  page_cnnm VARCHAR2(100),
+  pv        NUMBER,
+  uv        NUMBER,
+  rs        NUMBER,
+  je        NUMBER,
+  js        NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index DW_USER.GD_RS2_IDX on DW_USER.FACT_DAILY_GOODSRESOURCE (DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

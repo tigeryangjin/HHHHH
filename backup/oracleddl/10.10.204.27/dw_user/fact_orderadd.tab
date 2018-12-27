@@ -1,0 +1,22 @@
+???create table DW_USER.FACT_ORDERADD
+(
+  order_id NUMBER(10),
+  order_sn NUMBER(30),
+  zdzjc_1  VARCHAR2(20),
+  zdzjc_2  VARCHAR2(20),
+  zdzjc_3  VARCHAR2(50),
+  zsort    VARCHAR2(50)
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

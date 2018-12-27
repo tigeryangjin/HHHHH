@@ -1,0 +1,21 @@
+???create table DW_HAPPIGO.TMP_LI2
+(
+  member_key NUMBER(20),
+  kind       VARCHAR2(20),
+  channel    VARCHAR2(50),
+  mindate    DATE,
+  maxdate    DATE,
+  hydays     NUMBER(5)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

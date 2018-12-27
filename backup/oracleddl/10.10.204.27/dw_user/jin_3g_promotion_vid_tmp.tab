@@ -1,0 +1,33 @@
+???create table DW_USER.JIN_3G_PROMOTION_VID_TMP
+(
+  vid         VARCHAR2(1000),
+  active_date DATE,
+  level2      VARCHAR2(50)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.JIN_3G_PROMOTION_VID_TMP
+  is 'by yangjin';
+create index DW_USER.JIN_3G_PROMOTION_VID_TMP_I1 on DW_USER.JIN_3G_PROMOTION_VID_TMP (VID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,39 @@
+???create table DW_USER.FACT_DAILY_HMSC
+(
+  visit_date_key NUMBER(10),
+  hmmd           VARCHAR2(50),
+  vcnt           NUMBER,
+  nvcnt          NUMBER,
+  mcnt           NUMBER,
+  ordercgrs      NUMBER,
+  ordercgcs      NUMBER,
+  ordercgamount  NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_HMSC.visit_date_key
+  is '日期';
+comment on column DW_USER.FACT_DAILY_HMSC.hmmd
+  is '渠道来源';
+comment on column DW_USER.FACT_DAILY_HMSC.vcnt
+  is '日活';
+comment on column DW_USER.FACT_DAILY_HMSC.nvcnt
+  is '新增';
+comment on column DW_USER.FACT_DAILY_HMSC.mcnt
+  is '注册人数';
+comment on column DW_USER.FACT_DAILY_HMSC.ordercgrs
+  is '订购人数';
+comment on column DW_USER.FACT_DAILY_HMSC.ordercgcs
+  is '订购件数';
+comment on column DW_USER.FACT_DAILY_HMSC.ordercgamount
+  is '订购金额';
+

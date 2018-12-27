@@ -1,0 +1,464 @@
+???create table ODSHAPPIGO.OD_ORDER_ITEM
+(
+  merchant_no                 VARCHAR2(12) not null,
+  cust_no                     VARCHAR2(12) not null,
+  order_gb                    VARCHAR2(6) not null,
+  order_no                    VARCHAR2(14) not null,
+  order_state                 VARCHAR2(6) not null,
+  order_date                  DATE not null,
+  order_group_seq             VARCHAR2(10) not null,
+  order_batch_seq             VARCHAR2(10) not null,
+  order_seq                   VARCHAR2(10) not null,
+  order_seq_rel               VARCHAR2(10),
+  item_select_no              VARCHAR2(20),
+  item_gb                     VARCHAR2(6),
+  msale_gb                    VARCHAR2(6),
+  msale_code                  VARCHAR2(10),
+  item_code                   VARCHAR2(12),
+  mitem_code                  VARCHAR2(12),
+  ven_code                    VARCHAR2(10),
+  unit_code                   VARCHAR2(3),
+  dt_info                     VARCHAR2(200),
+  order_qty                   NUMBER(8),
+  syslast_qty                 NUMBER(8),
+  wh_code                     VARCHAR2(6),
+  price_type                  VARCHAR2(3),
+  sale_price                  NUMBER(12,2),
+  dc_amt                      NUMBER(12,2),
+  gift_amt                    NUMBER(12,2),
+  rsale_amt                   NUMBER(12,2),
+  syslast_amt                 NUMBER(12,2),
+  dely_type                   VARCHAR2(2) default '10',
+  cust_dely_flag              VARCHAR2(1) default '0',
+  dely_hope_date              DATE,
+  dely_hope_yn                VARCHAR2(1) default '0',
+  dely_hope_time              VARCHAR2(2) default '90',
+  dely_remark                 VARCHAR2(400),
+  saveamt                     NUMBER(12,2),
+  saveamt_prom                NUMBER(12,2),
+  last_proc_date              DATE,
+  send_flag                   VARCHAR2(2),
+  msg                         VARCHAR2(2000),
+  ispay                       VARCHAR2(1),
+  fix_yn                      VARCHAR2(1),
+  refuse_dispatch             VARCHAR2(1) default '1',
+  cancel_code                 VARCHAR2(8),
+  cancel_qty                  NUMBER(8),
+  stock_flag                  VARCHAR2(2) default 0,
+  deal_flag                   VARCHAR2(2),
+  insert_date                 DATE,
+  insert_id                   VARCHAR2(20),
+  valid_flag                  VARCHAR2(1),
+  remark                      VARCHAR2(2000),
+  item_name                   VARCHAR2(400),
+  item_id                     NUMBER,
+  order_code                  VARCHAR2(8),
+  gstatus                     VARCHAR2(6),
+  orderstatus                 VARCHAR2(6),
+  return_type                 VARCHAR2(6),
+  sr_id                       VARCHAR2(12),
+  repay_flag                  VARCHAR2(3),
+  fee_batch_repay             VARCHAR2(3),
+  claim_qty                   NUMBER(8),
+  claim_cancel_qty            NUMBER(8),
+  exch_qty                    NUMBER(8),
+  exch_cancel_qty             NUMBER(8),
+  require_dely_qty            NUMBER(8),
+  require_claim_qty           NUMBER(8),
+  ok_dely_qty                 NUMBER(8),
+  ok_claim_qty                NUMBER(8),
+  exchange_out_qty            NUMBER(8),
+  exchange_return_qty         NUMBER(8),
+  require_exchange_out_qty    NUMBER(8),
+  require_exchange_return_qty NUMBER(8),
+  ok_exchange_out_qty         NUMBER(8),
+  ok_exchange_return_qty      NUMBER(8),
+  exchange_out_cancel_qty     NUMBER(8),
+  exchange_return_cancel_qty  NUMBER(8),
+  dely_cancel_qty             NUMBER(8),
+  order_rel_type              VARCHAR2(2),
+  order_rel_order_no          VARCHAR2(14),
+  order_rel_remark            VARCHAR2(200),
+  receiver_seq                VARCHAR2(14),
+  receiver_seq_crm            VARCHAR2(14),
+  dely_no                     VARCHAR2(14),
+  crm_order_no                VARCHAR2(40),
+  stock_type                  VARCHAR2(2) default 0,
+  order_rel_flag              VARCHAR2(2) default 0,
+  prog_id                     VARCHAR2(20),
+  dely_gb                     VARCHAR2(20),
+  dely_name                   VARCHAR2(40),
+  wb_no                       VARCHAR2(40),
+  freight_amt                 NUMBER(12,2),
+  wh_loc                      VARCHAR2(6),
+  batch_seq                   VARCHAR2(10) default 0,
+  customer_group              VARCHAR2(12),
+  md_code                     VARCHAR2(10),
+  sub_merchant_no             VARCHAR2(12),
+  ven_dely_date               DATE,
+  ven_dely_yn                 VARCHAR2(1) default '0',
+  order_point_flag            VARCHAR2(1) default 1,
+  order_split_flag            VARCHAR2(1) default 0,
+  workorder_no                VARCHAR2(20),
+  invoice_return_flag         VARCHAR2(1) default 0,
+  gift_amt_yhq                NUMBER(12,2),
+  gift_amt_djq                NUMBER(12,2),
+  gift_amt_wbyhq              NUMBER(12,2),
+  jf_amt                      NUMBER(12,2),
+  yfk_amt                     NUMBER(12,2),
+  xyk_amt                     NUMBER(12,2),
+  point_change_rate           NUMBER(12,4),
+  ecc_order_no                VARCHAR2(14),
+  main_pam_gb                 VARCHAR2(4),
+  main_pay_amt                NUMBER(12,2),
+  pay_adjustmen               NUMBER(12,2),
+  buy_price                   NUMBER(12,2),
+  zvbeln_input                VARCHAR2(20)
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table ODSHAPPIGO.OD_ORDER_ITEM
+  is '订单商品明细表';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.merchant_no
+  is '商户号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.cust_no
+  is '客户编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_gb
+  is '订购类别HM20:订购,HM21:订购取消...)HM0011';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_no
+  is '订购编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_state
+  is '进行状态(最后操作状态:TA10:预订购接收,TA11:预订购结算结束,TA20:订单接收,TA30:结算结束)HM0012';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_date
+  is '订购时间';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_group_seq
+  is '商品组序号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_batch_seq
+  is '处理批次号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_seq
+  is '处理序号_拆分';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_seq_rel
+  is '订购关联处理序号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.item_select_no
+  is '商品选择编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.item_gb
+  is '商品类别;10:主品;30:赠品;';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.msale_gb
+  is '媒体通路编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.msale_code
+  is '媒体渠道编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.item_code
+  is '商品编码';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.mitem_code
+  is '商品销售编码';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.ven_code
+  is '供应商编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.unit_code
+  is '单件编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.dt_info
+  is '单卖品明细';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_qty
+  is '订购数量';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.syslast_qty
+  is '系统剩余数量';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.wh_code
+  is '仓库编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.price_type
+  is '价格类别';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.sale_price
+  is '销售价';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.dc_amt
+  is '打折金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.gift_amt
+  is '优惠券金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.rsale_amt
+  is '实际售销金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.syslast_amt
+  is '系统剩余金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.dely_type
+  is '订购配送主体';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.cust_dely_flag
+  is '顾客配送指定FLAG';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.dely_hope_date
+  is '配送预定日';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.dely_hope_yn
+  is '配送日期指定与否';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.dely_hope_time
+  is '配送时间FLAG';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.saveamt
+  is '积分赋予金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.saveamt_prom
+  is '促销积分赋予金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.last_proc_date
+  is '最终处理日期';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.send_flag
+  is '发送短信与否';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.msg
+  is '订购消息';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.ispay
+  is '是否付款(0：未款付；1：已付款)';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.fix_yn
+  is '是否上门安装';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.refuse_dispatch
+  is '是否发货；1发货；2不发货';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.cancel_code
+  is '投诉编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.cancel_qty
+  is '取消数量';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.stock_flag
+  is '库存来源标志(0：公共库存；1：预售库存；2：预留库存)';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.deal_flag
+  is '处理标志("1"取消退个帐标志 "0"处理完成标志（或者不需要处理）)';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.insert_date
+  is '登记时间';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.insert_id
+  is '登记人';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.valid_flag
+  is '有效标志';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.remark
+  is '备注1';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.item_name
+  is '商品名称';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.item_id
+  is '商品ID';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_code
+  is '投诉编号;od_reason_code';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.gstatus
+  is '货物状态(05.取消,10.未看货拒收,20.看货现场拒收,30.退货)';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.orderstatus
+  is '退货状态(05.取消,10、拒收；20、退货；30、未发货退货)';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.return_type
+  is '回退类型；1 上门回收；2 车队回退；3 客户回寄';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.sr_id
+  is 'SR';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.repay_flag
+  is '退款标志(0结束,1退款信息发送给财务,3未结束)';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.fee_batch_repay
+  is '退款批次号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.claim_qty
+  is '退货数量';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.claim_cancel_qty
+  is '退货取消数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.exch_qty
+  is '交换数量';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.exch_cancel_qty
+  is '交换取消数量';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.require_dely_qty
+  is '需发货数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.require_claim_qty
+  is '需退货数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.ok_dely_qty
+  is '已发货数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.ok_claim_qty
+  is '已退货数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.exchange_out_qty
+  is '交换出库数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.exchange_return_qty
+  is '交换回收数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.require_exchange_out_qty
+  is '需交换出库数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.require_exchange_return_qty
+  is '需交换回收数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.ok_exchange_out_qty
+  is '已交换出库数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.ok_exchange_return_qty
+  is '已交换回收数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.exchange_out_cancel_qty
+  is '交换出库取消数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.exchange_return_cancel_qty
+  is '交换回收取消数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.dely_cancel_qty
+  is '发货取消数';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_rel_type
+  is '关联订单类型';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_rel_order_no
+  is '关联订单编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_rel_remark
+  is '关联订单备注';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.receiver_seq
+  is '送货地序号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.receiver_seq_crm
+  is '送货地序号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.dely_no
+  is '交货单号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.crm_order_no
+  is 'CRM订单号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.stock_type
+  is '库存类型(0：实体库存；1：虚拟库存)';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_rel_flag
+  is '关联订单标志';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.prog_id
+  is '节目ID';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.dely_gb
+  is '配送/回寄车队编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.dely_name
+  is '配送/回寄车队';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.wb_no
+  is '配送/回寄运单号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.freight_amt
+  is '运费';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.wh_loc
+  is '库存地点';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.batch_seq
+  is '批次号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.customer_group
+  is '客户组';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.md_code
+  is 'MD编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.sub_merchant_no
+  is '子商户';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.ven_dely_date
+  is '供应商配送预定日';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.ven_dely_yn
+  is '供应商配送日期指定与否';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_point_flag
+  is '积分赠送或退还标志(0:赠送或退还积分,1:不赠送或不退还积分)';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.order_split_flag
+  is '是否拆单标志(0:可以拆单,1:不可以拆单)';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.workorder_no
+  is '工单编号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.invoice_return_flag
+  is '发票回收标记(1回收，0不回收）';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.gift_amt_yhq
+  is '优惠券金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.gift_amt_djq
+  is '代金券金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.gift_amt_wbyhq
+  is '外部优惠券金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.jf_amt
+  is '积分支付金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.yfk_amt
+  is '预付款支付金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.xyk_amt
+  is '心意卡支付金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.point_change_rate
+  is '当前下单积分比例';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.ecc_order_no
+  is 'ecc订单号';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.main_pam_gb
+  is '主支付方式';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.main_pay_amt
+  is '主支付金额';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.pay_adjustmen
+  is '支付补平';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.buy_price
+  is '采购价';
+comment on column ODSHAPPIGO.OD_ORDER_ITEM.zvbeln_input
+  is '前端选择退货的交货单';
+create index ODSHAPPIGO.IDX_INSERT_ID_01 on ODSHAPPIGO.OD_ORDER_ITEM (INSERT_ID)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.IDX_OD_ORDER_ITEM_01 on ODSHAPPIGO.OD_ORDER_ITEM (MERCHANT_NO, ORDER_DATE, ORDER_GB)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.IDX_OD_ORDER_ITEM_02 on ODSHAPPIGO.OD_ORDER_ITEM (CUST_NO, ORDER_NO)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.IDX_OD_ORDER_ITEM_03 on ODSHAPPIGO.OD_ORDER_ITEM (CRM_ORDER_NO)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.IDX_OD_ORDER_ITEM_04 on ODSHAPPIGO.OD_ORDER_ITEM (ORDER_DATE, ORDER_NO, ORDER_GB)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.IDX_OD_ORDER_ITEM_05 on ODSHAPPIGO.OD_ORDER_ITEM (ORDER_DATE, NVL(SUB_MERCHANT_NO,'600'))
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.IDX_OD_ORDER_ITEM_06 on ODSHAPPIGO.OD_ORDER_ITEM (LAST_PROC_DATE)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table ODSHAPPIGO.OD_ORDER_ITEM
+  add constraint PK_OD_ORDER_ITEM primary key (ORDER_NO, ORDER_GROUP_SEQ, ORDER_SEQ)
+  using index 
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index ODSHAPPIGO.PK_OD_ORDER_ITEM nologging;
+

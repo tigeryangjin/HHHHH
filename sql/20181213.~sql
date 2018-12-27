@@ -1,12 +1,7 @@
-BEGIN
-  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
-                                TABNAME  => 'FACT_PAGE_VIEW',
-                                PARTNAME => 'FPV201611',
-                                DEGREE   => 4,
-                                CASCADE  => TRUE);
-  DBMS_STATS.GATHER_TABLE_STATS(OWNNAME  => 'DW_USER',
-                                TABNAME  => 'FACT_PAGE_VIEW',
-                                PARTNAME => 'FPV201612',
-                                DEGREE   => 4,
-                                CASCADE  => TRUE);
-END;
+SELECT * FROM NLS_DATABASE_PARAMETERS WHERE PARAMETER = 'NLS_CHARACTERSET';
+
+SELECT '中国', CONVERT('中国', 'ZHS16GBK', 'AL32UTF8') FROM DUAL;
+
+SELECT NAME_ONE, NAME_TWO
+  FROM TEST
+ WHERE NAME_ONE <> CONVERT(NAME_ONE, 'ZHS16GBK', 'UTF8');

@@ -1,0 +1,18 @@
+???create table DW_USER.DIM_RE_RESEAON_2
+(
+  code      VARCHAR2(10),
+  reason_nm VARCHAR2(80)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

@@ -1,0 +1,44 @@
+???create table DW_USER.EC_TAGS_TMP
+(
+  tag_id      NUMBER(10),
+  tag_name    VARCHAR2(60),
+  parent_id   NUMBER(10),
+  is_show     NUMBER(3),
+  is_checkbox NUMBER(3),
+  sort        NUMBER(3),
+  add_time    DATE,
+  edit_time   DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.EC_TAGS_TMP
+  is 'ec商品标签表-中间表
+source:happigo_ec
+by yangjin
+2018-05-15';
+comment on column DW_USER.EC_TAGS_TMP.tag_id
+  is '标签ID';
+comment on column DW_USER.EC_TAGS_TMP.tag_name
+  is '标签名称';
+comment on column DW_USER.EC_TAGS_TMP.parent_id
+  is '上级标签ID';
+comment on column DW_USER.EC_TAGS_TMP.is_show
+  is '是否显示（1是0否）默认是';
+comment on column DW_USER.EC_TAGS_TMP.is_checkbox
+  is '是否可多选择（1是0否）默认否';
+comment on column DW_USER.EC_TAGS_TMP.sort
+  is '排序（从小到大）';
+comment on column DW_USER.EC_TAGS_TMP.add_time
+  is '添加时间';
+comment on column DW_USER.EC_TAGS_TMP.edit_time
+  is '修改时间';
+

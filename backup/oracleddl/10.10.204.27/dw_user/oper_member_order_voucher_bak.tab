@@ -1,0 +1,105 @@
+???create table DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK
+(
+  member_key        NUMBER(20),
+  rule_key          NUMBER(10),
+  rule_group_key    NUMBER(10),
+  add_time          NUMBER(10),
+  posting_date      NUMBER(10),
+  voucher_state     NUMBER(5) default 0,
+  voucher_time      NUMBER(10),
+  voucher_id        NUMBER(10),
+  voucher_msg       VARCHAR2(2000),
+  register_time     NUMBER(10),
+  last_order_time   NUMBER(10),
+  reverse_last_time NUMBER(10),
+  order_amount      NUMBER(10,2),
+  reverse_amount    NUMBER(10,2),
+  amount            NUMBER(10,2),
+  vaild_nums        NUMBER(10) default 0
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK
+  is '自动发券统计';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.member_key
+  is '用户bp';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.rule_key
+  is '规则key';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.rule_group_key
+  is '规则组key';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.add_time
+  is '添加时间';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.posting_date
+  is '取数据日期';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.voucher_state
+  is '发券状态';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.voucher_time
+  is '发券时间';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.voucher_id
+  is '发券编号';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.voucher_msg
+  is '发券返回';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.register_time
+  is '注册时间';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.last_order_time
+  is '最后一笔订单时间';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.reverse_last_time
+  is '最后一次消退时间';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.order_amount
+  is '订购金额';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.reverse_amount
+  is '消退金额';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.amount
+  is '有效订购金额';
+comment on column DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK.vaild_nums
+  is '有效订购次数';
+create index DW_USER.OP_MEMBER_KEYS on DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK (MEMBER_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.OP_RULE_GROUP_KEYS on DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK (RULE_GROUP_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.OP_RULE_KEYS on DW_USER.OPER_MEMBER_ORDER_VOUCHER_BAK (RULE_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

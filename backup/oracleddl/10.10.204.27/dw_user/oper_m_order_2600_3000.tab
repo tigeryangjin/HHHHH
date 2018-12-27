@@ -1,0 +1,20 @@
+???create table DW_USER.OPER_M_ORDER_2600_3000
+(
+  member_key      NUMBER(20),
+  record_date_key NUMBER(10),
+  amount          NUMBER(10,2),
+  order_time      NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

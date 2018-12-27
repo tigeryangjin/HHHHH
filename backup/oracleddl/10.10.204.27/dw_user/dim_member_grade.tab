@@ -1,0 +1,26 @@
+???create table DW_USER.DIM_MEMBER_GRADE
+(
+  member_grade_id    NUMBER(10),
+  member_grade_key   NUMBER(10),
+  member_grade_title VARCHAR2(100),
+  member_grade_con   VARCHAR2(20)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_MEMBER_GRADE.member_grade_key
+  is '等级key';
+comment on column DW_USER.DIM_MEMBER_GRADE.member_grade_title
+  is '等级名称';
+comment on column DW_USER.DIM_MEMBER_GRADE.member_grade_con
+  is '等级标识';
+

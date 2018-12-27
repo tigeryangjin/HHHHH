@@ -1,0 +1,37 @@
+???create table DW_USER.ZQLS_MEMBER
+(
+  member_key NUMBER(20),
+  source     VARCHAR2(20),
+  ec_status  NUMBER(5) default 0,
+  status     NUMBER(5) default 0
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.ZQLS_MEMBER
+  is '是否只在电商订购';
+comment on column DW_USER.ZQLS_MEMBER.ec_status
+  is '1只在电商订购过';
+create index DW_USER.ZQLS_MEMBER_KEY on DW_USER.ZQLS_MEMBER (MEMBER_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

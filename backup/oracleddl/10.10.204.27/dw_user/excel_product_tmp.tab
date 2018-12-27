@@ -1,0 +1,20 @@
+???create table DW_USER.EXCEL_PRODUCT_TMP
+(
+  过账日期   DATE,
+  订单渠道名称 VARCHAR2(100),
+  商品编码   NUMBER,
+  有效订购金额 NUMBER,
+  有效订购数量 NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

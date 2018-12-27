@@ -1,0 +1,102 @@
+???create table DW_USER.FACT_EC_P_MANSONG
+(
+  mansong_id            NUMBER(10),
+  mansong_name          VARCHAR2(150),
+  quota_id              NUMBER(10),
+  start_time            DATE,
+  end_time              DATE,
+  member_id             NUMBER(10),
+  store_id              NUMBER(10),
+  member_name           VARCHAR2(150),
+  store_name            VARCHAR2(150),
+  state                 NUMBER(10),
+  remark                VARCHAR2(600),
+  mansong_web           NUMBER(10),
+  mansong_app           NUMBER(10),
+  mansong_wx            NUMBER(10),
+  mansong_3g            NUMBER(10),
+  mansong_num           NUMBER(10),
+  mansong_advertising   VARCHAR2(600),
+  isshop_cart           NUMBER(10),
+  isgoods_details       NUMBER(10),
+  mat_type              NUMBER(10),
+  goods_type            NUMBER(10),
+  min_level             NUMBER(11),
+  min_level_t           VARCHAR2(60),
+  isall_details         NUMBER(10),
+  app_minato_single_url VARCHAR2(1500),
+  web_minato_single_url VARCHAR2(1500),
+  w_insert_dt           DATE,
+  w_update_dt           DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_P_MANSONG
+  is 'ec满就送活动表
+by yangjin';
+comment on column DW_USER.FACT_EC_P_MANSONG.mansong_id
+  is '满送活动编号';
+comment on column DW_USER.FACT_EC_P_MANSONG.mansong_name
+  is '活动名称';
+comment on column DW_USER.FACT_EC_P_MANSONG.quota_id
+  is '套餐编号';
+comment on column DW_USER.FACT_EC_P_MANSONG.start_time
+  is '活动开始时间';
+comment on column DW_USER.FACT_EC_P_MANSONG.end_time
+  is '活动结束时间';
+comment on column DW_USER.FACT_EC_P_MANSONG.member_id
+  is '用户编号';
+comment on column DW_USER.FACT_EC_P_MANSONG.store_id
+  is '店铺编号';
+comment on column DW_USER.FACT_EC_P_MANSONG.member_name
+  is '用户名';
+comment on column DW_USER.FACT_EC_P_MANSONG.store_name
+  is '店铺名称';
+comment on column DW_USER.FACT_EC_P_MANSONG.state
+  is '活动状态(1-正常/2-已结束/3-管理员关闭/6-暂停/7-被删除)';
+comment on column DW_USER.FACT_EC_P_MANSONG.remark
+  is '备注';
+comment on column DW_USER.FACT_EC_P_MANSONG.mansong_web
+  is '官网判断是否享受满送，1：享受，0：不享受';
+comment on column DW_USER.FACT_EC_P_MANSONG.mansong_app
+  is 'APP判断是否享受满送，1：享受，0：不享受';
+comment on column DW_USER.FACT_EC_P_MANSONG.mansong_wx
+  is '微信判断是否享受满送，1：享受，0：不享受';
+comment on column DW_USER.FACT_EC_P_MANSONG.mansong_3g
+  is '3g判断是否享受满送，1：享受，0：不享受';
+comment on column DW_USER.FACT_EC_P_MANSONG.mansong_num
+  is '满送次数，0为不限制';
+comment on column DW_USER.FACT_EC_P_MANSONG.mansong_advertising
+  is '广告语';
+comment on column DW_USER.FACT_EC_P_MANSONG.isshop_cart
+  is '购物车是否显示广告语';
+comment on column DW_USER.FACT_EC_P_MANSONG.isgoods_details
+  is '商品详情页是否显示广告语';
+comment on column DW_USER.FACT_EC_P_MANSONG.mat_type
+  is '满送类目类型，0:无，1:只允许，2:不允许';
+comment on column DW_USER.FACT_EC_P_MANSONG.goods_type
+  is '满送商品类型，0:无，1:只允许，2:不允许';
+comment on column DW_USER.FACT_EC_P_MANSONG.min_level
+  is '最低享受等级';
+comment on column DW_USER.FACT_EC_P_MANSONG.min_level_t
+  is '最低享受等级';
+comment on column DW_USER.FACT_EC_P_MANSONG.isall_details
+  is '是否显示广告语';
+comment on column DW_USER.FACT_EC_P_MANSONG.app_minato_single_url
+  is 'APP凑单页面链接';
+comment on column DW_USER.FACT_EC_P_MANSONG.web_minato_single_url
+  is 'WEB凑单页面链接';
+comment on column DW_USER.FACT_EC_P_MANSONG.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_EC_P_MANSONG.w_update_dt
+  is '记录修改时间';
+

@@ -1,0 +1,41 @@
+???create table DW_USER.LS_MEMBER_ORDER_RATE
+(
+  member_key          NUMBER(20),
+  profit_one_amount   NUMBER(10,2),
+  rate_one            NUMBER(10,2),
+  profit_two_amount   NUMBER(10,2),
+  rate_two            NUMBER(10,2),
+  profit_three_amount NUMBER(10,2),
+  rate_three          NUMBER(10,2),
+  profit_four_amount  NUMBER(10,2),
+  rate_four           NUMBER(10,2),
+  four_average_profit NUMBER(10,2),
+  four_average_rate   NUMBER(10,2),
+  state               NUMBER(5) default 0
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+create index DW_USER.LMOR_MEMBER_KEY on DW_USER.LS_MEMBER_ORDER_RATE (MEMBER_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

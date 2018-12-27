@@ -1,0 +1,58 @@
+???create table DW_USER.FACT_DAILY_GOODSRESOURCE_1
+(
+  date_key     NUMBER,
+  item_code    NUMBER,
+  item_name    VARCHAR2(200),
+  page_cnnm    VARCHAR2(100),
+  pv           NUMBER,
+  uv           NUMBER,
+  rs           NUMBER,
+  je           NUMBER,
+  js           NUMBER,
+  page_resouce VARCHAR2(100)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_GOODSRESOURCE_1.date_key
+  is '日期';
+comment on column DW_USER.FACT_DAILY_GOODSRESOURCE_1.item_code
+  is '商品编号';
+comment on column DW_USER.FACT_DAILY_GOODSRESOURCE_1.item_name
+  is '商品名称';
+comment on column DW_USER.FACT_DAILY_GOODSRESOURCE_1.page_cnnm
+  is '资源位';
+comment on column DW_USER.FACT_DAILY_GOODSRESOURCE_1.pv
+  is 'PV';
+comment on column DW_USER.FACT_DAILY_GOODSRESOURCE_1.uv
+  is 'UV';
+comment on column DW_USER.FACT_DAILY_GOODSRESOURCE_1.rs
+  is '人数';
+comment on column DW_USER.FACT_DAILY_GOODSRESOURCE_1.je
+  is '金额';
+comment on column DW_USER.FACT_DAILY_GOODSRESOURCE_1.js
+  is '件数';
+comment on column DW_USER.FACT_DAILY_GOODSRESOURCE_1.page_resouce
+  is '上级资源位';
+create index DW_USER.GD_RS_IDX on DW_USER.FACT_DAILY_GOODSRESOURCE_1 (DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

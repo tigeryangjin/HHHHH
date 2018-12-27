@@ -1,0 +1,56 @@
+???create table DW_USER.KPI_ASMT_REPURCHASE_MEMBER
+(
+  month_key               VARCHAR2(24) not null,
+  repurchase_member_count NUMBER,
+  repurchase_order_amount NUMBER,
+  cur_month_member_count  NUMBER,
+  last_month_member_count NUMBER,
+  w_insert_dt             DATE,
+  w_update_dt             DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.KPI_ASMT_REPURCHASE_MEMBER
+  is 'KPI考核指标-市场部-老会员复购人数
+by yangjin
+2018-02-28
+';
+comment on column DW_USER.KPI_ASMT_REPURCHASE_MEMBER.month_key
+  is '月份key';
+comment on column DW_USER.KPI_ASMT_REPURCHASE_MEMBER.repurchase_member_count
+  is '复购会员人数';
+comment on column DW_USER.KPI_ASMT_REPURCHASE_MEMBER.repurchase_order_amount
+  is '复购金额';
+comment on column DW_USER.KPI_ASMT_REPURCHASE_MEMBER.cur_month_member_count
+  is '当月会员订购人数';
+comment on column DW_USER.KPI_ASMT_REPURCHASE_MEMBER.last_month_member_count
+  is '上月会员订购人数';
+comment on column DW_USER.KPI_ASMT_REPURCHASE_MEMBER.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.KPI_ASMT_REPURCHASE_MEMBER.w_update_dt
+  is '记录更新时间';
+alter table DW_USER.KPI_ASMT_REPURCHASE_MEMBER
+  add constraint KPI_ASMT_REPURCHASE_MEMBER_PK primary key (MONTH_KEY)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.KPI_ASMT_REPURCHASE_MEMBER_PK nologging;
+

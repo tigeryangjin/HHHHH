@@ -1,0 +1,33 @@
+???create table DW_USER.DISTRICT_LIST
+(
+  district_name VARCHAR2(100)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.DISTRICT_LIST
+  is '住宅小区列表';
+comment on column DW_USER.DISTRICT_LIST.district_name
+  is '小区名字';
+create index DW_USER.DISTRICT_LIST_I1 on DW_USER.DISTRICT_LIST (DISTRICT_NAME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

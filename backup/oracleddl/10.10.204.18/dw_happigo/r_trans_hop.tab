@@ -1,0 +1,34 @@
+???create table DW_HAPPIGO.R_TRANS_HOP
+(
+  id_trans_hop      INTEGER not null,
+  id_transformation INTEGER,
+  id_step_from      INTEGER,
+  id_step_to        INTEGER,
+  enabled           CHAR(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table DW_HAPPIGO.R_TRANS_HOP
+  add primary key (ID_TRANS_HOP)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

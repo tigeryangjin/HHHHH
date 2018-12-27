@@ -1,0 +1,43 @@
+???create table DW_USER.OPER_MEMBER_SMS_POOL
+(
+  row_wid          NUMBER(10),
+  posting_date_key NUMBER(10),
+  project_name     VARCHAR2(20),
+  project_desc     VARCHAR2(100),
+  member_key       NUMBER(20),
+  w_insert_dt      DATE,
+  w_update_dt      DATE,
+  is_send          NUMBER(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_MEMBER_SMS_POOL
+  is '会员短信发送池
+固化的发送短信的项目都统一写入此表，然后再发送短信。
+by yangjin';
+comment on column DW_USER.OPER_MEMBER_SMS_POOL.row_wid
+  is '唯一代理键';
+comment on column DW_USER.OPER_MEMBER_SMS_POOL.posting_date_key
+  is '日期key';
+comment on column DW_USER.OPER_MEMBER_SMS_POOL.project_name
+  is '项目名称';
+comment on column DW_USER.OPER_MEMBER_SMS_POOL.project_desc
+  is '项目备注说明';
+comment on column DW_USER.OPER_MEMBER_SMS_POOL.member_key
+  is 'member_key';
+comment on column DW_USER.OPER_MEMBER_SMS_POOL.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_MEMBER_SMS_POOL.w_update_dt
+  is '记录修改时间';
+comment on column DW_USER.OPER_MEMBER_SMS_POOL.is_send
+  is '是否发送标志（0：未发送，1：已发送）';
+

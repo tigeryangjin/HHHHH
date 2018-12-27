@@ -1,0 +1,18 @@
+???create table DW_USER.APP_ORDERPC17
+(
+  member_key NUMBER(20),
+  zone171    VARCHAR2(100),
+  cnt17      NUMBER
+)
+tablespace DWDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

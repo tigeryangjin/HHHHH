@@ -1,0 +1,93 @@
+???create table DW_USER.FACT_EC_P_XIANSHI_GOODS
+(
+  xianshi_goods_id  NUMBER(10),
+  xianshi_type      NUMBER(10),
+  xianshi_id        NUMBER(10),
+  crm_policy_id     VARCHAR2(60),
+  xianshi_name      VARCHAR2(150),
+  xianshi_title     VARCHAR2(30),
+  xianshi_explain   VARCHAR2(150),
+  goods_id          NUMBER(10),
+  goods_commonid    NUMBER(10),
+  store_id          NUMBER(10),
+  goods_name        VARCHAR2(300),
+  goods_price       NUMBER(10,2),
+  xianshi_price     NUMBER(10,2),
+  apportion_price   NUMBER(10,2),
+  xianshi_storage   NUMBER(10),
+  goods_image       VARCHAR2(300),
+  start_time        DATE,
+  end_time          DATE,
+  lower_limit       NUMBER(10),
+  state             NUMBER(10),
+  xianshi_recommend NUMBER(10),
+  xianshi_remark    VARCHAR2(300),
+  sort              NUMBER(11),
+  w_insert_dt       DATE,
+  w_update_dt       DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.FACT_EC_P_XIANSHI_GOODS
+  is 'ec限时折扣商品表
+by yangjin';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.xianshi_goods_id
+  is '限时折扣商品表';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.xianshi_type
+  is '限时类型 1限时直降  2限时抢 3 tv直减';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.xianshi_id
+  is '限时活动编号';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.crm_policy_id
+  is 'CRM促销编号';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.xianshi_name
+  is '活动名称';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.xianshi_title
+  is '活动标题';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.xianshi_explain
+  is '活动说明';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.goods_id
+  is '商品编号';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.goods_commonid
+  is '商品SPU';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.store_id
+  is '店铺编号';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.goods_name
+  is '商品名称';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.goods_price
+  is '店铺价格';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.xianshi_price
+  is '限时折扣价格';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.apportion_price
+  is '供应商分摊金额';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.xianshi_storage
+  is '限时库存';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.goods_image
+  is '商品图片';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.start_time
+  is '开始时间';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.end_time
+  is '结束时间';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.lower_limit
+  is '购买下限，0为不限制';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.state
+  is '状态，0-取消 1-正常 2结束3管理员关闭';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.xianshi_recommend
+  is '推荐标志 0-未推荐 1-已推荐';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.xianshi_remark
+  is '备注';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.sort
+  is '排序号(数字越大越靠前)';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.FACT_EC_P_XIANSHI_GOODS.w_update_dt
+  is '记录更新时间';
+

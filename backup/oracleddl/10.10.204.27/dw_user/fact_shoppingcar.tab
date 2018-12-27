@@ -1,0 +1,98 @@
+???create table DW_USER.FACT_SHOPPINGCAR
+(
+  id               NUMBER(20) not null,
+  shoppingcar_key  NUMBER(20) not null,
+  application_key  NUMBER(20),
+  application_name VARCHAR2(200),
+  vid              VARCHAR2(1000),
+  member_key       NUMBER(20),
+  page_key         NUMBER(20),
+  page_name        VARCHAR2(50),
+  url              VARCHAR2(1000),
+  ip               VARCHAR2(100),
+  create_date      DATE,
+  scgid            NUMBER(10),
+  scgq             NUMBER(10),
+  visitor_key      NUMBER(20),
+  create_date_key  NUMBER(20),
+  ip_geo_key       NUMBER(20)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_SHOPPINGCAR.shoppingcar_key
+  is '购物车KEY';
+comment on column DW_USER.FACT_SHOPPINGCAR.application_key
+  is '应用KEY';
+comment on column DW_USER.FACT_SHOPPINGCAR.application_name
+  is '应用名称';
+comment on column DW_USER.FACT_SHOPPINGCAR.vid
+  is '用户终端唯一标识号';
+comment on column DW_USER.FACT_SHOPPINGCAR.member_key
+  is 'MEMBER_KEY';
+comment on column DW_USER.FACT_SHOPPINGCAR.page_key
+  is '页面KEY';
+comment on column DW_USER.FACT_SHOPPINGCAR.page_name
+  is '页面名称';
+comment on column DW_USER.FACT_SHOPPINGCAR.url
+  is 'URL';
+comment on column DW_USER.FACT_SHOPPINGCAR.ip
+  is 'IP';
+comment on column DW_USER.FACT_SHOPPINGCAR.create_date
+  is '创建时间';
+comment on column DW_USER.FACT_SHOPPINGCAR.scgid
+  is 'goods_common_key';
+comment on column DW_USER.FACT_SHOPPINGCAR.visitor_key
+  is '用户KEY';
+comment on column DW_USER.FACT_SHOPPINGCAR.create_date_key
+  is '创建时间key';
+comment on column DW_USER.FACT_SHOPPINGCAR.ip_geo_key
+  is '上游页面KEY';
+create index DW_USER.FACT_SHOPPINGCAR_I1 on DW_USER.FACT_SHOPPINGCAR (CREATE_DATE, SCGID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FACT_SHOPPINGCAR_I2 on DW_USER.FACT_SHOPPINGCAR (SCGID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.FACT_SHOPPINGCAR_I3 on DW_USER.FACT_SHOPPINGCAR (CREATE_DATE_KEY)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,49 @@
+???create table DW_USER.TJ_DGZQ
+(
+  member_key NUMBER(20),
+  first_date NUMBER(20),
+  last_date  NUMBER(20),
+  four_date  NUMBER(20),
+  days       NUMBER(10,2),
+  time1      NUMBER(10),
+  time2      NUMBER(10),
+  time3      NUMBER(10),
+  time4      NUMBER(10),
+  time5      NUMBER(10),
+  time6      NUMBER(10),
+  time7      NUMBER(10),
+  time8      NUMBER(10),
+  time9      NUMBER(10),
+  time10     NUMBER(10),
+  time11     NUMBER(10),
+  time12     NUMBER(10),
+  time13     NUMBER(10),
+  time14     NUMBER(10),
+  time15     NUMBER(10),
+  time16     NUMBER(10),
+  time17     NUMBER(10),
+  time18     NUMBER(10),
+  time19     NUMBER(10),
+  time20     NUMBER(10),
+  time21     NUMBER(10),
+  time22     NUMBER(10),
+  time23     NUMBER(10),
+  time24     NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.TJ_DGZQ
+  is '订购周期';
+comment on column DW_USER.TJ_DGZQ.days
+  is '间隔周期';
+

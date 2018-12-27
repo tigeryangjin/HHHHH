@@ -1,0 +1,34 @@
+???create table DW_HAPPIGO.R_VERSION
+(
+  id_version    INTEGER not null,
+  major_version INTEGER,
+  minor_version INTEGER,
+  upgrade_date  DATE,
+  is_upgrade    CHAR(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table DW_HAPPIGO.R_VERSION
+  add primary key (ID_VERSION)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

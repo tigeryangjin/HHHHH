@@ -1,0 +1,23 @@
+???create table DW_USER.TMP_DAN
+(
+  gc_name VARCHAR2(50),
+  matdlt  VARCHAR2(50),
+  matzlt  VARCHAR2(50),
+  matxlt  VARCHAR2(50),
+  js      NUMBER,
+  je      NUMBER,
+  rs      NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+

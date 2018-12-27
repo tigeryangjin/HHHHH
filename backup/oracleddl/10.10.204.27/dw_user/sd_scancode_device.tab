@@ -1,0 +1,43 @@
+???create table DW_USER.SD_SCANCODE_DEVICE
+(
+  vid            VARCHAR2(500),
+  ip             VARCHAR2(50),
+  visit_date     DATE,
+  visit_date_key NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.SD_SCANCODE_DEVICE
+  is '系统部扫码数据';
+comment on column DW_USER.SD_SCANCODE_DEVICE.vid
+  is '设备号';
+comment on column DW_USER.SD_SCANCODE_DEVICE.ip
+  is 'IP地址';
+comment on column DW_USER.SD_SCANCODE_DEVICE.visit_date
+  is '扫码时间';
+comment on column DW_USER.SD_SCANCODE_DEVICE.visit_date_key
+  is '扫码日期';
+create index DW_USER.SD_SCD_DATE_KEY on DW_USER.SD_SCANCODE_DEVICE (VISIT_DATE_KEY)
+  tablespace BDUDATAORDER
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

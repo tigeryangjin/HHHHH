@@ -1,0 +1,70 @@
+???create table DW_USER.OPER_REPURCHASE_ITEM
+(
+  row_id          NUMBER(15) not null,
+  item_code       NUMBER(10) not null,
+  matdl           NUMBER(10),
+  matzl           NUMBER(10),
+  matxl           NUMBER(10),
+  repurchase_days NUMBER,
+  w_insert_dt     DATE,
+  w_update_dt     DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_REPURCHASE_ITEM
+  is '会员复购提醒-商品表
+by yangjin';
+comment on column DW_USER.OPER_REPURCHASE_ITEM.row_id
+  is '表唯一索引';
+comment on column DW_USER.OPER_REPURCHASE_ITEM.item_code
+  is '商品编码';
+comment on column DW_USER.OPER_REPURCHASE_ITEM.matdl
+  is '物料大类编码';
+comment on column DW_USER.OPER_REPURCHASE_ITEM.matzl
+  is '物料中类编码';
+comment on column DW_USER.OPER_REPURCHASE_ITEM.matxl
+  is '物料小类编码';
+comment on column DW_USER.OPER_REPURCHASE_ITEM.repurchase_days
+  is '复购时长（天）';
+comment on column DW_USER.OPER_REPURCHASE_ITEM.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.OPER_REPURCHASE_ITEM.w_update_dt
+  is '记录更新时间';
+create unique index DW_USER.OPER_REPURCHASE_ITEM_UK on DW_USER.OPER_REPURCHASE_ITEM (ROW_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+alter table DW_USER.OPER_REPURCHASE_ITEM
+  add constraint OPER_REPURCHASE_ITEM_PK primary key (ITEM_CODE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter index DW_USER.OPER_REPURCHASE_ITEM_PK nologging;
+

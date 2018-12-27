@@ -1,0 +1,22 @@
+???create table DW_USER.OPER_MEMBER_ORDER_RULE_GROUP
+(
+  rule_group_key  NUMBER(10),
+  rule_group_desc VARCHAR2(500)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.OPER_MEMBER_ORDER_RULE_GROUP
+  is '自动发券规则组';
+comment on column DW_USER.OPER_MEMBER_ORDER_RULE_GROUP.rule_group_key
+  is '规则组id';
+comment on column DW_USER.OPER_MEMBER_ORDER_RULE_GROUP.rule_group_desc
+  is '规则组描述';
+

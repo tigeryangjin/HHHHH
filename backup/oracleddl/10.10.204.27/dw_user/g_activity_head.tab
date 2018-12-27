@@ -1,0 +1,21 @@
+???create table DW_USER.G_ACTIVITY_HEAD
+(
+  id         NUMBER,
+  groupid    NUMBER,
+  act_id     NUMBER,
+  html_code  VARCHAR2(1000),
+  createtime NUMBER,
+  flag       NUMBER default 0
+)
+tablespace BSDUDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

@@ -1,0 +1,436 @@
+???create table ODSHAPPIGO.ODS_ORDER_CANCEL
+(
+  crm_obj_id  VARCHAR2(10) not null,
+  crm_numint  VARCHAR2(10) not null,
+  recordmode  VARCHAR2(1),
+  zeamc008    VARCHAR2(1),
+  crm_ohguid  VARCHAR2(32),
+  crm_itmgui  VARCHAR2(32),
+  crm_prctyp  VARCHAR2(4),
+  zcrmd023    VARCHAR2(10),
+  crm_itmtyp  VARCHAR2(4),
+  ztcmc002    VARCHAR2(10),
+  ztcmc006    VARCHAR2(10),
+  salesorg    VARCHAR2(4),
+  distr_chan  VARCHAR2(2),
+  sales_off   VARCHAR2(4),
+  division    VARCHAR2(2),
+  zmaterial   VARCHAR2(18),
+  zeamc027    VARCHAR2(8),
+  zlifnr      VARCHAR2(10),
+  crm_endcst  VARCHAR2(10),
+  ztcmc016    VARCHAR2(10),
+  age         VARCHAR2(3),
+  ztcmc020    VARCHAR2(10),
+  crm_soldto  VARCHAR2(10),
+  zkunnr_l1   VARCHAR2(10),
+  zkunnr_l2   VARCHAR2(10),
+  zthrc015    VARCHAR2(8),
+  bp_emplo    VARCHAR2(10),
+  zthrc016    VARCHAR2(8),
+  zthrc017    VARCHAR2(8),
+  zesdc113    VARCHAR2(10),
+  crmpostdat  VARCHAR2(8),
+  zpst_tim    VARCHAR2(6),
+  zgz_time    VARCHAR2(14),
+  zcrmd001    VARCHAR2(5),
+  crm_usstat  VARCHAR2(5),
+  crm_stsma   VARCHAR2(8),
+  crm_ctd_by  VARCHAR2(12),
+  crm_crd_at  VARCHAR2(8),
+  crea_time   VARCHAR2(6),
+  zeamc001    VARCHAR2(14),
+  zeamc010    VARCHAR2(2),
+  zeamc011    VARCHAR2(8),
+  zeamc012    VARCHAR2(8),
+  zeamc037    VARCHAR2(2),
+  zeamc013    VARCHAR2(6),
+  zeamc014    VARCHAR2(6),
+  ztcmc021    VARCHAR2(8),
+  ztcmc022    VARCHAR2(6),
+  ztcmc027    VARCHAR2(6),
+  ztcmc026    VARCHAR2(8),
+  ztcmc030    VARCHAR2(10),
+  ztcmc007    VARCHAR2(1),
+  ztcmc008    VARCHAR2(2),
+  ztcmc009    VARCHAR2(2),
+  ztcmc023    VARCHAR2(4),
+  ztcmc024    VARCHAR2(4),
+  ztcmc025    VARCHAR2(4),
+  zcrmd015    VARCHAR2(1),
+  zcrmd016    VARCHAR2(1),
+  zcrmd017    VARCHAR2(5),
+  zcrmd018    VARCHAR2(2),
+  zcr_on      VARCHAR2(14),
+  zobj_cc     VARCHAR2(10),
+  zdsxd       VARCHAR2(14),
+  zjsjf_yn    VARCHAR2(1),
+  zcrmd025    VARCHAR2(14),
+  zcrmd020    VARCHAR2(10),
+  zcrmd021    VARCHAR2(1),
+  ztcrmc01    VARCHAR2(8),
+  ztcrmc02    VARCHAR2(14),
+  ztcrmc03    VARCHAR2(10),
+  ztcrmc04    VARCHAR2(10),
+  ztcrmc05    VARCHAR2(10),
+  unit        VARCHAR2(3),
+  netvalord   NUMBER(17,2),
+  crm_taxamo  NUMBER(17,2),
+  grsvalord   NUMBER(17,2),
+  zamk0011    NUMBER(17,2),
+  zamk0010    NUMBER(17,3),
+  zcrmk006    NUMBER(17,2),
+  zcrmk007    NUMBER(17,2),
+  zcrmk009    NUMBER(17,2),
+  crm_srvkb   NUMBER(17,2),
+  zcrmk003    NUMBER(17,2),
+  zcrmk004    NUMBER(17,2),
+  zcrmk005    NUMBER(17,3),
+  zyf_pay     NUMBER(17,2),
+  zxy_pay     NUMBER(17,2),
+  znpt_atm    NUMBER(17,2),
+  crm_numofi  INTEGER,
+  zamk0024    INTEGER,
+  zcrmk008    NUMBER(17,2),
+  sales_unit  VARCHAR2(3),
+  currency    VARCHAR2(5),
+  crm_curren  VARCHAR2(5),
+  zcrmd031    VARCHAR2(4),
+  zehrc012    VARCHAR2(1),
+  zcrmd048    VARCHAR2(4),
+  zcrmd086    VARCHAR2(1),
+  zcrmd019    VARCHAR2(10),
+  zthrc027    VARCHAR2(8),
+  ztcrmc11    VARCHAR2(8),
+  zthrc026    VARCHAR2(8),
+  zthrc025    VARCHAR2(8),
+  ztlec001    VARCHAR2(3),
+  zcrmd120    VARCHAR2(5),
+  zmater2     VARCHAR2(18),
+  zztransf    VARCHAR2(1),
+  zcondk001   NUMBER(17,2),
+  w_insert_dt DATE,
+  w_update_dt DATE
+)
+tablespace ODSDATA01
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_obj_id
+  is '订单发生制编号';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_numint
+  is '凭证中的项目编号';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zeamc008
+  is '删除标记';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_ohguid
+  is 'CRM 订单对象的全球唯一标识';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_itmgui
+  is 'CRM 订单项目的全球唯一标识';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_prctyp
+  is '业务交易类型';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd023
+  is '上级项目编号';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_itmtyp
+  is '项目交易类型';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc002
+  is 'CRM参考订单号';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc006
+  is 'CRM参考订单行';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.salesorg
+  is '销售组织';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.distr_chan
+  is '分销渠道';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.sales_off
+  is '销售办公室';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.division
+  is '部门';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zmaterial
+  is '商品sku';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zeamc027
+  is 'md编号';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zlifnr
+  is '寄售商品的供应商';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_endcst
+  is '会员编号';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc016
+  is '会员等级描述';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.age
+  is '以年表示的年龄';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc020
+  is '四级地址编号';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_soldto
+  is '售达方';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zkunnr_l1
+  is '销售渠道一级组织';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zkunnr_l2
+  is '销售渠道二级组织';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zthrc015
+  is 'HR所属部门';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.bp_emplo
+  is '负责员工(BP)';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zthrc016
+  is 'HR所属班组';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zthrc017
+  is 'HR所属处室';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zesdc113
+  is '日期(字符)';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crmpostdat
+  is '交易的过帐日期';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zpst_tim
+  is '交易的过账时间';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zgz_time
+  is '过账时间戳(自定义)';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd001
+  is '订购状态类型描述';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_usstat
+  is '用户状态';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_stsma
+  is '状态参数文件';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_ctd_by
+  is '创建交易的用户';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_crd_at
+  is '交易已在此时间创建';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crea_time
+  is '创建的时间';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zeamc001
+  is '单元编号';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zeamc010
+  is '直播/重播';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zeamc011
+  is '单元开始日期';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zeamc012
+  is '单元结束日期';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zeamc037
+  is '单元开始时段';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zeamc013
+  is '单元开始时间';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zeamc014
+  is '单元结束时间';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc021
+  is '交换(退货)取消日期';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc022
+  is '交换(退货)取消时间';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc027
+  is '参考过账时间';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc026
+  is '参考过账日期';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc030
+  is '参考负责员工';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc007
+  is '标示：部分取消/退货/换货';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc008
+  is '退货类型';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc009
+  is '换货类型';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc023
+  is '货物状态';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc024
+  is '一级原因';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcmc025
+  is '二级原因';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd015
+  is '橱窗标识';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd016
+  is 'IVR标识';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd017
+  is '订单支付状态';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd018
+  is '订单来源';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcr_on
+  is '创建时间戳';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zobj_cc
+  is '外呼单号(CRM)';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zdsxd
+  is '定时下单时间戳(自定义)';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zjsjf_yn
+  is '标示：已计算积分';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd025
+  is '预定购时间戳';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd020
+  is '礼券活动编号(CRM)';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd021
+  is '标示：虚拟心意卡已自动充值';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcrmc01
+  is 'CRM订购日期（权责制）';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcrmc02
+  is 'CRM订购时间戳（权责制）';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcrmc03
+  is 'CRM订购日期字符（权责制）';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcrmc04
+  is 'CRM订单编号(权责制)';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcrmc05
+  is 'CRM订购单行项目（权责制）';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_taxamo
+  is '用凭证货币表示的税收金额';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.grsvalord
+  is 'CRM: 订单的总值';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zamk0011
+  is '订购金额';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zamk0010
+  is '订购数量';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmk006
+  is '折扣金额';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmk007
+  is '券金额';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmk009
+  is '售价金额';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_srvkb
+  is '成本: 金额';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmk003
+  is '应付金额';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmk004
+  is '已付金额';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmk005
+  is '使用积分';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zyf_pay
+  is '预付款金额';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zxy_pay
+  is '心意卡支付金额';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.znpt_atm
+  is '不计积分金额';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_numofi
+  is '凭证项目的数目';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zamk0024
+  is '节目单元延长时长';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmk008
+  is '采购价格(成本价)';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.sales_unit
+  is '销售单位';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.currency
+  is '货币码';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.crm_curren
+  is 'CRM 定价的货币';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd031
+  is '业务交易类型(权责制)';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zehrc012
+  is '历史记录标志';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd048
+  is '原订单项目交易类型';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd086
+  is '400订单标记';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd019
+  is '发货地点(CRM)';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zthrc027
+  is '原HR所属处室';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztcrmc11
+  is '原订单_TM';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zthrc026
+  is '原HR所属班组';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zthrc025
+  is '
+原HR所属部门';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.ztlec001
+  is '仓库';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcrmd120
+  is 'CPS分销商编号';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zmater2
+  is '对应关联母品
+商品spu';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zztransf
+  is '标示：特种配送标记';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.zcondk001
+  is '定价-条件值';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.w_insert_dt
+  is '记录插入时间';
+comment on column ODSHAPPIGO.ODS_ORDER_CANCEL.w_update_dt
+  is '记录更新时间';
+create index ODSHAPPIGO.ORDERC_CRMPOSTDAT on ODSHAPPIGO.ODS_ORDER_CANCEL (CRMPOSTDAT)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.ORDERC_CRM_OBJ_ID on ODSHAPPIGO.ODS_ORDER_CANCEL (CRM_OBJ_ID)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.ORDERC_CRM_PRCTYP on ODSHAPPIGO.ODS_ORDER_CANCEL (CRM_PRCTYP)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.ORDERC_ZCRMD001 on ODSHAPPIGO.ODS_ORDER_CANCEL (ZCRMD001)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.ORDERC_ZCR_ON on ODSHAPPIGO.ODS_ORDER_CANCEL (ZCR_ON)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.ORDERC_ZTCMC008 on ODSHAPPIGO.ODS_ORDER_CANCEL (ZTCMC008)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index ODSHAPPIGO.ORDERC_ZTCRMC04 on ODSHAPPIGO.ODS_ORDER_CANCEL (ZTCRMC04)
+  tablespace ODSINDEX01
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

@@ -1,0 +1,87 @@
+???create table DW_USER.FACT_DAILY_WX
+(
+  visit_date_key   NUMBER(10),
+  uvcnt            NUMBER(10),
+  newvtcount       NUMBER(10),
+  pvcnt            NUMBER(10),
+  avgpv            NUMBER(10,2),
+  avglife_time     NUMBER(10,2),
+  newvtrate        NUMBER(10,2),
+  bonusrate        NUMBER(10,2),
+  orderrate        NUMBER(10,3),
+  mcnt             NUMBER(10),
+  noscan_orderrate NUMBER(10,3),
+  noscan_orderrs   NUMBER(10),
+  liteuvcnt        NUMBER(10),
+  litepvcnt        NUMBER(10),
+  litenewvtcount   NUMBER(10),
+  liteorderrs      NUMBER(10),
+  litenewvtrate    NUMBER(10,2),
+  liteorderrate    NUMBER(10,3),
+  wscuvcnt         NUMBER(10),
+  wscnewvtcount    NUMBER(10),
+  smuvcnt          NUMBER(10),
+  sm_orderrs       NUMBER(10),
+  smyj             NUMBER(10),
+  orderrs          NUMBER(10)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_DAILY_WX.visit_date_key
+  is '访问时间key';
+comment on column DW_USER.FACT_DAILY_WX.uvcnt
+  is '微信通路UV计数(不含扫码购包含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.newvtcount
+  is '微信通路新用户计数(不含扫码购包含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.pvcnt
+  is '微信通路PV计数(不含扫码购包含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.avgpv
+  is '微信通路平均PV计数(不含扫码购包含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.avglife_time
+  is '微信通路评价访问时长(不含扫码购包含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.newvtrate
+  is '微信通路新用户访问占比(不含扫码购包含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.bonusrate
+  is '微信通路跳出率(不含扫码购包含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.orderrate
+  is '微信通路订购人数占比(不含扫码购包含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.mcnt
+  is '微信通路新增会员人数(不含扫码购包含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.noscan_orderrate
+  is '微商城转化率(不含扫码购不含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.noscan_orderrs
+  is '微商城订购人数(不含扫码购不含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.liteuvcnt
+  is '小程序UV计数';
+comment on column DW_USER.FACT_DAILY_WX.litepvcnt
+  is '小程序PV计数';
+comment on column DW_USER.FACT_DAILY_WX.litenewvtcount
+  is '小程序新用户计数';
+comment on column DW_USER.FACT_DAILY_WX.liteorderrs
+  is '小程序订购人数';
+comment on column DW_USER.FACT_DAILY_WX.litenewvtrate
+  is '小程序新用户访问占比';
+comment on column DW_USER.FACT_DAILY_WX.liteorderrate
+  is '小程序订购人数占比';
+comment on column DW_USER.FACT_DAILY_WX.wscuvcnt
+  is '微商城访客数(不含扫码购不含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.wscnewvtcount
+  is '微商城新访客数(不含扫码购不含小程序)';
+comment on column DW_USER.FACT_DAILY_WX.smuvcnt
+  is '扫码人数';
+comment on column DW_USER.FACT_DAILY_WX.sm_orderrs
+  is '扫码订购人数';
+comment on column DW_USER.FACT_DAILY_WX.smyj
+  is '扫码业绩';
+comment on column DW_USER.FACT_DAILY_WX.orderrs
+  is '订购人数';
+

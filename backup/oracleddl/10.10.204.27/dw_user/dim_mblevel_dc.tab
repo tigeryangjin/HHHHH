@@ -1,0 +1,47 @@
+???create table DW_USER.DIM_MBLEVEL_DC
+(
+  id               NUMBER(10),
+  store_id         NUMBER(10),
+  pml_title        VARCHAR2(50),
+  pml_explain      VARCHAR2(50),
+  start_time       DATE,
+  end_time         DATE,
+  status           NUMBER(3),
+  create_time      DATE,
+  last_update_time DATE,
+  create_by        VARCHAR2(20),
+  last_update_by   VARCHAR2(20)
+)
+tablespace DIM_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on column DW_USER.DIM_MBLEVEL_DC.store_id
+  is '店铺ID';
+comment on column DW_USER.DIM_MBLEVEL_DC.pml_title
+  is '活动名称/标题';
+comment on column DW_USER.DIM_MBLEVEL_DC.pml_explain
+  is '活动说明';
+comment on column DW_USER.DIM_MBLEVEL_DC.start_time
+  is '开始时间';
+comment on column DW_USER.DIM_MBLEVEL_DC.end_time
+  is '结束时间';
+comment on column DW_USER.DIM_MBLEVEL_DC.status
+  is '状态，0关闭 1开启';
+comment on column DW_USER.DIM_MBLEVEL_DC.create_time
+  is '创建时间';
+comment on column DW_USER.DIM_MBLEVEL_DC.last_update_time
+  is '最后修改时间';
+comment on column DW_USER.DIM_MBLEVEL_DC.create_by
+  is '创建人';
+comment on column DW_USER.DIM_MBLEVEL_DC.last_update_by
+  is '修改人';
+

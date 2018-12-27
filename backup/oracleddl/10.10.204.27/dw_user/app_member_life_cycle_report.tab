@@ -1,0 +1,61 @@
+???create table DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT
+(
+  period           CHAR(17),
+  lift_cycle_desc  VARCHAR2(14),
+  vid_cnt          NUMBER,
+  ly_vid_cnt       NUMBER,
+  active_days      NUMBER,
+  ly_active_days   NUMBER,
+  vid_order_cnt    NUMBER,
+  ly_vid_order_cnt NUMBER,
+  order_cnt        NUMBER,
+  ly_order_cnt     NUMBER,
+  order_qty        NUMBER,
+  ly_order_qty     NUMBER,
+  order_amount     NUMBER,
+  ly_order_amount  NUMBER
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT
+  is 'APP会员生命周期报表
+by yangjin
+2018-08-22';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.period
+  is '周期范围';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.lift_cycle_desc
+  is '生命周期阶段';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.vid_cnt
+  is '活跃人数';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.ly_vid_cnt
+  is '去年活跃人数';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.active_days
+  is '活跃天数';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.ly_active_days
+  is '去年活跃天数';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.vid_order_cnt
+  is '订购人数';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.ly_vid_order_cnt
+  is '去年订购人数';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.order_cnt
+  is '订单数';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.ly_order_cnt
+  is '去年订单数';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.order_qty
+  is '订购件数';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.ly_order_qty
+  is '去年订购件数';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.order_amount
+  is '订购金额';
+comment on column DW_USER.APP_MEMBER_LIFE_CYCLE_REPORT.ly_order_amount
+  is '去年订购金额';
+

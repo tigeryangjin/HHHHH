@@ -1,0 +1,3 @@
+???create or replace synonym DW_USER.FACT_PAGE_VIEW_HIT
+  for DW_USER.FACT_PAGE_VIEW@BITONEWBI;
+

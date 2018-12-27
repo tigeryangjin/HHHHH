@@ -1,0 +1,35 @@
+???create table DW_HAPPIGO.R_NOTE
+(
+  id_note                      INTEGER not null,
+  value_str                    CLOB,
+  gui_location_x               INTEGER,
+  gui_location_y               INTEGER,
+  gui_location_width           INTEGER,
+  gui_location_height          INTEGER,
+  font_name                    CLOB,
+  font_size                    INTEGER,
+  font_bold                    CHAR(1),
+  font_italic                  CHAR(1),
+  font_color_red               INTEGER,
+  font_color_green             INTEGER,
+  font_color_blue              INTEGER,
+  font_back_ground_color_red   INTEGER,
+  font_back_ground_color_green INTEGER,
+  font_back_ground_color_blue  INTEGER,
+  font_border_color_red        INTEGER,
+  font_border_color_green      INTEGER,
+  font_border_color_blue       INTEGER,
+  draw_shadow                  CHAR(1)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255;
+alter table DW_HAPPIGO.R_NOTE
+  add primary key (ID_NOTE)
+  using index 
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255;
+

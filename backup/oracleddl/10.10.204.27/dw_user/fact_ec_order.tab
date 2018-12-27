@@ -1,0 +1,175 @@
+???create table DW_USER.FACT_EC_ORDER
+(
+  order_id       NUMBER(10),
+  order_sn       NUMBER(30),
+  pay_sn         NUMBER(30),
+  add_time       NUMBER(20),
+  payment_code   VARCHAR2(10),
+  payment_time   NUMBER(20),
+  finnshed_time  NUMBER(20),
+  goods_amount   NUMBER(10,2),
+  order_amount   NUMBER(10,2),
+  shipping_fee   NUMBER(10,2),
+  order_state    NUMBER(4),
+  refund_state   NUMBER(3),
+  refund_amount  NUMBER(10,2),
+  order_from     VARCHAR2(10),
+  shipping_type  NUMBER(2),
+  shipping_name  VARCHAR2(50),
+  shipping_code  VARCHAR2(200),
+  app_name       VARCHAR2(20),
+  vid            VARCHAR2(100),
+  erp_order_no   NUMBER(20),
+  erp_order_time NUMBER(20),
+  order_ip       VARCHAR2(50),
+  paymentchannel VARCHAR2(30),
+  cust_no        NUMBER(20),
+  is_kjg         NUMBER(1),
+  addtime        DATE,
+  store_id       NUMBER(20),
+  store_name     VARCHAR2(100)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on column DW_USER.FACT_EC_ORDER.order_id
+  is '订单索引id';
+comment on column DW_USER.FACT_EC_ORDER.order_sn
+  is '订单编号';
+comment on column DW_USER.FACT_EC_ORDER.pay_sn
+  is '支付单号';
+comment on column DW_USER.FACT_EC_ORDER.add_time
+  is '订单生成时间key';
+comment on column DW_USER.FACT_EC_ORDER.payment_code
+  is '支付方式名称代码';
+comment on column DW_USER.FACT_EC_ORDER.payment_time
+  is '支付(付款)时间';
+comment on column DW_USER.FACT_EC_ORDER.finnshed_time
+  is '订单完成时间';
+comment on column DW_USER.FACT_EC_ORDER.goods_amount
+  is '商品总价格';
+comment on column DW_USER.FACT_EC_ORDER.order_amount
+  is '订单总价格';
+comment on column DW_USER.FACT_EC_ORDER.shipping_fee
+  is '运费';
+comment on column DW_USER.FACT_EC_ORDER.order_state
+  is '订单状态：0(已取消)10(默认):未付款;20:已付款;30:已发货;40:已收货（妥投）;50:已确认收货;';
+comment on column DW_USER.FACT_EC_ORDER.refund_state
+  is '退款状态:0是无退款,1是部分退款,2是全部退款';
+comment on column DW_USER.FACT_EC_ORDER.refund_amount
+  is '退款金额';
+comment on column DW_USER.FACT_EC_ORDER.order_from
+  is '参见CPS码表VALUE1';
+comment on column DW_USER.FACT_EC_ORDER.shipping_type
+  is '0表示公司物流   1表示四通一达  5供应商配送';
+comment on column DW_USER.FACT_EC_ORDER.shipping_name
+  is '物流公司名称';
+comment on column DW_USER.FACT_EC_ORDER.shipping_code
+  is '物流单号';
+comment on column DW_USER.FACT_EC_ORDER.app_name
+  is '下单来源应用名';
+comment on column DW_USER.FACT_EC_ORDER.vid
+  is '下单设备编号';
+comment on column DW_USER.FACT_EC_ORDER.erp_order_no
+  is 'ERP订单编号';
+comment on column DW_USER.FACT_EC_ORDER.erp_order_time
+  is '生成CRM订单时间';
+comment on column DW_USER.FACT_EC_ORDER.order_ip
+  is '下单IP';
+comment on column DW_USER.FACT_EC_ORDER.paymentchannel
+  is '支付渠道，（支付宝手机:Alipay_M，支付宝网站Alipay_W，微信_WX）';
+comment on column DW_USER.FACT_EC_ORDER.cust_no
+  is '顾客编号';
+comment on column DW_USER.FACT_EC_ORDER.addtime
+  is '订单生成时间';
+comment on column DW_USER.FACT_EC_ORDER.store_id
+  is '卖家店铺id';
+comment on column DW_USER.FACT_EC_ORDER.store_name
+  is '卖家店铺名称';
+create index DW_USER.EC_IP_IDX on DW_USER.FACT_EC_ORDER (ORDER_IP)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.EC_OISKJG_IDX on DW_USER.FACT_EC_ORDER (IS_KJG)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.EC_ORDER_ATIME_IDX on DW_USER.FACT_EC_ORDER (ADDTIME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.EC_ORDER_CUST_IDX on DW_USER.FACT_EC_ORDER (CUST_NO)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.EC_ORDER_IDX on DW_USER.FACT_EC_ORDER (ORDER_ID)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+create index DW_USER.EC_ORDER_TIME_IDX on DW_USER.FACT_EC_ORDER (ADD_TIME)
+  tablespace DWDATA00
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+  nologging;
+

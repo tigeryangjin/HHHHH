@@ -1,0 +1,47 @@
+???create table DW_USER.TP_COMMUNITY_FANS_G_C_L
+(
+  log_id       NUMBER(11) not null,
+  fans_id      NUMBER(11) not null,
+  old_group_id NUMBER(11) not null,
+  group_id     NUMBER(11) not null,
+  remark       VARCHAR2(200),
+  admin_user   VARCHAR2(50) not null,
+  add_time     DATE not null,
+  token        VARCHAR2(30) not null,
+  w_insert_dt  DATE,
+  w_update_dt  DATE
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+comment on table DW_USER.TP_COMMUNITY_FANS_G_C_L
+  is '群成员换组记录表
+by yangjin
+2018-03-26';
+comment on column DW_USER.TP_COMMUNITY_FANS_G_C_L.log_id
+  is '索引主键';
+comment on column DW_USER.TP_COMMUNITY_FANS_G_C_L.fans_id
+  is '成员id';
+comment on column DW_USER.TP_COMMUNITY_FANS_G_C_L.old_group_id
+  is '原有群id';
+comment on column DW_USER.TP_COMMUNITY_FANS_G_C_L.group_id
+  is '变更后群id';
+comment on column DW_USER.TP_COMMUNITY_FANS_G_C_L.remark
+  is '备注';
+comment on column DW_USER.TP_COMMUNITY_FANS_G_C_L.admin_user
+  is '管理员';
+comment on column DW_USER.TP_COMMUNITY_FANS_G_C_L.add_time
+  is '创建时间';
+comment on column DW_USER.TP_COMMUNITY_FANS_G_C_L.w_insert_dt
+  is '记录插入时间';
+comment on column DW_USER.TP_COMMUNITY_FANS_G_C_L.w_update_dt
+  is '记录更新时间';
+

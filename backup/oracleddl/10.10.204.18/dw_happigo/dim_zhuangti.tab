@@ -1,0 +1,21 @@
+???create table DW_HAPPIGO.DIM_ZHUANGTI
+(
+  zt_id        NUMBER(8),
+  zt_name      VARCHAR2(100),
+  add_date_key NUMBER(8),
+  zttypeid     NUMBER(1),
+  zttypenm     VARCHAR2(20),
+  end_date_key NUMBER(8)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

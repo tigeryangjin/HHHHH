@@ -1,0 +1,33 @@
+???create table DW_USER.FACT_CMS_ZT
+(
+  id                  NUMBER(11),
+  name                VARCHAR2(100),
+  pic                 VARCHAR2(200),
+  pic_detail          VARCHAR2(200),
+  pic_detail_web      VARCHAR2(200),
+  description         VARCHAR2(500),
+  start_time          NUMBER(11),
+  expire_time         NUMBER(11),
+  left_time_displayed NUMBER(3),
+  url                 VARCHAR2(200),
+  url_web             VARCHAR2(200),
+  sort                NUMBER(11),
+  remark              VARCHAR2(200),
+  create_time         NUMBER(11),
+  enable              NUMBER(3),
+  is_auto             NUMBER(3),
+  timestamp           NUMBER(11),
+  zt_id               NUMBER(11)
+)
+tablespace DWDATA00
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+

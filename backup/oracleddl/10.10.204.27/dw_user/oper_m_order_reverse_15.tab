@@ -1,0 +1,23 @@
+???create table DW_USER.OPER_M_ORDER_REVERSE_15
+(
+  member_key      NUMBER(20),
+  record_date_key NUMBER(10),
+  order_max_date  NUMBER(10),
+  order_total     NUMBER(10),
+  reverse_time    NUMBER(10)
+)
+tablespace BDUDATAORDER
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  )
+nologging;
+comment on table DW_USER.OPER_M_ORDER_REVERSE_15
+  is '20160614后有效订购大于等于2且最后一次退货(车队回收，用户回寄)15天内无订购';
+

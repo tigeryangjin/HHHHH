@@ -1,0 +1,7 @@
+???create sequence DW_HAPPIGO.BIDATE_S
+minvalue 1
+maxvalue 99999999999999999999999999
+start with 7621
+increment by 1
+cache 20;
+
